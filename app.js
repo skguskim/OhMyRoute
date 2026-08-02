@@ -1,10 +1,10 @@
 const AXES = [
+  { key: "sports", label: "스포츠·야구", emoji: "⚾" },
   { key: "nature", label: "자연·풍경", emoji: "🌿" },
   { key: "culture", label: "문화·역사", emoji: "🏛" },
   { key: "art", label: "예술·전시", emoji: "🎨" },
   { key: "food", label: "음식·로컬", emoji: "🍚" },
   { key: "activity", label: "체험·활동", emoji: "🥾" },
-  { key: "sports", label: "스포츠·야구", emoji: "⚾" },
   { key: "healing", label: "휴식·산책", emoji: "🌳" },
   { key: "festival", label: "축제·야간", emoji: "✨" },
 ];
@@ -91,32 +91,32 @@ const LOADING_PHRASES = [
 
 const PROMPT_AXIS_RULES = [
   {
-    axis: 0,
+    axis: 1,
     label: "자연·풍경",
     terms: ["자연", "숲", "공원", "호수", "정원", "피크닉", "풍경", "경치", "전망", "등산", "산행", "무등산"],
   },
   {
-    axis: 1,
+    axis: 2,
     label: "역사·문화",
     terms: ["역사", "전통", "문화유산", "근대", "민주", "인권", "한옥", "사찰", "기념관", "문화"],
   },
   {
-    axis: 2,
+    axis: 3,
     label: "예술·감성",
     terms: ["예술", "미술", "전시", "갤러리", "공연", "사진", "감성", "미디어아트", "비엔날레"],
   },
   {
-    axis: 3,
+    axis: 4,
     label: "맛집·카페",
     terms: ["맛집", "음식", "먹거리", "미식", "로컬푸드", "카페", "디저트", "시장", "떡갈비", "비빔밥"],
   },
   {
-    axis: 4,
+    axis: 5,
     label: "체험·활동",
     terms: ["체험", "참여", "레저", "수영", "액티비티", "활동", "놀이", "VR", "만들기"],
   },
   {
-    axis: 5,
+    axis: 0,
     label: "스포츠",
     terms: ["스포츠", "축구", "야구", "경기", "응원", "챔피언스필드", "체육"],
   },
@@ -152,7 +152,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [72, 56, 66, 54, 48, 35, 76, 43],
+  preference: [0, 0, 0, 0, 0, 0, 0, 0],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -2244,11 +2244,20 @@ function kakaoMapLink(place, nextPlace) {
   return `https://map.kakao.com/link/from/${placeName},${place.latitude},${place.longitude}/to/${nextName},${nextPlace.latitude},${nextPlace.longitude}`;
 }
 
+function josa(word, josaType) {
+  if (!word) return "";
+  const lastChar = word.charCodeAt(word.length - 1);
+  const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+  if (josaType === "와/과") return word + (hasJongseong ? "과" : "와");
+  if (josaType === "을/를") return word + (hasJongseong ? "을" : "를");
+  return word;
+}
+
 function dayTheme(day) {
   const axes = topAxes(2);
   if (!day.length) return "조건에 맞는 장소를 찾지 못했습니다.";
   const mealLabels = day.filter((place) => place.mealSlot).map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`);
-  return `${axes[0].label}와 ${axes[1].label} 취향을 중심으로 ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
+  return `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로 ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
 }
 
 function renderDayTabs() {
@@ -2293,8 +2302,9 @@ function renderItinerary() {
             ${place.hashtags.slice(0, 2).map((tag) => `<span class="hashtag-chip">${escapeHtml(tag)}</span>`).join("")}
           </div>
           <h3>${escapeHtml(place.name)}</h3>
-          <p>${escapeHtml(place.description)}</p>
-          <div class="stop-details">
+          <div class="reason-callout">💡 추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")}</div>
+          <p class="expandable-desc">${escapeHtml(place.description)}</p>
+          <div class="stop-details expandable-desc">
             ${place.isBaseballGame ? `
               <div class="baseball-game-callout">⚾ ${escapeHtml(place.gameDayType)} ${formatClockMinutes(place.fixedStartMinutes)} 경기 시작 · 약 3시간~3시간 30분 관람 · ${formatClockMinutes(place.expectedEndMinutes)} 종료</div>
             ` : ""}
@@ -2304,7 +2314,7 @@ function renderItinerary() {
             ${conditions.sportsBaseballHighlyPreferred && place.activeRecommendedPlayers?.length ? `
               <div class="player-recommendation">⚾ ${escapeHtml(place.activeRecommendedPlayers.join("·"))} 선수 추천</div>
             ` : ""}
-            <div class="reason-callout">추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")} · 이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
+            <div class="reason-callout detail-reason">이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
             <div class="stop-detail-actions">
               <a class="kakao-directions-link" href="${mapLink}" target="_blank" rel="noopener noreferrer">${nextPlace ? "다음 장소 길찾기" : isFinalReturn ? "출발지 복귀 길찾기" : "카카오맵에서 보기"} ↗</a>
             </div>
@@ -2415,7 +2425,7 @@ function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
   const metrics = routeMetrics();
-  const title = `${axes[0].label}와 ${axes[1].label}을 잇는 ${durationLabel()} 여행`;
+  const title = `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`;
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
   $("#resultTitle").textContent = title;
   $("#resultDescription").textContent = conditions.baseballAttendance
@@ -2441,6 +2451,8 @@ function showView(viewName, { pushState = true } = {}) {
   const wantsResult = viewName === "result" && state.route.length > 0;
   $("#formView").classList.toggle("active", !wantsResult);
   $("#resultView").classList.toggle("active", wantsResult);
+  const docentWrapper = $("#aiDocentWrapper");
+  if (docentWrapper) docentWrapper.hidden = !wantsResult;
   $$(".mobile-nav button").forEach((button) => {
     button.classList.toggle(
       "active",
@@ -2897,6 +2909,79 @@ function bindEvents() {
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && state.previewPlaying) stopPreview();
   });
+
+  // AI 도슨트 버튼 및 패널 로직
+  const docentBtn = $("#aiDocentButton");
+  const docentPanel = $("#aiDocentPanel");
+  const docentClose = $("#aiDocentCloseButton");
+  const docentChat = $("#aiDocentChat");
+  const docentInput = $("#aiDocentInput");
+  const docentSend = $("#aiDocentSendButton");
+
+  function addDocentMessage(text, isUser = false) {
+    const msg = document.createElement("div");
+    msg.className = isUser ? "ai-msg user-msg" : "ai-msg docent-msg";
+    msg.textContent = text;
+    docentChat.appendChild(msg);
+    docentChat.scrollTop = docentChat.scrollHeight;
+  }
+
+  function findNearestPlace() {
+    if (!state.route || state.route.length === 0) return null;
+    let currentLoc = state.stampLocation;
+    if (!currentLoc && state.kakaoMap) {
+      const center = state.kakaoMap.getCenter();
+      currentLoc = { latitude: center.getLat(), longitude: center.getLng() };
+    }
+    if (!currentLoc && currentConditions().origin) {
+      currentLoc = currentConditions().origin;
+    }
+
+    if (!currentLoc) return state.route[0];
+
+    let nearest = state.route[0];
+    let minDist = haversineKm(currentLoc, nearest);
+    
+    for (let i = 1; i < state.route.length; i++) {
+      const dist = haversineKm(currentLoc, state.route[i]);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = state.route[i];
+      }
+    }
+    return nearest;
+  }
+
+  if (docentBtn && docentPanel) {
+    docentBtn.addEventListener("click", () => {
+      docentPanel.hidden = false;
+      docentBtn.hidden = true;
+      if (docentChat.children.length === 0) {
+        const nearest = findNearestPlace();
+        if (nearest) {
+          addDocentMessage(`지금 계신 곳과 가장 가까운 여행지는 [${nearest.name}]입니다!\n\n${nearest.description}\n\n이곳에 대해 더 궁금한 점이 있으신가요?`);
+        } else {
+          addDocentMessage(`안녕하세요! 오매루트 AI 도슨트입니다. 어떤 장소가 궁금하신가요?`);
+        }
+      }
+    });
+    docentClose.addEventListener("click", () => {
+      docentPanel.hidden = true;
+      docentBtn.hidden = false;
+    });
+    docentSend.addEventListener("click", () => {
+      const text = docentInput.value.trim();
+      if (!text) return;
+      addDocentMessage(text, true);
+      docentInput.value = "";
+      setTimeout(() => {
+        addDocentMessage("죄송합니다. 현재 AI 답변 기능은 데모 버전입니다. 장소에 직접 방문하셔서 다양한 매력을 느껴보세요!");
+      }, 600);
+    });
+    docentInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") docentSend.click();
+    });
+  }
 }
 
 async function loadPlaces() {

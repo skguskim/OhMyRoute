@@ -61,7 +61,7 @@
                 </div>
                 <h1 id="formTitle">어떤 여행을 원하시나요?</h1>
                 <p>
-                  여행 일정과 선호하는 스타일을 세밀하게 알려주세요.
+                  일정과 선호를 알려주세요.
                 </p>
               <div class="hero-flow" aria-label="여행 루트 생성 과정">
                 <span class="active"><b>01</b> 조건</span>
@@ -117,7 +117,7 @@
                   </label>
 
                   <p id="scheduleFieldStatus" class="schedule-field-status field full" aria-live="polite">
-                    출발일의 여행 시작 시각부터 귀가일의 여행 종료 시각까지 입력하세요.
+                    출발부터 도착까지의 일정을 입력해 주세요.
                   </p>
 
                   <fieldset class="field full">
@@ -170,7 +170,7 @@
                       <option value="cloudy">흐림</option>
                       <option value="rainy">비</option>
                     </select>
-                    <small id="weatherFieldStatus" class="field-hint" aria-live="polite">루트 생성 시 12시·18시 예보를 조회합니다.</small>
+                    <small id="weatherFieldStatus" class="field-hint" aria-live="polite">예보 기반으로 추천합니다.</small>
                   </label>
                 </div>
               </section>
@@ -180,7 +180,7 @@
                   <span class="prompt-ai-mark">AI</span>
                   <div class="prompt-intro-copy">
                     <h2>어떤 여행을 만들까요?</h2>
-                    <p>원하는 분위기와 꼭 넣고 싶은 장소를 말하듯 적어보세요.</p>
+                    <p>원하는 분위기를 자유롭게 적어보세요.</p>
                   </div>
                 </div>
                 <div class="prompt-composer">
@@ -225,7 +225,7 @@
                     <h2>여행 취향 설정</h2>
                   </div>
                 </div>
-                <p class="card-helper">마음이 가는 항목일수록 오른쪽으로 움직여 보세요. 정밀한 취향을 바탕으로 맞춤 동선을 구성합니다.</p>
+                <p class="card-helper">선호하는 항목을 오른쪽으로 움직여주세요.</p>
                 <section id="baseballAttendancePanel" class="baseball-attendance-panel" hidden>
                   <div class="baseball-attendance-copy">
                     <span>⚾ BASEBALL DAY</span>
@@ -255,9 +255,9 @@
               <div class="side-status"><i></i><span id="dataStatus">장소 데이터 연결 중</span></div>
               <h2>어떻게 추천하나요?</h2>
               <ol class="engine-steps">
-                <li><b>01</b><span>조건에 맞지 않는 장소 제외</span></li>
-                <li><b>02</b><span>8차원 선호 벡터 유사도 계산</span></li>
-                <li><b>03</b><span>출발지 기준 이동 순서 구성</span></li>
+                <li><b>01</b><span>조건 필터링</span></li>
+                <li><b>02</b><span>취향 유사도 계산</span></li>
+                <li><b>03</b><span>최적 동선 구성</span></li>
               </ol>
               <div class="axis-preview" id="axisPreview"></div>
             </section>
@@ -336,7 +336,7 @@
                     </div>
                     <span id="stampProgressBadge" class="soft-badge">0 / 0</span>
                   </div>
-                  <p class="stamp-intro">관광지 100m 안에서 GPS 위치를 확인하면 디지털 도장을 받을 수 있습니다.</p>
+                  <p class="stamp-intro">관광지 100m 이내에서 GPS로 스탬프를 받으세요.</p>
                   <div class="stamp-location-panel">
                     <div class="stamp-location-heading">
                       <strong>⌖ 현재 위치 GPS &amp; 테스트</strong>
@@ -365,7 +365,7 @@
                       </div>
                       <span id="reviewStatusBadge" class="soft-badge">작성 전</span>
                     </div>
-                    <p class="review-reward-intro">이번 코스의 경험을 남기면 시연용 지역 식당 10% 할인 쿠폰을 발급합니다.</p>
+                    <p class="review-reward-intro">리뷰를 남기고 식당 10% 쿠폰을 받으세요.</p>
                     <label class="review-field" for="reviewText">
                       <span>여행 리뷰</span>
                       <textarea id="reviewText" rows="4" maxlength="500" placeholder="좋았던 장소와 아쉬웠던 점을 자유롭게 적어주세요."></textarea>
@@ -500,6 +500,24 @@
       <span>✦ 오매루트 AI TRAVEL ENGINE</span>
       <span>Prototype · Gwangju & Jeonnam</span>
     </footer>
+
+    <div id="aiDocentWrapper" class="ai-docent-wrapper" hidden>
+      <button id="aiDocentButton" class="ai-docent-button" aria-label="AI 도슨트 열기">
+        💬
+      </button>
+      <div id="aiDocentPanel" class="ai-docent-panel" hidden>
+        <div class="ai-docent-header">
+          <h3>AI 도슨트</h3>
+          <button id="aiDocentCloseButton" aria-label="닫기">×</button>
+        </div>
+        <div id="aiDocentChat" class="ai-docent-chat">
+        </div>
+        <div class="ai-docent-input">
+          <input type="text" id="aiDocentInput" placeholder="질문을 입력하세요..." />
+          <button id="aiDocentSendButton" aria-label="전송">↑</button>
+        </div>
+      </div>
+    </div>
 
     <script src="./config.js?v=20260806-1"></script>
     <script type="module" src="./app.js?v=20260806-6"></script>

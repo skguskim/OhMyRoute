@@ -32,7 +32,8 @@ python3 -m http.server 4173
 .bat 파일이 보이지 않을 경우 repository의 cmd에서 아래 명령어 입력
 
 
-```powershell -ExecutionPolicy Bypass -File ".\start_server.ps1"
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\start_server.ps1"
 ```
 
 

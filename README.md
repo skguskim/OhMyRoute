@@ -28,6 +28,14 @@ python3 -m http.server 4173
 
 브라우저에서 `http://localhost:4173/`에 접속합니다. HTML 파일을 직접 더블클릭하면 브라우저 보안 정책 때문에 JSON 로딩이 실패할 수 있습니다. 자세한 내용은 `실행방법.txt`를 확인하세요.
 
+
+.bat 파일이 보이지 않을 경우 repository의 cmd에서 아래 명령어 입력
+
+
+```powershell -ExecutionPolicy Bypass -File ".\start_server.ps1"
+```
+
+
 ## 현재 구현 범위
 
 - 8축 선호 슬라이더

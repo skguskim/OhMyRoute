@@ -1,0 +1,227 @@
+{
+  "generated_at": "2026-07-21T04:43:38.371488+00:00",
+  "places_file": "C:\\Users\\nahyun\\OneDrive - 서울과학기술대학교\\문서\\해커톤\\data\\generated\\bootstrap_places.csv",
+  "profiles_file": "C:\\Users\\nahyun\\OneDrive - 서울과학기술대학교\\문서\\해커톤\\data\\generated\\bootstrap_place_profiles.csv",
+  "place_rows": 12,
+  "profile_rows": 12,
+  "category_counts": {
+    "문화·예술": 1,
+    "역사·산책": 1,
+    "자연·트레킹": 1,
+    "스포츠": 1,
+    "시장·음식": 1,
+    "현대미술": 1,
+    "자연·산책": 1,
+    "정원·생태": 1,
+    "음식·야경": 1,
+    "역사·도시": 1,
+    "역사·유적": 1,
+    "체험·가족": 1
+  },
+  "region_counts": {
+    "광주 동구": 1,
+    "광주 남구": 1,
+    "광주 북구": 3,
+    "광주 광산구": 1,
+    "전남 담양": 1,
+    "전남 순천": 1,
+    "전남 여수": 1,
+    "전남 목포": 1,
+    "전남 화순": 1,
+    "전남 곡성": 1
+  },
+  "completeness": {
+    "name": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "region": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "category": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "description": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "road_address": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "latitude": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "longitude": {
+      "filled": 12,
+      "rate": 1.0
+    },
+    "phone": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "website_url": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "image_url": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "parking_available": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "wheelchair_accessible": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "pet_friendly": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "price_min": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "source_url": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "last_verified_at": {
+      "filled": 12,
+      "rate": 1.0
+    }
+  },
+  "vector_profile": {
+    "nature": {
+      "mean": 0.4692,
+      "min": 0.05,
+      "max": 1.0,
+      "zero_count": 0
+    },
+    "culture": {
+      "mean": 0.5825,
+      "min": 0.12,
+      "max": 1.0,
+      "zero_count": 0
+    },
+    "art": {
+      "mean": 0.405,
+      "min": 0.08,
+      "max": 1.0,
+      "zero_count": 0
+    },
+    "food": {
+      "mean": 0.4417,
+      "min": 0.1,
+      "max": 1.0,
+      "zero_count": 0
+    },
+    "activity": {
+      "mean": 0.5042,
+      "min": 0.25,
+      "max": 0.9,
+      "zero_count": 0
+    },
+    "sports": {
+      "mean": 0.16,
+      "min": 0.05,
+      "max": 1.0,
+      "zero_count": 0
+    },
+    "healing": {
+      "mean": 0.6458,
+      "min": 0.2,
+      "max": 0.95,
+      "zero_count": 0
+    },
+    "festival": {
+      "mean": 0.5,
+      "min": 0.15,
+      "max": 1.0,
+      "zero_count": 0
+    }
+  },
+  "severity_counts": {
+    "medium": 12
+  },
+  "passed": true,
+  "issues": [
+    {
+      "severity": "medium",
+      "row": 2,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 3,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 4,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 5,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 6,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 7,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 8,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 9,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 10,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 11,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 12,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    },
+    {
+      "severity": "medium",
+      "row": 13,
+      "field": "source_url",
+      "message": "검수 데이터에 출처 URL 없음"
+    }
+  ]
+}

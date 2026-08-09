@@ -1,0 +1,1 @@
+from_source,from_source_place_id,to_source,to_source_place_id,transport_mode,distance_m,duration_seconds,provider,provider_route_id,collected_at,expires_at

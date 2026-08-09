@@ -1,0 +1,31 @@
+candidate_id,name,sigungu,category,priority,official_source_url,verification_status,note
+gwangju-001,국립아시아문화전당,동구,문화·예술,1,https://tour.gwangju.go.kr/home/main.cs,existing_sample,기존 샘플 좌표 보유
+gwangju-002,무등산국립공원,동구,자연·트레킹,1,https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=360,existing_sample,기존 샘플 좌표 보유
+gwangju-003,양림동 역사문화마을,남구,역사·산책,1,https://tour.gwangju.go.kr/home/main.cs,existing_sample,기존 샘플 좌표 보유
+gwangju-004,광주-기아 챔피언스필드,북구,스포츠,1,https://tour.gwangju.go.kr/home/main.cs,existing_sample,기존 샘플 좌표 보유
+gwangju-005,1913송정역시장,광산구,시장·음식,1,https://tour.gwangju.go.kr/home/main.cs,existing_sample,기존 샘플 좌표 보유
+gwangju-006,광주비엔날레 전시관,북구,현대미술,1,https://tour.gwangju.go.kr/home/main.cs,existing_sample,기존 샘플 좌표 보유
+gwangju-007,국립광주박물관,북구,박물관,1,https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=291,official_page_found,주소·운영시간·접근성 검수 가능
+gwangju-008,광주시립미술관,북구,미술관,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-009,광주역사민속박물관,북구,박물관,2,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-010,5·18민주화운동기록관,동구,민주·역사,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-011,국립5·18민주묘지,북구,민주·역사,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-012,5·18민주광장,동구,민주·역사,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-013,광주예술의거리,동구,예술·거리,2,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-014,대인예술시장,동구,시장·예술,1,https://tour.gwangju.go.kr/home/tour/culture/festival.cs?m=315,official_page_found,야시장 일정은 행사 데이터와 분리
+gwangju-015,충장로,동구,거리·쇼핑,2,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-016,사직공원 전망타워,남구,전망·야경,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-017,광주향교,남구,역사·전통,2,https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=657,official_page_found,주소·운영정보 검수 대상
+gwangju-018,광주미디어아트플랫폼 G.MAP,남구,미디어아트,1,https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1050,official_page_found,운영시간·주차·반려동물 정보 확인
+gwangju-019,광주공원,남구,공원·산책,2,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,TourAPI 상세 수집 대상
+gwangju-020,펭귄마을,남구,골목·예술,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,양림동과 중복 코스 여부 검수
+gwangju-021,무각사,서구,사찰·힐링,1,https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=200,official_page_found,서구 데이터 보강
+gwangju-022,5·18기념공원,서구,공원·역사,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,서구 데이터 보강
+gwangju-023,서창 감성조망대,서구,전망·힐링,1,https://tour.gwangju.go.kr/home/main.cs,official_page_found,공식 메인 추천 장소
+gwangju-024,김대중컨벤션센터,서구,전시·행사,2,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,행사 일정 별도 수집
+gwangju-025,양동시장,서구,시장·음식,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,서구 로컬 음식 데이터 보강
+gwangju-026,광주호 호수생태원,북구,생태·산책,1,https://tour.gwangju.go.kr/home/tour/course/recommend/all.cs?act=view&courseId=38,official_page_found,코스 페이지에 포함
+gwangju-027,환벽당,북구,역사·정자,2,https://tour.gwangju.go.kr/home/tour/course/recommend/all.cs?act=view&courseId=38,official_page_found,코스 페이지에 포함
+gwangju-028,충효동 도요지,북구,문화유산·체험,2,https://tour.gwangju.go.kr/home/tour/course/recommend/all.cs?act=view&courseId=38,official_page_found,주소·전화 확인 가능
+gwangju-029,무양서원,광산구,역사·전통,2,https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=650,official_page_found,광산구 문화 데이터 보강
+gwangju-030,국립광주과학관,광산구,과학·체험,1,https://tour.gwangju.go.kr/home/main.cs,needs_detail_lookup,가족 체험 데이터 보강

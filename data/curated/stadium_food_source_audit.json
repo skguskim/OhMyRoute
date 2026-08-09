@@ -1,0 +1,63 @@
+{
+  "venue": "광주-기아 챔피언스필드",
+  "venueId": "gwangju-kia-champions-field",
+  "crawledAt": "2026-08-06",
+  "method": "공개 웹 문서에서 매장명·구역·메뉴 사실만 추출하고, 서로 다른 출처가 있는 항목은 교차 확인했습니다. 사진과 원문 문장은 복제하지 않았습니다.",
+  "sources": [
+    {
+      "title": "KIA 타이거즈 2026 챔피언스필드 경기장 안내도",
+      "url": "https://tigers.co.kr/files/resource/2026/03/260330_fieldGuide.png",
+      "sourceType": "official_venue_guide",
+      "evidenceScope": "2026년 공식 입점 브랜드 13개와 층·구역",
+      "vendorListAvailable": true,
+      "confidence": "high_for_brand_and_location"
+    },
+    {
+      "title": "2026 광주 챔피언스필드 먹거리 지도 정리",
+      "url": "https://simplelife100.tistory.com/2055",
+      "sourceType": "secondary_public_guide",
+      "evidenceScope": "공개 안내판을 바탕으로 정리된 브랜드·층·구역·일부 메뉴",
+      "vendorListAvailable": true,
+      "confidence": "medium_low_until_official_confirmation"
+    },
+    {
+      "title": "챔피언스필드 먹거리 후기 정리",
+      "url": "https://notes0236.tistory.com/154",
+      "sourceType": "secondary_visit_review",
+      "evidenceScope": "광주원샷·스테이션·요아정 등 일부 브랜드와 메뉴 교차 확인",
+      "vendorListAvailable": false,
+      "confidence": "medium_low"
+    },
+    {
+      "title": "광주원샷 챔피언스필드 매장 정보",
+      "url": "https://www.totalbase.kr/info/31",
+      "sourceType": "secondary_business_listing",
+      "evidenceScope": "광주원샷 브랜드와 구장 매장 존재 교차 확인",
+      "vendorListAvailable": false,
+      "confidence": "medium"
+    },
+    {
+      "title": "광주환경운동연합 다회용기 모니터링",
+      "url": "https://gj.ekfem.or.kr/posts/eVtMWvE",
+      "sourceType": "independent_field_monitoring",
+      "evidenceScope": "2026년 현장 식음료 매장 운영 규모 참고",
+      "vendorListAvailable": false,
+      "confidence": "medium_for_outlet_count_only"
+    },
+    {
+      "title": "2026-05-06 챔피언스필드 현장 메뉴판 기록",
+      "url": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-%EA%B4%91%EC%A3%BC%EC%9B%90%EC%83%B7/",
+      "sourceType": "secondary_field_photo",
+      "evidenceScope": "원샷치킨·감탄떡볶이·보영만두·요아정·BHC의 메뉴와 관측 가격",
+      "vendorListAvailable": false,
+      "confidence": "high_for_observed_menu_and_price",
+      "relatedUrlsStoredIn": "data/stadium_foods.json 각 매장의 menuSourceUrl"
+    }
+  ],
+  "limitations": [
+    "공식 2026 안내도에서 브랜드와 위치를 확인했지만 안내도가 이미지이므로 변경 시 수동 재검수가 필요합니다.",
+    "입점 브랜드와 판매 메뉴는 시즌·경기일·재고에 따라 바뀔 수 있습니다.",
+    "매장별 좌표는 공개되지 않아 경기장 중심 좌표를 사용했으며 좌표 정밀도를 venue_centroid로 표시했습니다.",
+    "2026-05-06 현장 메뉴판이 확인된 5곳만 관측 가격을 저장했으며 나머지는 null로 유지했습니다. 모든 가격은 경기 당일 재확인이 필요합니다."
+  ]
+}

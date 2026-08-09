@@ -1,0 +1,13 @@
+﻿source,source_place_id,name,region,sigungu,category,description,road_address,lot_address,latitude,longitude,phone,website_url,image_url,duration_minutes,indoor,rain_ok,family_friendly,parking_available,wheelchair_accessible,pet_friendly,requires_reservation,price_min,price_max,status,public_transport_score,source_url,source_updated_at,last_verified_at,license,quality_status
+prototype,acc,국립아시아문화전당,광주 동구,동구,문화·예술,"전시와 공연, 넓은 실내외 공간을 함께 경험하는 도심 문화 거점",,,35.1469,126.9198,,,,100,True,True,True,,,,,,,active,0.95,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,yangnim,양림동 역사문화마을,광주 남구,남구,역사·산책,"근대 건축과 골목, 작은 전시 공간을 천천히 연결해 걷는 마을",,,35.1412,126.9144,,,,90,False,False,True,,,,,,,active,0.82,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,mudeungsan,무등산 국립공원,광주 북구,북구,자연·트레킹,광주를 대표하는 산과 숲길에서 풍경과 트레킹을 즐기는 코스,,,35.1338,126.9903,,,,180,False,False,False,,,,,,,active,0.55,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,champions,광주-기아 챔피언스필드,광주 북구,북구,스포츠,야구 팬의 열기와 경기 전후 지역 먹거리를 함께 즐기는 장소,,,35.1682,126.8891,,,,210,False,False,True,,,,,,,active,0.78,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,songjeong,1913 송정역시장,광주 광산구,광산구,시장·음식,광주송정역 가까이에서 로컬 간식과 시장의 분위기를 만나는 곳,,,35.1373,126.7915,,,,60,False,True,True,,,,,,,active,1.0,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,biennale,광주비엔날레 전시관,광주 북구,북구,현대미술,현대미술을 중심으로 새로운 시각과 이야기를 발견하는 전시 공간,,,35.1824,126.8898,,,,90,True,True,True,,,,,,,active,0.68,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,juknokwon,담양 죽녹원,전남 담양,담양,자연·산책,대숲 사이의 길을 걸으며 바람과 초록을 느끼는 대표적인 휴식 코스,,,35.3254,126.9854,,,,100,False,False,True,,,,,,,active,0.52,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,suncheon_garden,순천만 국가정원,전남 순천,순천,정원·생태,계절별 정원과 생태 공간을 넓게 산책하며 하루를 보내는 여행지,,,34.9285,127.4992,,,,180,False,False,True,,,,,,,active,0.62,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,yeosu_night,여수 낭만포차거리,전남 여수,여수,음식·야경,바다 야경을 배경으로 여수의 음식과 밤 분위기를 즐기는 거리,,,34.7416,127.736,,,,110,False,False,False,,,,,,,active,0.72,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,mokpo_modern,목포 근대역사문화공간,전남 목포,목포,역사·도시,근대 건축과 항구도시의 이야기를 골목과 전시로 이어 보는 공간,,,34.7884,126.3831,,,,120,False,True,True,,,,,,,active,0.76,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,hwasun_dolmen,화순 고인돌 유적,전남 화순,화순,역사·유적,선사시대의 흔적과 자연 지형을 함께 살펴보는 야외 역사 탐방지,,,34.9777,126.9307,,,,100,False,False,True,,,,,,,active,0.32,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed
+prototype,gokseong_train,곡성 섬진강기차마을,전남 곡성,곡성,체험·가족,"기차와 놀이, 계절 풍경을 한 공간에서 즐기는 가족형 체험 여행지",,,35.2784,127.3067,,,,150,False,False,True,,,,,,,active,0.42,,,2026-07-21T04:43:38.340986+00:00,prototype,reviewed

@@ -1,0 +1,11 @@
+tmp/
+outputs/
+.DS_Store
+Thumbs.db
+.env
+data/raw/
+__pycache__/
+*.pyc
+*.zip
+오매루트_공유용_*/
+오매루트_코드_*/

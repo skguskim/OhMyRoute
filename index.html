@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="오매루트 AI 맞춤 여행 코스 프로토타입" />
+    <title>오매루트 | AI 맞춤 여행 코스</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link rel="stylesheet" href="./styles.css?v=20260806-9" />
+  </head>
+  <body class="splash-open">
+    <section id="splashView" class="splash-view" aria-labelledby="splashTitle" aria-hidden="false">
+      <div class="splash-content">
+        <div class="splash-logo" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <path d="m6 10 11-5 14 5 11-5v31l-11 5-14-5-11 5V10Z"></path>
+            <path d="M17 5v31M31 10v31"></path>
+          </svg>
+        </div>
+        <h1 id="splashTitle">오매루트</h1>
+        <p>AI가 당신의 취향을 읽고,<br />완벽한 여행 동선을 설계합니다.</p>
+        <button id="startButton" type="button">
+          <span>시작하기</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <div class="page-pattern" aria-hidden="true"></div>
+
+    <header class="app-header">
+      <div class="header-inner">
+        <button id="menuButton" class="icon-button" type="button" aria-label="저장된 루트 보기">
+          <span></span><span></span><span></span>
+        </button>
+        <button id="brandButton" class="brand" type="button" aria-label="입력 화면으로 이동">
+          <span class="brand-emblem">오매</span>
+          <span class="brand-text">
+            <strong>오매루트</strong>
+            <small>AI LOCAL TRAVEL</small>
+          </span>
+        </button>
+        <span class="header-live-pill"><i></i> 42곳 실시간 분석</span>
+        <button id="profileButton" class="profile-button" type="button" aria-label="내 정보와 저장된 루트 보기">
+          <span>MY</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section id="formView" class="view active" aria-labelledby="formTitle">
+        <div class="content-layout">
+          <div class="primary-column">
+              <div class="page-intro">
+                <div class="hero-kicker">
+                  <p class="eyebrow">OMAEROUTE AI TRAVEL</p>
+                  <span>GWANGJU · JEONNAM</span>
+                </div>
+                <h1 id="formTitle">어떤 여행을 원하시나요?</h1>
+                <p>
+                  여행 일정과 선호하는 스타일을 세밀하게 알려주세요.
+                </p>
+              <div class="hero-flow" aria-label="여행 루트 생성 과정">
+                <span class="active"><b>01</b> 조건</span>
+                <i></i>
+                <span><b>02</b> 취향</span>
+                <i></i>
+                <span><b>03</b> 나의 루트</span>
+              </div>
+            </div>
+
+            <form id="travelForm" class="travel-form">
+              <section class="form-card">
+                <div class="card-decoration corner" aria-hidden="true"></div>
+                <div class="card-heading">
+                  <span class="heading-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+                  </span>
+                  <div>
+                    <span>TRAVEL CONTEXT</span>
+                    <h2>여행 조건 설정</h2>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <label class="field full">
+                    <span>출발 장소 <b>*</b></span>
+                    <select id="origin" required>
+                      <option value="gwangju_station">광주역</option>
+                      <option value="bus_terminal">광주종합버스터미널</option>
+                      <option value="champions_field">광주-기아 챔피언스필드</option>
+                      <option value="songjeong_station">광주송정역</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>출발일 <b>*</b></span>
+                    <input id="travelDate" type="date" required />
+                  </label>
+
+                  <label class="field">
+                    <span>여행 시작 시각 <b>*</b></span>
+                    <input id="startTime" type="time" value="10:00" step="1800" required />
+                  </label>
+
+                  <label class="field">
+                    <span>귀가일 <b>*</b></span>
+                    <input id="endDate" type="date" required />
+                  </label>
+
+                  <label class="field">
+                    <span>여행 종료 시각 <b>*</b></span>
+                    <input id="endTime" type="time" value="18:00" step="1800" required />
+                  </label>
+
+                  <p id="scheduleFieldStatus" class="schedule-field-status field full" aria-live="polite">
+                    출발일의 여행 시작 시각부터 귀가일의 여행 종료 시각까지 입력하세요.
+                  </p>
+
+                  <fieldset class="field full">
+                    <legend>이동수단</legend>
+                    <div class="choice-group" data-group="transport">
+                      <button type="button" data-value="public" class="active">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="15" rx="2"></rect><path d="M8 7h8M8 14h.01M16 14h.01M8 21l2-3M16 21l-2-3"></path></svg>
+                        <span>대중교통</span>
+                      </button>
+                      <button type="button" data-value="walk">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.5c1.2 0 2 1.2 2 2.6S9.8 10 8.6 10 6.5 8.8 6.5 7.4s.8-2.9 2-2.9ZM15.5 3c1.2 0 2 1.2 2 2.6s-.7 2.9-1.9 2.9-2.1-1.2-2.1-2.6.8-2.9 2-2.9ZM7 12c1.8 0 3 1.4 3 3.2S8.9 19 7.1 19 4 17.6 4 15.8 5.2 12 7 12ZM17 10.5c1.8 0 3 1.4 3 3.2s-1.1 3.8-2.9 3.8-3.1-1.4-3.1-3.2 1.2-3.8 3-3.8Z"></path></svg>
+                        <span>도보 중심</span>
+                      </button>
+                      <button type="button" data-value="car">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 11 1.5-4h11l1.5 4M4 11h16v7H4zM7 18v2M17 18v2M7.5 14h.01M16.5 14h.01"></path></svg>
+                        <span>자동차</span>
+                      </button>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="field full companion-field">
+                    <legend>동행</legend>
+                    <div class="choice-group" data-group="companion">
+                      <button type="button" data-value="solo" class="active">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3"></circle><path d="M6 21v-2a6 6 0 0 1 12 0v2"></path></svg>
+                        <span>혼자</span>
+                      </button>
+                      <button type="button" data-value="couple">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg>
+                        <span>연인</span>
+                      </button>
+                      <button type="button" data-value="family">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21v-2a6 6 0 0 1 12 0v2M14 15.5a5 5 0 0 1 7 4.5v1"></path></svg>
+                        <span>가족/친구</span>
+                      </button>
+                    </div>
+                    <select id="companion" class="source-control" tabindex="-1" aria-hidden="true">
+                      <option value="solo">혼자</option>
+                      <option value="friend">친구</option>
+                      <option value="couple">연인</option>
+                      <option value="family">아이와 가족</option>
+                    </select>
+                  </fieldset>
+
+                  <label class="field weather-source-control">
+                    <span>날씨 기준</span>
+                    <select id="weather">
+                      <option value="auto">기상청 자동 · 출발지 기준</option>
+                      <option value="sunny">맑음</option>
+                      <option value="cloudy">흐림</option>
+                      <option value="rainy">비</option>
+                    </select>
+                    <small id="weatherFieldStatus" class="field-hint" aria-live="polite">루트 생성 시 12시·18시 예보를 조회합니다.</small>
+                  </label>
+                </div>
+              </section>
+
+              <section class="form-card prompt-card">
+                <div class="prompt-intro">
+                  <span class="prompt-ai-mark">AI</span>
+                  <div class="prompt-intro-copy">
+                    <h2>어떤 여행을 만들까요?</h2>
+                    <p>원하는 분위기와 꼭 넣고 싶은 장소를 말하듯 적어보세요.</p>
+                  </div>
+                </div>
+                <div class="prompt-composer">
+                  <textarea
+                    id="travelPrompt"
+                    maxlength="220"
+                    rows="3"
+                    aria-label="한 줄 여행 요청"
+                    placeholder="어디로, 누구와, 어떤 여행을 하고 싶은지 알려주세요&#10;예: 비 오는 토요일, 부모님과 조용히 걷고 싶어요. 이동은 적게 하고 카페도 넣어주세요."
+                  ></textarea>
+                  <div class="prompt-composer-toolbar">
+                    <span class="prompt-mode">여행 조건 자동 해석</span>
+                    <div class="prompt-composer-actions">
+                      <span class="prompt-counter"><b id="promptCharacterCount">0</b>/220</span>
+                      <button id="promptSubmitButton" type="submit" aria-label="이 요청으로 여행 루트 만들기">↑</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="prompt-examples-wrap">
+                  <span>이렇게 말해보세요</span>
+                  <div class="prompt-examples" aria-label="여행 요청 예시">
+                    <button type="button" data-prompt-example="비 오는 날, 실내 전시와 맛집 위주로 여행하고 싶어요.">비 오는 날 실내 여행</button>
+                    <button type="button" data-prompt-example="아이와 함께 체험할 곳이 많은 가족 코스로 만들어줘.">아이와 체험 중심</button>
+                    <button type="button" data-prompt-example="부모님과 조용히 쉬고 싶어요. 많이 걷지 않고 이동을 짧게 해줘.">부모님과 이동 적게</button>
+                    <button type="button" data-prompt-example="스포츠를 즐기고 로컬 맛집도 들르는 활기찬 코스가 좋아요.">스포츠와 로컬 맛집</button>
+                    <button type="button" data-prompt-example="사진 찍기 좋은 예술 전시와 감성적인 산책 장소를 넣어줘.">사진·감성 코스</button>
+                  </div>
+                </div>
+                <div id="promptInterpretation" class="prompt-interpretation" aria-live="polite">
+                  <span class="prompt-idle">요청을 적으면 반영할 키워드를 미리 보여드려요.</span>
+                </div>
+              </section>
+
+              <section class="form-card preference-card">
+                <div class="round-lattice" aria-hidden="true"></div>
+                <div class="card-heading">
+                  <span class="heading-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path></svg>
+                  </span>
+                  <div>
+                    <span>PREFERENCE VECTOR</span>
+                    <h2>여행 취향 설정</h2>
+                  </div>
+                </div>
+                <p class="card-helper">마음이 가는 항목일수록 오른쪽으로 움직여 보세요. 정밀한 취향을 바탕으로 맞춤 동선을 구성합니다.</p>
+                <section id="baseballAttendancePanel" class="baseball-attendance-panel" hidden>
+                  <div class="baseball-attendance-copy">
+                    <span>⚾ BASEBALL DAY</span>
+                    <strong>야구 직관을 일정에 포함할까요?</strong>
+                    <p id="baseballScheduleStatus">경기 시작 시간과 챔피언스필드 먹거리를 일정에 고정합니다.</p>
+                  </div>
+                  <label class="baseball-attendance-toggle" for="baseballAttendance">
+                    <input id="baseballAttendance" type="checkbox" />
+                    <span class="toggle-track"><i></i></span>
+                    <b>직관 포함</b>
+                  </label>
+                </section>
+                <div id="preferenceSliders" class="preference-sliders"></div>
+              </section>
+
+              <button id="recommendButton" class="generate-button" type="submit">
+                <span class="sparkle">✦</span>
+                <span>AI 추천 일정 만들기</span>
+                <span aria-hidden="true">→</span>
+              </button>
+              <p class="privacy-note">입력값은 이 프로토타입의 추천 계산에만 사용됩니다.</p>
+            </form>
+          </div>
+
+          <aside class="side-column">
+            <section class="side-card engine-card">
+              <div class="side-status"><i></i><span id="dataStatus">장소 데이터 연결 중</span></div>
+              <h2>어떻게 추천하나요?</h2>
+              <ol class="engine-steps">
+                <li><b>01</b><span>조건에 맞지 않는 장소 제외</span></li>
+                <li><b>02</b><span>8차원 선호 벡터 유사도 계산</span></li>
+                <li><b>03</b><span>출발지 기준 이동 순서 구성</span></li>
+              </ol>
+              <div class="axis-preview" id="axisPreview"></div>
+            </section>
+
+            <section class="side-card saved-card">
+              <div class="side-card-title">
+                <div>
+                  <span>SAVED ROUTES</span>
+                  <h2>최근 만든 루트</h2>
+                </div>
+                <b id="savedCount">0</b>
+              </div>
+              <div id="savedRoutes" class="saved-routes">
+                <p class="empty-copy">아직 저장된 루트가 없습니다.</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="resultView" class="view" aria-labelledby="resultTitle">
+        <div class="result-shell">
+          <aside class="result-sidebar">
+            <div class="result-toolbar">
+              <button id="backButton" type="button" class="pill-button">← 취향 다시 설정</button>
+              <div>
+                <button id="saveButton" type="button" class="pill-button">♡ 저장</button>
+                <button id="toolbarSavedRoutesButton" type="button" class="pill-button">저장 목록</button>
+                <button id="printButton" type="button" class="pill-button">PDF</button>
+              </div>
+            </div>
+
+            <section class="result-hero-card">
+              <div class="result-hero-copy">
+                <p class="eyebrow light">✓ AI ROUTE COMPLETE</p>
+                <h1 id="resultTitle">취향을 담은 남도 여행</h1>
+                <p id="resultDescription"></p>
+                <div id="weatherBriefing" class="weather-briefing" aria-live="polite" hidden></div>
+                <div id="promptResultSummary" class="prompt-result-summary" hidden>
+                  <span>AI 요청 해석</span>
+                  <div id="promptResultChips"></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="result-sidebar-scroll">
+              <section class="result-card itinerary-card">
+                <div class="result-card-heading itinerary-heading">
+                  <div>
+                    <span>RECOMMENDED ITINERARY</span>
+                    <h2>추천 일정</h2>
+                  </div>
+                  <div id="dayTabs" class="day-tabs"><button class="active">Day 1</button></div>
+                </div>
+                <div id="dayTheme" class="day-theme"></div>
+                <div id="itineraryTimeline" class="itinerary-timeline"></div>
+              </section>
+
+              <section class="result-card alternatives-card">
+                <div class="result-card-heading">
+                  <div>
+                    <span>OTHER MATCHES</span>
+                    <h2>코스에 담지 못한 추천 장소</h2>
+                  </div>
+                </div>
+                <div id="alternativeList" class="alternative-list"></div>
+              </section>
+
+              <section class="bottom-grid">
+                <div class="result-card stamp-card" id="stampSection">
+                  <div id="stampToast" class="stamp-toast" role="status" aria-live="polite" hidden></div>
+                  <div class="result-card-heading">
+                    <div>
+                      <span>TRAVEL STAMPS</span>
+                      <h2>나만의 여행 스탬프</h2>
+                    </div>
+                    <span id="stampProgressBadge" class="soft-badge">0 / 0</span>
+                  </div>
+                  <p class="stamp-intro">관광지 100m 안에서 GPS 위치를 확인하면 디지털 도장을 받을 수 있습니다.</p>
+                  <div class="stamp-location-panel">
+                    <div class="stamp-location-heading">
+                      <strong>⌖ 현재 위치 GPS &amp; 테스트</strong>
+                      <span id="stampLocationStatus">위치 확인 준비 중</span>
+                    </div>
+                    <div class="stamp-location-actions">
+                      <select id="stampLocationSelect" aria-label="GPS 또는 데모 위치 선택">
+                        <option value="GPS">📡 GPS · 실제 내 위치 사용</option>
+                      </select>
+                      <button id="stampGpsButton" type="button">위치 확인</button>
+                      <button id="stampResetButton" type="button" class="danger">초기화</button>
+                    </div>
+                  </div>
+                  <div id="stampGrid" class="stamp-grid"></div>
+                  <div class="stamp-progress-copy">
+                    <span>스탬프 챌린지</span>
+                    <strong id="stampProgressText">0 / 0 획득</strong>
+                  </div>
+                  <div class="stamp-progress-track"><i id="stampProgressBar"></i></div>
+
+                  <section class="review-reward-section" aria-labelledby="reviewRewardTitle">
+                    <div class="review-reward-heading">
+                      <div>
+                        <span>TRIP REVIEW &amp; REWARD</span>
+                        <h3 id="reviewRewardTitle">리뷰 작성하고 리워드 받기</h3>
+                      </div>
+                      <span id="reviewStatusBadge" class="soft-badge">작성 전</span>
+                    </div>
+                    <p class="review-reward-intro">이번 코스의 경험을 남기면 시연용 지역 식당 10% 할인 쿠폰을 발급합니다.</p>
+                    <label class="review-field" for="reviewText">
+                      <span>여행 리뷰</span>
+                      <textarea id="reviewText" rows="4" maxlength="500" placeholder="좋았던 장소와 아쉬웠던 점을 자유롭게 적어주세요."></textarea>
+                    </label>
+                    <div class="review-meta">
+                      <span id="reviewStampSummary">스탬프 0개와 함께 저장</span>
+                      <span id="reviewCharacterCount">0 / 500</span>
+                    </div>
+                    <button id="reviewSubmitButton" type="button" class="review-submit-button">리뷰 등록하고 10% 쿠폰 받기</button>
+
+                    <div id="rewardCard" class="reward-card" hidden>
+                      <div class="reward-card-topline">
+                        <span>OMAEROUTE LOCAL REWARD</span>
+                        <strong>10% OFF</strong>
+                      </div>
+                      <h4 id="rewardTitle">광주 지역 식당 할인 쿠폰</h4>
+                      <p>리뷰 등록 완료 리워드 · 시연용 쿠폰</p>
+                      <div class="reward-code-row">
+                        <code id="rewardCode">OMAE-000000</code>
+                        <button id="rewardCopyButton" type="button">코드 복사</button>
+                      </div>
+                      <small id="rewardExpiry">사용기한 확인 중</small>
+                    </div>
+                  </section>
+                </div>
+
+                <div class="result-card tips-card">
+                  <div class="result-card-heading">
+                    <div>
+                      <span>AI CONCIERGE TIPS</span>
+                      <h2>이 코스를 더 잘 즐기는 법</h2>
+                    </div>
+                  </div>
+                  <ul id="routeTips"></ul>
+                </div>
+              </section>
+
+              <button id="bottomBackButton" type="button" class="bottom-back-button">여행 설정 처음으로 돌아가기</button>
+            </div>
+          </aside>
+
+          <section class="result-map-pane">
+            <div id="previewScene" class="preview-scene" aria-label="추천 코스 영상형 프리뷰">
+              <div class="sun"></div>
+              <div class="mountain mountain-one"></div>
+              <div class="mountain mountain-two"></div>
+              <div class="preview-route-line"></div>
+              <img id="previewImage" class="preview-image" alt="" referrerpolicy="no-referrer">
+              <div class="preview-shade"></div>
+              <span class="preview-badge">⌖ 현재 포커스 스팟</span>
+              <button id="previewPlayButton" type="button" class="play-button" aria-label="프리뷰 재생">▶</button>
+              <div class="preview-copy" aria-live="polite">
+                <strong id="previewTitle">AI가 구성한 오늘의 여행 프리뷰</strong>
+                <span id="previewDescription">추천 장소를 영상처럼 미리 만나보세요.</span>
+              </div>
+              <div id="previewDots" class="preview-dots" aria-hidden="true"></div>
+              <div class="preview-progress-track"><i id="previewProgress"></i></div>
+            </div>
+
+            <section class="result-card map-card">
+              <div class="result-card-heading">
+                <div>
+                  <span>ROUTE MAP</span>
+                  <h2>출발지에서 이어지는 동선</h2>
+                </div>
+                <div class="map-badges">
+                  <span id="mapProviderStatus" class="soft-badge provider">Kakao Map 준비</span>
+                  <span id="mapSummary" class="soft-badge">-</span>
+                </div>
+              </div>
+              <div class="map-frame">
+                <div id="kakaoMap" class="kakao-map" hidden></div>
+                <svg id="routeMap" viewBox="0 0 920 390" role="img" aria-label="추천 여행 경로 지도"></svg>
+                <div class="map-legend">
+                  <span><i class="start"></i>출발</span>
+                  <span><i class="stop"></i>방문 장소</span>
+                </div>
+              </div>
+            </section>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="주요 메뉴">
+      <button type="button" data-nav="form" class="active" aria-label="탐색">
+        <span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"></path></svg></span>탐색
+      </button>
+      <button type="button" data-nav="result" aria-label="일정">
+        <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 2v4M16 2v4M5 9h14"></path></svg></span>일정
+      </button>
+      <button type="button" data-nav="stamp" aria-label="스탬프">
+        <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.6-5.1 2.6 1-5.7-4.1-4 5.7-.8L12 3Z"></path></svg></span>스탬프
+      </button>
+      <button type="button" data-nav="profile" aria-label="내 정보와 저장된 루트">
+        <span class="profile-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6"></path></svg><i id="savedNavCount" hidden>0</i></span>내 정보
+      </button>
+    </nav>
+
+    <aside id="savedDrawer" class="saved-drawer" role="dialog" aria-modal="true" aria-labelledby="savedDrawerTitle" aria-hidden="true">
+      <div class="drawer-backdrop"></div>
+      <div class="drawer-panel">
+        <div class="drawer-heading">
+          <div><span>SAVED ROUTES</span><h2 id="savedDrawerTitle">저장된 여행</h2></div>
+          <button id="closeDrawerButton" type="button" aria-label="저장된 여행 닫기">×</button>
+        </div>
+        <section class="saved-library" aria-labelledby="savedLibraryTitle">
+          <div class="saved-library-heading">
+            <div>
+              <span>MY ROUTE LIBRARY</span>
+              <h3 id="savedLibraryTitle">나의 저장 루트</h3>
+            </div>
+            <b id="drawerSavedCount">0개</b>
+          </div>
+          <p>저장한 여행을 선택하면 지도와 추천 일정을 그대로 다시 볼 수 있어요.</p>
+          <div id="drawerSavedRoutes" class="saved-routes"></div>
+        </section>
+        <button id="newRouteButton" class="drawer-new-route" type="button">＋ 새 여행 만들기</button>
+      </div>
+    </aside>
+
+    <div id="loadingView" class="loading-view" aria-hidden="true">
+      <div class="loading-pattern" aria-hidden="true"></div>
+      <div class="loader-orbit"><i></i></div>
+      <p class="eyebrow">AI ROUTE ANALYSIS</p>
+      <h2>여행 취향을 일정으로 엮고 있어요</h2>
+      <p id="loadingPhrase" class="loading-phrase">장소별 선호 벡터를 비교하고 있습니다.</p>
+      <span class="loading-badge">NEO-TRADITIONAL CONCIERGE</span>
+    </div>
+
+    <footer class="app-footer">
+      <span>✦ 오매루트 AI TRAVEL ENGINE</span>
+      <span>Prototype · Gwangju & Jeonnam</span>
+    </footer>
+
+    <script src="./config.js?v=20260806-1"></script>
+    <script type="module" src="./app.js?v=20260806-6"></script>
+  </body>
+</html>

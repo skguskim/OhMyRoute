@@ -1,0 +1,142 @@
+{
+  "generated_at": "2026-08-10T16:41:58.840176+00:00",
+  "places_file": "D:\\01_SNUST\\대회\\02_해커톤\\2026 AI+X 융합 문제발굴 산학연계 해커톤\\OhMyRoute\\data\\generated\\tourapi_places.csv",
+  "profiles_file": "D:\\01_SNUST\\대회\\02_해커톤\\2026 AI+X 융합 문제발굴 산학연계 해커톤\\OhMyRoute\\data\\generated\\tourapi_place_profiles.csv",
+  "place_rows": 191,
+  "profile_rows": 191,
+  "category_counts": {
+    "음식·로컬": 84,
+    "관광지": 77,
+    "문화·예술": 17,
+    "체험·스포츠": 7,
+    "축제·공연": 1,
+    "쇼핑·시장": 5
+  },
+  "region_counts": {
+    "광주 서구": 40,
+    "광주 광산구": 42,
+    "광주 동구": 34,
+    "광주 남구": 29,
+    "광주 북구": 45,
+    "광주": 1
+  },
+  "completeness": {
+    "name": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "region": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "category": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "description": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "road_address": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "latitude": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "longitude": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "phone": {
+      "filled": 78,
+      "rate": 0.4084
+    },
+    "website_url": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "image_url": {
+      "filled": 175,
+      "rate": 0.9162
+    },
+    "parking_available": {
+      "filled": 154,
+      "rate": 0.8063
+    },
+    "wheelchair_accessible": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "pet_friendly": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "price_min": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "source_url": {
+      "filled": 191,
+      "rate": 1.0
+    },
+    "last_verified_at": {
+      "filled": 0,
+      "rate": 0.0
+    }
+  },
+  "vector_profile": {
+    "nature": {
+      "mean": 0.1178,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 161
+    },
+    "culture": {
+      "mean": 0.0314,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 183
+    },
+    "art": {
+      "mean": 0.0903,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 170
+    },
+    "food": {
+      "mean": 0.3704,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 100
+    },
+    "activity": {
+      "mean": 0.0484,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 179
+    },
+    "sports": {
+      "mean": 0.0785,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 171
+    },
+    "healing": {
+      "mean": 0.0982,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 166
+    },
+    "festival": {
+      "mean": 0.017,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 187
+    }
+  },
+  "severity_counts": {},
+  "passed": true,
+  "issues": []
+}

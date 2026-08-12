@@ -103,7 +103,12 @@
 
                   <label class="field">
                     <span>여행 시작 시각 <b>*</b></span>
-                    <input id="startTime" type="time" value="10:00" step="1800" required />
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="10" data-role="hour" aria-label="여행 시작 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="여행 시작 분" />
+                      <input id="startTime" type="hidden" value="10:00" />
+                    </div>
                   </label>
 
                   <label class="field">
@@ -113,7 +118,12 @@
 
                   <label class="field">
                     <span>여행 종료 시각 <b>*</b></span>
-                    <input id="endTime" type="time" value="18:00" step="1800" required />
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="18" data-role="hour" aria-label="여행 종료 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="여행 종료 분" />
+                      <input id="endTime" type="hidden" value="18:00" />
+                    </div>
                   </label>
 
                   <p id="scheduleFieldStatus" class="schedule-field-status field full" aria-live="polite">
@@ -320,7 +330,12 @@
                   </div>
                   <div class="stamp-location-actions">
                     <select id="replanStopSelect" aria-label="지연이 발생한 장소 선택"></select>
-                    <input id="replanTimeInput" type="time" aria-label="새 출발 시각">
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="hour" aria-label="새 출발 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="새 출발 분" />
+                      <input id="replanTimeInput" type="hidden" value="">
+                    </div>
                     <button id="replanButton" type="button">일정 다시 짜기</button>
                   </div>
                   <p id="replanStatus" class="itinerary-replan-status" hidden></p>
@@ -514,6 +529,6 @@
     </footer>
 
     <script src="./config.js?v=20260806-1"></script>
-    <script type="module" src="./app.js?v=20260806-6"></script>
+    <script type="module" src="./app.js?v=20260811-8"></script>
   </body>
 </html>

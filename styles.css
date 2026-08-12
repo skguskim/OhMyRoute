@@ -1690,7 +1690,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .stamp-location-actions select,
-.stamp-location-actions input,
+.stamp-location-actions .time-field-wrap,
 .stamp-location-actions button {
   min-width: 0;
   min-height: 32px;
@@ -2655,7 +2655,8 @@ body:has(#formView.active) .app-main {
 
 #formView .field select,
 #formView .field input[type="date"],
-#formView .field input[type="time"] {
+#formView .field input[type="time"],
+#formView .field .time-field-wrap {
   height: 56px;
   padding: 0 16px;
   color: #191f28;
@@ -2664,6 +2665,36 @@ body:has(#formView.active) .app-main {
   border-radius: 13px;
   font-size: 14px;
   font-weight: 600;
+}
+
+.time-field-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  cursor: ns-resize;
+}
+
+.time-seg {
+  width: 1.9em;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  padding: 0;
+  cursor: ns-resize;
+}
+
+.time-seg:focus {
+  outline: none;
+  background: rgba(47, 148, 97, 0.16);
+  border-radius: 4px;
+}
+
+.time-sep {
+  opacity: 0.6;
 }
 
 #formView .schedule-field-status {
@@ -3868,7 +3899,8 @@ body {
 }
 
 /* Meal-time routing and KMA weather briefing */
-.field input[type="time"] {
+.field input[type="time"],
+.field .time-field-wrap {
   width: 100%;
   height: 54px;
   padding: 0 16px;
@@ -3881,7 +3913,9 @@ body {
 }
 
 .field input[type="time"]:hover,
-.field input[type="time"]:focus {
+.field input[type="time"]:focus,
+.field .time-field-wrap:hover,
+.field .time-field-wrap:focus-within {
   background-color: #fff;
   border-color: var(--green);
   outline: none;
@@ -4247,7 +4281,8 @@ code {
 
 .field select,
 .field input[type="date"],
-.field input[type="time"] {
+.field input[type="time"],
+.field .time-field-wrap {
   width: 100%;
   height: 52px;
   padding: 0 15px;
@@ -4265,7 +4300,9 @@ code {
 .field input[type="date"]:hover,
 .field input[type="date"]:focus,
 .field input[type="time"]:hover,
-.field input[type="time"]:focus {
+.field input[type="time"]:focus,
+.field .time-field-wrap:hover,
+.field .time-field-wrap:focus-within {
   background-color: #fff;
   border-color: var(--blue);
   box-shadow: 0 0 0 3px rgba(49, 130, 246, .1);

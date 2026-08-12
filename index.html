@@ -313,6 +313,18 @@
                   <div id="dayTabs" class="day-tabs"><button class="active">Day 1</button></div>
                 </div>
                 <div id="dayTheme" class="day-theme"></div>
+                <div class="stamp-location-panel itinerary-replan-panel">
+                  <div class="stamp-location-heading">
+                    <strong>⏱ 일정이 지연됐나요?</strong>
+                    <span>장소와 새 출발 시각을 선택하면 남은 일정을 다시 계산합니다.</span>
+                  </div>
+                  <div class="stamp-location-actions">
+                    <select id="replanStopSelect" aria-label="지연이 발생한 장소 선택"></select>
+                    <input id="replanTimeInput" type="time" aria-label="새 출발 시각">
+                    <button id="replanButton" type="button">일정 다시 짜기</button>
+                  </div>
+                  <p id="replanStatus" class="itinerary-replan-status" hidden></p>
+                </div>
                 <div id="itineraryTimeline" class="itinerary-timeline"></div>
               </section>
 

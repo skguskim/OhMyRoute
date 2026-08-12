@@ -149,6 +149,7 @@ const state = {
   route: [],
   routeDays: [],
   dayWindows: [],
+  replannedDays: new Set(),
   selectedDay: 0,
   duration: 240,
   transport: "public",
@@ -1412,6 +1413,136 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
   return day;
 }
 
+function preferenceScoreOf(place) {
+  return place.displayScore ?? place.score ?? 0;
+}
+
+function subsetsOf(list) {
+  return list.reduce((acc, item) => acc.concat(acc.map((set) => [...set, item])), [[]]);
+}
+
+function permutationsOf(list) {
+  if (list.length <= 1) return [list];
+  return list.flatMap((item, index) => {
+    const rest = [...list.slice(0, index), ...list.slice(index + 1)];
+    return permutationsOf(rest).map((perm) => [item, ...perm]);
+  });
+}
+
+function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
+  const day = state.routeDays[dayIndex];
+  if (!day || !day[stopIndex]) return;
+  const window = state.dayWindows[dayIndex];
+  const isFinalDay = dayIndex === state.routeDays.length - 1;
+  const returnDestination = isFinalDay ? currentConditions().origin : null;
+  const keptStops = day.slice(0, stopIndex + 1);
+  const fixedRemainder = day.slice(stopIndex + 1).filter((place) => place.fixedStartMinutes != null);
+  const dayEndMinutes = fixedRemainder.length
+    ? Math.min(window.endMinutes, fixedRemainder[0].fixedStartMinutes)
+    : window.endMinutes;
+  const maxStops = window.endMinutes - window.startMinutes >= 480 ? 4 : 3;
+  const otherDaysIds = state.routeDays.flatMap((otherDay, index) => (index === dayIndex ? [] : otherDay));
+  const usedIds = new Set([...otherDaysIds, ...keptStops, ...fixedRemainder].map((place) => place.id));
+  const consumedMealKeys = new Set(keptStops.filter((place) => place.mealSlot).map((place) => place.mealSlot));
+  const pendingMealSlots = mealSlotsForDay(window.startMinutes, window.endMinutes - window.startMinutes)
+    .filter((slot) => !consumedMealKeys.has(slot.key));
+
+  let current = keptStops[keptStops.length - 1];
+  let clockMinutes = newDepartureMinutes;
+  const rebuilt = [];
+
+  for (let slotIndex = 0; slotIndex < pendingMealSlots.length; slotIndex += 1) {
+    const slot = pendingMealSlots[slotIndex];
+    const remainingSlotsAfter = pendingMealSlots.length - slotIndex;
+    if (keptStops.length + rebuilt.length < maxStops - remainingSlotsAfter) {
+      const filler = chooseFillerBeforeMeal(
+        state.results,
+        current,
+        clockMinutes,
+        usedIds,
+        slot,
+        dayEndMinutes,
+        returnDestination,
+      );
+      if (filler) {
+        rebuilt.push(filler.place);
+        usedIds.add(filler.place.id);
+        current = filler.place;
+        clockMinutes = filler.leg.endMinutes;
+      }
+    }
+
+    const meal = chooseMealCandidate(state.results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination);
+    if (!meal) {
+      state.mealWarnings.push(`Day ${dayIndex + 1} ${slot.label} 후보를 찾지 못했습니다.`);
+      continue;
+    }
+    const mealPlace = annotateMealPlace(meal.place, slot);
+    rebuilt.push(mealPlace);
+    usedIds.add(meal.place.id);
+    current = mealPlace;
+    clockMinutes = meal.leg.endMinutes;
+  }
+
+  // 남은 칸 수만큼 순위 기준으로 우선 채택한다 (이 시점에는 체류시간을 고려하지 않음).
+  const fillerCandidates = [];
+  let pickCurrent = current;
+  while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
+    let next = chooseBestCandidate(state.results, pickCurrent, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(state.results, pickCurrent, usedIds);
+    if (!next) break;
+    fillerCandidates.push(next);
+    usedIds.add(next.id);
+    pickCurrent = next;
+  }
+
+  // 후보 풀(최대 몇 개뿐)의 모든 부분집합 × 방문 순서를 전수 계산해서,
+  // "포함된 곳 전부가 원래 duration의 절반 이상을 확보"하는 조합 중 선호도 점수 합이 가장 높은 조합을 찾는다.
+  const returnMinutesFor = (lastPlace) =>
+    fixedRemainder.length ? 0 : returnTravelMinutes(lastPlace ?? current, returnDestination);
+  let bestPlan = { places: [], legs: [], score: 0, totalTravel: 0 };
+  subsetsOf(fillerCandidates).forEach((subset) => {
+    if (!subset.length) return;
+    permutationsOf(subset).forEach((order) => {
+      let walker = current;
+      const legs = order.map((place) => {
+        const travelMinutes = estimateTravelMinutes(haversineKm(walker, place));
+        walker = place;
+        return travelMinutes;
+      });
+      const totalTravel = legs.reduce((sum, minutes) => sum + minutes, 0);
+      const totalNominal = order.reduce((sum, place) => sum + place.durationMinutes, 0);
+      const available = dayEndMinutes - clockMinutes - totalTravel - returnMinutesFor(order.at(-1));
+      const feasible = totalNominal > 0 && available >= totalNominal * 0.5;
+      if (!feasible) return;
+      const score = order.reduce((sum, place) => sum + preferenceScoreOf(place), 0);
+      const better = score > bestPlan.score
+        || (score === bestPlan.score && order.length > bestPlan.places.length)
+        || (score === bestPlan.score && order.length === bestPlan.places.length && totalTravel < bestPlan.totalTravel);
+      if (better) bestPlan = { places: order, legs, score, totalTravel };
+    });
+  });
+
+  const totalNominalDuration = bestPlan.places.reduce((sum, place) => sum + place.durationMinutes, 0);
+  const availableForVisits = dayEndMinutes - clockMinutes
+    - bestPlan.totalTravel
+    - returnMinutesFor(bestPlan.places.at(-1));
+  const scaleFactor = totalNominalDuration > 0 ? Math.min(1, availableForVisits / totalNominalDuration) : 1;
+
+  bestPlan.places.forEach((place) => {
+    const compressedDuration = Math.max(place.durationMinutes / 2, Math.round(place.durationMinutes * scaleFactor));
+    const compressedPlace = { ...place, durationMinutes: compressedDuration };
+    const leg = scheduleLeg(current, clockMinutes, compressedPlace);
+    rebuilt.push(compressedPlace);
+    current = compressedPlace;
+    clockMinutes = leg.endMinutes;
+  });
+
+  state.routeDays[dayIndex] = [...keptStops, ...rebuilt, ...fixedRemainder];
+  state.route = state.routeDays.flat();
+  state.replannedDays.add(dayIndex);
+}
+
 function stadiumDinnerSuitability(place) {
   const foodType = String(place.foodType || "");
   if (/한식|치킨|버거|피자/.test(foodType)) return 1;
@@ -1564,6 +1695,7 @@ function createRoute(results) {
   state.routeDays = builtDays.map(({ day }) => day);
   state.route = state.routeDays.flat();
   state.selectedDay = 0;
+  state.replannedDays = new Set();
 }
 
 function buildRouteSchedule(day, dayIndex = 0) {
@@ -2268,8 +2400,17 @@ function renderItinerary() {
   const isFinalDay = state.selectedDay === state.routeDays.length - 1;
   renderDayTabs();
   $("#dayTheme").textContent = dayTheme(day);
+  $("#replanStopSelect").innerHTML = schedule
+    .map((stop, index) => `<option value="${index}">${index + 1}. ${escapeHtml(stop.place.name)}</option>`)
+    .join("");
+  if (schedule.length) {
+    const lastIndex = schedule.length - 1;
+    $("#replanStopSelect").value = String(lastIndex);
+    $("#replanTimeInput").value = formatClockMinutes(schedule[lastIndex].endMinutes);
+  }
+  $("#replanStatus").hidden = true;
   $("#itineraryTimeline").innerHTML = schedule.map((stop, index) => {
-    const { place, travelMinutes, waitMinutes, startMinutes } = stop;
+    const { place, travelMinutes, waitMinutes, startMinutes, endMinutes } = stop;
     const nextPlace = day[index + 1];
     const stadiumMenu = place.stadiumFood
       ? place.menuItems?.find((menu) => menu.signature) || place.menuItems?.[0]
@@ -2287,6 +2428,7 @@ function renderItinerary() {
         <div class="stop-card" tabindex="0">
           <div class="stop-meta">
             <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)}</span>
+            ${state.replannedDays.has(state.selectedDay) ? `<span class="stop-time departure-time">→ 출발 약 ${formatClockMinutes(endMinutes)}</span>` : ""}
             ${place.isBaseballGame ? '<span class="meal-time-chip">⚾ 야구 직관</span>' : ""}
             ${place.mealSlot ? `<span class="meal-time-chip">🍚 ${escapeHtml(place.mealLabel)} 추천</span>` : ""}
             <span class="type-chip">${escapeHtml(place.category)}</span>
@@ -2849,6 +2991,29 @@ function bindEvents() {
       event.preventDefault();
       event.target.classList.toggle("expanded");
     }
+  });
+  $("#replanStopSelect").addEventListener("change", () => {
+    const day = state.routeDays[state.selectedDay] || [];
+    const schedule = buildRouteSchedule(day, state.selectedDay);
+    const stop = schedule[Number($("#replanStopSelect").value)];
+    if (stop) $("#replanTimeInput").value = formatClockMinutes(stop.endMinutes);
+  });
+  $("#replanButton").addEventListener("click", () => {
+    const stopIndex = Number($("#replanStopSelect").value);
+    const timeValue = $("#replanTimeInput").value;
+    const statusEl = $("#replanStatus");
+    if (!Number.isInteger(stopIndex) || !timeValue) {
+      statusEl.textContent = "장소와 새 출발 시각을 모두 선택해주세요.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
+    replanDayFromStop(state.selectedDay, stopIndex, parseClockMinutes(timeValue));
+    renderResult();
+    const refreshedStatus = $("#replanStatus");
+    refreshedStatus.textContent = "남은 일정을 다시 계산했습니다.";
+    refreshedStatus.classList.remove("warning");
+    refreshedStatus.hidden = false;
   });
 
   $("#menuButton").addEventListener("click", openDrawer);

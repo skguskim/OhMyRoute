@@ -22,7 +22,7 @@ const ORIGINS = {
     longitude: 126.7914,
   },
   bus_terminal: {
-    name: "광주종합버스터미널",
+    name: "광주종합버스터미널(유스퀘어)",
     latitude: 35.1598,
     longitude: 126.8803,
   },

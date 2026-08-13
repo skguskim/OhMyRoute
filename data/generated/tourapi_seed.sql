@@ -3,7 +3,7 @@
 begin;
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783851', '경암근린공원', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 하남대로54번안길 133 (하남동)', null, 35.1783221177, 126.8000977994, '광주 광산구청 도시공원과 062-960-8712', null, 'http://tong.visitkorea.or.kr/cms/resource/84/3528384_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '2783851', '경암근린공원', '광주 광산구', '광산구', '관광지', '도심 속에서 숲을 접하고 자연 속에서 힐링할 수 있는 경암근린공원은 다양한 체육활동을 할 수 있는 다목적 운동장과 함께 광장, 어린이 놀이터 등이 갖추어져 있으며, 잘 정돈된 산책로와 휴게시설도 마련되어 있다. 또한, 유아 숲체험원이 조성되어 있어 어린이들이 자연 속에서 다양한 놀이와 함께 자연을 직접 체험할 수 있고, 어린이들이 좋아할 만한 조형물 및 다양한 체험시설을 갖추고 있어 어린이와 함께 나들이하기에 좋다. 그뿐만 아니라 보행 약자를 위한 무장애 나눔 길이 설치되어 있어 거동이 불편한 보행 약자들도 쉽고 편하게 숲을 체험하고 안전하게 산책할 수 있다.', '전남광주통합특별시 광산구 하남대로54번안길 133 (하남동)', null, 35.1783221177, 126.8000977994, '광주 광산구청 도시공원과 062-960-8712', null, 'http://tong.visitkorea.or.kr/cms/resource/84/3528384_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -41,11 +41,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#공원','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '경암근린공원 #공원 #주차가능', '1.0.0',
-  'import', 0.38,
+  array['#자연','#산','#체험','#가족체험','#스포츠','#힐링','#산책','#아이동반','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.5, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.5,0.75,0.0]'::extensions.vector(8),
+  '경암근린공원 도심 속에서 숲을 접하고 자연 속에서 힐링할 수 있는 경암근린공원은 다양한 체육활동을 할 수 있는 다목적 운동장과 함께 광장, 어린이 놀이터 등이 갖추어져 있으며, 잘 정돈된 산책로와 휴게시설도 마련되어 있다. 또한, 유아 숲체험원이 조성되어 있어 어린이들이 자연 속에서 다양한 놀이와 함께 자연을 직접 체험할 수 있고, 어린이들이 좋아할 만한 조형물 및 다양한 체험시설을 갖추고 있어 어린이와 함께 나들이하기에 좋다. 그뿐만 아니라 보행 약자를 위한 무장애 나눔 길이 설치되어 있어 거동이 불편한 보행 약자들도 쉽고 편하게 숲을 체험하고 안전하게 산책할 수 있다. #자연 #산 #체험 #가족체험 #스포츠 #힐링 #산책 #아이동반 #주차가능', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2783851'
@@ -57,7 +57,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127069', '관덕정의 각궁', '광주 남구', '남구', '관광지', null, '전남광주통합특별시 남구 사직길 49', null, 35.1419253355, 126.9118638245, '062-671-8383', null, 'http://tong.visitkorea.or.kr/cms/resource/46/3350246_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '127069', '관덕정의 각궁', '광주 남구', '남구', '관광지', '정신과 신체를 동시에 건강하게 해주는, 관덕정의 각궁 궁술은 무사뿐만이 아니라 선비들도 반드시 익혀야 할 필수 요건이었다. 이러한 활이 요즘에는 생존이나 방비 기능은 완전히 상실하여 스포츠와 취미로 그 명맥을 이어가고 있다. 전남광주통합특별시에도 스포츠와 취미로서 활의 명맥을 이어주는 곳이 있는데, 사직공원에 있는 활터 관덕정이 그것이다. 관덕정의 사범이자 지역에서는 유일하게 활을 만들고 있는 권태은 씨는 호라의 고장으로 널리 알려진 경북 예천이 고향으로 3대째 활을 만들고 있는데, 전남광주통합특별시에 자리를 잡은 것은 23년 전이다. 경상도에서 활을 만들면 팔러 나가는 곳이 대부분 전라도이므로 아예 옮겨와 활을 만들기 시작했다는 권 씨의 이야기다. 옛날에는 활의 재료와 쓰임새에 따라 무척 다양했지만 요즘에는 각궁만이 남아 그 명맥을 유지해 주고 있다. 전통이 실려있는 각궁이란 후궁·장궁(長弓)이라고도 하는데 각궁의 모양은 시대에 따라 조금씩의 차이가 있다. 크게 2종류로 나눌 수 있는데, 전쟁이나 사냥에 쓰인 것은 궁간상(弓幹桑)·뿔·힘줄·아교·실·칠 등 6가지로 만들고, 운동이나 오락으로 쓰인 것은 궁간상·참나무·대·벚나무·뿔·힘줄·아교 등 7가지로 만들었다. 강(强)·중(中)·연(軟)의 구별이 있어서, 남녀 누구나 자신의 힘에 맞는 것을 쓸 수 있었다.', '전남광주통합특별시 남구 사직길 49', null, 35.1419253355, 126.9118638245, '062-671-8383', 'https://www.heritage.go.kr/heri/cul/culSelectDetail.do?ccbaKdcd=79&ccbaAsno=06940000&ccbaCtcd=24&pageNo=1_1_1_0', 'http://tong.visitkorea.or.kr/cms/resource/46/3350246_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -95,11 +95,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '관덕정의 각궁', '1.0.0',
-  'import', 0.35,
+  array['#전통','#체험','#스포츠','#공원']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.5, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.0,0.0,0.5,0.5,0.5,0.0]'::extensions.vector(8),
+  '관덕정의 각궁 정신과 신체를 동시에 건강하게 해주는, 관덕정의 각궁 궁술은 무사뿐만이 아니라 선비들도 반드시 익혀야 할 필수 요건이었다. 이러한 활이 요즘에는 생존이나 방비 기능은 완전히 상실하여 스포츠와 취미로 그 명맥을 이어가고 있다. 전남광주통합특별시에도 스포츠와 취미로서 활의 명맥을 이어주는 곳이 있는데, 사직공원에 있는 활터 관덕정이 그것이다. 관덕정의 사범이자 지역에서는 유일하게 활을 만들고 있는 권태은 씨는 호라의 고장으로 널리 알려진 경북 예천이 고향으로 3대째 활을 만들고 있는데, 전남광주통합특별시에 자리를 잡은 것은 23년 전이다. 경상도에서 활을 만들면 팔러 나가는 곳이 대부분 전라도이므로 아예 옮겨와 활을 만들기 시작했다는 권 씨의 이야기다. 옛날에는 활의 재료와 쓰임새에 따라 무척 다양했지만 요즘에는 각궁만이 남아 그 명맥을 유지해 주고 있다. 전통이 실려있는 각궁이란 후궁·장궁(長弓)이라고도 하는데 각궁의 모양은 시대에 따라 조금씩의 차이가 있다. 크게 2종류로 나눌 수 있는데, 전쟁이나 사냥에 쓰인 것은 궁간상(弓幹桑)·뿔·힘줄·아교·실·칠 등 6가지로 만들고, 운동이나 오락으로 쓰인 것은 궁간상·참나무·대·벚나무·뿔·힘줄·아교 등 7가지로 만들었다. 강(强)·중(中)·연(軟)의 구별이 있어서, 남녀 누구나 자신의 힘에 맞는 것을 쓸 수 있었다. #전통 #체험 #스포츠 #공원', '1.0.0',
+  'import', 0.45,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '127069'
@@ -111,3571 +111,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '128158', '광주 경찰충혼탑', '광주 남구', '남구', '관광지', null, '전남광주통합특별시 남구 사직길 49', null, 35.142541996, 126.9155968119, '062-675-3280', null, 'http://tong.visitkorea.or.kr/cms/resource/37/3366737_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 경찰충혼탑', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '128158'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2605353', '광주 송정동 떡갈비 골목', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 광산로29번길', null, 35.1397152706, 126.7943076079, '전남광주통합특별시 광산구청 062-960-8114', null, 'http://tong.visitkorea.or.kr/cms/resource/89/3367489_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통음식','#느린여행']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '광주 송정동 떡갈비 골목 #전통음식 #느린여행', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2605353'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2822573', '광주 수완호수공원', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 장신로82번길 57 공원관리사무소', null, 35.1879824765, 126.8202596628, '광주광역시 광산구청 공원녹지과 062-960-8705', null, 'http://tong.visitkorea.or.kr/cms/resource/65/2822565_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#바다','#공원','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '광주 수완호수공원 #바다 #공원 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2822573'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127325', '광주 충효동 왕버들 군', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 충효샘길 7 (충효동)', null, 35.1848719954, 127.0009520932, '062-410-6140', null, 'http://tong.visitkorea.or.kr/cms/resource/50/3350350_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 충효동 왕버들 군 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127325'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2489843', '광주 평촌마을', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 평촌길 15', null, 35.1756287576, 127.0105542557, '062-266-2287', null, 'http://tong.visitkorea.or.kr/cms/resource/88/3367188_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#느린여행','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '광주 평촌마을 #느린여행 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2489843'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2605351', '광주폴리', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 비엔날레로 111', null, 35.1826203741, 126.890259159, '062-608-4260', null, 'http://tong.visitkorea.or.kr/cms/resource/94/3367394_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주폴리', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2605351'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126329', '광주호', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 충효샘길 7 (충효동)', null, 35.1840804198, 127.0010882121, '062-613-7892', null, 'http://tong.visitkorea.or.kr/cms/resource/04/3368304_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주호 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126329'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126425', '국립 5·18 민주묘지', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 민주로 200 (운정동)', null, 35.2325767086, 126.9415422558, '062-268-0518', null, 'http://tong.visitkorea.or.kr/cms/resource/81/1587681_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#민주인권','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '국립 5·18 민주묘지 #민주인권 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126425'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1621334', '금남로', '광주 동구', '동구', '관광지', null, '전남광주통합특별시 동구 금남로 일대 (금남로5가)', null, 35.1538517467, 126.9106747413, '전남광주통합특별시 동구청 관광진흥과 062-613-3633', null, 'http://tong.visitkorea.or.kr/cms/resource/73/3459973_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '금남로', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1621334'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127356', '너릿재공원', '광주 동구', '동구', '관광지', null, '전남광주통합특별시 동구 남문로 48-8 (선교동)', null, 35.0803774303, 126.9535616807, '화순군 관광기획팀 061-379-3501', null, 'http://tong.visitkorea.or.kr/cms/resource/10/3366810_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#공원','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '너릿재공원 #공원 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127356'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2470068', '녹색에너지체험관 (광주전남지역본부)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 첨단과기로 123', null, 35.2274311559, 126.8416345612, '062-602-0001', null, 'http://tong.visitkorea.or.kr/cms/resource/88/3040988_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#아이동반','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
-  '녹색에너지체험관 (광주전남지역본부) #체험 #아이동반 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2470068'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2614773', '덕산너덜 (무등산권 국가지질공원)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1441458348, 126.9890013959, '수목원정원사업소 지질공원과 062-613-7853', null, 'http://tong.visitkorea.or.kr/cms/resource/17/2917917_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
-  '덕산너덜 (무등산권 국가지질공원) #산 #등산 #공원', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2614773'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1620893', '도림사(광주)', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 도림하길 33 (도덕동)', null, 35.1666995405, 126.7007374404, '062-940-8225', null, 'http://tong.visitkorea.or.kr/cms/resource/40/3366540_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '도림사(광주)', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1620893'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2565865', '동리단길 카페거리', '광주 동구', '동구', '관광지', null, '전남광주통합특별시 동구 동명동', null, 35.1492525371, 126.9267289927, '전남광주통합특별시 관광안내소 062-365-8733', null, 'http://tong.visitkorea.or.kr/cms/resource/70/3337270_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#카페']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '동리단길 카페거리 #카페', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2565865'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1620808', '두남제', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 광산동 277', null, 35.2437804781, 126.7462953738, '062-960-8225', null, 'http://tong.visitkorea.or.kr/cms/resource/71/3366471_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '두남제', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1620808'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3353800', '뜻모아센터', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 서하로245번길 42 (오치동) 3층 302호', null, 35.1892060356, 126.9076407902, '010-7173-0808', null, 'http://tong.visitkorea.or.kr/cms/resource/53/3353753_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '뜻모아센터 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3353800'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2614783', '무등산 정상3봉 (무등산 국가지질공원)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1442791515, 126.9888819591, '062-613-7853', null, 'http://tong.visitkorea.or.kr/cms/resource/78/2614778_image2_1.bmp', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#공원','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
-  '무등산 정상3봉 (무등산 국가지질공원) #산 #등산 #공원 #주차가능', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2614783'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1074432', '무등산 주상절리대', '광주 동구', '동구', '관광지', null, '전남광주통합특별시 동구 용연동 산 354-1', null, 35.1202403693, 126.9990150009, '062-227-1187', null, 'http://tong.visitkorea.or.kr/cms/resource/23/3029123_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.0,0.0]'::extensions.vector(8),
-  '무등산 주상절리대 #산 #등산 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1074432'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129201', '무양서원', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 산월로21번길 26', null, 35.2099969896, 126.8401045774, '062-960-8255', null, 'http://tong.visitkorea.or.kr/cms/resource/21/3033521_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '무양서원 #전통', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129201'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2614815', '백마능선 (무등산권 국가지질공원)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1441458348, 126.9890013959, '지질공원과 062-613-7853', null, 'http://tong.visitkorea.or.kr/cms/resource/14/2614814_image2_1.bmp', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
-  '백마능선 (무등산권 국가지질공원) #산 #등산 #공원', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2614815'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '742332', '부용정', '광주 남구', '남구', '관광지', null, '전남광주통합특별시 남구 칠석동 129', null, 35.0697627681, 126.8366333845, '전남광주통합특별시 남구 문화관광과 062-607-2332', null, 'http://tong.visitkorea.or.kr/cms/resource/18/3367718_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '부용정', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '742332'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783824', '산동교친수공원', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 동림동 130-15', null, 35.1897079853, 126.8619975926, '전남광주통합특별시 북구청 공원녹지과 062-410-6441', null, 'http://tong.visitkorea.or.kr/cms/resource/20/3528420_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#공원','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '산동교친수공원 #산 #공원 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2783824'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129199', '삼거동 고인돌', '광주 광산구', '광산구', '관광지', null, '전남광주통합특별시 광산구 삼거동 산50', null, 35.1522951414, 126.6725736251, '전남광주통합특별시 송정역관광안내소 062-944-9044', null, 'http://tong.visitkorea.or.kr/cms/resource/00/3530000_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '삼거동 고인돌', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129199'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1622203', '상무시민공원', '광주 서구', '서구', '관광지', null, '전남광주통합특별시 서구 상무공원로 101', null, 35.1537505721, 126.8403948478, '062-360-7513', null, 'http://tong.visitkorea.or.kr/cms/resource/42/3367442_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#공원','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '상무시민공원 #공원 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1622203'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2614819', '새인봉 (무등산권 국가지질공원)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1441458348, 126.9890013959, '062-613-7853', null, 'http://tong.visitkorea.or.kr/cms/resource/17/2614817_image2_1.bmp', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
-  '새인봉 (무등산권 국가지질공원) #산 #등산 #공원', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2614819'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2614826', '서석대 (무등산권 국가지질공원)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1441458348, 126.9890013959, '무등산생태문화관리사무소 062-613-7851', null, 'http://tong.visitkorea.or.kr/cms/resource/21/2614821_image2_1.bmp', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#등산','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
-  '서석대 (무등산권 국가지질공원) #산 #등산 #공원', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2614826'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127062', '선교기념비', '광주 남구', '남구', '관광지', null, '전남광주통합특별시 남구 제중로 56 (양림동)', null, 35.1396061822, 126.9135887299, '전남광주통합특별시 남구 문화관광과 062-607-2311', null, 'http://tong.visitkorea.or.kr/cms/resource/49/3344449_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '선교기념비 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127062'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3353909', '소잉(에이핸즈협동조합)', '광주 북구', '북구', '관광지', null, '전남광주통합특별시 북구 첨단연신로108번길 31-15 (신용동) 1층', null, 35.2077143361, 126.8650829796, '0507-1390-2510', null, 'http://tong.visitkorea.or.kr/cms/resource/08/3353808_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '소잉(에이핸즈협동조합) #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3353909'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1621168', '고싸움놀이전수교육관', '광주 남구', '남구', '문화·예술', null, '전남광주통합특별시 남구 고싸움로 2', null, 35.0697294541, 126.837538861, null, null, 'http://tong.visitkorea.or.kr/cms/resource/87/3367587_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#교육','#레저','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,1.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '고싸움놀이전수교육관 #예술 #교육 #레저 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1621168'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130032', '광산문화원', '광주 광산구', '광산구', '문화·예술', null, '전남광주통합특별시 광산구 상무대로 265', null, 35.1424455318, 126.7951296891, null, null, 'http://tong.visitkorea.or.kr/cms/resource/02/3366502_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광산문화원 #산 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130032'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130391', '광주 동구문화원', '광주 동구', '동구', '문화·예술', null, '전남광주통합특별시 동구 예술길 18-1', null, 35.150118962, 126.9181741721, null, null, 'http://tong.visitkorea.or.kr/cms/resource/81/3367381_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 동구문화원 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130391'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130208', '광주 북구문화원', '광주 북구', '북구', '문화·예술', null, '전남광주통합특별시 북구 향토문화로 65 (중흥동)', null, 35.1728940911, 126.9136656663, null, null, 'http://tong.visitkorea.or.kr/cms/resource/01/3421301_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 북구문화원 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130208'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130808', '광주 송정다가치문화도서관', '광주 광산구', '광산구', '문화·예술', null, '전남광주통합특별시 광산구 송정공원로 8-13', null, 35.1449147758, 126.7998069918, null, null, 'http://tong.visitkorea.or.kr/cms/resource/27/1587327_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 송정다가치문화도서관 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130808'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2733545', '광주 전통문화관', '광주 동구', '동구', '문화·예술', null, '전남광주통합특별시 동구 의재로 222', null, 35.1336797291, 126.9523771168, null, null, 'http://tong.visitkorea.or.kr/cms/resource/46/2733546_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통','#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 전통문화관 #전통 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2733545'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130033', '광주광역시 서구문화원', '광주 서구', '서구', '문화·예술', null, '전남광주통합특별시 서구 풍금로 182', null, 35.1318478187, 126.8599131134, null, null, 'http://tong.visitkorea.or.kr/cms/resource/51/3367251_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주광역시 서구문화원 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130033'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2779116', '광주비엔날레전시관', '광주 북구', '북구', '문화·예술', null, '전남광주통합특별시 북구 비엔날레로 111 (용봉동)', null, 35.1826203741, 126.890259159, null, null, 'http://tong.visitkorea.or.kr/cms/resource/79/3351379_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주비엔날레전시관 #박물관 #예술 #전시 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.45,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2779116'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129761', '광주시립미술관', '광주 북구', '북구', '문화·예술', null, '전남광주통합특별시 북구 하서로 52', null, 35.1832174547, 126.8858428681, null, null, 'http://tong.visitkorea.or.kr/cms/resource/11/3368411_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#전시','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주시립미술관 #예술 #전시 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129761'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '969963', '광주야외음악당', '광주 서구', '서구', '문화·예술', null, '전남광주통합특별시 서구 내방로 111 (치평동)', null, 35.160019493, 126.8513576102, null, null, 'http://tong.visitkorea.or.kr/cms/resource/64/3367264_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#공연','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주야외음악당 #예술 #공연 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '969963'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3380159', '광주자동차극장', '광주 북구', '북구', '문화·예술', null, '전남광주통합특별시 북구 우치로 649 (생용동)', null, 35.2206801686, 126.9024237945, null, null, null, 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#공연','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주자동차극장 #예술 #공연 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3380159'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2009775', '국립아시아문화전당', '광주 동구', '동구', '문화·예술', null, '전남광주통합특별시 동구 문화전당로 38 (광산동)', null, 35.1460861028, 126.9192936186, null, null, 'http://tong.visitkorea.or.kr/cms/resource/59/3083359_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '국립아시아문화전당 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2009775'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130807', '금호평생교육관', '광주 남구', '남구', '문화·예술', null, '전남광주통합특별시 남구 중앙로 15', null, 35.1450970088, 126.9005647433, null, null, 'http://tong.visitkorea.or.kr/cms/resource/93/3366693_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#교육','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
-  '금호평생교육관 #예술 #교육 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130807'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1745001', '빛고을시민문화관', '광주 남구', '남구', '문화·예술', null, '전남광주통합특별시 남구 천변좌로338번길 7', null, 35.1479301594, 126.9086750662, null, null, 'http://tong.visitkorea.or.kr/cms/resource/05/3366705_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#야경','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.75]'::extensions.vector(8),
-  '빛고을시민문화관 #예술 #야경 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1745001'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2605338', '수피아여자중고등학교', '광주 남구', '남구', '문화·예술', null, '전남광주통합특별시 남구 백서로 13 (양림동)', null, 35.1368703131, 126.9096335919, null, null, 'http://tong.visitkorea.or.kr/cms/resource/79/3366679_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '수피아여자중고등학교 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2605338'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130639', '우제길미술관', '광주 동구', '동구', '문화·예술', null, '전남광주통합특별시 동구 의재로 140-6', null, 35.1317742306, 126.9430502112, null, null, 'http://tong.visitkorea.or.kr/cms/resource/53/3510753_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#전시','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '우제길미술관 #예술 #전시 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130639'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2755010', '5·18민주화운동 기록관', '광주 동구', '동구', '문화·예술', null, '전남광주통합특별시 동구 금남로 221 (금남로3가)', null, 35.1496023298, 126.9167687536, null, null, 'http://tong.visitkorea.or.kr/cms/resource/32/3532032_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#민주인권','#예술','#실내','#비오는날','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '5·18민주화운동 기록관 #민주인권 #예술 #실내 #비오는날 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2755010'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3460731', '광주여성영화제', '광주 동구', '동구', '축제·공연', null, '전남광주통합특별시 동구 중앙로160번길 16-7 (불로동)', null, 35.1468609363, 126.9146634529, '062-515-6560', null, 'http://tong.visitkorea.or.kr/cms/resource/26/3460726_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#공연','#참여형','#축제']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
-  '광주여성영화제 #공연 #참여형 #축제', '1.0.0',
-  'import', 0.45,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3460731'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '131450', '광주북구청소년수련관', '광주 북구', '북구', '체험·스포츠', null, '전남광주통합특별시 북구 대천로 86 (문흥동)', null, 35.1848927862, 126.9166678776, null, null, 'http://tong.visitkorea.or.kr/cms/resource/16/1892816_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '광주북구청소년수련관 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '131450'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2739385', '광주시패밀리랜드 카라반캠핑장', '광주 북구', '북구', '체험·스포츠', null, '전남광주통합특별시 북구 우치로 677 (생용동)', null, 35.2237436949, 126.9014654688, null, null, 'http://tong.visitkorea.or.kr/cms/resource/42/2739842_image2_1.JPG', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '광주시패밀리랜드 카라반캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2739385'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2728916', '승촌보오토캠핑장', '광주 남구', '남구', '체험·스포츠', null, '전남광주통합특별시 남구 승촌보길 90 (승촌동)', null, 35.0660063695, 126.7611512602, null, null, 'http://tong.visitkorea.or.kr/cms/resource/87/2728987_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '승촌보오토캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2728916'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2661532', '시민의 숲 야영장', '광주 북구', '북구', '체험·스포츠', null, '전남광주통합특별시 북구 추암로 190 (월출동)', null, 35.2327865214, 126.8662155837, null, null, 'http://tong.visitkorea.or.kr/cms/resource/31/2661531_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#숲','#체험','#스포츠']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '시민의 숲 야영장 #숲 #체험 #스포츠', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2661532'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1622267', '염주실내수영장', '광주 서구', '서구', '체험·스포츠', null, '전남광주통합특별시 서구 금화로 278 (풍암동)', null, 35.1366531569, 126.879180734, null, null, 'http://tong.visitkorea.or.kr/cms/resource/14/1587814_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '염주실내수영장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1622267'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2763536', '주노글램핑 인 광주시', '광주 서구', '서구', '체험·스포츠', null, '전남광주통합특별시 서구 상무자유로 29-1 (치평동)', null, 35.1535227638, 126.8370562598, null, null, 'http://tong.visitkorea.or.kr/cms/resource/20/2763420_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '주노글램핑 인 광주시 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2763536'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2718673', '휴파크 광산점', '광주 광산구', '광산구', '체험·스포츠', null, '전남광주통합특별시 광산구 탑동길 345 (지산동)', null, 35.1953634646, 126.7303952125, null, null, 'http://tong.visitkorea.or.kr/cms/resource/00/3033500_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#체험','#스포츠']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '휴파크 광산점 #산 #체험 #스포츠', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2718673'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1621202', '무안요(광주)', '광주 동구', '동구', '쇼핑·시장', null, '전남광주통합특별시 동구 중앙로196번길 15-6 (궁동)', null, 35.1498495384, 126.9176242274, null, null, 'http://tong.visitkorea.or.kr/cms/resource/65/1587565_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '무안요(광주) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1621202'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783789', '비아5일시장', '광주 광산구', '광산구', '쇼핑·시장', null, '전남광주통합특별시 광산구 비아중앙로 26-1 (비아동)', null, 35.2213982286, 126.8252806044, null, null, 'http://tong.visitkorea.or.kr/cms/resource/60/3528360_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '비아5일시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2783789'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2765207', '상무화훼단지', '광주 서구', '서구', '쇼핑·시장', null, '전남광주통합특별시 서구 마륵벽진길 23 (마륵동)', null, 35.1428074499, 126.8455168899, null, null, 'http://tong.visitkorea.or.kr/cms/resource/27/3528427_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '상무화훼단지 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2765207'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783783', '서부농수산물도매시장', '광주 서구', '서구', '쇼핑·시장', null, '전남광주통합특별시 서구 매월2로 16 (매월동)', null, 35.1161856771, 126.8586608367, null, null, 'http://tong.visitkorea.or.kr/cms/resource/21/3528421_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '서부농수산물도매시장 #산 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2783783'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783776', '월곡시장', '광주 광산구', '광산구', '쇼핑·시장', null, '전남광주통합특별시 광산구 사암로 300 (월곡동)', null, 35.1713258469, 126.8096610164, null, null, 'http://tong.visitkorea.or.kr/cms/resource/69/3551369_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '월곡시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2783776'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127480', '가거도', '광주', null, '관광지', null, '전남광주통합특별시 신안군 흑산면 가거도길 38-2', null, 34.0520609879, 125.1263860145, '061-246-5400', null, 'http://tong.visitkorea.or.kr/cms/resource/28/3572128_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가거도', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127480'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126273', '가계해수욕장', '광주', null, '관광지', null, '전남광주통합특별시 진도군 고군면 신비의바닷길 47 (고군면)', null, 34.4354594945, 126.3547412438, '061-540-6605', null, 'http://tong.visitkorea.or.kr/cms/resource/36/3079736_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가계해수욕장 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126273'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127423', '가마골계곡', '광주', null, '관광지', null, '전남광주통합특별시 담양군 용면 용소길 261', null, 35.445187367, 127.0227046757, '061-380-3492', null, 'http://tong.visitkorea.or.kr/cms/resource/35/3027135_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가마골계곡 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127423'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126289', '가마미해수욕장', '광주', null, '관광지', null, '전남광주통합특별시 영광군 홍농읍 가마미로 355', null, 35.399729392, 126.4090769892, '061-356-1020', null, 'http://tong.visitkorea.or.kr/cms/resource/63/3018763_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가마미해수욕장 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126289'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2615324', '가사동백숲해변', '광주', null, '관광지', null, '전남광주통합특별시 완도군 약산면 해동리', null, 34.3698373475, 126.9277952875, '061-550-6401', null, 'http://tong.visitkorea.or.kr/cms/resource/77/3591577_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#숲','#바다','#주차가능']::text[],
-  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가사동백숲해변 #숲 #바다 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2615324'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1916695', '가사해수욕장', '광주', null, '관광지', null, '전남광주통합특별시 완도군 약산면', null, 34.370487281, 126.9281702396, null, null, 'http://tong.visitkorea.or.kr/cms/resource/24/3382824_image2_1.JPG', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가사해수욕장', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1916695'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1957336', '가산서원', '광주', null, '관광지', null, '전남광주통합특별시 장성군 삼서면 영장로 2015', null, 35.2313226604, 126.6931003984, '061-390-7240', null, 'http://tong.visitkorea.or.kr/cms/resource/35/3347635_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#전통','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.75,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '가산서원 #산 #전통 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1957336'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2732489', '가야금산조테마공원', '광주', null, '관광지', null, '전남광주통합특별시 영암군 영암읍 기찬랜드로 19-10', null, 34.7919693222, 126.6856118867, '061-471-8500', null, 'http://tong.visitkorea.or.kr/cms/resource/96/3382096_image2_1.JPG', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '가야금산조테마공원 #산 #공원', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2732489'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3013529', '가야정원', '광주', null, '관광지', null, '전남광주통합특별시 순천시 해룡면 농주리 230-10', null, 34.861908939, 127.5222504674, '0507-1417-2202', null, null, 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+values ('tourapi', '128158', '광주 경찰충혼탑', '광주 남구', '남구', '관광지', '경찰충혼답은 전남광주통합특별시 사직공원에 위치해 있는 탑으로 높이가 약 14m에 이른다. 광주공원 입구의 계단을 한참 오르다 보면 나타난다. 이 탑은 여순 사건과 한국전쟁 등 당시 국가를 위해 목숨을 바친 전남광주통합특별시 출신 순국 경찰관 3,196명의 위패를 봉안하고 있다. 경찰충혼탑은 원래 1956년 전남도청 앞 상무관 정원에 건립되었는데 시간이 지나 탑이 붕괴 위험에 처해졌고, 이것을 1981년 10월 23일 현재의 위치(사구동 177번지)에 이전 건립하여 지금에 이르고 있다.', '전남광주통합특별시 남구 사직길 49', null, 35.142541996, 126.9155968119, '062-675-3280', 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1266', 'http://tong.visitkorea.or.kr/cms/resource/37/3366737_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3714,10 +150,2386 @@ insert into public.place_profiles (
 )
 select p.id,
   array['#정원','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '가야정원 #정원 #공원', '1.0.0',
+  '{"nature": 0.5, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
+  '광주 경찰충혼탑 경찰충혼답은 전남광주통합특별시 사직공원에 위치해 있는 탑으로 높이가 약 14m에 이른다. 광주공원 입구의 계단을 한참 오르다 보면 나타난다. 이 탑은 여순 사건과 한국전쟁 등 당시 국가를 위해 목숨을 바친 전남광주통합특별시 출신 순국 경찰관 3,196명의 위패를 봉안하고 있다. 경찰충혼탑은 원래 1956년 전남도청 앞 상무관 정원에 건립되었는데 시간이 지나 탑이 붕괴 위험에 처해졌고, 이것을 1981년 10월 23일 현재의 위치(사구동 177번지)에 이전 건립하여 지금에 이르고 있다. #정원 #공원', '1.0.0',
   'import', 0.4,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '128158'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2605353', '광주 송정동 떡갈비 골목', '광주 광산구', '광산구', '관광지', '전남광주통합특별시 송정동에는 떡갈비 전문점이 모인 골목이 있다. 송정동 떡갈비 골목의 음식점들은 저마다 고소하고 쫄깃한 떡갈비 맛으로 손님들의 발길을 끌고 있다. 평일과 주말을 가리지 않고 관광객이 찾아들고, 호남 지역을 방문한 외국인 관광객이라면 반드시 한 번은 들러 가곤 한다. 송정 떡갈비는 여러 가지 면에서 보통의 떡갈비와 다르다. 보통 떡갈비는 소고기를 이용하지만, 이곳은 소고기와 돼지고기를 섞어 만든다. 원래 송정 떡갈비도 소고기를 이용하다가 1990년대 후반 경제가 어려워지면서 재료비가 인상되자, 음식 값을 올리지 않기 위해 돼지고기를 섞어 메뉴로 내놓았다고 한다. 육질이 서로 다른 돼지고기와 소고기가 만나 환상의 궁합을 만들어내며 송정 떡갈비가 탄생한 셈이다. 이 외에도 떡갈비에 곁들여지는 뼛국은 송정의 독특함이 그대로 드러나는 음식이다. 돼지 뼈와 다시마, 무 등을 넣고 오랫동안 끓이는 뼛국은 이 자체만으로도 훌륭한 메뉴다. 떡갈비 한 접시에 뜨끈한 국물 한 그릇 후루룩 마시면 하루 종일 속이 든든하다.', '전남광주통합특별시 광산구 광산로29번길', null, 35.1397152706, 126.7943076079, '전남광주통합특별시 광산구청 062-960-8114', 'https://tour.gwangju.go.kr/home/tour/info/village/003.cs?act=view&infoId=695&category=003&searchCondition=&searchKeyword=&pageIndex=1', 'http://tong.visitkorea.or.kr/cms/resource/89/3367489_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#맛집','#전통음식','#느린여행']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.0,0.0,0.0,0.75,0.0,0.0,0.75,0.0]'::extensions.vector(8),
+  '광주 송정동 떡갈비 골목 전남광주통합특별시 송정동에는 떡갈비 전문점이 모인 골목이 있다. 송정동 떡갈비 골목의 음식점들은 저마다 고소하고 쫄깃한 떡갈비 맛으로 손님들의 발길을 끌고 있다. 평일과 주말을 가리지 않고 관광객이 찾아들고, 호남 지역을 방문한 외국인 관광객이라면 반드시 한 번은 들러 가곤 한다. 송정 떡갈비는 여러 가지 면에서 보통의 떡갈비와 다르다. 보통 떡갈비는 소고기를 이용하지만, 이곳은 소고기와 돼지고기를 섞어 만든다. 원래 송정 떡갈비도 소고기를 이용하다가 1990년대 후반 경제가 어려워지면서 재료비가 인상되자, 음식 값을 올리지 않기 위해 돼지고기를 섞어 메뉴로 내놓았다고 한다. 육질이 서로 다른 돼지고기와 소고기가 만나 환상의 궁합을 만들어내며 송정 떡갈비가 탄생한 셈이다. 이 외에도 떡갈비에 곁들여지는 뼛국은 송정의 독특함이 그대로 드러나는 음식이다. 돼지 뼈와 다시마, 무 등을 넣고 오랫동안 끓이는 뼛국은 이 자체만으로도 훌륭한 메뉴다. 떡갈비 한 접시에 뜨끈한 국물 한 그릇 후루룩 마시면 하루 종일 속이 든든하다. #맛집 #전통음식 #느린여행', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2605353'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2822573', '광주 수완호수공원', '광주 광산구', '광산구', '관광지', '도시계획을 통해 성장한 수완동 안의 공원으로 위치와 접근성이 뛰어나다. O체어, 벤치그네 등 시민들이 아이들과 함께 재밌게 접할 수 있는 조형물들이 있다. 밤이면 조형물 사이의 전구들과 조형물 자체에서 빛이 나 은은하고 따뜻한 분위기를 만끽할 수 있다. 호수를 가운데 두어 춤추는 분수를 매시 정각마다 즐길 수 있고 그 주변으로 산책길이 잘 조성되어 있다. 공원 주변으로 대형마트들을 비롯한 다양한 상가들이 있어 편의성도 갖추고 있다. 공연무대가 있어 각종 행사진행이 가능하다.', '전남광주통합특별시 광산구 장신로82번길 57 공원관리사무소', null, 35.1879824765, 126.8202596628, '광주광역시 광산구청 공원녹지과 062-960-8705', null, 'http://tong.visitkorea.or.kr/cms/resource/65/2822565_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#바다','#공연','#가족체험','#산책','#공원','#축제','#야간','#아이동반','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.5, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.75, "festival": 1.0}'::jsonb,
+  '[0.75,0.0,0.5,0.0,0.5,0.0,0.75,1.0]'::extensions.vector(8),
+  '광주 수완호수공원 도시계획을 통해 성장한 수완동 안의 공원으로 위치와 접근성이 뛰어나다. O체어, 벤치그네 등 시민들이 아이들과 함께 재밌게 접할 수 있는 조형물들이 있다. 밤이면 조형물 사이의 전구들과 조형물 자체에서 빛이 나 은은하고 따뜻한 분위기를 만끽할 수 있다. 호수를 가운데 두어 춤추는 분수를 매시 정각마다 즐길 수 있고 그 주변으로 산책길이 잘 조성되어 있다. 공원 주변으로 대형마트들을 비롯한 다양한 상가들이 있어 편의성도 갖추고 있다. 공연무대가 있어 각종 행사진행이 가능하다. #산 #바다 #공연 #가족체험 #산책 #공원 #축제 #야간 #아이동반 #주차가능', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2822573'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '127325', '광주 충효동 왕버들 군', '광주 북구', '북구', '관광지', '광주호 동쪽 호안(湖岸)과 충효동 마을 사이의 도로변에 위치한 왕버들나무는 버들과의 딸린 갈잎 큰 키나무이다. 암수 나무가 딴 그루를 이루며, 4월에 꽃이 피고 열매는 5월에 익는다. 우리나라 경기도 이남 지역과 일부 중부 이남 지역, 중국 중부 지역에 분포하며 풍치림(風致林)과 정자목(亭子木)으로 널리 사랑을 받고 있다. 물가나 들에서 자라며, 목재는 가구와 땔감 등으로 쓰인다. 충효동의 왕버들 3그루는 모두 광주시 나무로 지정되어 있는데 원래는 일송·일매·오류(一松·一梅·五柳)라 하여 마을의 상징 조경수였다고 한다. 그러나 매화와 왕버들 1그루는 말라죽었으며, 또 1그루의 왕버들과 소나무는 마을 앞 도로를 확·포장하면서 잘라 버려 지금은 왕버들 3그루만 남아 있다. 마을에서는 다시 왕버들 2그루를 식목하였으며, 소나무와 매화도 계속 식목할 계획을 가지고 있다. 충효동의 역사는 분명치 않으나 예부터 성이 있어 성안 또는 석저촌(石低村)이라 불려 왔다. 이 일대는 임진왜란 이전에 이미 양산보(梁山甫)의 소쇄원(瀟灑苑)을 비롯하여 김윤제(金允悌)의 환벽당(環璧堂), 김성원(金成遠)의 식영정(息影亭)과 누하당(樓霞堂) 등의 원림(苑林) 정각(亭閣)이 많이 있어, 주변 조경에 많은 영향을 주었던 곳이다.', '전남광주통합특별시 북구 충효샘길 7 (충효동)', null, 35.1848719954, 127.0009520932, '062-410-6140', 'https://www.heritage.go.kr/heri/cul/culSelectDetail.do?ccbaKdcd=16&ccbaAsno=05390000&ccbaCtcd=24&pageNo=1_1_1_0', 'http://tong.visitkorea.or.kr/cms/resource/50/3350350_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#정원','#역사','#응원','#느린여행','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.5, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.0,0.0,0.0,0.5,0.5,0.0]'::extensions.vector(8),
+  '광주 충효동 왕버들 군 광주호 동쪽 호안(湖岸)과 충효동 마을 사이의 도로변에 위치한 왕버들나무는 버들과의 딸린 갈잎 큰 키나무이다. 암수 나무가 딴 그루를 이루며, 4월에 꽃이 피고 열매는 5월에 익는다. 우리나라 경기도 이남 지역과 일부 중부 이남 지역, 중국 중부 지역에 분포하며 풍치림(風致林)과 정자목(亭子木)으로 널리 사랑을 받고 있다. 물가나 들에서 자라며, 목재는 가구와 땔감 등으로 쓰인다. 충효동의 왕버들 3그루는 모두 광주시 나무로 지정되어 있는데 원래는 일송·일매·오류(一松·一梅·五柳)라 하여 마을의 상징 조경수였다고 한다. 그러나 매화와 왕버들 1그루는 말라죽었으며, 또 1그루의 왕버들과 소나무는 마을 앞 도로를 확·포장하면서 잘라 버려 지금은 왕버들 3그루만 남아 있다. 마을에서는 다시 왕버들 2그루를 식목하였으며, 소나무와 매화도 계속 식목할 계획을 가지고 있다. 충효동의 역사는 분명치 않으나 예부터 성이 있어 성안 또는 석저촌(石低村)이라 불려 왔다. 이 일대는 임진왜란 이전에 이미 양산보(梁山甫)의 소쇄원(瀟灑苑)을 비롯하여 김윤제(金允悌)의 환벽당(環璧堂), 김성원(金成遠)의 식영정(息影亭)과 누하당(樓霞堂) 등의 원림(苑林) 정각(亭閣)이 많이 있어, 주변 조경에 많은 영향을 주었던 곳이다. #산 #정원 #역사 #응원 #느린여행 #주차가능', '1.0.0',
+  'import', 0.47,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '127325'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2489843', '광주 평촌마을', '광주 북구', '북구', '관광지', '평촌마을은 무등산 북쪽 자락에 자리하고 있는 동림, 담안, 우성, 닭뫼 4개의 자연마을로 형성된 아담하고 한적한 농촌마을이다. 마을 들녘에는 평무뜰이 있어 친환경 우렁이쌀을 재배하고 있으며, 마을 중심으로 흐르는 풍암천에는 도심에서는 이미 자취가 사라진 반딧불이와 무등산의 깃대종인 수달(천연기념물)이 서식하고 있어 우수한 자연생태를 지니고 있는 지역이다. 조선시대에는 이곳 평촌마을이 분청사기를 만들었던 곳으로 남도의 예술적 혼을 지니고 있는 지역이기도 하다. 현재 마을에 있는 평촌 도예공방이 그 전통을 이어가고 있다. 마을 길목에는 무돌길 쉼터와 반디민박이 있어 마을을 지나는 이들과 무등산을 찾는 탐방객들에게 편안한 휴식처가 되고 있다.', '전남광주통합특별시 북구 평촌길 15', null, 35.1756287576, 127.0105542557, '062-266-2287', 'https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=1282', 'http://tong.visitkorea.or.kr/cms/resource/88/3367188_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#전통','#예술','#공방','#공방체험','#등산','#힐링','#느린여행','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.5, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.75,0.0,0.5,0.5,0.75,0.0]'::extensions.vector(8),
+  '광주 평촌마을 평촌마을은 무등산 북쪽 자락에 자리하고 있는 동림, 담안, 우성, 닭뫼 4개의 자연마을로 형성된 아담하고 한적한 농촌마을이다. 마을 들녘에는 평무뜰이 있어 친환경 우렁이쌀을 재배하고 있으며, 마을 중심으로 흐르는 풍암천에는 도심에서는 이미 자취가 사라진 반딧불이와 무등산의 깃대종인 수달(천연기념물)이 서식하고 있어 우수한 자연생태를 지니고 있는 지역이다. 조선시대에는 이곳 평촌마을이 분청사기를 만들었던 곳으로 남도의 예술적 혼을 지니고 있는 지역이기도 하다. 현재 마을에 있는 평촌 도예공방이 그 전통을 이어가고 있다. 마을 길목에는 무돌길 쉼터와 반디민박이 있어 마을을 지나는 이들과 무등산을 찾는 탐방객들에게 편안한 휴식처가 되고 있다. #자연 #산 #전통 #예술 #공방 #공방체험 #등산 #힐링 #느린여행 #주차가능', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2489843'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2605351', '광주폴리', '광주 북구', '북구', '관광지', '‘폴리(Folly)’의 건축학적 의미는 본래의 기능을 잃고 장식적 역할을 하는 건축물을 뜻한다. 하지만 광주폴리는 공공공간 속에서 장식적인 역할뿐 아니라, 기능적인 역할까지 아우르며 도시재생에 기여할 수 있는 건축물을 의미한다. 광주폴리는 도시 안에서 단위개체로 작동하기보다는 군집되어 하나의 패턴을 형성하며 그 영향력을 발휘하게 될 것이다. 도시 안에 위치하게 될 폴리들은 지난 40년간 빠른 성장을 거듭하며 도심공동화를 경험하고 있는 광주광역시 구도심지역에 강력한 문화적 힘을 전달하여 도심재생을 이끌어 내고자 한다. 광주비엔날레와 더불어 2011년 광주디자인비엔날레(총감독 승효상, 아이 웨이웨이)의 일환으로 시작된 ‘광주폴리 프로젝트’는 2013년 독립적인 프로젝트로 추진되어 현재에 이르기까지, 광주라는 도시 공간 속에서 새로운 일련의 폴리들을 선보이고 있다. (출처 : 광주폴리 홈페이지)', '전남광주통합특별시 북구 비엔날레로 111', null, 35.1826203741, 126.890259159, '062-608-4260', 'http://gwangjufolly.org/', 'http://tong.visitkorea.or.kr/cms/resource/94/3367394_image2_1.jpg', 90, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#현대미술','#가족체험','#아이동반']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.5, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.0,0.5,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '광주폴리 ‘폴리(Folly)’의 건축학적 의미는 본래의 기능을 잃고 장식적 역할을 하는 건축물을 뜻한다. 하지만 광주폴리는 공공공간 속에서 장식적인 역할뿐 아니라, 기능적인 역할까지 아우르며 도시재생에 기여할 수 있는 건축물을 의미한다. 광주폴리는 도시 안에서 단위개체로 작동하기보다는 군집되어 하나의 패턴을 형성하며 그 영향력을 발휘하게 될 것이다. 도시 안에 위치하게 될 폴리들은 지난 40년간 빠른 성장을 거듭하며 도심공동화를 경험하고 있는 광주광역시 구도심지역에 강력한 문화적 힘을 전달하여 도심재생을 이끌어 내고자 한다. 광주비엔날레와 더불어 2011년 광주디자인비엔날레(총감독 승효상, 아이 웨이웨이)의 일환으로 시작된 ‘광주폴리 프로젝트’는 2013년 독립적인 프로젝트로 추진되어 현재에 이르기까지, 광주라는 도시 공간 속에서 새로운 일련의 폴리들을 선보이고 있다. (출처 : 광주폴리 홈페이지) #현대미술 #가족체험 #아이동반', '1.0.0',
+  'import', 0.4,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2605351'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '126329', '광주호', '광주 북구', '북구', '관광지', '광주호는 1976년 완공된 이래 전남광주통합특별시와 담양군 일대 농업용수로 활용하고 있는 인공 호수다. 무등산 아래에 위치하여 주변의 수려한 자연경관과 조화를 이룬 호반 휴양지로서, 어족이 풍부해 낚시터로도 각광을 받아 많은 휴양인파가 찾는다. 광주호 상류 충효동 일대에는 송강 정철의 가사문학 유적지인 식영정을 비롯해 환벽당, 소쇄원, 취가정, 독수정 등의 정자가 자리 잡고 있어 조선시대 정원문화의 진수를 보여 주고 있다. 광주호 남쪽으로는 2006년 개장한 호수생태원이 있어 시민들의 자연생태학습과 휴식공간으로 사랑받고 있다.', '전남광주통합특별시 북구 충효샘길 7 (충효동)', null, 35.1840804198, 127.0010882121, '062-613-7892', 'https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=2', 'http://tong.visitkorea.or.kr/cms/resource/04/3368304_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#역사','#교육','#등산','#힐링','#공원','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.5, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[1.0,0.5,0.0,0.0,0.5,0.5,0.75,0.0]'::extensions.vector(8),
+  '광주호 광주호는 1976년 완공된 이래 전남광주통합특별시와 담양군 일대 농업용수로 활용하고 있는 인공 호수다. 무등산 아래에 위치하여 주변의 수려한 자연경관과 조화를 이룬 호반 휴양지로서, 어족이 풍부해 낚시터로도 각광을 받아 많은 휴양인파가 찾는다. 광주호 상류 충효동 일대에는 송강 정철의 가사문학 유적지인 식영정을 비롯해 환벽당, 소쇄원, 취가정, 독수정 등의 정자가 자리 잡고 있어 조선시대 정원문화의 진수를 보여 주고 있다. 광주호 남쪽으로는 2006년 개장한 호수생태원이 있어 시민들의 자연생태학습과 휴식공간으로 사랑받고 있다. #자연 #산 #역사 #교육 #등산 #힐링 #공원 #주차가능', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '126329'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '126425', '국립 5·18 민주묘지', '광주 북구', '북구', '관광지', '1980년에 일어난 광주민주화운동의 희생자들이 묻힌 공동 묘지인 국립5·18 민주묘지는 5·18 묘역이라고도 한다. 민주 성지인 전남광주통합특별시의 대표적인 상징으로 묘역 안에는 5·18 영령의 묘가 있으며, 참배 광장, 전시 공간, 상징 조형물, 광주민주화운동 추모탑 등으로 구성되어 있다. 5·18 묘지 중앙에 있는 사각기둥인 탑신은 높이 40m로 우리나라 전통 석조물인 당간지주를 현대감각에 맞게 형상화했다. 탑신 가운데 감싸 쥔 손 모양으로 중앙에 설치된 타원형 형상은 새로운 생명의 부활을 상징하며, 시시각각 변하는 태양광에 반사된 빛은 희망의 씨앗이라고 볼 수 있다. 또한 5·18 추모관은 민주화를 위해 희생한 민주 영령들을 추모하고 그 뜻을 올바르게 계승하기 위해 건립되었다. 5·18민주화운동과 그 희생자 그리고 아직 밝혀지지 않은 진실 등을 객관적으로 이해할 수 있으며, 단순한 관람보다는 직접 참여하여 5·18 실상과 정신을 느낄 수 있는 체험 공간으로 구성되어 있다. ※ 경건한 참배분위기를 위하여 슬리퍼, 민소매 등의 복장은 자제 요망', '전남광주통합특별시 북구 민주로 200 (운정동)', null, 35.2325767086, 126.9415422558, '062-268-0518', 'https://www.mpva.go.kr/518/index.do', 'http://tong.visitkorea.or.kr/cms/resource/81/1587681_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#민주인권','#전통','#전시','#체험','#야경','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.75, "art": 0.5, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.0,0.75,0.5,0.0,0.5,0.0,0.0,0.5]'::extensions.vector(8),
+  '국립 5·18 민주묘지 1980년에 일어난 광주민주화운동의 희생자들이 묻힌 공동 묘지인 국립5·18 민주묘지는 5·18 묘역이라고도 한다. 민주 성지인 전남광주통합특별시의 대표적인 상징으로 묘역 안에는 5·18 영령의 묘가 있으며, 참배 광장, 전시 공간, 상징 조형물, 광주민주화운동 추모탑 등으로 구성되어 있다. 5·18 묘지 중앙에 있는 사각기둥인 탑신은 높이 40m로 우리나라 전통 석조물인 당간지주를 현대감각에 맞게 형상화했다. 탑신 가운데 감싸 쥔 손 모양으로 중앙에 설치된 타원형 형상은 새로운 생명의 부활을 상징하며, 시시각각 변하는 태양광에 반사된 빛은 희망의 씨앗이라고 볼 수 있다. 또한 5·18 추모관은 민주화를 위해 희생한 민주 영령들을 추모하고 그 뜻을 올바르게 계승하기 위해 건립되었다. 5·18민주화운동과 그 희생자 그리고 아직 밝혀지지 않은 진실 등을 객관적으로 이해할 수 있으며, 단순한 관람보다는 직접 참여하여 5·18 실상과 정신을 느낄 수 있는 체험 공간으로 구성되어 있다. ※ 경건한 참배분위기를 위하여 슬리퍼, 민소매 등의 복장은 자제 요망 #민주인권 #전통 #전시 #체험 #야경 #아이동반 #주차가능', '1.0.0',
+  'import', 0.47,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '126425'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1621334', '금남로', '광주 동구', '동구', '관광지', '전남광주통합특별시 동구에 있는 2.3㎞의 길로 금남로 1~5가로 이루어져 있다. 이중 금남로 1가의 옛 전남도청에서 옛 광주 은행 사거리 518m는 5·18 광주민주화운동 등 한국 현대사의 역사를 간직한 곳으로 2011년 8월 30일 광주시에 의하여 ‘유네스코 민주인권로’로 지정되었다. 금남로는 광주시민이 계엄군에 맞서 5·18 민중항쟁 기간 중 연일 격렬하게 저항했던 항쟁의 거리다. 5월 18일 가톨릭센터 앞에서 최초의 학생 연좌시위가 있었으며 5월 19일부터 수많은 시민들이 끊임없이 모여들어 투쟁의지를 불태웠다. 5월 20일 저녁에는 택시를 중심으로 100대 이상의 각종 차량이 참가한 대규모 시위가 있었다. 21일 계엄군의 집단 발포 전까지 30여 만 광주시민이 매일 운집, 군사독재 저지와 민주화를 촉구했던 금남로는 5·18 민중 항쟁을 상징하는 거리다. 이후에도 항쟁의 진실을 밝히려는 투쟁이 이 거리를 중심으로 전개되었고, 가톨릭센터에서는 민주화를 위한 시민 집회가 계속 열렸다. 지금도 광주에서 진행되는 행사나 집회, 축제 등은 모두 금남로를 거쳐 옛 전남도청(현 국립아시아문화전당)으로 향한다.', '전남광주통합특별시 동구 금남로 일대 (금남로5가)', null, 35.1538517467, 126.9106747413, '전남광주통합특별시 동구청 관광진흥과 062-613-3633', null, 'http://tong.visitkorea.or.kr/cms/resource/73/3459973_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#역사','#민주인권','#참여형','#축제','#야간']::text[],
+  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.75,0.0,0.0,0.5,0.0,0.0,0.75]'::extensions.vector(8),
+  '금남로 전남광주통합특별시 동구에 있는 2.3㎞의 길로 금남로 1~5가로 이루어져 있다. 이중 금남로 1가의 옛 전남도청에서 옛 광주 은행 사거리 518m는 5·18 광주민주화운동 등 한국 현대사의 역사를 간직한 곳으로 2011년 8월 30일 광주시에 의하여 ‘유네스코 민주인권로’로 지정되었다. 금남로는 광주시민이 계엄군에 맞서 5·18 민중항쟁 기간 중 연일 격렬하게 저항했던 항쟁의 거리다. 5월 18일 가톨릭센터 앞에서 최초의 학생 연좌시위가 있었으며 5월 19일부터 수많은 시민들이 끊임없이 모여들어 투쟁의지를 불태웠다. 5월 20일 저녁에는 택시를 중심으로 100대 이상의 각종 차량이 참가한 대규모 시위가 있었다. 21일 계엄군의 집단 발포 전까지 30여 만 광주시민이 매일 운집, 군사독재 저지와 민주화를 촉구했던 금남로는 5·18 민중 항쟁을 상징하는 거리다. 이후에도 항쟁의 진실을 밝히려는 투쟁이 이 거리를 중심으로 전개되었고, 가톨릭센터에서는 민주화를 위한 시민 집회가 계속 열렸다. 지금도 광주에서 진행되는 행사나 집회, 축제 등은 모두 금남로를 거쳐 옛 전남도청(현 국립아시아문화전당)으로 향한다. #역사 #민주인권 #참여형 #축제 #야간', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1621334'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '127356', '너릿재공원', '광주 동구', '동구', '관광지', '너릿재공원은 전남광주통합특별시와 화순 경계선에 있는 공원으로 너릿재 옛길과 유아숲이 함께 있는 곳이다. 너릿재 옛길은 1971년 너릿재 터널이 뚫리기 전까지 아주 오래전부터 전남광주통합특별시와 화순을 잇는 연결도로로 2011년 4월부터 벚꽃길 조성, 배수로 정비, 사면정비, 차량통제, 순환산책로 조성, 편의시설 설치 등 환경을 훼손하지 않고 쾌적한 너릿재 명품숲길로 2012년 7월 재탄생하였다. 벚꽃과 수목이 울창한 치유의 숲으로 가족이 산책하기에 적합한 휴식공간이다. 또한 너릿재 유아숲은 도시의 어린이들이 계절별 자연의 변화를 몸소 체험하고 숲 교육을 통해 정신적, 신체적으로 건강하게 자랄 수 있도록 열린 체험 공간을 조성한 곳으로 숲 속 연못, 곤충 관찰대, 외줄 타기 체험장, 트리하우스 등 다양한 체험 시설과 휴식공간으로 구성되어 있다.', '전남광주통합특별시 동구 남문로 48-8 (선교동)', null, 35.0803774303, 126.9535616807, '화순군 관광기획팀 061-379-3501', 'https://tour.gwangju.go.kr/home/tour/info/park/003.cs?act=view&infoId=1284&category=003&searchCondition=&searchKeyword=&pageIndex=2', 'http://tong.visitkorea.or.kr/cms/resource/10/3366810_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#체험','#교육','#힐링','#산책','#시즌한정','#아이동반','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.75,0.0,0.75,0.5]'::extensions.vector(8),
+  '너릿재공원 너릿재공원은 전남광주통합특별시와 화순 경계선에 있는 공원으로 너릿재 옛길과 유아숲이 함께 있는 곳이다. 너릿재 옛길은 1971년 너릿재 터널이 뚫리기 전까지 아주 오래전부터 전남광주통합특별시와 화순을 잇는 연결도로로 2011년 4월부터 벚꽃길 조성, 배수로 정비, 사면정비, 차량통제, 순환산책로 조성, 편의시설 설치 등 환경을 훼손하지 않고 쾌적한 너릿재 명품숲길로 2012년 7월 재탄생하였다. 벚꽃과 수목이 울창한 치유의 숲으로 가족이 산책하기에 적합한 휴식공간이다. 또한 너릿재 유아숲은 도시의 어린이들이 계절별 자연의 변화를 몸소 체험하고 숲 교육을 통해 정신적, 신체적으로 건강하게 자랄 수 있도록 열린 체험 공간을 조성한 곳으로 숲 속 연못, 곤충 관찰대, 외줄 타기 체험장, 트리하우스 등 다양한 체험 시설과 휴식공간으로 구성되어 있다. #자연 #산 #체험 #교육 #힐링 #산책 #시즌한정 #아이동반 #주차가능', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '127356'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2470068', '녹색에너지체험관 (광주전남지역본부)', '광주 북구', '북구', '관광지', '세계는 지금 기후변화로 상징되는 환경위기와 고유가로 대표되는 자원위기에 동시에 직면하고 있다. 기후변화 문제는 연이은 기상재해를 유발하여 생태계 질서를 근본적으로 뒤흔들며 인류의 생존을 위협하고, 자원고갈로 인한 에너지 가격 급등과 화석연료 사용으로 인한 지구 온난화는 우리 경제와 환경을 동시에 위협하고 있다. 우리나라는 이산화탄소 배출 세계 7위(IEA, 2018 기준)이며, 세계 9위의 에너지 소비 수입국으로 우리나라 공급에너지의 94%를 해외 수입에 의존하고 있기 때문에 에너지절약은 반드시 추진해야 하는 시대적 과제이다. 이에 발맞춰 녹색에너지체험관은 에너지절약이 왜 필요한지, 생활 속에서 실천할 수 있는 에너지절약은 무엇인지를 쉽게 이해하고 배울 수 있는 체험관이며, 화석에너지, 환경에너지, 신재생에너지 등 녹색에너지를 소개한다. 녹색에너지체험관은 에너지 접속존, 화석에너지와 기후변화, 에너지를 지켜라 존, 희망의 에너지 아크존, 유쾌한 녹색도시 존, LED 전시관으로 구성되어 있다.', '전남광주통합특별시 북구 첨단과기로 123', null, 35.2274311559, 126.8416345612, '062-602-0001', 'https://dco.energy.or.kr/green/', 'http://tong.visitkorea.or.kr/cms/resource/88/3040988_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#박물관','#전시','#체험','#아이동반','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.5,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
+  '녹색에너지체험관 (광주전남지역본부) 세계는 지금 기후변화로 상징되는 환경위기와 고유가로 대표되는 자원위기에 동시에 직면하고 있다. 기후변화 문제는 연이은 기상재해를 유발하여 생태계 질서를 근본적으로 뒤흔들며 인류의 생존을 위협하고, 자원고갈로 인한 에너지 가격 급등과 화석연료 사용으로 인한 지구 온난화는 우리 경제와 환경을 동시에 위협하고 있다. 우리나라는 이산화탄소 배출 세계 7위(IEA, 2018 기준)이며, 세계 9위의 에너지 소비 수입국으로 우리나라 공급에너지의 94%를 해외 수입에 의존하고 있기 때문에 에너지절약은 반드시 추진해야 하는 시대적 과제이다. 이에 발맞춰 녹색에너지체험관은 에너지절약이 왜 필요한지, 생활 속에서 실천할 수 있는 에너지절약은 무엇인지를 쉽게 이해하고 배울 수 있는 체험관이며, 화석에너지, 환경에너지, 신재생에너지 등 녹색에너지를 소개한다. 녹색에너지체험관은 에너지 접속존, 화석에너지와 기후변화, 에너지를 지켜라 존, 희망의 에너지 아크존, 유쾌한 녹색도시 존, LED 전시관으로 구성되어 있다. #자연 #산 #박물관 #전시 #체험 #아이동반 #주차가능', '1.0.0',
+  'import', 0.47,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2470068'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2614773', '덕산너덜 (무등산권 국가지질공원)', '광주 북구', '북구', '관광지', '너덜은 너덜겅으로도 불리며 돌이 많이 흩어져 있는 비탈을 의미하는 순수한 우리말로, 중생대 백악기 후기(약 8,700~8,500만 년 전)에 생성된 주상절리대가 풍화되어 쪼개져 지금의 너덜이 되었다. 덕산너덜은 무등산 최대의 너덜로 길이 600m, 최대 폭 250m 규모로 펼쳐져 있으며 지공너덜과 함께 무등산의 대표적인 너덜이다.', '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1441458348, 126.9890013959, '수목원정원사업소 지질공원과 062-613-7853', 'http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=26&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE', 'http://tong.visitkorea.or.kr/cms/resource/17/2917917_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#등산','#공원']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.0,0.75,0.75,0.0]'::extensions.vector(8),
+  '덕산너덜 (무등산권 국가지질공원) 너덜은 너덜겅으로도 불리며 돌이 많이 흩어져 있는 비탈을 의미하는 순수한 우리말로, 중생대 백악기 후기(약 8,700~8,500만 년 전)에 생성된 주상절리대가 풍화되어 쪼개져 지금의 너덜이 되었다. 덕산너덜은 무등산 최대의 너덜로 길이 600m, 최대 폭 250m 규모로 펼쳐져 있으며 지공너덜과 함께 무등산의 대표적인 너덜이다. #산 #등산 #공원', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2614773'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1620893', '도림사(광주)', '광주 광산구', '광산구', '관광지', '도림사는 전남광주통합특별시 광산구 도림마을 입구에 있으며 노사 기정진(1798~1879), 난와 오계수(1843~1915), 후석 오준선(1851~1931)을 모신 사우이다. 기정진은 고종 3년(1866) 병인양요가 일어나자 병인소를 올려 외적을 방비하는 대책을 건의하였고, 위정척사사상의 기초를 마련하였다. 오계수는 기정진의 제자로 을미사변 후 일어난 을미의병에 참여하였다. 1910년 한일병합 이후 가마마을 뒤쪽 산에 있는 영사재에서 은거하면서 학문을 연구하였다. 오준선도 기정진의 제자로, 한일병합 이후 용진산에 들어가 용진정사를 세우고 성리학을 연구하면서 후진을 양성하였다. 1934년 나주오씨 문중과 오계수, 오준선의 후학들이 오계수, 오준선과 기정진을 기리기 위하여 도림사를 세웠다. 도림마을은 오계수와 오준선이 태어난 곳이며, 나주오씨 문중의 집성촌이다.', '전남광주통합특별시 광산구 도림하길 33 (도덕동)', null, 35.1666995405, 126.7007374404, '062-940-8225', 'https://www.grandculture.net/gwangju/toc/GC60001435', 'http://tong.visitkorea.or.kr/cms/resource/40/3366540_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#체험','#느린여행']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.0,0.0,0.5,0.0,0.5,0.0]'::extensions.vector(8),
+  '도림사(광주) 도림사는 전남광주통합특별시 광산구 도림마을 입구에 있으며 노사 기정진(1798~1879), 난와 오계수(1843~1915), 후석 오준선(1851~1931)을 모신 사우이다. 기정진은 고종 3년(1866) 병인양요가 일어나자 병인소를 올려 외적을 방비하는 대책을 건의하였고, 위정척사사상의 기초를 마련하였다. 오계수는 기정진의 제자로 을미사변 후 일어난 을미의병에 참여하였다. 1910년 한일병합 이후 가마마을 뒤쪽 산에 있는 영사재에서 은거하면서 학문을 연구하였다. 오준선도 기정진의 제자로, 한일병합 이후 용진산에 들어가 용진정사를 세우고 성리학을 연구하면서 후진을 양성하였다. 1934년 나주오씨 문중과 오계수, 오준선의 후학들이 오계수, 오준선과 기정진을 기리기 위하여 도림사를 세웠다. 도림마을은 오계수와 오준선이 태어난 곳이며, 나주오씨 문중의 집성촌이다. #산 #체험 #느린여행', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1620893'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1621168', '고싸움놀이전수교육관', '광주 남구', '남구', '문화·예술', '고싸움놀이전수교육관은 고싸움놀이 무형문화재 전수교육과 체험을 하며 궁극적으로는 고싸움놀이를 보존하기 위한 곳이다. 매년 국가 무형 유산 공개행사 ‘고싸움놀이축제’를 통하여 고싸움놀이가 지닌 고유한 멋과 즐거움을 일반 시민에게 전수, 보존하는데 힘쓰고 있다. 또한 체험과 교육 등의 다양한 프로그램을 연중 실시하여 우리 전통문화예술에 대한 사회적 향유 기회를 제공하고 있다. (출처 : 고싸움놀이전수교육관 홈페이지)', '전남광주통합특별시 남구 고싸움로 2', null, 35.0697294541, 126.837538861, null, 'http://www.gossaum.com/', 'http://tong.visitkorea.or.kr/cms/resource/87/3367587_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#문화유산','#전통','#예술','#체험','#교육','#축제','#실내','#비오는날','#아이동반']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.5,0.75,0.75,0.0,1.0,0.0,0.0,0.5]'::extensions.vector(8),
+  '고싸움놀이전수교육관 고싸움놀이전수교육관은 고싸움놀이 무형문화재 전수교육과 체험을 하며 궁극적으로는 고싸움놀이를 보존하기 위한 곳이다. 매년 국가 무형 유산 공개행사 ‘고싸움놀이축제’를 통하여 고싸움놀이가 지닌 고유한 멋과 즐거움을 일반 시민에게 전수, 보존하는데 힘쓰고 있다. 또한 체험과 교육 등의 다양한 프로그램을 연중 실시하여 우리 전통문화예술에 대한 사회적 향유 기회를 제공하고 있다. (출처 : 고싸움놀이전수교육관 홈페이지) #산 #문화유산 #전통 #예술 #체험 #교육 #축제 #실내 #비오는날 #아이동반', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1621168'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130032', '광산문화원', '광주 광산구', '광산구', '문화·예술', '광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 전남광주통합특별시 광산구는 지역의 역사와 궤를 같이하고 있을 뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 3개 층의 생활문화센터는 1층에 카페테리아, 갤러리, 아트숍이 2층에는 작은 도서실, 동아리실, 세미나실, 연습공간이 있고 3층은 공연장이다. 생활문화센터는 문화예술 활동을 지역사회로 연결하고 지역생활문화를 만들어나가는 커뮤니티 공간이다. 광산문화원은 문학제, 미술제, 향토문화제 사업 등을 진행하고 있으며, 이외에도 문화강좌, 동아리 활동 프로그램을 운영하고 있다.', '전남광주통합특별시 광산구 상무대로 265', null, 35.1424455318, 126.7951296891, null, 'http://gjgwangsan.kccf.or.kr', 'http://tong.visitkorea.or.kr/cms/resource/02/3366502_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#역사','#전통','#예술','#전시','#카페','#참여형','#공연','#실내','#비오는날']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 0.75, "food": 0.5, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.75,0.75,0.75,0.5,0.5,0.0,0.0,0.5]'::extensions.vector(8),
+  '광산문화원 광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 전남광주통합특별시 광산구는 지역의 역사와 궤를 같이하고 있을 뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 3개 층의 생활문화센터는 1층에 카페테리아, 갤러리, 아트숍이 2층에는 작은 도서실, 동아리실, 세미나실, 연습공간이 있고 3층은 공연장이다. 생활문화센터는 문화예술 활동을 지역사회로 연결하고 지역생활문화를 만들어나가는 커뮤니티 공간이다. 광산문화원은 문학제, 미술제, 향토문화제 사업 등을 진행하고 있으며, 이외에도 문화강좌, 동아리 활동 프로그램을 운영하고 있다. #산 #역사 #전통 #예술 #전시 #카페 #참여형 #공연 #실내 #비오는날', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130032'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130391', '광주 동구문화원', '광주 동구', '동구', '문화·예술', '지방 문화원 진흥 법에 의하여 1997년 8월 개원한 순수 민간 문화단체로 전통문화를 계승, 보존하고 지역 문화 사회 계발 및 향토문화 진흥을 목적으로 설립된 비영리 특별법인이다. 현재 ‘향토문화 알고, 찾고, 가꾸기’를 가치로 하여 전통문화의 파수꾼으로서의 역할을 수행하고 있다. 또 이를 기반으로 한민족의 우수한 문화와 현대 문화를 창달, 보존, 전승, 발전시키는 것을 주된 목적으로 하고 있다. 전남광주통합특별시 동구문화원에서는 향토 사료의 수집, 보존, 발표 및 민족 문화 정체성 확립, 지역 주민 자긍심 및 애향심 고취시키기 위해 지역(향토) 문화 조사, 연구 사업을 진행하고 있다. 또한 우리 문화의 세계화, 관광 및 문화 산업 창출을 모색하는 지역 축제 개발, 육성 사업을 하고 있으며 그 밖에 지역 주민 문화 의식 함양 사업과 지역 환경 보존 등 지역사회 발전을 위한 문화 활동을 펼치고 있다.', '전남광주통합특별시 동구 예술길 18-1', null, 35.150118962, 126.9181741721, null, 'http://gjdonggu.kccf.or.kr', 'http://tong.visitkorea.or.kr/cms/resource/81/3367381_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#역사','#전통','#예술','#전시','#참여형','#축제','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.5,0.75,0.75,0.0,0.5,0.0,0.0,0.5]'::extensions.vector(8),
+  '광주 동구문화원 지방 문화원 진흥 법에 의하여 1997년 8월 개원한 순수 민간 문화단체로 전통문화를 계승, 보존하고 지역 문화 사회 계발 및 향토문화 진흥을 목적으로 설립된 비영리 특별법인이다. 현재 ‘향토문화 알고, 찾고, 가꾸기’를 가치로 하여 전통문화의 파수꾼으로서의 역할을 수행하고 있다. 또 이를 기반으로 한민족의 우수한 문화와 현대 문화를 창달, 보존, 전승, 발전시키는 것을 주된 목적으로 하고 있다. 전남광주통합특별시 동구문화원에서는 향토 사료의 수집, 보존, 발표 및 민족 문화 정체성 확립, 지역 주민 자긍심 및 애향심 고취시키기 위해 지역(향토) 문화 조사, 연구 사업을 진행하고 있다. 또한 우리 문화의 세계화, 관광 및 문화 산업 창출을 모색하는 지역 축제 개발, 육성 사업을 하고 있으며 그 밖에 지역 주민 문화 의식 함양 사업과 지역 환경 보존 등 지역사회 발전을 위한 문화 활동을 펼치고 있다. #산 #역사 #전통 #예술 #전시 #참여형 #축제 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130391'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130208', '광주 북구문화원', '광주 북구', '북구', '문화·예술', '예로부터 전남광주통합특별시는 예향, 미향, 의향이라 불렸으며, 지금 전남광주통합특별시에서는 예향 전남광주통합특별시를 명실상부한 아시아문화중심도시로 만들기 위해 문화수도 조성사업을 통해 문화산업 인프라가 대폭 확대되고 있다. 북구는 전남광주통합특별시에서 가장 많은 인구와 넓은 면적을 가지고 있으며, 전남광주통합특별시의 역사와 문화를 촘촘히 새겨 놓은 전남광주통합특별시 역사문화의 생생한 지도라고 할 수 있다. 전남광주통합특별시의 역사와 전통을 바탕으로 출범한 광주북구문화원은 매년 음력 삼월 삼지 날 화전 부치기와 민속놀이 경연, 무드리국악경연대회, 가족사랑 그리기 글쓰기대회, 민속놀이 체험마당, 문화역사유적지 탐방, 가족단위의 창작(애송) 시 낭송대회 등 다양한 장르의 참여형 문화 행사를 개최하여 지역주민의 삶의 질을 향상하고 문화향수를 고양하기 위해 최선의 노력을 다하고 있다.', '전남광주통합특별시 북구 향토문화로 65 (중흥동)', null, 35.1728940911, 126.9136656663, null, 'http://gjbukgu.or.kr/', 'http://tong.visitkorea.or.kr/cms/resource/01/3421301_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#역사','#전통','#예술','#공방','#체험','#가족체험','#축제','#실내','#비오는날']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.5,0.75,0.75,0.0,0.75,0.0,0.0,0.5]'::extensions.vector(8),
+  '광주 북구문화원 예로부터 전남광주통합특별시는 예향, 미향, 의향이라 불렸으며, 지금 전남광주통합특별시에서는 예향 전남광주통합특별시를 명실상부한 아시아문화중심도시로 만들기 위해 문화수도 조성사업을 통해 문화산업 인프라가 대폭 확대되고 있다. 북구는 전남광주통합특별시에서 가장 많은 인구와 넓은 면적을 가지고 있으며, 전남광주통합특별시의 역사와 문화를 촘촘히 새겨 놓은 전남광주통합특별시 역사문화의 생생한 지도라고 할 수 있다. 전남광주통합특별시의 역사와 전통을 바탕으로 출범한 광주북구문화원은 매년 음력 삼월 삼지 날 화전 부치기와 민속놀이 경연, 무드리국악경연대회, 가족사랑 그리기 글쓰기대회, 민속놀이 체험마당, 문화역사유적지 탐방, 가족단위의 창작(애송) 시 낭송대회 등 다양한 장르의 참여형 문화 행사를 개최하여 지역주민의 삶의 질을 향상하고 문화향수를 고양하기 위해 최선의 노력을 다하고 있다. #산 #역사 #전통 #예술 #공방 #체험 #가족체험 #축제 #실내 #비오는날', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130208'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130808', '광주 송정다가치문화도서관', '광주 광산구', '광산구', '문화·예술', '전남광주통합특별시 광산구에 있는 교육청 산하의 평생교육기관이자 공공도서관이다. 지역 주민들에게 정보를 제공하고 다양한 연령의 도서관 이용자들에게 평생교육 기관으로서의 역할을 충실히 수행하고 있다. 체계적인 독서 및 정보서비스 제공과 더불어 모든 학생들이 다문화사회에 적응하며 미래사회를 주도적으로 살아갈 수 있도록 노력한다.', '전남광주통합특별시 광산구 송정공원로 8-13', null, 35.1449147758, 126.7998069918, null, 'https://lib.gen.go.kr/songjung/', 'http://tong.visitkorea.or.kr/cms/resource/27/1587327_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#예술','#교육','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.75,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '광주 송정다가치문화도서관 전남광주통합특별시 광산구에 있는 교육청 산하의 평생교육기관이자 공공도서관이다. 지역 주민들에게 정보를 제공하고 다양한 연령의 도서관 이용자들에게 평생교육 기관으로서의 역할을 충실히 수행하고 있다. 체계적인 독서 및 정보서비스 제공과 더불어 모든 학생들이 다문화사회에 적응하며 미래사회를 주도적으로 살아갈 수 있도록 노력한다. #산 #예술 #교육 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130808'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2733545', '광주 전통문화관', '광주 동구', '동구', '문화·예술', '전통문화관은 전남광주통합특별시의 자랑스러운 전통문화를 보존 및 전수하는 법고창신(法古創新)의 공간이자 함께 만들고 배우는 창작공방(創作工房)이다. 무등산 국립공원 초입에 위치한 전통문화관은 2012년 전통한옥 무송원(撫松院)을 이설 및 복원해 조성하고, 무형문화유산 작품전시관과 전수실 및 서석당, 입석당, 너덜마당 등의 문화공간이 있다. 시민 누구나 즐길 수 있는 주말상설공연인 토요상설공연과 무등풍류뎐, 무형문화재 대시 민 교육인 전통문화예술강좌, 내외국인 관광객 및 청소년을 위한 전통문화예술체험, 공예 및 전통음식 체험 등의 친환경적 프로그램, 그리고 무등산 문화자원을 기반으로 한 특별기획프로그램과 무등산권 활성화를 위한 10월의 무등울림 축제를 진행하고 있다. 아름답고 넉넉한 무등의 품속에서 우리의 옛것을 보고 배우며 즐길 수 있는 전통문화관이다.', '전남광주통합특별시 동구 의재로 222', null, 35.1336797291, 126.9523771168, null, 'http://www.gtcc.or.kr/', 'http://tong.visitkorea.or.kr/cms/resource/46/2733546_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#문화유산','#전통','#예술','#전시','#전통음식','#체험','#교육','#등산']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 1.0, "food": 0.5, "activity": 1.0, "sports": 0.5, "healing": 0.5, "festival": 0.75}'::jsonb,
+  '[0.75,0.75,1.0,0.5,1.0,0.5,0.5,0.75]'::extensions.vector(8),
+  '광주 전통문화관 전통문화관은 전남광주통합특별시의 자랑스러운 전통문화를 보존 및 전수하는 법고창신(法古創新)의 공간이자 함께 만들고 배우는 창작공방(創作工房)이다. 무등산 국립공원 초입에 위치한 전통문화관은 2012년 전통한옥 무송원(撫松院)을 이설 및 복원해 조성하고, 무형문화유산 작품전시관과 전수실 및 서석당, 입석당, 너덜마당 등의 문화공간이 있다. 시민 누구나 즐길 수 있는 주말상설공연인 토요상설공연과 무등풍류뎐, 무형문화재 대시 민 교육인 전통문화예술강좌, 내외국인 관광객 및 청소년을 위한 전통문화예술체험, 공예 및 전통음식 체험 등의 친환경적 프로그램, 그리고 무등산 문화자원을 기반으로 한 특별기획프로그램과 무등산권 활성화를 위한 10월의 무등울림 축제를 진행하고 있다. 아름답고 넉넉한 무등의 품속에서 우리의 옛것을 보고 배우며 즐길 수 있는 전통문화관이다. #자연 #산 #문화유산 #전통 #예술 #전시 #전통음식 #체험 #교육 #등산', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2733545'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130033', '광주광역시 서구문화원', '광주 서구', '서구', '문화·예술', '전남광주통합특별시 서구 금호동에 있는 지역 문화원으로 지역 향토문화의 보존과 전승, 발굴 및 계발을 통하여 지역 문화 발전을 위한 교육 등의 지역민의 문화 향유권을 제공하기 위하여 설립되었다. 광주광역시 서구문화원의 주요 사업에는 빛고을문화교실, 전문인력양성, 문화유산발굴, 문화예술축제, 자료발간사업 등을 진행한다. 또한 전남광주통합특별시 서구문화원에서는 광주 지역 문화에 대한 이해의 폭을 넓힐 수 있도록 수시로 문화답사를 펼치고 있다.', '전남광주통합특별시 서구 풍금로 182', null, 35.1318478187, 126.8599131134, null, 'http://www.gjsgcc.or.kr/', 'http://tong.visitkorea.or.kr/cms/resource/51/3367251_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#문화유산','#예술','#교육','#참여형','#축제','#야경','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.5,0.5,0.75,0.0,0.75,0.0,0.0,0.75]'::extensions.vector(8),
+  '광주광역시 서구문화원 전남광주통합특별시 서구 금호동에 있는 지역 문화원으로 지역 향토문화의 보존과 전승, 발굴 및 계발을 통하여 지역 문화 발전을 위한 교육 등의 지역민의 문화 향유권을 제공하기 위하여 설립되었다. 광주광역시 서구문화원의 주요 사업에는 빛고을문화교실, 전문인력양성, 문화유산발굴, 문화예술축제, 자료발간사업 등을 진행한다. 또한 전남광주통합특별시 서구문화원에서는 광주 지역 문화에 대한 이해의 폭을 넓힐 수 있도록 수시로 문화답사를 펼치고 있다. #산 #문화유산 #예술 #교육 #참여형 #축제 #야경 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130033'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2779116', '광주비엔날레전시관', '광주 북구', '북구', '문화·예술', '광주비엔날레 전시관은 1994년 창설된 이래 수많은 전시회를 통해 대한민국을 비롯한 세계 미술 문화에 큰 기여를 해오고 있는 곳이다. 비엔날레를 통해 수많은 사람들에게 즐거움과 삶의 의욕을 줄 수 있도록 노력하고 있으며 한국 작가들이 세계로 진출하기 위한 통로 역할을 하고 있다. 특히, 비엔날레 전시회는 일회성 행사로 끝나지 않고 비엔날레의 터전인 전남광주통합특별시의 지역적 가치를 높이며 지속 가능한 플랫폼이 되기 위해 다양한 시도를 하고 있다. 코로나 시대를 맞아 온라인 서비스도 진행해 현장 방문이 어려운 시민들에게 전시 서비스를 체험할 수 있도록 제공하고 있다. 광주디자인비엔날레 전시 기간에는 본 전시, 특별전, 국제 학술 행사 등 다양한 행사와 전시 관람, 체험도 가능하다.', '전남광주통합특별시 북구 비엔날레로 111 (용봉동)', null, 35.1826203741, 126.890259159, null, 'http://www.gwangjubiennale.org/', 'http://tong.visitkorea.or.kr/cms/resource/79/3351379_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#박물관','#예술','#전시','#체험','#축제','#시즌한정','#실내','#비오는날','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.75,1.0,0.0,0.5,0.0,0.0,0.75]'::extensions.vector(8),
+  '광주비엔날레전시관 광주비엔날레 전시관은 1994년 창설된 이래 수많은 전시회를 통해 대한민국을 비롯한 세계 미술 문화에 큰 기여를 해오고 있는 곳이다. 비엔날레를 통해 수많은 사람들에게 즐거움과 삶의 의욕을 줄 수 있도록 노력하고 있으며 한국 작가들이 세계로 진출하기 위한 통로 역할을 하고 있다. 특히, 비엔날레 전시회는 일회성 행사로 끝나지 않고 비엔날레의 터전인 전남광주통합특별시의 지역적 가치를 높이며 지속 가능한 플랫폼이 되기 위해 다양한 시도를 하고 있다. 코로나 시대를 맞아 온라인 서비스도 진행해 현장 방문이 어려운 시민들에게 전시 서비스를 체험할 수 있도록 제공하고 있다. 광주디자인비엔날레 전시 기간에는 본 전시, 특별전, 국제 학술 행사 등 다양한 행사와 전시 관람, 체험도 가능하다. #박물관 #예술 #전시 #체험 #축제 #시즌한정 #실내 #비오는날 #아이동반 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2779116'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '129761', '광주시립미술관', '광주 북구', '북구', '문화·예술', '광주시립미술관은 1992년 지역 문화예술 발전을 위해 국내 공립미술관 중 최초로 개관하여 1995년 광주비엔날레 창설의 기초를 마련하는데 크게 일조하였으며, 시민들에게는 다양한 문화서비스를 제공하기 위해 노력해 왔다. 전남광주통합특별시의 서북쪽 관문인 중외공원 내에 2007년 신축 이전한 현재 미술관은 광주비엔날레, 국립아시아문화전당과 함께 지역 미술문화 발전은 물론, 세계 주요 미술관들과 국제교류의 폭을 넓혀 나가고 있다. 본관은 총 6개의 전시실과 어린이미술관, 문화센터, 도서자료실, 세미나실, 야외공연장, 카페 등을 갖추고 있다. 광주시립미술관이 위치한 중외공원은 광주비엔날레관, 광주시립민속박물관, 국립광주박물관, 광주문화예술회관 등이 함께 자리하고 있어, 자연과 문화예술이 함께 숨 쉬는 전남광주통합특별시의 대표 문화 명소이기도 하다. (출처 : 광주시립미술관 홈페이지)', '전남광주통합특별시 북구 하서로 52', null, 35.1832174547, 126.8858428681, null, 'http://artmuse.gwangju.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/11/3368411_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#박물관','#예술','#전시','#카페','#가족체험','#공원','#공연','#실내','#비오는날']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 1.0, "food": 0.5, "activity": 0.5, "sports": 0.0, "healing": 0.5, "festival": 0.5}'::jsonb,
+  '[0.5,0.5,1.0,0.5,0.5,0.0,0.5,0.5]'::extensions.vector(8),
+  '광주시립미술관 광주시립미술관은 1992년 지역 문화예술 발전을 위해 국내 공립미술관 중 최초로 개관하여 1995년 광주비엔날레 창설의 기초를 마련하는데 크게 일조하였으며, 시민들에게는 다양한 문화서비스를 제공하기 위해 노력해 왔다. 전남광주통합특별시의 서북쪽 관문인 중외공원 내에 2007년 신축 이전한 현재 미술관은 광주비엔날레, 국립아시아문화전당과 함께 지역 미술문화 발전은 물론, 세계 주요 미술관들과 국제교류의 폭을 넓혀 나가고 있다. 본관은 총 6개의 전시실과 어린이미술관, 문화센터, 도서자료실, 세미나실, 야외공연장, 카페 등을 갖추고 있다. 광주시립미술관이 위치한 중외공원은 광주비엔날레관, 광주시립민속박물관, 국립광주박물관, 광주문화예술회관 등이 함께 자리하고 있어, 자연과 문화예술이 함께 숨 쉬는 전남광주통합특별시의 대표 문화 명소이기도 하다. (출처 : 광주시립미술관 홈페이지) #자연 #박물관 #예술 #전시 #카페 #가족체험 #공원 #공연 #실내 #비오는날', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '129761'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '969963', '광주야외음악당', '광주 서구', '서구', '문화·예술', '전남광주통합특별시청 옆 문화광장 내에 위치한 광주야외음악당은 2006년 5월 설립한 이동형 객석 2,000석 규모의 야외음악 공연장이다. 최신 음향장비 및 무대, 조명시설을 갖추고 있으며, 클래식, 국악 등의 음악공연을 비롯한 각종 문화공연 및 전시행사가 열린다. 광주야외음악당은 광주시민들에게 특별한 공간이다. 전남광주통합특별시 또는 우리나라에 좋은 일이 생기거나 생기길 희망할 때면 이곳에 모여 자축하거나 기원의 에너지를 모으는 장소로 활용되는 곳이다.', '전남광주통합특별시 서구 내방로 111 (치평동)', null, 35.160019493, 126.8513576102, null, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1246', 'http://tong.visitkorea.or.kr/cms/resource/64/3367264_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#예술','#전시','#축제','#야경','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.75]'::extensions.vector(8),
+  '광주야외음악당 전남광주통합특별시청 옆 문화광장 내에 위치한 광주야외음악당은 2006년 5월 설립한 이동형 객석 2,000석 규모의 야외음악 공연장이다. 최신 음향장비 및 무대, 조명시설을 갖추고 있으며, 클래식, 국악 등의 음악공연을 비롯한 각종 문화공연 및 전시행사가 열린다. 광주야외음악당은 광주시민들에게 특별한 공간이다. 전남광주통합특별시 또는 우리나라에 좋은 일이 생기거나 생기길 희망할 때면 이곳에 모여 자축하거나 기원의 에너지를 모으는 장소로 활용되는 곳이다. #예술 #전시 #축제 #야경 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '969963'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '3380159', '광주자동차극장', '광주 북구', '북구', '문화·예술', '정통 자동차극장의 매력과 더불어 우치공원동물원과 패밀리랜드 놀이공원이 연계된 국내 유일 카니발형 자동차극장으로 사계절 모두 색다른 분위기를 연출하는 국내 최고의 야외자동차극장(2 개관)이다. 맛있는 간식과 함께 영화를 관람하며 대화를 할 수 있다. 애견과 함께 관람할 수 있으며, 극장 내 마련된 스낵바와 셀프코너에서 간단한 스낵, 음료 등도 즐길 수 있어서 자유로운 분위기에서 영화를 즐길 수 있는 곳이다. 상영작의 기준은 기존 멀티플렉스와 개봉 시기가 동일한 엄선된 영화를 선정한다. 대형 화면의 매력을 느끼기 위해 방문한 고객을 위한 최상의 맞춤 주차 서비스를 통해 최상의 관람 환경을 제공하는 전남광주통합특별시의 야간문화명소이다.', '전남광주통합특별시 북구 우치로 649 (생용동)', null, 35.2206801686, 126.9024237945, null, 'http://gwangjudit.co.kr', null, 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, null, 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#예술','#공연','#레저','#공원','#야간','#시즌한정','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.5, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,1.0,0.0,0.5,0.0,0.5,0.75]'::extensions.vector(8),
+  '광주자동차극장 정통 자동차극장의 매력과 더불어 우치공원동물원과 패밀리랜드 놀이공원이 연계된 국내 유일 카니발형 자동차극장으로 사계절 모두 색다른 분위기를 연출하는 국내 최고의 야외자동차극장(2 개관)이다. 맛있는 간식과 함께 영화를 관람하며 대화를 할 수 있다. 애견과 함께 관람할 수 있으며, 극장 내 마련된 스낵바와 셀프코너에서 간단한 스낵, 음료 등도 즐길 수 있어서 자유로운 분위기에서 영화를 즐길 수 있는 곳이다. 상영작의 기준은 기존 멀티플렉스와 개봉 시기가 동일한 엄선된 영화를 선정한다. 대형 화면의 매력을 느끼기 위해 방문한 고객을 위한 최상의 맞춤 주차 서비스를 통해 최상의 관람 환경을 제공하는 전남광주통합특별시의 야간문화명소이다. #예술 #공연 #레저 #공원 #야간 #시즌한정 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '3380159'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2009775', '국립아시아문화전당', '광주 동구', '동구', '문화·예술', '국립아시아문화전당은 아시아의 문화 교류와, 문화자원 수집·연구, 콘텐츠의 창·제작, 전시, 공연, 아카이브, 유통이 한 곳에서 모두 이루어지는 세계적인 복합문화예술공간이다. 국립아시아문화전당의 대표적인 콘텐츠를 보여주는 상설전시와 기획전시, 레지던시 전시, 특별전시 등 대중과 함께 공감하고 즐기는 약 40개의 다양한 전시를 매년 선보이고 있다. 전시는 민주주의와 인권의 요람인 광주의 지역적 정체성을 근간으로 전 세계인들이 공감하는 ‘시대정신’을 반영하고 있다. 또한 창의성, 혁신성, 전문성을 바탕으로 과학기술과 융합된 예술적 표현 매체를 적극 활용하는 전시를 선보임으로써 동시대 미술의 다양한 가능성을 관람객들과 공유하고 있다. 국립아시아문화전당은 콘서트, 연극, 무용, 클래식, 토크쇼 등 장르에 구애받지 않는 아시아의 동시대 담론을 소재로 한 실험적 공연을 매년 30회 이상 제작하고 있다. 국내외 유수 창작진과 협업하여 ACC 고유의 아시아콘텐츠 공연, 국제공동 창·제작 공연, 어린이·청소년을 위한 창·제작 공연을 개발하고 있다. 또한, 남녀노소 누구나 즐길 수 있는 다양한 브런치 콘서트, 슈퍼클래식, 빅도어 시네마, 수요극장, 지역협력 공연, 송년음악회, 신년음악회 등의 공연도 진행하고 있다. 5‧18민주화운동의 민주·인권·평화 정신을 확산하기 위해 매년 5월 ''ACC오월문화주간''에서 오월어머니의 노래, 오월스토리 퍼즐, 오월이야기 등 다양한 전시, 공연, 행사 등을 선보이고 있다. 또한, 야외 공간에서 즐기는 다채로운 축제와 행사를 연중 운영하고 있다. 아시아문화주간, 아시아문학페스티벌, ACC 월드뮤직페스티벌, HOW FUN, ACT 페스티벌, 책 읽는 ACC, 요가축제, ACC 시티런 등 전당 곳곳에서 방문객들과 함께 참여하는 다양하고 역동적인 프로그램이 펼쳐진다. 어린이들의 꿈이 성장하는 창의 예술 어린이 문화 놀이터인 어린이문화원에서는 체험 전시, 도서관, 공연, 창의예술교육 등 재미와 즐거움을 체험하고 창작 놀이를 통해 감성과 창의성을 키울 수 있', '전남광주통합특별시 동구 문화전당로 38 (광산동)', null, 35.1460861028, 126.9192936186, null, 'http://www.acc.go.kr', 'http://tong.visitkorea.or.kr/cms/resource/59/3083359_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#민주인권','#예술','#전시','#체험','#교육','#축제','#공연','#실내','#비오는날']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 1.0, "food": 0.0, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.5,0.5,1.0,0.0,1.0,0.0,0.0,0.75]'::extensions.vector(8),
+  '국립아시아문화전당 국립아시아문화전당은 아시아의 문화 교류와, 문화자원 수집·연구, 콘텐츠의 창·제작, 전시, 공연, 아카이브, 유통이 한 곳에서 모두 이루어지는 세계적인 복합문화예술공간이다. 국립아시아문화전당의 대표적인 콘텐츠를 보여주는 상설전시와 기획전시, 레지던시 전시, 특별전시 등 대중과 함께 공감하고 즐기는 약 40개의 다양한 전시를 매년 선보이고 있다. 전시는 민주주의와 인권의 요람인 광주의 지역적 정체성을 근간으로 전 세계인들이 공감하는 ‘시대정신’을 반영하고 있다. 또한 창의성, 혁신성, 전문성을 바탕으로 과학기술과 융합된 예술적 표현 매체를 적극 활용하는 전시를 선보임으로써 동시대 미술의 다양한 가능성을 관람객들과 공유하고 있다. 국립아시아문화전당은 콘서트, 연극, 무용, 클래식, 토크쇼 등 장르에 구애받지 않는 아시아의 동시대 담론을 소재로 한 실험적 공연을 매년 30회 이상 제작하고 있다. 국내외 유수 창작진과 협업하여 ACC 고유의 아시아콘텐츠 공연, 국제공동 창·제작 공연, 어린이·청소년을 위한 창·제작 공연을 개발하고 있다. 또한, 남녀노소 누구나 즐길 수 있는 다양한 브런치 콘서트, 슈퍼클래식, 빅도어 시네마, 수요극장, 지역협력 공연, 송년음악회, 신년음악회 등의 공연도 진행하고 있다. 5‧18민주화운동의 민주·인권·평화 정신을 확산하기 위해 매년 5월 ''ACC오월문화주간''에서 오월어머니의 노래, 오월스토리 퍼즐, 오월이야기 등 다양한 전시, 공연, 행사 등을 선보이고 있다. 또한, 야외 공간에서 즐기는 다채로운 축제와 행사를 연중 운영하고 있다. 아시아문화주간, 아시아문학페스티벌, ACC 월드뮤직페스티벌, HOW FUN, ACT 페스티벌, 책 읽는 ACC, 요가축제, ACC 시티런 등 전당 곳곳에서 방문객들과 함께 참여하는 다양하고 역동적인 프로그램이 펼쳐진다. 어린이들의 꿈이 성장하는 창의 예술 어린이 문화 놀이터인 어린이문화원에서는 체험 전시, 도서관, 공연, 창의예술교육 등 재미와 즐거움을 체험하고 창작 놀이를 통해 감성과 창의성을 키울 수 있 #산 #민주인권 #예술 #전시 #체험 #교육 #축제 #공연 #실내 #비오는날', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2009775'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130807', '금호평생교육관', '광주 남구', '남구', '문화·예술', '금호평생교육관은 전남광주통합특별시 남구에 위치한 문화시설이다. 지역 주민에게 좋은 환경을 제공하기 위해 리모델링을 거쳐 2020년 1월 1일 재개관하였다. 어린이실 온돌방을 신설하고, 평생학습강의실을 확충, 노트북 열람실을 신설하였다. 금호평생교육관의 상징과도 같았던 중앙정원은 지역 주민들이 앉아서 책을 읽을 수 있는, 차양이 설치된 쾌적한 휴게 시설로 개선하였다. 금호평생교육관은 약 18만 권가량의 장서를 보유하고 있으며, 보유 장서 중 DVD를 포함한 9천여 권가량의 비도서를 보유하고 있다. 일반 시민을 대상으로는 인문교양, 문화예술 및 직업능력교육 분야 등 다양한 평생교육 프로그램을 운영한다.', '전남광주통합특별시 남구 중앙로 15', null, 35.1450970088, 126.9005647433, null, 'http://lib.gen.go.kr/geumho/', 'http://tong.visitkorea.or.kr/cms/resource/93/3366693_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#정원','#예술','#교육','#가족체험','#공원','#실내','#비오는날','#아이동반','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.75,0.0,0.75,0.0,0.5,0.0]'::extensions.vector(8),
+  '금호평생교육관 금호평생교육관은 전남광주통합특별시 남구에 위치한 문화시설이다. 지역 주민에게 좋은 환경을 제공하기 위해 리모델링을 거쳐 2020년 1월 1일 재개관하였다. 어린이실 온돌방을 신설하고, 평생학습강의실을 확충, 노트북 열람실을 신설하였다. 금호평생교육관의 상징과도 같았던 중앙정원은 지역 주민들이 앉아서 책을 읽을 수 있는, 차양이 설치된 쾌적한 휴게 시설로 개선하였다. 금호평생교육관은 약 18만 권가량의 장서를 보유하고 있으며, 보유 장서 중 DVD를 포함한 9천여 권가량의 비도서를 보유하고 있다. 일반 시민을 대상으로는 인문교양, 문화예술 및 직업능력교육 분야 등 다양한 평생교육 프로그램을 운영한다. #정원 #예술 #교육 #가족체험 #공원 #실내 #비오는날 #아이동반 #주차가능', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130807'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1745001', '빛고을시민문화관', '광주 남구', '남구', '문화·예술', '빛고을시민문화관은 아시아문화중심도시 전남광주통합특별시의 새로운 복합문화시설로서 시민 정서 함양과 지역 문화예술의 창달을 위해 시민본위의 공연·전시, 쾌적하고 친숙한 문화예술공간 제공에 중점을 두고 운영하고 있다. 옛 구동체육관 부지에 2008년 11월 착공해 2010년 2월에 개관했다. 지하 2층, 지상 4층, 연면적 14,049㎡ 규모이며, 공연장(715석), 전시실, 다목적실 등의 시설을 갖추고 있다. 지역 주민들을 위한 공연·전시 등 각종 문화행사와 각종 문화강좌를 위한 공간으로 사용된다.', '전남광주통합특별시 남구 천변좌로338번길 7', null, 35.1479301594, 126.9086750662, null, 'http://bitculture.gjcf.or.kr', 'http://tong.visitkorea.or.kr/cms/resource/05/3366705_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#예술','#전시','#스포츠','#축제','#야경','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.5, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,0.75,0.0,0.0,0.5,0.0,0.75]'::extensions.vector(8),
+  '빛고을시민문화관 빛고을시민문화관은 아시아문화중심도시 전남광주통합특별시의 새로운 복합문화시설로서 시민 정서 함양과 지역 문화예술의 창달을 위해 시민본위의 공연·전시, 쾌적하고 친숙한 문화예술공간 제공에 중점을 두고 운영하고 있다. 옛 구동체육관 부지에 2008년 11월 착공해 2010년 2월에 개관했다. 지하 2층, 지상 4층, 연면적 14,049㎡ 규모이며, 공연장(715석), 전시실, 다목적실 등의 시설을 갖추고 있다. 지역 주민들을 위한 공연·전시 등 각종 문화행사와 각종 문화강좌를 위한 공간으로 사용된다. #예술 #전시 #스포츠 #축제 #야경 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1745001'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2605338', '수피아여자중고등학교', '광주 남구', '남구', '문화·예술', '수피아여자중고등학교는 전남광주통합특별시 남구 양림동에 있는 사립학교로 1908년 배유지(Dr. Eugene Bell) 선교사에 의해 설립됐다. 교육사적·종교사적으로 가치 있는 건축물을 보유한 이곳은 광주 지역 근대건축의 변천사를 여실히 보여주고 있다. 수피아여자중고등학교에서 가장 오래된 건물은 구 수피아여학교 수피아홀이다. 당시에 일반적으로 사용되던 붉은 벽돌이 아니라 회색 벽돌로 지은 것이 특징으로, 중앙의 현관 포치 위쪽에 박공을 두어 정면성을 강조하고 있다. 배유지기념예배당은 학교 설립자인 배유지 선교사를 추모하기 위해 건립한 건물로 규모는 작고 아담하지만, 장식적인 요소가 많고 건축 기법이 독특하고 조화롭다. 윈스브로우 여사의 생일 헌금으로 건축한 구 수피아여학교 윈스브로우홀은 좌우 대칭의 중복도형으로 정면 출입구에 설치한 아담한 돌출 현관 포치가 인상적이다. 학교 후문 안에는 1995년 건립한 광주 3·1 만세 운동 기념비가 위치해 있다. 앞면에는 ‘광주 3.1 만세 운동 기념’이 새겨져 있고, 뒷면은 광주 3.1 만세 운동에 앞장섰기 때문에 옥고를 치른 수피아 학생들의 이름을 새겨 길이 기념하고자 했다.', '전남광주통합특별시 남구 백서로 13 (양림동)', null, 35.1368703131, 126.9096335919, null, null, 'http://tong.visitkorea.or.kr/cms/resource/79/3366679_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#역사','#근대문화','#예술','#교육','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.75,0.75,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '수피아여자중고등학교 수피아여자중고등학교는 전남광주통합특별시 남구 양림동에 있는 사립학교로 1908년 배유지(Dr. Eugene Bell) 선교사에 의해 설립됐다. 교육사적·종교사적으로 가치 있는 건축물을 보유한 이곳은 광주 지역 근대건축의 변천사를 여실히 보여주고 있다. 수피아여자중고등학교에서 가장 오래된 건물은 구 수피아여학교 수피아홀이다. 당시에 일반적으로 사용되던 붉은 벽돌이 아니라 회색 벽돌로 지은 것이 특징으로, 중앙의 현관 포치 위쪽에 박공을 두어 정면성을 강조하고 있다. 배유지기념예배당은 학교 설립자인 배유지 선교사를 추모하기 위해 건립한 건물로 규모는 작고 아담하지만, 장식적인 요소가 많고 건축 기법이 독특하고 조화롭다. 윈스브로우 여사의 생일 헌금으로 건축한 구 수피아여학교 윈스브로우홀은 좌우 대칭의 중복도형으로 정면 출입구에 설치한 아담한 돌출 현관 포치가 인상적이다. 학교 후문 안에는 1995년 건립한 광주 3·1 만세 운동 기념비가 위치해 있다. 앞면에는 ‘광주 3.1 만세 운동 기념’이 새겨져 있고, 뒷면은 광주 3.1 만세 운동에 앞장섰기 때문에 옥고를 치른 수피아 학생들의 이름을 새겨 길이 기념하고자 했다. #역사 #근대문화 #예술 #교육 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.45,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2605338'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '3460731', '광주여성영화제', '광주 동구', '동구', '축제·공연', '매년 광주에서 열리는 이 축제는 영화 상영뿐만 아니라 워크숍, 세미나, 패널 토크 등도 진행되어, 영화에 대한 심도 깊은 논의와 함께 여성 영화인의 창작 환경을 향상시키는 데 기여한다. 광주여성영화제는 여성 영화인의 네트워크를 활성화시키고, 성평등과 사회적 메시지를 전파하는 중요한 문화 행사로 자리 잡았다.', '전남광주통합특별시 동구 중앙로160번길 16-7 (불로동)', null, 35.1468609363, 126.9146634529, '062-515-6560', 'http://www.wffig.com/', 'http://tong.visitkorea.or.kr/cms/resource/26/3460726_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#공연','#공방','#참여형','#축제']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
+  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
+  '광주여성영화제 매년 광주에서 열리는 이 축제는 영화 상영뿐만 아니라 워크숍, 세미나, 패널 토크 등도 진행되어, 영화에 대한 심도 깊은 논의와 함께 여성 영화인의 창작 환경을 향상시키는 데 기여한다. 광주여성영화제는 여성 영화인의 네트워크를 활성화시키고, 성평등과 사회적 메시지를 전파하는 중요한 문화 행사로 자리 잡았다. #공연 #공방 #참여형 #축제', '1.0.0',
+  'import', 0.47,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '3460731'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '131450', '광주북구청소년수련관', '광주 북구', '북구', '체험·스포츠', '전남광주통합특별시 북구 문흥동 문화공원에 위치하고 있는 광주북구청소년수련관은 조용하고 쾌적한 도심 속의 휴식공간으로 다양한 편의시설을 갖추고 있다. 또한 청소년들이 언제든지 이용할 수 있는 운동장과 체육시설, 공연장이 있어 청소년들의 문화생활의 선구자적 역할을 수행하고 있다. 또한 청소년들이 영화를 만들 수 있는 청소년멀티미디어센터, 최신 뮤직비디오와 영상, 음악 등을 감상할 수 있는 음악감상실 등 다양한 시설을 갖추어 청소년들이 바르고 슬기롭게 자랄 수 있도록 다양한 프로그램과 이벤트 행사를 개최하고 있다. 청소년수련관에서는 청소년의 문화의식 함양, 정신수련 등을 위해 청소년 대상의 다양한 프로그램을 개발, 운영중에 있다. 독서, 보드게임, 미술, 논술, 오카리나, 회화력영어 등의 문화 생활을 위한 사회교육을 운영하고 있으며, 이외에 댄스스포츠, 챠밍디스코, 에어로빅, 요가 등 생활체육 분야의 교육도 진행중이다.', '전남광주통합특별시 북구 대천로 86 (문흥동)', null, 35.1848927862, 126.9166678776, null, 'http://www.bukguyouth.net', 'http://tong.visitkorea.or.kr/cms/resource/16/1892816_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#예술','#공연','#체험','#교육','#스포츠','#힐링','#조용한','#축제']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,0.75,0.0,0.75,0.75,0.75,0.75]'::extensions.vector(8),
+  '광주북구청소년수련관 전남광주통합특별시 북구 문흥동 문화공원에 위치하고 있는 광주북구청소년수련관은 조용하고 쾌적한 도심 속의 휴식공간으로 다양한 편의시설을 갖추고 있다. 또한 청소년들이 언제든지 이용할 수 있는 운동장과 체육시설, 공연장이 있어 청소년들의 문화생활의 선구자적 역할을 수행하고 있다. 또한 청소년들이 영화를 만들 수 있는 청소년멀티미디어센터, 최신 뮤직비디오와 영상, 음악 등을 감상할 수 있는 음악감상실 등 다양한 시설을 갖추어 청소년들이 바르고 슬기롭게 자랄 수 있도록 다양한 프로그램과 이벤트 행사를 개최하고 있다. 청소년수련관에서는 청소년의 문화의식 함양, 정신수련 등을 위해 청소년 대상의 다양한 프로그램을 개발, 운영중에 있다. 독서, 보드게임, 미술, 논술, 오카리나, 회화력영어 등의 문화 생활을 위한 사회교육을 운영하고 있으며, 이외에 댄스스포츠, 챠밍디스코, 에어로빅, 요가 등 생활체육 분야의 교육도 진행중이다. #예술 #공연 #체험 #교육 #스포츠 #힐링 #조용한 #축제', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '131450'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2739385', '광주시패밀리랜드 카라반캠핑장', '광주 북구', '북구', '체험·스포츠', '광주 패밀리랜드 카라반 캠핑장은 우치공원 내 잔디광장 7천여㎡ 부지에 조성된 럭셔리 캠핑장으로 도심 속 자연에서 낭만을 즐길 수 있는 힐링 공간이다. 모든 카라반은 최신형 편의시설이 갖춰져 있으며, 국내에서 볼 수 없는 미국 포레스트리비사의 초대형 카라반을 설치하여 압도적인 스케일을 자랑한다. 캠핑과 함께 체육, 예술, 놀이, 관람 등 다양한 문화생활을 즐길 수 있는 시설이 마련되어 있어 가족, 연인, 친구와 함께 다양한 체험을 경험하실 수 있다. 카라반은 4인용 루비, 6인용 에메랄드 A(입식 테이블), 에메랄드 B(좌식 테이블), 다이아몬드 등 4가지 타입으로 구성되어 있다.', '전남광주통합특별시 북구 우치로 677 (생용동)', null, 35.2237436949, 126.9014654688, null, 'https://familylandcamping.com/index.html', 'http://tong.visitkorea.or.kr/cms/resource/42/2739842_image2_1.JPG', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#예술','#체험','#가족체험','#스포츠','#힐링','#피크닉','#아이동반']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.5,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
+  '광주시패밀리랜드 카라반캠핑장 광주 패밀리랜드 카라반 캠핑장은 우치공원 내 잔디광장 7천여㎡ 부지에 조성된 럭셔리 캠핑장으로 도심 속 자연에서 낭만을 즐길 수 있는 힐링 공간이다. 모든 카라반은 최신형 편의시설이 갖춰져 있으며, 국내에서 볼 수 없는 미국 포레스트리비사의 초대형 카라반을 설치하여 압도적인 스케일을 자랑한다. 캠핑과 함께 체육, 예술, 놀이, 관람 등 다양한 문화생활을 즐길 수 있는 시설이 마련되어 있어 가족, 연인, 친구와 함께 다양한 체험을 경험하실 수 있다. 카라반은 4인용 루비, 6인용 에메랄드 A(입식 테이블), 에메랄드 B(좌식 테이블), 다이아몬드 등 4가지 타입으로 구성되어 있다. #자연 #예술 #체험 #가족체험 #스포츠 #힐링 #피크닉 #아이동반', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2739385'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2728916', '승촌보오토캠핑장', '광주 남구', '남구', '체험·스포츠', '영산강 승촌보 캠핑장은 시내에서의 접근성이 아주 좋고, 유적공원부터 문화장터, 문화관, 자전거 길, 선착장, 축구장, 캠핑장 등등 다양한 볼거리와 즐길 거리를 갖추고 있어 당일치기로도, 1박 2일 캠핑 장소로 최적의 환경을 갖추고 있다. 2012년 개장했으며 9980㎡의 부지에 캠핑장 53면을 갖추고 있고 세척장, 화장실, 샤워장, 전기시설을 이용할 수 있다. 또한 화로대 사용이 가능해 바비큐 파티도 가능하다. 캠핑 외에도 즐길 거리가 많은 이곳은 넓게 펼쳐진 산책로에서 산책을 하거나 자전거길에서 영산강을 보며 나들이하기에도 좋다. 또한 영산강문화관에서 영산강과 승촌보에 대한 소개를 담은 전시를 볼 수 있고 전망대에서 탁 트인 풍경과 경치를 감상할 수도 있다. 운동을 좋아하는 이들에게도 이곳은 최적의 장소인데, 근처에 축구장이 있어 다양한 스포츠를 즐기며 친구, 가족들과 재미있는 시간을 보낼 수 있다.', '전남광주통합특별시 남구 승촌보길 90 (승촌동)', null, 35.0660063695, 126.7611512602, null, 'https://camp.xticket.kr/web/main?shopEncode=a1535c44b7b5b3ab38fd902f0c58f8600f1a57e45999ac4b1a7b8c321f1d2df5', 'http://tong.visitkorea.or.kr/cms/resource/87/2728987_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#전망','#역사','#전시','#체험','#가족체험','#축구','#스포츠','#산책','#공원']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[0.75,0.5,0.5,0.0,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '승촌보오토캠핑장 영산강 승촌보 캠핑장은 시내에서의 접근성이 아주 좋고, 유적공원부터 문화장터, 문화관, 자전거 길, 선착장, 축구장, 캠핑장 등등 다양한 볼거리와 즐길 거리를 갖추고 있어 당일치기로도, 1박 2일 캠핑 장소로 최적의 환경을 갖추고 있다. 2012년 개장했으며 9980㎡의 부지에 캠핑장 53면을 갖추고 있고 세척장, 화장실, 샤워장, 전기시설을 이용할 수 있다. 또한 화로대 사용이 가능해 바비큐 파티도 가능하다. 캠핑 외에도 즐길 거리가 많은 이곳은 넓게 펼쳐진 산책로에서 산책을 하거나 자전거길에서 영산강을 보며 나들이하기에도 좋다. 또한 영산강문화관에서 영산강과 승촌보에 대한 소개를 담은 전시를 볼 수 있고 전망대에서 탁 트인 풍경과 경치를 감상할 수도 있다. 운동을 좋아하는 이들에게도 이곳은 최적의 장소인데, 근처에 축구장이 있어 다양한 스포츠를 즐기며 친구, 가족들과 재미있는 시간을 보낼 수 있다. #산 #전망 #역사 #전시 #체험 #가족체험 #축구 #스포츠 #산책 #공원', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2728916'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2661532', '시민의 숲 야영장', '광주 북구', '북구', '체험·스포츠', '광주시민의 숲 야영장은 전남광주통합특별시 시민들에게 도심 속 자연친화적 휴식공간을 제공하기 위한 목적으로 2015년에 조성되었다. 총면적은 9,000㎡이며, 주요 시설로는 야영장 57면과 관리소가 있으며, 부대시설로는 화장실, 취사장, 샤위실, 전기시설, 녹지공간 등이 있다. 인근 영산강과 수변공원의 환경과도 절묘하게 어우러져 초록의 자연친화적이란 말이 어울린다. 대부분의 사이트에 큰 나무들이 드리워져 그늘을 즐기며 해먹을 설치할 수 있다는 점이 광주시민의 숲 야영장의 장점이다. 게다가 산책로도 잘되어 있어 아침, 저녁으로 산책하기에도 좋다. 특히, 유모차를 끌고 다녀도 부담 없는 곳이라 어린아이를 동반한 가족들이 많이 찾는다.', '전남광주통합특별시 북구 추암로 190 (월출동)', null, 35.2327865214, 126.8662155837, null, 'http://www.grandculture.net/gwangju/donggu/toc/GC60000635', 'http://tong.visitkorea.or.kr/cms/resource/31/2661531_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#체험','#가족체험','#스포츠','#힐링','#산책','#야간','#아이동반']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '시민의 숲 야영장 광주시민의 숲 야영장은 전남광주통합특별시 시민들에게 도심 속 자연친화적 휴식공간을 제공하기 위한 목적으로 2015년에 조성되었다. 총면적은 9,000㎡이며, 주요 시설로는 야영장 57면과 관리소가 있으며, 부대시설로는 화장실, 취사장, 샤위실, 전기시설, 녹지공간 등이 있다. 인근 영산강과 수변공원의 환경과도 절묘하게 어우러져 초록의 자연친화적이란 말이 어울린다. 대부분의 사이트에 큰 나무들이 드리워져 그늘을 즐기며 해먹을 설치할 수 있다는 점이 광주시민의 숲 야영장의 장점이다. 게다가 산책로도 잘되어 있어 아침, 저녁으로 산책하기에도 좋다. 특히, 유모차를 끌고 다녀도 부담 없는 곳이라 어린아이를 동반한 가족들이 많이 찾는다. #자연 #산 #체험 #가족체험 #스포츠 #힐링 #산책 #야간 #아이동반', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2661532'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1622267', '염주실내수영장', '광주 서구', '서구', '체험·스포츠', '염주종합체육관 시설 내에 있는 수영장으로 주 1회 정기검사와 수시 검사를 통한 수질 개선으로 이용시민에게 양질의 수질을 제공하며 시민의 건강과 삶의 질을 향상하기 위해 노력하고 있다. 실내수영장 1층에는 직영으로 운영하는 헬스장이 있는데 수영장 회원만 이용 가능하며 수영복 매장도 있어 따로 수영복 매장에 갈 번거로움 없이 바로 구매가 가능하다.', '전남광주통합특별시 서구 금화로 278 (풍암동)', null, 35.1366531569, 126.879180734, null, 'https://www.gmcc.co.kr/menu.es?mid=a10105010100', 'http://tong.visitkorea.or.kr/cms/resource/14/1587814_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#체험','#스포츠']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
+  '염주실내수영장 염주종합체육관 시설 내에 있는 수영장으로 주 1회 정기검사와 수시 검사를 통한 수질 개선으로 이용시민에게 양질의 수질을 제공하며 시민의 건강과 삶의 질을 향상하기 위해 노력하고 있다. 실내수영장 1층에는 직영으로 운영하는 헬스장이 있는데 수영장 회원만 이용 가능하며 수영복 매장도 있어 따로 수영복 매장에 갈 번거로움 없이 바로 구매가 가능하다. #체험 #스포츠', '1.0.0',
+  'import', 0.4,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1622267'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2763536', '주노글램핑 인 광주시', '광주 서구', '서구', '체험·스포츠', '주노 글램핑은 전남광주통합특별시 서구 도심 속에 자리한 글램핑장이다. 부지를 자연 친화적으로 조성해 도시에서 멀리 떨어져 있는 숲속에서 캠핑을 하는듯한 착각이 든다. 캠핑장 중앙으로 분수를 뿜는 수영장을 배치해 한여름에도 시원한 물놀이와 캠핑을 즐길 수 있다. 캠핑장은 글램핑 10개 동을 운영 중인데 객실 내부는 침대, 에어컨, 냉장고, 식기류, 취사도구, 테이블, 의자 화장실, 샤워장, 개수대 등 편의 시설이 잘 마련되어있다. 캠핑장 주변으로 상무시민공원, 5·18 기념 광원, 운천저수지 등 관광지가 많다.', '전남광주통합특별시 서구 상무자유로 29-1 (치평동)', null, 35.1535227638, 126.8370562598, null, 'https://062town.com', 'http://tong.visitkorea.or.kr/cms/resource/20/2763420_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#숲','#민주인권','#체험','#레저','#스포츠','#공원']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.0,0.0,0.75,0.75,0.5,0.0]'::extensions.vector(8),
+  '주노글램핑 인 광주시 주노 글램핑은 전남광주통합특별시 서구 도심 속에 자리한 글램핑장이다. 부지를 자연 친화적으로 조성해 도시에서 멀리 떨어져 있는 숲속에서 캠핑을 하는듯한 착각이 든다. 캠핑장 중앙으로 분수를 뿜는 수영장을 배치해 한여름에도 시원한 물놀이와 캠핑을 즐길 수 있다. 캠핑장은 글램핑 10개 동을 운영 중인데 객실 내부는 침대, 에어컨, 냉장고, 식기류, 취사도구, 테이블, 의자 화장실, 샤워장, 개수대 등 편의 시설이 잘 마련되어있다. 캠핑장 주변으로 상무시민공원, 5·18 기념 광원, 운천저수지 등 관광지가 많다. #자연 #숲 #민주인권 #체험 #레저 #스포츠 #공원', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2763536'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2718673', '휴파크 광산점', '광주 광산구', '광산구', '체험·스포츠', '전남광주통합특별시 광산구 용진산 아래 지산저수지가 내려다 보이는 곳에 위치한 휴파크 광산점은 국민여가 친환경 오토캠핑장이다. 도심 속 작은 힐링 장소로 일상에 지친 사람들이 아름다운 환경에서 휴식을 즐길 수 있도록 카라반 4인용과 6인용이 준비되어 있다. 1인 기준은 만 5세 이상부터이며 숙박료는 선결제로 이뤄지고 그 외에 바비큐나 장작 등 이용은 현장 결제로 이루어진다.', '전남광주통합특별시 광산구 탑동길 345 (지산동)', null, 35.1953634646, 126.7303952125, null, 'http://gs.hupark.com/?iFlag=3', 'http://tong.visitkorea.or.kr/cms/resource/00/3033500_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#체험','#스포츠','#힐링']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.5,0.0]'::extensions.vector(8),
+  '휴파크 광산점 전남광주통합특별시 광산구 용진산 아래 지산저수지가 내려다 보이는 곳에 위치한 휴파크 광산점은 국민여가 친환경 오토캠핑장이다. 도심 속 작은 힐링 장소로 일상에 지친 사람들이 아름다운 환경에서 휴식을 즐길 수 있도록 카라반 4인용과 6인용이 준비되어 있다. 1인 기준은 만 5세 이상부터이며 숙박료는 선결제로 이뤄지고 그 외에 바비큐나 장작 등 이용은 현장 결제로 이루어진다. #산 #체험 #스포츠 #힐링', '1.0.0',
+  'import', 0.45,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2718673'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '127480', '가거도', '광주', null, '관광지', '가거도(소흑산도)는 중국의 새벽닭 울음소리가 들릴 만큼 중국 땅과 가깝다는 우리나라 최서남단의 섬으로, 독실산(639m)의 산세가 높고 절벽으로 형성되어 웅장한 절경을 자랑하는 섬이다. 가거도의 섬등반도는 서쪽에 있는 반도 형태의 지형으로 해안선 주변으로 반도 전체가 주상절리를 이루고 있기 때문에 섬등병풍 바위라고도 불린다. 기암절벽으로 이루어진 암봉과 병풍처럼 펼쳐진 해식애가 일대 장관을 이루며, 특히 낙조 경관이 아름답다. 가거도라는 이름은 가히 살만한 섬이라는 뜻에서 붙었다고도 하고, 가도 가도 뱃길의 끝이 보이지 않는 섬이라해서 가거도라 불리었다는 설도 있다. 가거도는 서해안 어업전진기지로서 매우 중요한 섬이다. 한중일 어선들의 각축장이 되어 있는 황금 어장이기도 하고, 국토의 최서남단에 있기에 지리적, 외교적, 정치적으로 중요한 섬이기도 하다. 멸치, 조기, 갈치, 다랑어, 돔 등 온갖 고기들이 모여들기 때문에 연중 많은 낚시객들이 찾는 섬이며, 가거도 등대 앞바다에는 천연기념물인 바닷새의 번식지 국흘도(구굴도)가 있다. 여름철새인 슴새와 뿔쇠오리가 이 무인도에 둥지를 틀고 번식하는 등 백여 종의 철새들이 봄과 가을에 가거도에서 쉬거나 번식을 한다.', '전남광주통합특별시 신안군 흑산면 가거도길 38-2', null, 34.0520609879, 125.1263860145, '061-246-5400', 'https://tour.shinan.go.kr/home/tour/island_tour/heuksan/place/place_12/page.wscms', 'http://tong.visitkorea.or.kr/cms/resource/28/3572128_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#바다']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '가거도 가거도(소흑산도)는 중국의 새벽닭 울음소리가 들릴 만큼 중국 땅과 가깝다는 우리나라 최서남단의 섬으로, 독실산(639m)의 산세가 높고 절벽으로 형성되어 웅장한 절경을 자랑하는 섬이다. 가거도의 섬등반도는 서쪽에 있는 반도 형태의 지형으로 해안선 주변으로 반도 전체가 주상절리를 이루고 있기 때문에 섬등병풍 바위라고도 불린다. 기암절벽으로 이루어진 암봉과 병풍처럼 펼쳐진 해식애가 일대 장관을 이루며, 특히 낙조 경관이 아름답다. 가거도라는 이름은 가히 살만한 섬이라는 뜻에서 붙었다고도 하고, 가도 가도 뱃길의 끝이 보이지 않는 섬이라해서 가거도라 불리었다는 설도 있다. 가거도는 서해안 어업전진기지로서 매우 중요한 섬이다. 한중일 어선들의 각축장이 되어 있는 황금 어장이기도 하고, 국토의 최서남단에 있기에 지리적, 외교적, 정치적으로 중요한 섬이기도 하다. 멸치, 조기, 갈치, 다랑어, 돔 등 온갖 고기들이 모여들기 때문에 연중 많은 낚시객들이 찾는 섬이며, 가거도 등대 앞바다에는 천연기념물인 바닷새의 번식지 국흘도(구굴도)가 있다. 여름철새인 슴새와 뿔쇠오리가 이 무인도에 둥지를 틀고 번식하는 등 백여 종의 철새들이 봄과 가을에 가거도에서 쉬거나 번식을 한다. #산 #바다', '1.0.0',
+  'import', 0.4,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '127480'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '126273', '가계해수욕장', '광주', null, '관광지', '바닷물이 갈라지는 현대판 모세의 기적으로 유명한 신비의 바닷길옆에 위치한 해수욕장이다. 넓은 백사장과 다도해상을 마주하고 풍경이 아름다운 해수욕장으로 백사장 길이는 3㎞이다. 교통이 편리할 뿐 아니라 넓은 주차장과 샤워장, 음수대 등 편의시설이 잘 갖추어져 있고 교통이 편리하여 자가용을 이용한 피서객들이 많이 찾는다. 해수욕장 인근에는 조형물들이 있어서 포토존으로 인기가 좋으며 해변가를 따라 소나무와 잔디가 있어 나무아래 그늘에서 햇볕을 피할 수 있고 초록색과 파란 바다색이 어우러져 아름다운 경치를 즐기며 물놀이와 휴식을 즐길 수 있다. 또한, 갯바위와 선착장, 무인도에서 감성동, 도다리, 농어, 숭어, 장어, 보리멸 등의 바다낚시를 즐길 수 있다. 인근에 진도해양생태관, 진도 신비의 바닷길, 금호도 등의 관광지가 있다.', '전남광주통합특별시 진도군 고군면 신비의바닷길 47 (고군면)', null, 34.4354594945, 126.3547412438, '061-540-6605', 'https://www.jindo.go.kr/tour/tour/info/nature/002.cs?act=view&infoId=1&category=002&searchCondition=&searchKeyword=&pageIndex=1&m=57', 'http://tong.visitkorea.or.kr/cms/resource/36/3079736_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#전망','#레저','#힐링','#피크닉','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.5,0.0,0.75,0.0]'::extensions.vector(8),
+  '가계해수욕장 바닷물이 갈라지는 현대판 모세의 기적으로 유명한 신비의 바닷길옆에 위치한 해수욕장이다. 넓은 백사장과 다도해상을 마주하고 풍경이 아름다운 해수욕장으로 백사장 길이는 3㎞이다. 교통이 편리할 뿐 아니라 넓은 주차장과 샤워장, 음수대 등 편의시설이 잘 갖추어져 있고 교통이 편리하여 자가용을 이용한 피서객들이 많이 찾는다. 해수욕장 인근에는 조형물들이 있어서 포토존으로 인기가 좋으며 해변가를 따라 소나무와 잔디가 있어 나무아래 그늘에서 햇볕을 피할 수 있고 초록색과 파란 바다색이 어우러져 아름다운 경치를 즐기며 물놀이와 휴식을 즐길 수 있다. 또한, 갯바위와 선착장, 무인도에서 감성동, 도다리, 농어, 숭어, 장어, 보리멸 등의 바다낚시를 즐길 수 있다. 인근에 진도해양생태관, 진도 신비의 바닷길, 금호도 등의 관광지가 있다. #자연 #전망 #레저 #힐링 #피크닉 #주차가능', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '126273'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '127423', '가마골계곡', '광주', null, '관광지', '담양군 용면 용연리에 소재한 용추봉(523m)을 중심으로 사방 4㎞에 걸쳐 형성되어 있는 계곡이다. 그다지 산이 높다고는 할 수 없으나 총 311,000㎡의 넓은 규모에 울창한 숲 사이의 계곡과 맑은 물, 기암괴석이 수려한 경관을 이루고 있다. 입구에서부터 계곡을 따라 올라가면 크고 작은 폭포와 연못이 곳곳에 있어 걸음을 멈추게 한다. 수림도 잘 형성되어 풍부한 그늘을 만들고 있으며 중간중간 쉬기 좋은 쉼터가 잘 조성되어 있다. 계곡의 도로를 따라 안쪽으로 더 깊이 들어가면 입장료를 내고 들어가는 가마골 생태공원이 나온다. 가마골 생태정원은 계곡 입수가 불가하지만 하류쪽 가마골 계곡은 물놀이가 가능하다. 자연미는 덜하지만 길이 잘 닦여있고 계곡 주변으로 캠핑장, 펜션, 식당 등이 위치해있어 야영과 물놀이와 함께 숙식이 가능하다. 가마골 계곡이 합류하는 담양호가 인접해 있으며 차량 이동 20분, 약 16㎞ 지점에 담양리조트, 차량 이동 24분 거리에 담양읍이 있다.', '전남광주통합특별시 담양군 용면 용소길 261', null, 35.445187367, 127.0227046757, '061-380-3492', null, 'http://tong.visitkorea.or.kr/cms/resource/35/3027135_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#맛집','#레저','#공원','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.5, "activity": 0.5, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[1.0,0.0,0.0,0.5,0.5,0.0,0.5,0.0]'::extensions.vector(8),
+  '가마골계곡 담양군 용면 용연리에 소재한 용추봉(523m)을 중심으로 사방 4㎞에 걸쳐 형성되어 있는 계곡이다. 그다지 산이 높다고는 할 수 없으나 총 311,000㎡의 넓은 규모에 울창한 숲 사이의 계곡과 맑은 물, 기암괴석이 수려한 경관을 이루고 있다. 입구에서부터 계곡을 따라 올라가면 크고 작은 폭포와 연못이 곳곳에 있어 걸음을 멈추게 한다. 수림도 잘 형성되어 풍부한 그늘을 만들고 있으며 중간중간 쉬기 좋은 쉼터가 잘 조성되어 있다. 계곡의 도로를 따라 안쪽으로 더 깊이 들어가면 입장료를 내고 들어가는 가마골 생태공원이 나온다. 가마골 생태정원은 계곡 입수가 불가하지만 하류쪽 가마골 계곡은 물놀이가 가능하다. 자연미는 덜하지만 길이 잘 닦여있고 계곡 주변으로 캠핑장, 펜션, 식당 등이 위치해있어 야영과 물놀이와 함께 숙식이 가능하다. 가마골 계곡이 합류하는 담양호가 인접해 있으며 차량 이동 20분, 약 16㎞ 지점에 담양리조트, 차량 이동 24분 거리에 담양읍이 있다. #자연 #산 #맛집 #레저 #공원 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '127423'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '126289', '가마미해수욕장', '광주', null, '관광지', '영광읍 서쪽 24㎞ 거리에 위치한 해수욕장으로 1925년에 개장하였다. 길이 1㎞, 폭 200m의 백사장이 반달 모양으로 드리워져 있으며, 2,000여 그루의 울창한 소나무숲이 해안을 따라 길게 펼쳐져 있어 아늑한 분위기를 자아낸다. 수심은 1~2m에 불과하고 물이 깨끗해서 호남 3대 해수욕장의 하나로 꼽힌다. 가마미라는 해수욕장 이름은 뒤편에 있는 금정산의 산세가 마치 멍에를 멘 말의 꼬리처럼 생겼다 하여 가마미(駕馬尾)라고 하였다고 한다. 천연기념물 노랑부리백로와 괭이갈매기가 서식하고 있다. 해수욕장의 앞쪽으로는 숱한 섬들이 올망졸망 떠 있고, 그 바다 위로 한가로이 항해하는 어선들의 모습은 평화롭기 그지없다. 또한 칠산바다를 붉게 물들이는 이 곳의 서해낙조는 동해일출과는 사뭇 다른 운치를 안겨준다. 해수욕장 근처에는 뛰어난 해안 풍광을 자랑하는 백수해안관광도로, 바다낚시터로 유명한 돔배섬, 크기와 모양이 비슷한 섬 7개가 일자형으로 수평선 위에 떠 있는 칠산도가 있다. 해질 무렵 뒷편 금정산에 올라 바다 속으로 사라져가는 석양을 조망하는 것도 좋다.', '전남광주통합특별시 영광군 홍농읍 가마미로 355', null, 35.399729392, 126.4090769892, '061-356-1020', 'https://tour.yeonggwang.go.kr/tour2?site=tour_2019&mn=7405&type=view&t_idx=4279', 'http://tong.visitkorea.or.kr/cms/resource/63/3018763_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#숲','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '가마미해수욕장 영광읍 서쪽 24㎞ 거리에 위치한 해수욕장으로 1925년에 개장하였다. 길이 1㎞, 폭 200m의 백사장이 반달 모양으로 드리워져 있으며, 2,000여 그루의 울창한 소나무숲이 해안을 따라 길게 펼쳐져 있어 아늑한 분위기를 자아낸다. 수심은 1~2m에 불과하고 물이 깨끗해서 호남 3대 해수욕장의 하나로 꼽힌다. 가마미라는 해수욕장 이름은 뒤편에 있는 금정산의 산세가 마치 멍에를 멘 말의 꼬리처럼 생겼다 하여 가마미(駕馬尾)라고 하였다고 한다. 천연기념물 노랑부리백로와 괭이갈매기가 서식하고 있다. 해수욕장의 앞쪽으로는 숱한 섬들이 올망졸망 떠 있고, 그 바다 위로 한가로이 항해하는 어선들의 모습은 평화롭기 그지없다. 또한 칠산바다를 붉게 물들이는 이 곳의 서해낙조는 동해일출과는 사뭇 다른 운치를 안겨준다. 해수욕장 근처에는 뛰어난 해안 풍광을 자랑하는 백수해안관광도로, 바다낚시터로 유명한 돔배섬, 크기와 모양이 비슷한 섬 7개가 일자형으로 수평선 위에 떠 있는 칠산도가 있다. 해질 무렵 뒷편 금정산에 올라 바다 속으로 사라져가는 석양을 조망하는 것도 좋다. #산 #숲 #주차가능', '1.0.0',
+  'import', 0.45,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '126289'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2615324', '가사동백숲해변', '광주', null, '관광지', '가사동백숲해변은 완도 조약도 남쪽에 있는 아름다운 해변이다. 3월이면 붉은 동백꽃이 푸른 바닷물을 붉게 물들이며 장관을 이룬다는 이곳은 수백 년 된 동백나무 수백 그루와 후박나무, 잿밤나무가 해수욕장 전체를 둥글게 감싸 안고 있는 조약도의 유일한 해수욕장이다. 해변길이 300m정도로 규모는 아담하지만 해수욕과 삼림욕을 동시에 즐길 수 있는 해변이다. 가사동백숲해변 백사장 양 끝 쪽 갯바위는 소문난 바다 낚시터로 돔과 농어, 우럭 등 어족자원이 풍부해 사계절 낚시가 가능하다. 또, 간조에 물이 빠지면 갯벌 체험도 가능하다. 조약도 중앙에는 삼문산이 있으며 삼문산에 조성된 둘레길을 걸으며 산책하기 좋으며, 산 정상에 오르면 다도해해상국립공원과 일출과 일몰을 감상할 수 있다. 가사동백숲해변 인근에는 야영장도 있고 민박, 펜션도 있어 숙박을 하며 바다를 즐기기 편리하다.', '전남광주통합특별시 완도군 약산면 해동리', null, 34.3698373475, 126.9277952875, '061-550-6401', 'https://www.wando.go.kr/tour/sub.cs?m=162&tCimTitle=%EA%B0%80%EC%82%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5&tCimUniqId=TCIM_000000000004499&tCfdMenuChoice=tCfdBeach', 'http://tong.visitkorea.or.kr/cms/resource/77/3591577_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#체험','#산책','#공원','#야간','#시즌한정','#아이동반','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.75, "festival": 0.75}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.5,0.0,0.75,0.75]'::extensions.vector(8),
+  '가사동백숲해변 가사동백숲해변은 완도 조약도 남쪽에 있는 아름다운 해변이다. 3월이면 붉은 동백꽃이 푸른 바닷물을 붉게 물들이며 장관을 이룬다는 이곳은 수백 년 된 동백나무 수백 그루와 후박나무, 잿밤나무가 해수욕장 전체를 둥글게 감싸 안고 있는 조약도의 유일한 해수욕장이다. 해변길이 300m정도로 규모는 아담하지만 해수욕과 삼림욕을 동시에 즐길 수 있는 해변이다. 가사동백숲해변 백사장 양 끝 쪽 갯바위는 소문난 바다 낚시터로 돔과 농어, 우럭 등 어족자원이 풍부해 사계절 낚시가 가능하다. 또, 간조에 물이 빠지면 갯벌 체험도 가능하다. 조약도 중앙에는 삼문산이 있으며 삼문산에 조성된 둘레길을 걸으며 산책하기 좋으며, 산 정상에 오르면 다도해해상국립공원과 일출과 일몰을 감상할 수 있다. 가사동백숲해변 인근에는 야영장도 있고 민박, 펜션도 있어 숙박을 하며 바다를 즐기기 편리하다. #자연 #산 #체험 #산책 #공원 #야간 #시즌한정 #아이동반 #주차가능', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2615324'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1916695', '가사해수욕장', '광주', null, '관광지', '3월이면 붉은 동백꽃이 푸른 바닷물을 붉게 물들인다는 가사해수욕장은 수백 년 된 동백나무 수백 그루와 후박나무, 잣밤나무가 해수욕장 전체를 둥글게 감싸 안고 있는 조약도의 유일한 해수욕장이다. 가사동은 상록활엽수림이 하늘을 가리고 그늘막을 만들어 준다. 그늘 밑으로는 장용산에서 흘러내리는 시원한 물이 한 여름에도 냉기로 가득해 발을 담그기가 쉽지 않다. 조약도는 예부터 흑염소로 유명한데 피서와 함께 흑염소로 몸을 보신할 수 있는 피서지로 각광받고 있으며. 바로 인근에 해동사라는 전망 좋은 절이 있다. 주변은 바다 낚시터로 돔과 농어, 우럭등 어족자원이 풍부해 사계절 내내 낚시가 가능하다.', '전남광주통합특별시 완도군 약산면', null, 34.370487281, 126.9281702396, '061-550-6401', 'https://www.wando.go.kr/tour/sub.cs?m=162&tCimTitle=%EA%B0%80%EC%82%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5&tCimUniqId=TCIM_000000000004499&tCfdMenuChoice=tCfdBeach', 'http://tong.visitkorea.or.kr/cms/resource/24/3382824_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#정원','#야간','#시즌한정','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.75]'::extensions.vector(8),
+  '가사해수욕장 3월이면 붉은 동백꽃이 푸른 바닷물을 붉게 물들인다는 가사해수욕장은 수백 년 된 동백나무 수백 그루와 후박나무, 잣밤나무가 해수욕장 전체를 둥글게 감싸 안고 있는 조약도의 유일한 해수욕장이다. 가사동은 상록활엽수림이 하늘을 가리고 그늘막을 만들어 준다. 그늘 밑으로는 장용산에서 흘러내리는 시원한 물이 한 여름에도 냉기로 가득해 발을 담그기가 쉽지 않다. 조약도는 예부터 흑염소로 유명한데 피서와 함께 흑염소로 몸을 보신할 수 있는 피서지로 각광받고 있으며. 바로 인근에 해동사라는 전망 좋은 절이 있다. 주변은 바다 낚시터로 돔과 농어, 우럭등 어족자원이 풍부해 사계절 내내 낚시가 가능하다. #산 #정원 #야간 #시즌한정 #주차가능', '1.0.0',
+  'import', 0.5,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1916695'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1957336', '가산서원', '광주', null, '관광지', '가산서원은 고려 후기 문신 익재 이제현(1287∼1367)과 이제현의 8대손인 조선 중기 문신이자 학자 백사 이항복(1556~1618) 등의 위패를 모신 사당이다. 연산군 4년(1498) 이제현의 5대손인 장수 현감 이재인(1415~?)이 현 전남광주통합특별시 장성군 삼계면 주산리 백산촌에 집을 짓고 은거하면서 익재의 영정을 모셨고, 1559년 후손 이대정이 사우 백산사를 지어 익재의 제사를 모셨다. 세월이 흘러 사우가 퇴락하자 영조 42년(1766) 후손 이언경이 낭월산 남쪽 기슭의 현 위치(장성군 삼서면 홍정리 가산마을)로 사당을 옮겨 가산서원이라 하고 이항복을 추배하였다. 고종 5년(1868) 훼철되어 영정만 모시는 영당으로 남았다가 1960년 중건하였다. 1998년 장성향교의 발의로 이재인을 추배하고, 해마다 음력 8월 10일에 향사를 올린다. 익재영정이 보관되어 있다.', '전남광주통합특별시 장성군 삼서면 영장로 2015', null, 35.2313226604, 126.6931003984, '061-390-7240', 'https://www.heritage.go.kr/heri/cul/culSelectDetail.do?pageNo=1_1_1_1&sngl=Y&ccbaCpno=3413601640000', 'http://tong.visitkorea.or.kr/cms/resource/35/3347635_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#전통','#느린여행','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.75,0.75,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
+  '가산서원 가산서원은 고려 후기 문신 익재 이제현(1287∼1367)과 이제현의 8대손인 조선 중기 문신이자 학자 백사 이항복(1556~1618) 등의 위패를 모신 사당이다. 연산군 4년(1498) 이제현의 5대손인 장수 현감 이재인(1415~?)이 현 전남광주통합특별시 장성군 삼계면 주산리 백산촌에 집을 짓고 은거하면서 익재의 영정을 모셨고, 1559년 후손 이대정이 사우 백산사를 지어 익재의 제사를 모셨다. 세월이 흘러 사우가 퇴락하자 영조 42년(1766) 후손 이언경이 낭월산 남쪽 기슭의 현 위치(장성군 삼서면 홍정리 가산마을)로 사당을 옮겨 가산서원이라 하고 이항복을 추배하였다. 고종 5년(1868) 훼철되어 영정만 모시는 영당으로 남았다가 1960년 중건하였다. 1998년 장성향교의 발의로 이재인을 추배하고, 해마다 음력 8월 10일에 향사를 올린다. 익재영정이 보관되어 있다. #산 #전통 #느린여행 #주차가능', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1957336'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2732489', '가야금산조테마공원', '광주', null, '관광지', '가야금산조테마공원은 전국에서 유일하게 음악을 테마로 삼은 공원으로 2014년에 개관하였다. 공원은 가야금산조기념관과 김창조 선생 사당과 재실, 생가터, 누각, 야외공연장, 잔디밭 등으로 조성되어 있다. 가야금산조기념관은 유수한 역사를 지닌 가야금의 흐름을 한눈에 볼 수 있도록 갖가지 가야금 관련 유물과 자료를 전시하고 있다. 또한 가야금산조에 대해 생소한 초보자들도 쉽게 접하고 체험할 수 있는 국악의 산 교육장 역할도 수행하고 있다. 가야금산조를 창시한 악성 김창조선생을 선양하고 영암이 가야금산조의 본향(뿌리)으로서 역사성을 고취하기 위해 기념관을 조성하였다. 전시관에는 각종 국악기와 음향, 영상자료, 가야금산조 관련 6 대류파 기증품을 언제든 관람할 수 있고, 250여 명이 관람할 수 있는 산조공연장은 가야금 연주와 국악행사를 치를 수 있다.', '전남광주통합특별시 영암군 영암읍 기찬랜드로 19-10', null, 34.7919693222, 126.6856118867, '061-471-8500', 'https://www.yeongam.go.kr/home/tour/enjoy/enjoy_02/show/31?page=1', 'http://tong.visitkorea.or.kr/cms/resource/96/3382096_image2_1.JPG', 90, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#산','#역사','#박물관','#전시','#공연','#체험','#교육','#피크닉','#공원','#축제']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.75}'::jsonb,
+  '[0.75,0.75,0.75,0.0,0.75,0.0,0.75,0.75]'::extensions.vector(8),
+  '가야금산조테마공원 가야금산조테마공원은 전국에서 유일하게 음악을 테마로 삼은 공원으로 2014년에 개관하였다. 공원은 가야금산조기념관과 김창조 선생 사당과 재실, 생가터, 누각, 야외공연장, 잔디밭 등으로 조성되어 있다. 가야금산조기념관은 유수한 역사를 지닌 가야금의 흐름을 한눈에 볼 수 있도록 갖가지 가야금 관련 유물과 자료를 전시하고 있다. 또한 가야금산조에 대해 생소한 초보자들도 쉽게 접하고 체험할 수 있는 국악의 산 교육장 역할도 수행하고 있다. 가야금산조를 창시한 악성 김창조선생을 선양하고 영암이 가야금산조의 본향(뿌리)으로서 역사성을 고취하기 위해 기념관을 조성하였다. 전시관에는 각종 국악기와 음향, 영상자료, 가야금산조 관련 6 대류파 기증품을 언제든 관람할 수 있고, 250여 명이 관람할 수 있는 산조공연장은 가야금 연주와 국악행사를 치를 수 있다. #산 #역사 #박물관 #전시 #공연 #체험 #교육 #피크닉 #공원 #축제', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2732489'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '3013529', '가야정원', '광주', null, '관광지', '가야정원은 쓰레기와 잡초로 우거졌던 약 2만여 평의 폐염전 부지를 가꾼 곳으로, 정원지기인 유병천 씨가 10여 년 전부터 자신의 재산을 들여 꽃과 나무를 심었다. 람사르 습지인 순천만과 인접해 있어 해변 정원으로도 알려져 있다. 가야정원의 정원지기는 무료로 이곳을 개방하여 내방객들이 즐겁고 행복해하는 모습을 보며 행복과 위로를 삼는다고 한다. 이른 봄이면 해변이 보이는 꽃동산과 정원 길 따라 꽃잔디가 피고 오월이면 가야정원을 둘러싸고 있는 장미 울타리가 갯벌 풍경과 맞닿아 어디에도 쉽게 찾을 수 없는 풍경이 펼쳐진다. 특히 사랑의 오작교가 놓인 연못 주변으로 낮달맞이가 피면 분홍 물결이 장관을 이룬다. 연이어 피는 나도샤프란, 꽃무릇, 소국 또한 놓칠 수 없다. 모과, 자두, 복숭아 등 과수나무의 과일을 조금씩 따서 맛볼 수 있어 아이들의 자연학습장으로도 한몫을 하고 있다. 가야정원 뒷산 정상에서는 순천만과 아름다운 노을을 즐길 수 있다. 와온해변에서 가야정원까지는 1.7㎞로, 차량으로는 약 5분 거리이므로 함께 방문하면 좋다.', '전남광주통합특별시 순천시 해룡면 농주리 230-10', null, 34.861908939, 127.5222504674, '0507-1417-2202', null, null, 90, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#교육','#가족체험','#피크닉','#공원','#아이동반']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
+  '가야정원 가야정원은 쓰레기와 잡초로 우거졌던 약 2만여 평의 폐염전 부지를 가꾼 곳으로, 정원지기인 유병천 씨가 10여 년 전부터 자신의 재산을 들여 꽃과 나무를 심었다. 람사르 습지인 순천만과 인접해 있어 해변 정원으로도 알려져 있다. 가야정원의 정원지기는 무료로 이곳을 개방하여 내방객들이 즐겁고 행복해하는 모습을 보며 행복과 위로를 삼는다고 한다. 이른 봄이면 해변이 보이는 꽃동산과 정원 길 따라 꽃잔디가 피고 오월이면 가야정원을 둘러싸고 있는 장미 울타리가 갯벌 풍경과 맞닿아 어디에도 쉽게 찾을 수 없는 풍경이 펼쳐진다. 특히 사랑의 오작교가 놓인 연못 주변으로 낮달맞이가 피면 분홍 물결이 장관을 이룬다. 연이어 피는 나도샤프란, 꽃무릇, 소국 또한 놓칠 수 없다. 모과, 자두, 복숭아 등 과수나무의 과일을 조금씩 따서 맛볼 수 있어 아이들의 자연학습장으로도 한몫을 하고 있다. 가야정원 뒷산 정상에서는 순천만과 아름다운 노을을 즐길 수 있다. 와온해변에서 가야정원까지는 1.7㎞로, 차량으로는 약 5분 거리이므로 함께 방문하면 좋다. #자연 #산 #교육 #가족체험 #피크닉 #공원 #아이동반', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '3013529'
@@ -3729,7 +2541,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129024', '갈두마을(땅끝마을)', '광주', null, '관광지', null, '전남광주통합특별시 해남군 송지면 땅끝마을길 82', null, 34.2998052878, 126.5285847288, '송지면 061-531-3162', null, 'http://tong.visitkorea.or.kr/cms/resource/36/3061236_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '129024', '갈두마을(땅끝마을)', '광주', null, '관광지', '우리나라 국토의 땅끝에 위치한 마을인 갈두마을(땅끝마을)은 갈두산에 칡이 많아 칡머리로 불리던 것이 한자 갈두(葛頭)를 써서 명명된 것이다. 이곳은 일출과 일몰을 동시에 볼 수 있는 곳이고 갈두항 앞에 나란히 있은 두 개의 맴섬 사이로 뜨는 일출은 갈두마을 관광의 백미로 특히 양력 2월 중순 무렵과 10월 20일에서 25일 사이에 맴섬 가운데로 떠오르는 일출은 가히 환상적이다. 또한, 땅끝천년숲옛길 3코스 중 약 17㎞의 땅끝 길이 이곳 땅끝마을에서 시작하여 미황사역사길, 다산초의교류길과 연결되며 갈두마을에서 땅끝탑까지 조성하는 무장애길 해안 처음 길은 갈두마을의 해안 자연경관을 마음껏 즐길 수 있는 산책길로 서남해의 탁 트인 바다 전망을 한눈에 담을 수 있는 땅끝탑 앞의 스카이워크까지 이어진다. 연말연시가 되면 갈두마을은 해넘이 해맞이 축제를 하며 지난 한 해의 액운을 떨치는 해넘이 행사와 신년 아침에 소원을 담은 띠배 띄우기 행사 등 다채로운 축제 프로그램을 운영하며 인정 나누기 행사를 통해 마을 주민들이 떡국을 쑤어 관광객들과 나누어 먹으며 서로의 새해의 시작을 응원한다. 주변으로 땅끝전망대와 땅끝 스카이워크, 땅끝 모노레일, 송호해수욕장, 사구미해수욕장, 땅끝해양자연사박물관, 땅끝오토캠핑리조트, 황토나라 테마촌 등 마을 주변 곳곳이 온통 볼거리 즐길 거리로 넘쳐난다. 갈두항 여객선 터미널에서 보길도에 갈 수 있는 노화도로 가는 배를 이용할 수 있다.', '전남광주통합특별시 해남군 송지면 땅끝마을길 82', null, 34.2998052878, 126.5285847288, '송지면 061-531-3162', 'https://www.haenam.go.kr/tour/index.9is?contentUid=18e3368f68230ef801689ca7b32f7839', 'http://tong.visitkorea.or.kr/cms/resource/36/3061236_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3767,11 +2579,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#느린여행','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '갈두마을(땅끝마을) #느린여행 #주차가능', '1.0.0',
-  'import', 0.38,
+  array['#자연','#산','#역사','#박물관','#전시','#참여형','#응원','#산책','#느린여행','#축제']::text[],
+  '{"nature": 1.0, "culture": 0.75, "art": 0.5, "food": 0.0, "activity": 0.5, "sports": 0.5, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[1.0,0.75,0.5,0.0,0.5,0.5,0.75,0.5]'::extensions.vector(8),
+  '갈두마을(땅끝마을) 우리나라 국토의 땅끝에 위치한 마을인 갈두마을(땅끝마을)은 갈두산에 칡이 많아 칡머리로 불리던 것이 한자 갈두(葛頭)를 써서 명명된 것이다. 이곳은 일출과 일몰을 동시에 볼 수 있는 곳이고 갈두항 앞에 나란히 있은 두 개의 맴섬 사이로 뜨는 일출은 갈두마을 관광의 백미로 특히 양력 2월 중순 무렵과 10월 20일에서 25일 사이에 맴섬 가운데로 떠오르는 일출은 가히 환상적이다. 또한, 땅끝천년숲옛길 3코스 중 약 17㎞의 땅끝 길이 이곳 땅끝마을에서 시작하여 미황사역사길, 다산초의교류길과 연결되며 갈두마을에서 땅끝탑까지 조성하는 무장애길 해안 처음 길은 갈두마을의 해안 자연경관을 마음껏 즐길 수 있는 산책길로 서남해의 탁 트인 바다 전망을 한눈에 담을 수 있는 땅끝탑 앞의 스카이워크까지 이어진다. 연말연시가 되면 갈두마을은 해넘이 해맞이 축제를 하며 지난 한 해의 액운을 떨치는 해넘이 행사와 신년 아침에 소원을 담은 띠배 띄우기 행사 등 다채로운 축제 프로그램을 운영하며 인정 나누기 행사를 통해 마을 주민들이 떡국을 쑤어 관광객들과 나누어 먹으며 서로의 새해의 시작을 응원한다. 주변으로 땅끝전망대와 땅끝 스카이워크, 땅끝 모노레일, 송호해수욕장, 사구미해수욕장, 땅끝해양자연사박물관, 땅끝오토캠핑리조트, 황토나라 테마촌 등 마을 주변 곳곳이 온통 볼거리 즐길 거리로 넘쳐난다. 갈두항 여객선 터미널에서 보길도에 갈 수 있는 노화도로 가는 배를 이용할 수 있다. #자연 #산 #역사 #박물관 #전시 #참여형 #응원 #산책 #느린여행 #축제', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129024'
@@ -3783,601 +2595,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1957338', '강덕사', '광주', null, '관광지', null, '전남광주통합특별시 강진군 군동면 호라길 199-39', null, 34.654422834, 126.802682706, '강진군 문화관광과 061-430-3310', null, 'http://tong.visitkorea.or.kr/cms/resource/29/3381529_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강덕사 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1957338'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1349796', '강진 백사어촌체험마을', '광주', null, '관광지', null, '전남광주통합특별시 강진군 대구면 청자해안길 253', null, 34.4928741381, 126.7939012802, '061-432-0641', null, null, 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#느린여행','#아이동반','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
-  '강진 백사어촌체험마을 #체험 #느린여행 #아이동반 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1349796'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2515265', '강진 백운동별서정원', '광주', null, '관광지', null, '전남광주통합특별시 강진군 성전면 월하안운길 100-63', null, 34.7420918349, 126.6998840655, '061-430-3312', null, 'http://tong.visitkorea.or.kr/cms/resource/77/3537777_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#정원','#공원','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '강진 백운동별서정원 #정원 #공원 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2515265'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '128952', '강진 병영마을 옛 담장', '광주', null, '관광지', null, '전남광주통합특별시 강진군 병영면 지로리 291-1번지 등', null, 34.7148913023, 126.8182354193, '강진군 문화유적팀 061-430-3363', null, 'http://tong.visitkorea.or.kr/cms/resource/46/3537746_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#느린여행']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '강진 병영마을 옛 담장 #느린여행', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '128952'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129693', '강진 삼인리 비자나무', '광주', null, '관광지', null, '전남광주통합특별시 강진군 병영면 동삼인길 28-10', null, 34.7148441009, 126.8191381191, '061-430-3363', null, 'http://tong.visitkorea.or.kr/cms/resource/00/3538100_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진 삼인리 비자나무', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129693'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1350167', '강진 서중어촌체험마을', '광주', null, '관광지', null, '전남광주통합특별시 강진군 마량면 까막섬로 75-7', null, 34.4536620901, 126.8076232442, '061-433-8525', null, null, 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#느린여행','#아이동반','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
-  '강진 서중어촌체험마을 #체험 #느린여행 #아이동반 #주차가능', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1350167'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2515789', '강진 오감통', '광주', null, '관광지', null, '전남광주통합특별시 강진군 강진읍 오감길 2 2동', null, 34.6391324006, 126.773588414, '음악창작소 061-433-3636', null, 'http://tong.visitkorea.or.kr/cms/resource/70/3381570_image2_1.JPG', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진 오감통', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2515789'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '128151', '강진다원', '광주', null, '관광지', null, '전남광주통합특별시 강진군 성전면 백운로 93-25', null, 34.7409031836, 126.7061613195, '061-432-5500', null, 'http://tong.visitkorea.or.kr/cms/resource/07/3558407_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진다원 #주차가능', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '128151'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129692', '강진마도진만호성지', '광주', null, '관광지', null, '전남광주통합특별시 강진군 마량면 마량리 988-5번지 일대', null, 34.4533428163, 126.8157780917, '061-430-3363', null, 'http://tong.visitkorea.or.kr/cms/resource/71/3537771_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진마도진만호성지', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129692'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126645', '강진만', '광주', null, '관광지', null, '전남광주통합특별시 강진군 신전면 벌정리', null, 34.595223382, 126.770150892, '061-430-5386', null, 'http://tong.visitkorea.or.kr/cms/resource/79/3538079_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진만', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126645'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127111', '강진영랑생가', '광주', null, '관광지', null, '전남광주통합특별시 강진군 강진읍 영랑생가길 15', null, 34.6421930307, 126.7652918469, '061-430-3377', null, 'http://tong.visitkorea.or.kr/cms/resource/12/3558412_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진영랑생가', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127111'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1624164', '강진향교', '광주', null, '관광지', null, '전남광주통합특별시 강진군 강진읍 향교로 140', null, 34.6503616614, 126.7714883256, '강진군 문화관광과 061-430-3310', null, 'http://tong.visitkorea.or.kr/cms/resource/22/3381522_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '1957338', '강덕사', '광주', null, '관광지', '강덕사는 강덕서원이라고도 한다. 조선 헌종 12년(1846)에 후손들의 협력으로 시조 장경공 최사전을 비롯하여 최표, 최부, 최극충을 배향하고 있다. 최사전은 어려서부터 무술에 정통하여 여러 대에 걸쳐 임금을 섬기던 중 고려 인종 때 이자겸의 난을 평정하여 나라를 보존시켜 강진의 명예를 드높인 인물이다. 경내에는 외삼문, 내삼문, 강덕서원, 효인재, 강덕사 묘정비, 위패를 모시는 강덕사, 관세위, 망예위 등이 현존하고 있으며, 매년 음력 3월 15일과 10월 15일에 제를 올리고 있다.', '전남광주통합특별시 강진군 군동면 호라길 199-39', null, 34.654422834, 126.802682706, '강진군 문화관광과 061-430-3310', null, 'http://tong.visitkorea.or.kr/cms/resource/29/3381529_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4416,13 +2634,13 @@ insert into public.place_profiles (
 )
 select p.id,
   array['#전통','#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진향교 #전통 #주차가능', '1.0.0',
+  '{"nature": 0.0, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '강덕사 강덕사는 강덕서원이라고도 한다. 조선 헌종 12년(1846)에 후손들의 협력으로 시조 장경공 최사전을 비롯하여 최표, 최부, 최극충을 배향하고 있다. 최사전은 어려서부터 무술에 정통하여 여러 대에 걸쳐 임금을 섬기던 중 고려 인종 때 이자겸의 난을 평정하여 나라를 보존시켜 강진의 명예를 드높인 인물이다. 경내에는 외삼문, 내삼문, 강덕서원, 효인재, 강덕사 묘정비, 위패를 모시는 강덕사, 관세위, 망예위 등이 현존하고 있으며, 매년 음력 3월 15일과 10월 15일에 제를 올리고 있다. #전통 #주차가능', '1.0.0',
   'import', 0.38,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1624164'
+where p.source = 'tourapi' and p.source_place_id = '1957338'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4431,7 +2649,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2638437', '개구리생태공원', '광주', null, '관광지', null, '전남광주통합특별시 담양군 담양읍 담양88로 428', null, 35.3235008359, 127.0047510306, '061-380-3086', null, 'http://tong.visitkorea.or.kr/cms/resource/58/3571558_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '1349796', '강진 백사어촌체험마을', '광주', null, '관광지', '강진군 소재지로부터는 남으로 20km 지점에 위치하고 있다. 고려 시대 때 대구면에서 만들어 낸 청자기를 수출하는 역할을 했던 곳이기도 하며, 앞바다에 흰모래가 많아 백사라고 이름 지어졌다고 한다. 백사어촌체험마을에서는 바지락, 꼬막 캐기, 어선 타기 갯벌낚시 등 다양한 갯벌 체험 프로그램을 운영함으로써 도심에서 느낄 수 없는 자연의 에너지와 소중한 추억을 만들 수 있다. 관광객들은 다양한 갯벌체험을 비롯해 어장체험, 승선체험 등의 어촌문화체험을 할 수 있으며 드넓은 강진만을 한눈에 조망할 수 있어 방문객들에게 인기가 있는 곳이다. 서쪽으로 천혜의 청정해역이 내륙으로 들어온 고깔 모양의 영양염류가 많아 싱싱한 패류와 어류가 생산되는 곳으로 청정지역 수산물의 별미를 느낄 수 있다. 고려 시대 청자를 수출하기도 했던 곳인 만큼 청자박물관에서 도자기체험도 해볼 수 있다.', '전남광주통합특별시 강진군 대구면 청자해안길 253', null, 34.4928741381, 126.7939012802, '061-432-0641', 'https://www.gangjin.go.kr/culture/trip/village/baeksa', null, 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4469,14 +2687,14 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#공원','#주차가능']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '개구리생태공원 #자연 #공원 #주차가능', '1.0.0',
-  'import', 0.4,
+  array['#자연','#산','#박물관','#전시','#체험','#참여형','#느린여행','#아이동반','#주차가능']::text[],
+  '{"nature": 1.0, "culture": 0.5, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[1.0,0.5,0.5,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
+  '강진 백사어촌체험마을 강진군 소재지로부터는 남으로 20km 지점에 위치하고 있다. 고려 시대 때 대구면에서 만들어 낸 청자기를 수출하는 역할을 했던 곳이기도 하며, 앞바다에 흰모래가 많아 백사라고 이름 지어졌다고 한다. 백사어촌체험마을에서는 바지락, 꼬막 캐기, 어선 타기 갯벌낚시 등 다양한 갯벌 체험 프로그램을 운영함으로써 도심에서 느낄 수 없는 자연의 에너지와 소중한 추억을 만들 수 있다. 관광객들은 다양한 갯벌체험을 비롯해 어장체험, 승선체험 등의 어촌문화체험을 할 수 있으며 드넓은 강진만을 한눈에 조망할 수 있어 방문객들에게 인기가 있는 곳이다. 서쪽으로 천혜의 청정해역이 내륙으로 들어온 고깔 모양의 영양염류가 많아 싱싱한 패류와 어류가 생산되는 곳으로 청정지역 수산물의 별미를 느낄 수 있다. 고려 시대 청자를 수출하기도 했던 곳인 만큼 청자박물관에서 도자기체험도 해볼 수 있다. #자연 #산 #박물관 #전시 #체험 #참여형 #느린여행 #아이동반 #주차가능', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2638437'
+where p.source = 'tourapi' and p.source_place_id = '1349796'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4485,7 +2703,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '127147', '개천사', '광주', null, '관광지', null, '전남광주통합특별시 화순군 춘양면 변천길 389', null, 34.9044716088, 126.9153916468, '061-373-1301', null, 'http://tong.visitkorea.or.kr/cms/resource/99/3583399_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '2515265', '강진 백운동별서정원', '광주', null, '관광지', '조선중기 처사 이담로(聃老, 1627~1701)가 들어와 계곡 옆 바위에 ‘백운동(白雲洞)’이라 새기고 조영(造營)한 원림으로, 자연과 인공이 적절히 배합된 배치와 짜임새 있는 구성을 이루며 우리 전통 원림의 원형이 그대로 보존된 별서이다. 백운동이란 ‘월출산에서 흘러 내린 물이 다시 안개가 되어 구름으로 올라가는 마을’이라는 뜻으로 약사암과 백운암이 있었던 곳으로 전해진다. 월출산 능선의 기암괴석의 바위들이 보이는 이곳에 전형적인 호남전통원림의 형태를 띄고 있으며, 마침 이곳길도 해남부터 시작하는 삼남길이 지나는 길이기도 하다. 현재의 건물은 다산선생이 1812년 이곳을 다녀간 뒤 아름다운 경치에 반해 제자 초의선사에게 를 그리게 하고 백운동 원림의 12승경을 노래한 시문을 남겼는데 이를 근거로 호남의 유서깊은 전통별서의 모습을 재현하게 되었다. 이담로는 옥판봉에서 흘러내리는 물을 그냥 떠나보내기 아쉬워 아홉 굽이 유상곡수를 만들고 정자를 앉혔는데, 꽃과 나무가 어우러지는 계곡에 눈이 머물다가 봉우리로 시선을 옮기며 경치를 감상하는 것만으로도 최고의 정취를 느낄 수 있다. 백운동 계곡은 강진향토문화유산으로 지정되어 있으며 담양 소쇄원, 완도 보길도의 세연정 등과 함께 호남의 3대 정원으로 일컬으며 조선중기 선비들의 은거문화를 알려주는 중요한 문화유산이다. [출처:강진군 문화관광 홈페이지]', '전남광주통합특별시 강진군 성전면 월하안운길 100-63', null, 34.7420918349, 126.6998840655, '061-430-3312', 'https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=174', 'http://tong.visitkorea.or.kr/cms/resource/77/3537777_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4523,14 +2741,14 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '개천사 #주차가능', '1.0.0',
-  'import', 0.35,
+  array['#자연','#산','#문화유산','#전통','#공원','#느린여행','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.75,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
+  '강진 백운동별서정원 조선중기 처사 이담로(聃老, 1627~1701)가 들어와 계곡 옆 바위에 ‘백운동(白雲洞)’이라 새기고 조영(造營)한 원림으로, 자연과 인공이 적절히 배합된 배치와 짜임새 있는 구성을 이루며 우리 전통 원림의 원형이 그대로 보존된 별서이다. 백운동이란 ‘월출산에서 흘러 내린 물이 다시 안개가 되어 구름으로 올라가는 마을’이라는 뜻으로 약사암과 백운암이 있었던 곳으로 전해진다. 월출산 능선의 기암괴석의 바위들이 보이는 이곳에 전형적인 호남전통원림의 형태를 띄고 있으며, 마침 이곳길도 해남부터 시작하는 삼남길이 지나는 길이기도 하다. 현재의 건물은 다산선생이 1812년 이곳을 다녀간 뒤 아름다운 경치에 반해 제자 초의선사에게 를 그리게 하고 백운동 원림의 12승경을 노래한 시문을 남겼는데 이를 근거로 호남의 유서깊은 전통별서의 모습을 재현하게 되었다. 이담로는 옥판봉에서 흘러내리는 물을 그냥 떠나보내기 아쉬워 아홉 굽이 유상곡수를 만들고 정자를 앉혔는데, 꽃과 나무가 어우러지는 계곡에 눈이 머물다가 봉우리로 시선을 옮기며 경치를 감상하는 것만으로도 최고의 정취를 느낄 수 있다. 백운동 계곡은 강진향토문화유산으로 지정되어 있으며 담양 소쇄원, 완도 보길도의 세연정 등과 함께 호남의 3대 정원으로 일컬으며 조선중기 선비들의 은거문화를 알려주는 중요한 문화유산이다. [출처:강진군 문화관광 홈페이지] #자연 #산 #문화유산 #전통 #공원 #느린여행 #주차가능', '1.0.0',
+  'import', 0.53,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '127147'
+where p.source = 'tourapi' and p.source_place_id = '2515265'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4539,7 +2757,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2032450', '거금생태숲', '광주', null, '관광지', null, '전남광주통합특별시 고흥군 금산면 거금일주로 1877', null, 34.4538883157, 127.2156652719, '061-830-6988', null, 'http://tong.visitkorea.or.kr/cms/resource/04/3375904_image2_1.JPG', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '128952', '강진 병영마을 옛 담장', '광주', null, '관광지', '강진 병영 마을은 옛 병마절도사의 영(營)이란 명칭에서 유래된 마을로 오랜 역사 속에서 그 명맥을 이어오고 있다. 주위의 수인산, 성자산, 옥녀봉, 별락산, 화방산 등 크고 작은 산으로 둘러싸여 분지 형태의 천연 요새로, 일찍이 전라도의 군수권을 통괄했던 병영성이 이곳에 들어섰으며 빠른 상업의 발달을 이룬 곳이다. 이곳에는 사적으로 지정된 ‘병영 성지’가 남아있어 그 역사를 증언하고 있다. 병영 마을의 담장은 전체적으로 돌과 흙을 번갈아 쌓은 토석담으로 하부는 비교적 큰 화강석을, 중단 이후로는 어른 주먹 크기 정도의 비교적 작은 돌을 사용하여 쌓아 올렸다. 담 위에는 기와로 지붕 처리를 하였다. 또한 담장 역할을 하는 부속채도 담장과 같은 높이와 방식으로 축조되어 서로가 조화를 잘 이루고 있다. 담장의 높이는 2m 정도로 높은 편이고 이는 병영 마을이라는 특성과 무관하지 않은 것으로 보이며 마을 안길이 직선형으로 되어있어 담장이 한층 정연해 보인다. 특히, 하멜 일행이 1656년부터 1663년까지 7년간 이곳에 머무는 동안 그들로부터 습득한 것으로 전해오는 담쌓기 방식인, 중단 위쪽으로 얇은 돌을 약 15° 정도 눕혀서 촘촘하게 쌓고, 다음층에는 다시 엇갈려 쌓는 일종의 빗살 무늬 형식(이곳에서는 이 형식을 ‘하멜식 담쌓기’라 부른다) 은 타 지방과 다른 독특한 방식을 보여주고 있다.', '전남광주통합특별시 강진군 병영면 지로리 291-1번지 등', null, 34.7148913023, 126.8182354193, '강진군 문화유적팀 061-430-3363', null, 'http://tong.visitkorea.or.kr/cms/resource/46/3537746_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4577,14 +2795,14 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#숲','#주차가능']::text[],
-  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '거금생태숲 #자연 #숲 #주차가능', '1.0.0',
-  'import', 0.4,
+  array['#산','#역사','#느린여행']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.5,0.5,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
+  '강진 병영마을 옛 담장 강진 병영 마을은 옛 병마절도사의 영(營)이란 명칭에서 유래된 마을로 오랜 역사 속에서 그 명맥을 이어오고 있다. 주위의 수인산, 성자산, 옥녀봉, 별락산, 화방산 등 크고 작은 산으로 둘러싸여 분지 형태의 천연 요새로, 일찍이 전라도의 군수권을 통괄했던 병영성이 이곳에 들어섰으며 빠른 상업의 발달을 이룬 곳이다. 이곳에는 사적으로 지정된 ‘병영 성지’가 남아있어 그 역사를 증언하고 있다. 병영 마을의 담장은 전체적으로 돌과 흙을 번갈아 쌓은 토석담으로 하부는 비교적 큰 화강석을, 중단 이후로는 어른 주먹 크기 정도의 비교적 작은 돌을 사용하여 쌓아 올렸다. 담 위에는 기와로 지붕 처리를 하였다. 또한 담장 역할을 하는 부속채도 담장과 같은 높이와 방식으로 축조되어 서로가 조화를 잘 이루고 있다. 담장의 높이는 2m 정도로 높은 편이고 이는 병영 마을이라는 특성과 무관하지 않은 것으로 보이며 마을 안길이 직선형으로 되어있어 담장이 한층 정연해 보인다. 특히, 하멜 일행이 1656년부터 1663년까지 7년간 이곳에 머무는 동안 그들로부터 습득한 것으로 전해오는 담쌓기 방식인, 중단 위쪽으로 얇은 돌을 약 15° 정도 눕혀서 촘촘하게 쌓고, 다음층에는 다시 엇갈려 쌓는 일종의 빗살 무늬 형식(이곳에서는 이 형식을 ‘하멜식 담쌓기’라 부른다) 은 타 지방과 다른 독특한 방식을 보여주고 있다. #산 #역사 #느린여행', '1.0.0',
+  'import', 0.42,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2032450'
+where p.source = 'tourapi' and p.source_place_id = '128952'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4593,7 +2811,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '126283', '거문도', '광주', null, '관광지', null, '전남광주통합특별시 여수시 삼산면 거문길 103', null, 34.0274901869, 127.308948058, '061-659-1261', null, 'http://tong.visitkorea.or.kr/cms/resource/49/3027249_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '129693', '강진 삼인리 비자나무', '광주', null, '관광지', '이 비자나무는 수령 약 500년으로 높이가 10m, 가슴 높이 둘레가 5.2m이다. 앞에서 볼 때에는 지상 1.87m에서 커다란 가지가 길게 뻗었으며, 뒤쪽에 가지는 짧고 양쪽 가지는 비슷하게 자랐다. 가장 큰 가지의 밑부분 둘레는 2.6m나 된다. 태종 17년에 전라 병마절도사영을 이곳으로 정했을 때 쓸만한 나무는 모조리 다 베어버렸으나 이 나무는 굽었고 키가 작아서 쓸모가 없었기 때문에 남게 되어 현재에 이르렀다고 전해오기도 한다. 조선 500년 동안 호남 지방의 방어 진지였던 병영성이 갑오동란으로 동학군에 함락되어 마침내 폐영될 때가지 이 근처에는 많은 병사가 있었으나 열매를 촌충 구제에 사용하기 때문에 잘 보호되어 온 것 같아 보인다. 마을 사람들은 이 나무를 마을을 지키는 수호신으로 여겨 매년 정월 대보름(음력 1월 15일)에 당산제가 열린다. 비자나무를 둘러보고 마을을 빠져나와 병영천 다리 건너 도보 약 10분 거리에 조선시대 전라도 육군 총지휘부였던 전라병영성과 하멜기념관 등이 있다.', '전남광주통합특별시 강진군 병영면 동삼인길 28-10', null, 34.7148441009, 126.8191381191, '061-430-3363', 'https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=83', 'http://tong.visitkorea.or.kr/cms/resource/00/3538100_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4631,14 +2849,14 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#주차가능']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '거문도 #주차가능', '1.0.0',
-  'import', 0.35,
+  array['#산','#역사','#박물관','#느린여행']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,0.75,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
+  '강진 삼인리 비자나무 이 비자나무는 수령 약 500년으로 높이가 10m, 가슴 높이 둘레가 5.2m이다. 앞에서 볼 때에는 지상 1.87m에서 커다란 가지가 길게 뻗었으며, 뒤쪽에 가지는 짧고 양쪽 가지는 비슷하게 자랐다. 가장 큰 가지의 밑부분 둘레는 2.6m나 된다. 태종 17년에 전라 병마절도사영을 이곳으로 정했을 때 쓸만한 나무는 모조리 다 베어버렸으나 이 나무는 굽었고 키가 작아서 쓸모가 없었기 때문에 남게 되어 현재에 이르렀다고 전해오기도 한다. 조선 500년 동안 호남 지방의 방어 진지였던 병영성이 갑오동란으로 동학군에 함락되어 마침내 폐영될 때가지 이 근처에는 많은 병사가 있었으나 열매를 촌충 구제에 사용하기 때문에 잘 보호되어 온 것 같아 보인다. 마을 사람들은 이 나무를 마을을 지키는 수호신으로 여겨 매년 정월 대보름(음력 1월 15일)에 당산제가 열린다. 비자나무를 둘러보고 마을을 빠져나와 병영천 다리 건너 도보 약 10분 거리에 조선시대 전라도 육군 총지휘부였던 전라병영성과 하멜기념관 등이 있다. #산 #역사 #박물관 #느린여행', '1.0.0',
+  'import', 0.45,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '126283'
+where p.source = 'tourapi' and p.source_place_id = '129693'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4647,7 +2865,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129151', '거문도 등대', '광주', null, '관광지', null, '전남광주통합특별시 여수시 거문도등대길 299 항로표지관리소', null, 34.0084314114, 127.3219612742, '061-666-0906', null, 'http://tong.visitkorea.or.kr/cms/resource/71/3548971_image2_1.JPG', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '1623643', '강진군도서관', '광주', null, '문화·예술', '이 도서관은 다양한 이용자층의 요구를 충족할 수 있도록 다양한 시설과 서비스를 갖추고 있는 곳으로, 그 역사와 기능에서 중요한 위치를 차지하고 있다. 종합자료실과 아동자료실은 학문적 연구와 어린이들의 독서 습관 형성을 위한 다양한 자료를 제공한다. 디지털자료실은 최신 기술을 활용하여 전자책, 디지털 아카이브 및 멀티미디어 콘텐츠에 쉽게 접근할 수 있도록 설계되었다. 시청각실은 영상 및 오디오 자료를 활용한 교육과 문화 활동을 지원하며, 문화교실은 지역 주민들이 참여할 수 있는 다양한 강좌와 프로그램을 통해 평생교육의 기회를 제공한다. 청소년과 일반인을 위한 열람실은 독립적인 학습 공간을 제공하며, 특히 청소년 열람실은 청소년들이 학습과 독서를 통해 자기 계발을 할 수 있는 환경을 조성한다. 또한 24시간 열린 방은 바쁜 현대인들이 시간에 구애받지 않고 도서관을 이용할 수 있도록 지원하는 혁신적인 공간이다. 이러한 시설은 이용자들에게 단순히 책을 읽는 장소 이상의 가치를 제공하며, 학습과 문화 교류의 중심지 역할을 하고 있다. 이 도서관은 전국 국립도서관 중 두 번째로 설립된 유서 깊은 곳으로, 역사적 의미와 함께 지역 사회에 지속적으로 기여하고 있다. 도서관은 시대의 변화에 발맞추어 시설과 서비스를 개선하며 이용자들에게 질 높은 자료와 프로그램을 제공하고, 지식과 문화의 중심으로 자리매김하고 있다. 더 나아가, 모든 세대가 어우러질 수 있는 포괄적 공간으로서의 역할을 충실히 수행하고 있다.', '전남광주통합특별시 강진군 강진읍 남문길 10', null, 34.640490518, 126.7697553845, null, 'https://www.gjlib.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/58/3589458_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4685,227 +2903,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '거문도 등대', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129151'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '988129', '거문도 신선바위', '광주', null, '관광지', null, '전남광주통합특별시 여수시 삼산면 거문리', null, 34.0123585069, 127.3072485707, '032-930-0312', null, 'http://tong.visitkorea.or.kr/cms/resource/38/3549238_image2_1.JPG', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '거문도 신선바위', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '988129'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2723663', '거문도해수욕장', '광주', null, '관광지', null, '전남광주통합특별시 여수시 삼산면 덕촌리 322', null, 34.0199742783, 127.3043097534, '061-659-1257', null, 'http://tong.visitkorea.or.kr/cms/resource/03/3549303_image2_1.JPG', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array[]::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '거문도해수욕장', '1.0.0',
-  'import', 0.35,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2723663'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2752372', '거북선공원', '광주', null, '관광지', null, '전남광주통합특별시 여수시 거북선공원2길 10', null, 34.7606283453, 127.6667403776, null, null, 'http://tong.visitkorea.or.kr/cms/resource/95/3372895_image2_1.JPG', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#공원']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '거북선공원 #공원', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2752372'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1623643', '강진군도서관', '광주', null, '문화·예술', null, '전남광주통합특별시 강진군 강진읍 남문길 10', null, 34.640490518, 126.7697553845, null, null, 'http://tong.visitkorea.or.kr/cms/resource/58/3589458_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진군도서관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#역사','#예술','#체험','#교육','#실내','#비오는날','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.75,0.0,1.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '강진군도서관 이 도서관은 다양한 이용자층의 요구를 충족할 수 있도록 다양한 시설과 서비스를 갖추고 있는 곳으로, 그 역사와 기능에서 중요한 위치를 차지하고 있다. 종합자료실과 아동자료실은 학문적 연구와 어린이들의 독서 습관 형성을 위한 다양한 자료를 제공한다. 디지털자료실은 최신 기술을 활용하여 전자책, 디지털 아카이브 및 멀티미디어 콘텐츠에 쉽게 접근할 수 있도록 설계되었다. 시청각실은 영상 및 오디오 자료를 활용한 교육과 문화 활동을 지원하며, 문화교실은 지역 주민들이 참여할 수 있는 다양한 강좌와 프로그램을 통해 평생교육의 기회를 제공한다. 청소년과 일반인을 위한 열람실은 독립적인 학습 공간을 제공하며, 특히 청소년 열람실은 청소년들이 학습과 독서를 통해 자기 계발을 할 수 있는 환경을 조성한다. 또한 24시간 열린 방은 바쁜 현대인들이 시간에 구애받지 않고 도서관을 이용할 수 있도록 지원하는 혁신적인 공간이다. 이러한 시설은 이용자들에게 단순히 책을 읽는 장소 이상의 가치를 제공하며, 학습과 문화 교류의 중심지 역할을 하고 있다. 이 도서관은 전국 국립도서관 중 두 번째로 설립된 유서 깊은 곳으로, 역사적 의미와 함께 지역 사회에 지속적으로 기여하고 있다. 도서관은 시대의 변화에 발맞추어 시설과 서비스를 개선하며 이용자들에게 질 높은 자료와 프로그램을 제공하고, 지식과 문화의 중심으로 자리매김하고 있다. 더 나아가, 모든 세대가 어우러질 수 있는 포괄적 공간으로서의 역할을 충실히 수행하고 있다. #역사 #예술 #체험 #교육 #실내 #비오는날 #아이동반 #주차가능', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '1623643'
@@ -4917,7 +2919,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1778079', '강진아트홀', '광주', null, '문화·예술', null, '전남광주통합특별시 강진군 강진읍 영랑로1길 9', null, 34.6382074538, 126.7705248168, null, null, 'http://tong.visitkorea.or.kr/cms/resource/39/3589439_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '1778079', '강진아트홀', '광주', null, '문화·예술', '강진아트홀은 강진군의 공공건축물로 강진 군민의 문화와 복지 등 삶의 질을 한 단계 높이는데 기여하고 자 2011년 5월 11일 개관하였다. 이곳은 강진아트홀과 강진복지타운으로 나누어져 있으며, 강진아트홀에는 대공연장(718석), 소공연장(174석) 등 2개의 공연장으로 구성되어 있으며, 강진아트홀 입구엔 200석 규모의 아트홀 야외무대가 위치하고 있고 이곳에서 지역민들의 문화 예술 공연이 진행되어 자발적인 군민문화가 펼쳐진다. 또한, 강진아트홀 1층엔 전시실(70평), 화랑(50평)이 있어 지역 작가 및 국내 유명 작가의 작품들이 상시 전시되고 있다. 강진복지센터는 노인 요양 시설과 주민생활 문화강좌 등이 실시되고 다목적실(100석)에서는 다양한 군민 모임이 이루어진다. 이렇듯 강진군아트홀은 공연과 전시 그리고 지역 문화 예술 강좌 등 활발한 지역 문화 및 행사를 개최하고 있다. 강진아트홀 주변으로 도보 약 5분 거리에 영랑생가가 있다.', '전남광주통합특별시 강진군 강진읍 영랑로1길 9', null, 34.6382074538, 126.7705248168, null, 'http://arthall.gangjin.go.kr', 'http://tong.visitkorea.or.kr/cms/resource/39/3589439_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -4955,11 +2957,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '강진아트홀 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#예술','#전시','#축제','#공연','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.75]'::extensions.vector(8),
+  '강진아트홀 강진아트홀은 강진군의 공공건축물로 강진 군민의 문화와 복지 등 삶의 질을 한 단계 높이는데 기여하고 자 2011년 5월 11일 개관하였다. 이곳은 강진아트홀과 강진복지타운으로 나누어져 있으며, 강진아트홀에는 대공연장(718석), 소공연장(174석) 등 2개의 공연장으로 구성되어 있으며, 강진아트홀 입구엔 200석 규모의 아트홀 야외무대가 위치하고 있고 이곳에서 지역민들의 문화 예술 공연이 진행되어 자발적인 군민문화가 펼쳐진다. 또한, 강진아트홀 1층엔 전시실(70평), 화랑(50평)이 있어 지역 작가 및 국내 유명 작가의 작품들이 상시 전시되고 있다. 강진복지센터는 노인 요양 시설과 주민생활 문화강좌 등이 실시되고 다목적실(100석)에서는 다양한 군민 모임이 이루어진다. 이렇듯 강진군아트홀은 공연과 전시 그리고 지역 문화 예술 강좌 등 활발한 지역 문화 및 행사를 개최하고 있다. 강진아트홀 주변으로 도보 약 5분 거리에 영랑생가가 있다. #예술 #전시 #축제 #공연 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.47,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '1778079'
@@ -4971,7 +2973,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2612901', '고산 윤선도 박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 해남군 해남읍 녹우당길 130', null, 34.5502315216, 126.620851215, null, null, 'http://tong.visitkorea.or.kr/cms/resource/51/3383051_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2612901', '고산 윤선도 박물관', '광주', null, '문화·예술', '고산 윤선도 박물관은 조선조의 문신이자 국문학의 최고봉이라 일컫는 고산 윤선도를 비롯해 실용적인 학문을 추구하고 뛰어난 예술적 감각으로 혁신적인 그림 세계를 개척한 공재 윤두서 등 해남 윤씨가 사람들이 남긴 1775점의 문화유산을 소장하고 있는 박물관이다. 고산 윤선도 박물관은 해남 백련동에 터를 잡은 이래 500년이 넘도록 한 곳에 살아온 해남 윤씨 어초은공파 사람들의 삶과 문화유물이 전시되어 있다. 또한 해남윤씨가의 학문과 예술을 볼 수 있고, 수많은 문인과 예술가들의 문화적 교류를 느낄 수 있는 곳이다. 관람객들의 문화적 욕구를 해소하고 다양한 경험을 위해 다도체험을 비롯해 판화체험, 전통 민속놀이 체험도 운영하고 있다. 또한 고전강좌 등 다양한 인문학 강좌를 마련하여 전통문화를 이해할 수 기회를 마련하고 있다. 이곳 박물관에는 해남윤씨 녹우당(사적 제67호) 고택과 어초은사당, 고산사당, 추원당이 있고 고산윤선도 유물전시관에는 공재 윤두서(1668~1715)의 자화상(국보 제240호)을 비롯하여 해남윤씨가전고화첩(보물 제481호), 윤고산수적관계문서(보물 제482호), 지정14년노비문서(보물 제483호) 등 많은 문화재와 유물이 전시되어 있다. 덕음산 중턱에 있는 비자나무숲(천연기념물 제241호)은 약 500년 전에 조성된 것으로 400여 그루가 숲을 이루고 있다.', '전남광주통합특별시 해남군 해남읍 녹우당길 130', null, 34.5502315216, 126.620851215, null, 'https://gosan.haenam.go.kr/index.9is', 'http://tong.visitkorea.or.kr/cms/resource/51/3383051_image2_1.JPG', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5009,11 +3011,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#산','#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '고산 윤선도 박물관 #산 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.45,
+  array['#산','#숲','#역사','#문화유산','#예술','#전시','#체험','#레저','#실내','#비오는날']::text[],
+  '{"nature": 0.75, "culture": 1.0, "art": 1.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.75,1.0,1.0,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
+  '고산 윤선도 박물관 고산 윤선도 박물관은 조선조의 문신이자 국문학의 최고봉이라 일컫는 고산 윤선도를 비롯해 실용적인 학문을 추구하고 뛰어난 예술적 감각으로 혁신적인 그림 세계를 개척한 공재 윤두서 등 해남 윤씨가 사람들이 남긴 1775점의 문화유산을 소장하고 있는 박물관이다. 고산 윤선도 박물관은 해남 백련동에 터를 잡은 이래 500년이 넘도록 한 곳에 살아온 해남 윤씨 어초은공파 사람들의 삶과 문화유물이 전시되어 있다. 또한 해남윤씨가의 학문과 예술을 볼 수 있고, 수많은 문인과 예술가들의 문화적 교류를 느낄 수 있는 곳이다. 관람객들의 문화적 욕구를 해소하고 다양한 경험을 위해 다도체험을 비롯해 판화체험, 전통 민속놀이 체험도 운영하고 있다. 또한 고전강좌 등 다양한 인문학 강좌를 마련하여 전통문화를 이해할 수 기회를 마련하고 있다. 이곳 박물관에는 해남윤씨 녹우당(사적 제67호) 고택과 어초은사당, 고산사당, 추원당이 있고 고산윤선도 유물전시관에는 공재 윤두서(1668~1715)의 자화상(국보 제240호)을 비롯하여 해남윤씨가전고화첩(보물 제481호), 윤고산수적관계문서(보물 제482호), 지정14년노비문서(보물 제483호) 등 많은 문화재와 유물이 전시되어 있다. 덕음산 중턱에 있는 비자나무숲(천연기념물 제241호)은 약 500년 전에 조성된 것으로 400여 그루가 숲을 이루고 있다. #산 #숲 #역사 #문화유산 #예술 #전시 #체험 #레저 #실내 #비오는날', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2612901'
@@ -5025,7 +3027,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129996', '고흥문화원', '광주', null, '문화·예술', null, '전남광주통합특별시 고흥군 고흥읍 고흥로 1892-67', null, 34.6124080728, 127.2975208647, null, null, 'http://tong.visitkorea.or.kr/cms/resource/66/3375866_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '129996', '고흥문화원', '광주', null, '문화·예술', '1965년 설립된 고흥문화원은 전통 문화 유산 보존과 지역 문화 발전을 위해 설립되었다. 군민들이 참여하여 정서 함양과 예술적 소양을 배양함으로써 문화 예술의 대중화하는 데 주안점을 두고 있다. 옛 조상들의 발자취를 더듬어 역사의식을 고취시키고 지역 문화 보존 및 전승을 위한 사업을 전개하고 있다. 전남광주통합특별시 고흥평생교육관은 고흥문화원과 지역민이 행복한 평생교육 실현을 위한 업무 협약을 통해 고흥 문화의 정체성을 규명하고 향토문화 연구를 선도하는 문화원에서 직접 한학을 배울 수 있는 계기 마련과 함께 지역사회의 다양한 평생교육 기관과의 협력 체계를 구축하는데 고흥평생교육관이 주도적 역할을 하고 있다. 인접하여 박지성 공설운동장이 있으며 차량 이동 5분, 2.2km 거리에 고흥 존심당 및 아문 문화재가 있다', '전남광주통합특별시 고흥군 고흥읍 고흥로 1892-67', null, 34.6124080728, 127.2975208647, null, null, 'http://tong.visitkorea.or.kr/cms/resource/66/3375866_image2_1.JPG', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5063,11 +3065,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '고흥문화원 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#산','#역사','#문화유산','#예술','#체험','#교육','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.5,0.75,0.75,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
+  '고흥문화원 1965년 설립된 고흥문화원은 전통 문화 유산 보존과 지역 문화 발전을 위해 설립되었다. 군민들이 참여하여 정서 함양과 예술적 소양을 배양함으로써 문화 예술의 대중화하는 데 주안점을 두고 있다. 옛 조상들의 발자취를 더듬어 역사의식을 고취시키고 지역 문화 보존 및 전승을 위한 사업을 전개하고 있다. 전남광주통합특별시 고흥평생교육관은 고흥문화원과 지역민이 행복한 평생교육 실현을 위한 업무 협약을 통해 고흥 문화의 정체성을 규명하고 향토문화 연구를 선도하는 문화원에서 직접 한학을 배울 수 있는 계기 마련과 함께 지역사회의 다양한 평생교육 기관과의 협력 체계를 구축하는데 고흥평생교육관이 주도적 역할을 하고 있다. 인접하여 박지성 공설운동장이 있으며 차량 이동 5분, 2.2km 거리에 고흥 존심당 및 아문 문화재가 있다 #산 #역사 #문화유산 #예술 #체험 #교육 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.53,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129996'
@@ -5079,7 +3081,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2605786', '고흥분청문화박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 고흥군 두원면 분청문화박물관길 99', null, 34.6278595774, 127.3244875637, null, null, 'http://tong.visitkorea.or.kr/cms/resource/70/3344670_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2605786', '고흥분청문화박물관', '광주', null, '문화·예술', '고흥의 모든 역사·문화를 한곳에서 볼 수 있는 고흥분청문화박물관은 대한민국 최대 규모의 분청사기 요지로 국가 지정문화재로 지정된 곳에 자리하고 있다. 1980년 운대리가마터 발굴을 시작으로 37년간의 장기프로젝트 끝에 2017년 10월 31일 개관했다. 찬란하고 유구한 고흥의 역사를 기록·보존하고 백토분장의 부드러운 아름다움이 돋보인 분천도자문화와 우리의 정신문화인 설화문화를 계승·발전시키기 위해 건립되었다. (출처 : 고흥관광 홈페이지)', '전남광주통합특별시 고흥군 두원면 분청문화박물관길 99', null, 34.6278595774, 127.3244875637, null, 'http://buncheong.goheung.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/70/3344670_image2_1.JPG', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5117,11 +3119,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
+  array['#역사','#문화유산','#예술','#전시','#실내','#비오는날','#주차가능']::text[],
   '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '고흥분청문화박물관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
+  '고흥분청문화박물관 고흥의 모든 역사·문화를 한곳에서 볼 수 있는 고흥분청문화박물관은 대한민국 최대 규모의 분청사기 요지로 국가 지정문화재로 지정된 곳에 자리하고 있다. 1980년 운대리가마터 발굴을 시작으로 37년간의 장기프로젝트 끝에 2017년 10월 31일 개관했다. 찬란하고 유구한 고흥의 역사를 기록·보존하고 백토분장의 부드러운 아름다움이 돋보인 분천도자문화와 우리의 정신문화인 설화문화를 계승·발전시키기 위해 건립되었다. (출처 : 고흥관광 홈페이지) #역사 #문화유산 #예술 #전시 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.47,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2605786'
@@ -5133,7 +3135,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3351638', '곡성기차마을 생태학습관', '광주', null, '문화·예술', null, '전남광주통합특별시 곡성군 오곡면 기차마을로 252-16', null, 35.2812191216, 127.3065559809, null, null, 'http://tong.visitkorea.or.kr/cms/resource/68/3385368_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '3351638', '곡성기차마을 생태학습관', '광주', null, '문화·예술', '곡성기차마을 생태학습관은 섬진강의 자연 생태와 천적관계를 테마로 한 자연속의 실제 곤충들을 전시하고 습지생물의 서식처 보호와 습지 보존의 중요성을 일깨워줌으로써 어린이들의 교육장으로 활용되고 있다. 특히 멸종 위기 2급인 꼬마잠자리의 부화 및 성장 과정을 조형물로 표현하고 있으며 이외에도 곤충의 정의와 일생, 종류와 삶을 곤충 표본과 함께 설명하고, 곤충을 활용한 곡성에서의 친환경 농법, 섬진강의 곤충과 민물고기 등을 전시하고 있다.', '전남광주통합특별시 곡성군 오곡면 기차마을로 252-16', null, 35.2812191216, 127.3065559809, null, 'https://www.railtrip.co.kr/homepage/gokseong/', 'http://tong.visitkorea.or.kr/cms/resource/68/3385368_image2_1.jpg', 90, true, true, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5171,11 +3173,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#예술','#교육','#느린여행','#실내','#비오는날']::text[],
+  array['#자연','#예술','#전시','#교육','#가족체험','#느린여행','#실내','#비오는날','#아이동반']::text[],
   '{"nature": 0.75, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
   '[0.75,0.0,0.75,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
-  '곡성기차마을 생태학습관 #자연 #예술 #교육 #느린여행 #실내 #비오는날', '1.0.0',
-  'import', 0.45,
+  '곡성기차마을 생태학습관 곡성기차마을 생태학습관은 섬진강의 자연 생태와 천적관계를 테마로 한 자연속의 실제 곤충들을 전시하고 습지생물의 서식처 보호와 습지 보존의 중요성을 일깨워줌으로써 어린이들의 교육장으로 활용되고 있다. 특히 멸종 위기 2급인 꼬마잠자리의 부화 및 성장 과정을 조형물로 표현하고 있으며 이외에도 곤충의 정의와 일생, 종류와 삶을 곤충 표본과 함께 설명하고, 곤충을 활용한 곡성에서의 친환경 농법, 섬진강의 곤충과 민물고기 등을 전시하고 있다. #자연 #예술 #전시 #교육 #가족체험 #느린여행 #실내 #비오는날 #아이동반', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '3351638'
@@ -5187,7 +3189,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1054221', '곡성레저문화센터', '광주', null, '문화·예술', null, '전남광주통합특별시 곡성군 곡성읍 곡성로 855 (곡성읍)', null, 35.2801301942, 127.2971596157, null, null, 'http://tong.visitkorea.or.kr/cms/resource/43/3026943_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '1054221', '곡성레저문화센터', '광주', null, '문화·예술', '곡성레저문화센터는 군민의 문화, 평생학습, 여가생활에 보다 많은 편익을 주기 위해 마련된 공간이다. 동악아트홀, 대황홀 등 2개의 공연홀과 군민들 간의 커뮤니티를 자유롭게 공유하는 마주침공간을 준비하였다. 군민들의 체력단련을 위한 요가, 체력단련실이 있으며, 다목적 운동장이 야외에 마련되어 있다. 군민회관으로는 열린마당과 참여마당을 마련하였다. 그 외 평생학습센터에서는 3개월 단위 학기제로 기술, 기능, 취미, 교양, 생활체육 등 40~50개의 평생교육프로그램과 전문 자격증 취득 등 경제활동 지원 교육프로그램을 병행하여 운영하고 있다. 이곳에서 600m 거리에 곡성역이 있으며, 섬진강 기차마을이 도보 약 20분 거리에 있다.', '전남광주통합특별시 곡성군 곡성읍 곡성로 855 (곡성읍)', null, 35.2801301942, 127.2971596157, null, 'https://www.gokseong.go.kr/center/', 'http://tong.visitkorea.or.kr/cms/resource/43/3026943_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5225,11 +3227,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#레저','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,0.0]'::extensions.vector(8),
-  '곡성레저문화센터 #예술 #레저 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
+  array['#예술','#공연','#체험','#교육','#스포츠','#느린여행','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 1.0, "sports": 0.5, "healing": 0.5, "festival": 0.5}'::jsonb,
+  '[0.0,0.0,0.75,0.0,1.0,0.5,0.5,0.5]'::extensions.vector(8),
+  '곡성레저문화센터 곡성레저문화센터는 군민의 문화, 평생학습, 여가생활에 보다 많은 편익을 주기 위해 마련된 공간이다. 동악아트홀, 대황홀 등 2개의 공연홀과 군민들 간의 커뮤니티를 자유롭게 공유하는 마주침공간을 준비하였다. 군민들의 체력단련을 위한 요가, 체력단련실이 있으며, 다목적 운동장이 야외에 마련되어 있다. 군민회관으로는 열린마당과 참여마당을 마련하였다. 그 외 평생학습센터에서는 3개월 단위 학기제로 기술, 기능, 취미, 교양, 생활체육 등 40~50개의 평생교육프로그램과 전문 자격증 취득 등 경제활동 지원 교육프로그램을 병행하여 운영하고 있다. 이곳에서 600m 거리에 곡성역이 있으며, 섬진강 기차마을이 도보 약 20분 거리에 있다. #예술 #공연 #체험 #교육 #스포츠 #느린여행 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '1054221'
@@ -5241,7 +3243,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129991', '곡성문화원', '광주', null, '문화·예술', null, '전남광주통합특별시 곡성군 곡성읍 곡성로 855', null, 35.2804829367, 127.2974151402, null, null, 'http://tong.visitkorea.or.kr/cms/resource/23/3587223_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '129991', '곡성문화원', '광주', null, '문화·예술', '곡성문화원은 ‘지방문화원진흥법’에 의거 지방 문화진흥을 위한 지역 문화사업의 수행을 목적으로 설립된 문화관광부 산하 비영리 특별법인으로 곡성군민들의 향토문화에 대한 이해와 애정을 증진시키며 군민의 문화 예술적 감성을 개발 향상함을 목적으로 활동하고 있다. 곡성문화원의 주요 사업은 지역 문화행사의 개최, 문화에 대한 재료의 수집, 보존 및 보급, 학교 문화 예술 시범사업 (문화관광부시범사업), 곡성문화관광해설가 양성교육, 유명 예술인 초청 강연회 등 지역 문화 발전을 위한 전반적인 사회 교육활동을 진행하고 있다. 주로 외부 행사와 활동을 하므로 곡성문화원 홈페이지를 참조하는 것이 현재 진행 중인 프로그램 등의 정확한 정보를 얻을 수 있다.', '전남광주통합특별시 곡성군 곡성읍 곡성로 855', null, 35.2804829367, 127.2974151402, null, 'http://www.gs-culture.or.kr/', 'http://tong.visitkorea.or.kr/cms/resource/23/3587223_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5279,11 +3281,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '곡성문화원 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#산','#예술','#교육','#참여형','#축제','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.5,0.0,0.75,0.0,0.75,0.0,0.0,0.5]'::extensions.vector(8),
+  '곡성문화원 곡성문화원은 ‘지방문화원진흥법’에 의거 지방 문화진흥을 위한 지역 문화사업의 수행을 목적으로 설립된 문화관광부 산하 비영리 특별법인으로 곡성군민들의 향토문화에 대한 이해와 애정을 증진시키며 군민의 문화 예술적 감성을 개발 향상함을 목적으로 활동하고 있다. 곡성문화원의 주요 사업은 지역 문화행사의 개최, 문화에 대한 재료의 수집, 보존 및 보급, 학교 문화 예술 시범사업 (문화관광부시범사업), 곡성문화관광해설가 양성교육, 유명 예술인 초청 강연회 등 지역 문화 발전을 위한 전반적인 사회 교육활동을 진행하고 있다. 주로 외부 행사와 활동을 하므로 곡성문화원 홈페이지를 참조하는 것이 현재 진행 중인 프로그램 등의 정확한 정보를 얻을 수 있다. #산 #예술 #교육 #참여형 #축제 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.47,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129991'
@@ -5295,7 +3297,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2733394', '광양 역사문화관', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 광양읍 매천로 829', null, 34.9758111359, 127.5860086407, null, null, null, 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+values ('tourapi', '2733394', '광양 역사문화관', '광주', null, '문화·예술', '광양역사문화관은 광양의 역사, 문화, 인물, 옛 광양의 모습들이 잘 보존되어 있는 곳이다. 위치는 조선시대 육방들의 업무 처리 장소인 질청이 있었던 곳으로 1942년 8월 25일에 건립되어 구 광양군청으로 사용되었다. 현재는 등록문화재로 지정되어 있다. 내부에는 국보 광양 중흥산성 쌍사자석등을 복제한 것과 구석기부터 현대까지의 광양의 역사가 간략한 연표 형식으로 연출되어 있다. 또한 광양의 주요 관광지 사진과 자세한 설명이 있어 관광 정보를 얻을 수도 있다. 광양 출신의 역사적인 인물과 명인, 광양의 주요 특산품 등에 관한 자료도 잘 설명되어 있다.', '전남광주통합특별시 광양시 광양읍 매천로 829', null, 34.9758111359, 127.5860086407, null, null, null, 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5333,11 +3335,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#역사','#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양 역사문화관 #역사 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
+  array['#산','#역사','#문화유산','#예술','#특산물','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 0.75, "food": 0.5, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.5,0.75,0.75,0.5,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '광양 역사문화관 광양역사문화관은 광양의 역사, 문화, 인물, 옛 광양의 모습들이 잘 보존되어 있는 곳이다. 위치는 조선시대 육방들의 업무 처리 장소인 질청이 있었던 곳으로 1942년 8월 25일에 건립되어 구 광양군청으로 사용되었다. 현재는 등록문화재로 지정되어 있다. 내부에는 국보 광양 중흥산성 쌍사자석등을 복제한 것과 구석기부터 현대까지의 광양의 역사가 간략한 연표 형식으로 연출되어 있다. 또한 광양의 주요 관광지 사진과 자세한 설명이 있어 관광 정보를 얻을 수도 있다. 광양 출신의 역사적인 인물과 명인, 광양의 주요 특산품 등에 관한 자료도 잘 설명되어 있다. #산 #역사 #문화유산 #예술 #특산물 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.47,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2733394'
@@ -5349,7 +3351,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2782651', '광양매화문화관', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 다압면 지막1길 21', null, 35.0767465293, 127.7181222254, null, null, 'http://tong.visitkorea.or.kr/cms/resource/04/3345104_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2782651', '광양매화문화관', '광주', null, '문화·예술', '2015년에 지어진 광양매화문화관은 광양시 다압면 일대 일명 ‘매화마을’ 안에 있는 매화와 매실에 관한 전시관이다. 매화마을 끝자락 청매실농원으로 올라가는 길을 따라가면 매화 꽃잎을 닮은 외양과 매실을 상징하는 초록색이 산뜻한 광양매화문화관을 만날 수 있다. 건물 외부에 매화나무와 함께 다양한 꽃나무, 연못이 있는 작은 정원이 있어, 기분 좋은 첫인상을 선사한다. 광양매화문화관 내부는 1층은 매실판매장과 휴게공간으로, 2층은 매화전시관으로 구성되어 있다. 1층 매실제품판매장에서는 다양한 종류와 가격대의 매실 제품을 판매하고 있으며, 매실주 숙성실도 관람할 수 있다. 카페 공간이 있어 매실 이외에도 다양한 음료를 마실 수 있다. 2층 매화전시관은 청매실농원역사실과 매화문화전시실로 구성되어 있다. 광양시 다압면 일대가 매화마을로 자리매김하는 데 있어 홍쌍리 명인 일가와 청매실농원의 역할을 빼놓을 수 없다.', '전남광주통합특별시 광양시 다압면 지막1길 21', null, 35.0767465293, 127.7181222254, null, 'http://www.maesil.co.kr/', 'http://tong.visitkorea.or.kr/cms/resource/04/3345104_image2_1.JPG', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5387,11 +3389,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양매화문화관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#산','#정원','#역사','#박물관','#예술','#전시','#카페','#공원','#느린여행','#실내']::text[],
+  '{"nature": 0.75, "culture": 0.75, "art": 0.75, "food": 0.5, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.75,0.75,0.5,0.0,0.0,0.75,0.0]'::extensions.vector(8),
+  '광양매화문화관 2015년에 지어진 광양매화문화관은 광양시 다압면 일대 일명 ‘매화마을’ 안에 있는 매화와 매실에 관한 전시관이다. 매화마을 끝자락 청매실농원으로 올라가는 길을 따라가면 매화 꽃잎을 닮은 외양과 매실을 상징하는 초록색이 산뜻한 광양매화문화관을 만날 수 있다. 건물 외부에 매화나무와 함께 다양한 꽃나무, 연못이 있는 작은 정원이 있어, 기분 좋은 첫인상을 선사한다. 광양매화문화관 내부는 1층은 매실판매장과 휴게공간으로, 2층은 매화전시관으로 구성되어 있다. 1층 매실제품판매장에서는 다양한 종류와 가격대의 매실 제품을 판매하고 있으며, 매실주 숙성실도 관람할 수 있다. 카페 공간이 있어 매실 이외에도 다양한 음료를 마실 수 있다. 2층 매화전시관은 청매실농원역사실과 매화문화전시실로 구성되어 있다. 광양시 다압면 일대가 매화마을로 자리매김하는 데 있어 홍쌍리 명인 일가와 청매실농원의 역할을 빼놓을 수 없다. #산 #정원 #역사 #박물관 #예술 #전시 #카페 #공원 #느린여행 #실내', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2782651'
@@ -5403,7 +3405,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129987', '광양문화원', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 광양읍 매천로 829', null, 34.975866687, 127.5861308504, null, null, 'http://tong.visitkorea.or.kr/cms/resource/45/2515545_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '129987', '광양문화원', '광주', null, '문화·예술', '1965년 설립된 광양문화원은 지역교육 문화의 개발하여 보존 및 전승하며, 선양 향토사의 조사연구 및 사료 수집 보존을 위해 설립되었다. 지역 문화행사, 지역 전통문화의 국내외 교류, 지역 문화에 관한 사회교육 활용 등 기타 지역 문화발전에 기여고 있다. 연중 문화행사로 정월 대보름 축제, 푸른 예술제, 향토문화지 발간 등이 있다.', '전남광주통합특별시 광양시 광양읍 매천로 829', null, 34.975866687, 127.5861308504, null, 'http://www.광양문화원.kr/', 'http://tong.visitkorea.or.kr/cms/resource/45/2515545_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5441,11 +3443,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양문화원 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#전통','#예술','#교육','#참여형','#축제','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.0,0.5,0.75,0.0,0.75,0.0,0.0,0.5]'::extensions.vector(8),
+  '광양문화원 1965년 설립된 광양문화원은 지역교육 문화의 개발하여 보존 및 전승하며, 선양 향토사의 조사연구 및 사료 수집 보존을 위해 설립되었다. 지역 문화행사, 지역 전통문화의 국내외 교류, 지역 문화에 관한 사회교육 활용 등 기타 지역 문화발전에 기여고 있다. 연중 문화행사로 정월 대보름 축제, 푸른 예술제, 향토문화지 발간 등이 있다. #전통 #예술 #교육 #참여형 #축제 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.47,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129987'
@@ -5457,7 +3459,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130205', '광양시문화예술회관', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 광양읍 향교길 9-30', null, 34.9799634742, 127.5875972838, null, null, 'http://tong.visitkorea.or.kr/cms/resource/90/3587190_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '130205', '광양시문화예술회관', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 광양읍 향교길 9-30', null, 34.9799634742, 127.5875972838, null, null, 'http://tong.visitkorea.or.kr/cms/resource/90/3587190_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5495,10 +3497,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
+  array['#예술','#실내','#비오는날','#주차가능']::text[],
   '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양시문화예술회관 #예술 #실내 #비오는날', '1.0.0',
+  '광양시문화예술회관 #예술 #실내 #비오는날 #주차가능', '1.0.0',
   'import', 0.38,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -5511,7 +3513,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2732668', '광양예술창고', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 광양읍 순광로 664', null, 34.9682620238, 127.588325297, null, null, 'http://tong.visitkorea.or.kr/cms/resource/00/3552400_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '2732668', '광양예술창고', '광주', null, '문화·예술', '광양예술창고는 구 광양역과 연계하여 1970년대 창고용도로 사용되던 건물이었다. 2011년 광양역 이전에 따라 폐창고로 활용되던 공간을 2015년 전남도립미술관 유치에 연계하여 복합문화공간으로 조성하고자 계획하였고, 2019년 폐창고 리모델링 공사를 시작하여 개관준비 과정을 거쳐 전남도립미술관과 더불어 2021년 3월 22일 자로 광양예술창고를 개관하여 운영을 시작하였다. 광양예술창고는 미디어영상실, 전시실로 구성된 미디어 A동과 문화쉼터(카페), 다목적실, 어린이 다락방 등으로 구성된 소교동 B동으로 구성되어 있다. 미디어 A동의 미디어 영상실은 ‘광양의 현재와 미래’를 테마로 높이 4m, 가로 56m에 달하는 영상을 상영하고 있으며, 전시실에는 고 이경모 작가의 사진 및 카메라를 전시하고 있다. 소교동 B동(소통, 교류, 동행의 약자)에는 문화쉼터라는 카페를 운영하고 있으며, 전이수 동화작가의 그림이 벽화 등으로 재현되어 전시되고 있다. 다목적실에서 문화교육프로그램이 이뤄지며 어린이다락방에서는 어린이들이 편하게 쉬고 놀 수 있는 공간을 조성하였다.', '전남광주통합특별시 광양시 광양읍 순광로 664', null, 34.9682620238, 127.588325297, null, 'https://gwangyang.go.kr/tour/gallery.es?mid=a31101020000&bid=0008&act=view&list_no=11119', 'http://tong.visitkorea.or.kr/cms/resource/00/3552400_image2_1.JPG', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5549,11 +3551,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양예술창고 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#예술','#전시','#카페','#교육','#가족체험','#실내','#비오는날','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.5, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.0,0.75,0.5,0.75,0.0,0.0,0.0]'::extensions.vector(8),
+  '광양예술창고 광양예술창고는 구 광양역과 연계하여 1970년대 창고용도로 사용되던 건물이었다. 2011년 광양역 이전에 따라 폐창고로 활용되던 공간을 2015년 전남도립미술관 유치에 연계하여 복합문화공간으로 조성하고자 계획하였고, 2019년 폐창고 리모델링 공사를 시작하여 개관준비 과정을 거쳐 전남도립미술관과 더불어 2021년 3월 22일 자로 광양예술창고를 개관하여 운영을 시작하였다. 광양예술창고는 미디어영상실, 전시실로 구성된 미디어 A동과 문화쉼터(카페), 다목적실, 어린이 다락방 등으로 구성된 소교동 B동으로 구성되어 있다. 미디어 A동의 미디어 영상실은 ‘광양의 현재와 미래’를 테마로 높이 4m, 가로 56m에 달하는 영상을 상영하고 있으며, 전시실에는 고 이경모 작가의 사진 및 카메라를 전시하고 있다. 소교동 B동(소통, 교류, 동행의 약자)에는 문화쉼터라는 카페를 운영하고 있으며, 전이수 동화작가의 그림이 벽화 등으로 재현되어 전시되고 있다. 다목적실에서 문화교육프로그램이 이뤄지며 어린이다락방에서는 어린이들이 편하게 쉬고 놀 수 있는 공간을 조성하였다. #예술 #전시 #카페 #교육 #가족체험 #실내 #비오는날 #아이동반 #주차가능', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2732668'
@@ -5565,7 +3567,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130559', '구례향제줄풍류전수관', '광주', null, '문화·예술', null, '전남광주통합특별시 구례군 구례읍 봉성산길 16', null, 35.2084078164, 127.4627690718, null, null, 'http://tong.visitkorea.or.kr/cms/resource/67/3587367_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '130559', '구례향제줄풍류전수관', '광주', null, '문화·예술', '구례향제줄풍류는 구례 지방에서 전승되는 현악영산회상이라는 기악곡을 ‘구례향제줄풍류’라 하며, 영상회상은 여러 음악이 조곡과 같이 구성된 합주곡을 말하며 ‘풍류’라고도 한다. 관악기가 중심이 되는 영산회상을 대풍류라 하고, 현악기가 중심이 되는 영산회상을 줄풍류라고 한다. 구례향제줄풍류는 15곡으로 구성된 방대한 조곡으로 되어 있는데, 이 음악을 모두 연주하는 데는 약 70분이 걸린다고 한다. 구례향제줄풍류전수관은 구례읍에 위치하고 있으며 국가무형문화유산으로 지정된 구례향제줄풍류를 전수하는 곳으로, 1994년 5월 15일 개관하였다. 줄풍류의 맥을 잇기 위하여 활동하는 구례줄풍류보존회가 연수와 공연을 진행하는 공간이며, 일반인을 대상으로 한 국악교실이 운영된다. 구례읍사무소 바로 옆, 구례교육지원청 맞은편에 위치해 있다.', '전남광주통합특별시 구례군 구례읍 봉성산길 16', null, 35.2084078164, 127.4627690718, null, null, 'http://tong.visitkorea.or.kr/cms/resource/67/3587367_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5603,11 +3605,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '구례향제줄풍류전수관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  array['#산','#문화유산','#예술','#공연','#교육','#실내','#비오는날']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.5,0.5,0.75,0.0,0.5,0.0,0.0,0.5]'::extensions.vector(8),
+  '구례향제줄풍류전수관 구례향제줄풍류는 구례 지방에서 전승되는 현악영산회상이라는 기악곡을 ‘구례향제줄풍류’라 하며, 영상회상은 여러 음악이 조곡과 같이 구성된 합주곡을 말하며 ‘풍류’라고도 한다. 관악기가 중심이 되는 영산회상을 대풍류라 하고, 현악기가 중심이 되는 영산회상을 줄풍류라고 한다. 구례향제줄풍류는 15곡으로 구성된 방대한 조곡으로 되어 있는데, 이 음악을 모두 연주하는 데는 약 70분이 걸린다고 한다. 구례향제줄풍류전수관은 구례읍에 위치하고 있으며 국가무형문화유산으로 지정된 구례향제줄풍류를 전수하는 곳으로, 1994년 5월 15일 개관하였다. 줄풍류의 맥을 잇기 위하여 활동하는 구례줄풍류보존회가 연수와 공연을 진행하는 공간이며, 일반인을 대상으로 한 국악교실이 운영된다. 구례읍사무소 바로 옆, 구례교육지원청 맞은편에 위치해 있다. #산 #문화유산 #예술 #공연 #교육 #실내 #비오는날', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '130559'
@@ -5619,7 +3621,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129896', '국립해양유산연구소', '광주', null, '문화·예술', null, '전남광주통합특별시 목포시 남농로 136', null, 34.791834429, 126.421687956, null, null, 'http://tong.visitkorea.or.kr/cms/resource/10/3533710_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '129896', '국립해양유산연구소', '광주', null, '문화·예술', '목포시 갓바위 문화거리에 자리한 ‘국립해양유산연구소’는 국가유산청 소속기관으로, 우리의 소중한 해양 문화유산을 찾고 알리는 곳이다. 1975년 어부의 우연한 발견으로 한국의 수중 문화유산이 이슈가 되었으며, 한국 뿐 아니라 동아시아 여러 나라에서 전시와 국제 심포지엄이 개최되었다. 계속해서 역사적 침몰선과 수중 문화유산이 발견되었으며 잊혀졌던 우리의 해양문화유산을 확인하게 되었다. 1994년에 국가 지원하에 해양문화유산을 보호하고 발굴, 연구하는 국립해양유물전시관이 개관하였고, 국립해양유산연구소가 탄생하게 되었다. 전시관 주변으로 목포문예역사관, 목포문학관, 목포자연사박물관, 목포생활도자박물관, 남농기념관들이 밀접하여 아이들과 함께 방문하기 좋다.', '전남광주통합특별시 목포시 남농로 136', null, 34.791834429, 126.421687956, null, 'https://www.seamuse.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/10/3533710_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5657,11 +3659,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#산','#바다','#예술','#실내','#비오는날']::text[],
-  '{"nature": 1.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[1.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '국립해양유산연구소 #산 #바다 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
+  array['#자연','#산','#역사','#문화유산','#예술','#전시','#가족체험','#실내','#비오는날','#아이동반']::text[],
+  '{"nature": 1.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[1.0,0.75,0.75,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '국립해양유산연구소 목포시 갓바위 문화거리에 자리한 ‘국립해양유산연구소’는 국가유산청 소속기관으로, 우리의 소중한 해양 문화유산을 찾고 알리는 곳이다. 1975년 어부의 우연한 발견으로 한국의 수중 문화유산이 이슈가 되었으며, 한국 뿐 아니라 동아시아 여러 나라에서 전시와 국제 심포지엄이 개최되었다. 계속해서 역사적 침몰선과 수중 문화유산이 발견되었으며 잊혀졌던 우리의 해양문화유산을 확인하게 되었다. 1994년에 국가 지원하에 해양문화유산을 보호하고 발굴, 연구하는 국립해양유물전시관이 개관하였고, 국립해양유산연구소가 탄생하게 되었다. 전시관 주변으로 목포문예역사관, 목포문학관, 목포자연사박물관, 목포생활도자박물관, 남농기념관들이 밀접하여 아이들과 함께 방문하기 좋다. #자연 #산 #역사 #문화유산 #예술 #전시 #가족체험 #실내 #비오는날 #아이동반', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129896'
@@ -5673,7 +3675,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '705052', '귀족호도박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 장흥군 장흥읍 남부관광로 56-90', null, 34.6750057964, 126.919096969, null, null, 'http://tong.visitkorea.or.kr/cms/resource/74/693174_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '3012429', '남도영화제 시즌2 광양', '광주', null, '축제·공연', '남도영화제는 22개 시군을 순회하며 개최하는 ‘로컬 중심 영화제’로 각 도시의 매력을 온전히 담아내며, 도민과 영화가 만나는 장을 마련한다. 올해 남도영화제는 시즌2를 맞이하며 빛과 철의 도시, 광양에서 5일간 펼쳐진다. 개최지가 달라지며 변화한 것은 콘셉트뿐만이 아니다. 이번 남도영화제는 섹션을 더욱 견고히 구성하며 섹션명을 전면 개편했다. 경쟁부문인 , 을 통해 최신 한국 영화들을 조명한다. 비경쟁부문은 , , 으로 구성된다. 남도영화제가 특별히 주목하고 싶은 영화를 상영하는 , 누구나 편히 즐길 수 있는 과 남도와 관련된 작품을 다루는 은 씨네필부터 영화제를 처음 찾는 관객까지 모두를 아우르는 프로그램이다. 남도영화제는 영화관뿐 아니라, 시민광장, 미술관, 컨테이너 부두까지 영화 상영 장소로 조성해 특별한 상영 경험을 제공한다. 남도영화제의 중심 장소인 ‘남도영화마을’에서는 영화 장면처럼 환상적인 축제 현장을 연출하며 관객들에게 잊을 수 없는 순간을 선사한다.', '전남광주통합특별시 광양시 중마중앙로 99 (중동)', null, 34.9390810874, 127.6976497858, '061-727-2272', 'http://www.ndff.kr/', 'http://tong.visitkorea.or.kr/cms/resource/59/3536359_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -5711,821 +3713,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '귀족호도박물관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '705052'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3090707', '규남박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 화순군 이서면 백아로 3109', null, 35.1101984314, 127.0799247775, null, null, 'http://tong.visitkorea.or.kr/cms/resource/92/3090692_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '규남박물관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3090707'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1994953', '김대중 노벨평화상 기념관', '광주', null, '문화·예술', null, '전남광주통합특별시 목포시 삼학로92번길 68', null, 34.7828349612, 126.3922741039, null, null, 'http://tong.visitkorea.or.kr/cms/resource/73/3534373_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#역사','#박물관','#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 1.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,1.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '김대중 노벨평화상 기념관 #역사 #박물관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1994953'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129986', '나주문화원', '광주', null, '문화·예술', null, '전남광주통합특별시 나주시 시청길 22 (송월동)', null, 35.0159556319, 126.711576325, null, null, 'http://tong.visitkorea.or.kr/cms/resource/88/3590188_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '나주문화원 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129986'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130913', '남포미술관', '광주', null, '문화·예술', null, '전남광주통합특별시 고흥군 영남면 팔영로 1081', null, 34.6037034299, 127.4572293239, null, null, 'http://tong.visitkorea.or.kr/cms/resource/24/3552724_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '남포미술관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130913'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2732508', '낭산김준연선생기념관', '광주', null, '문화·예술', null, '전남광주통합특별시 영암군 영암읍 영암로 1498', null, 34.7924499783, 126.6949360532, null, null, 'http://tong.visitkorea.or.kr/cms/resource/09/3379609_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#역사','#박물관','#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 1.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,1.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '낭산김준연선생기념관 #산 #역사 #박물관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.45,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2732508'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2650448', '농부네 텃밭도서관', '광주', null, '문화·예술', null, '전남광주통합특별시 광양시 진상면 청도길 19', null, 35.0144231169, 127.7259370363, null, null, 'http://tong.visitkorea.or.kr/cms/resource/78/3587178_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '농부네 텃밭도서관 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2650448'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2371605', '다산박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 강진군 도암면 다산로 766-20', null, 34.5764473762, 126.7499697869, null, null, 'http://tong.visitkorea.or.kr/cms/resource/63/3381563_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '다산박물관 #산 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.45,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2371605'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2784213', '담양곤충박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 담양군 담양읍 담양88로 428', null, 35.3224481934, 127.0057009732, null, null, null, 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '담양곤충박물관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2784213'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '129988', '담양문화원', '광주', null, '문화·예술', null, '전남광주통합특별시 담양군 담양읍 죽향문화로 35', null, 35.309513061, 126.9772427091, null, null, 'http://tong.visitkorea.or.kr/cms/resource/39/3378139_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '담양문화원 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '129988'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2553930', '담양우표박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 담양군 대전면 대치9길 16', null, 35.2766069614, 126.8895957452, null, null, 'http://tong.visitkorea.or.kr/cms/resource/46/3378146_image2_1.JPG', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '담양우표박물관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2553930'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1186650', '대나무 건강나라', '광주', null, '문화·예술', null, '전남광주통합특별시 담양군 금성면 원율길 12', null, 35.3525118943, 127.0312368377, null, null, 'http://tong.visitkorea.or.kr/cms/resource/36/3571436_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#숲','#예술','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '대나무 건강나라 #숲 #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1186650'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130582', '도화헌미술관', '광주', null, '문화·예술', null, '전남광주통합특별시 고흥군 도화면 땅끝로 860-5', null, 34.4490462833, 127.3266001359, null, null, 'http://tong.visitkorea.or.kr/cms/resource/45/3552745_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '도화헌미술관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130582'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '130563', '땅끝해양자연사박물관', '광주', null, '문화·예술', null, '전남광주통합특별시 해남군 송지면 땅끝마을길 89', null, 34.3013245791, 126.5296623753, null, null, 'http://tong.visitkorea.or.kr/cms/resource/86/3564386_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#자연','#바다','#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 1.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[1.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '땅끝해양자연사박물관 #자연 #바다 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.47,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '130563'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2708333', '명량대첩해전사 기념전시관', '광주', null, '문화·예술', null, '전남광주통합특별시 해남군 문내면 관광레저로 12 전라우수영명량대첩공원', null, 34.5733544172, 126.3108224049, null, null, 'http://tong.visitkorea.or.kr/cms/resource/60/3081760_image2_1.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#박물관','#예술','#전시','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '명량대첩해전사 기념전시관 #박물관 #예술 #전시 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2708333'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3012429', '남도영화제 시즌2 광양', '광주', null, '축제·공연', null, '전남광주통합특별시 광양시 중마중앙로 99 (중동)', null, 34.9390810874, 127.6976497858, '061-727-2272', null, 'http://tong.visitkorea.or.kr/cms/resource/59/3536359_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#공연','#참여형','#축제']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
-  '남도영화제 시즌2 광양 #공연 #참여형 #축제', '1.0.0',
-  'import', 0.47,
+  array['#예술','#전시','#로컬푸드','#참여형','#느린여행','#축제','#야경']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.5, "activity": 0.75, "sports": 0.0, "healing": 0.5, "festival": 1.0}'::jsonb,
+  '[0.0,0.0,0.75,0.5,0.75,0.0,0.5,1.0]'::extensions.vector(8),
+  '남도영화제 시즌2 광양 남도영화제는 22개 시군을 순회하며 개최하는 ‘로컬 중심 영화제’로 각 도시의 매력을 온전히 담아내며, 도민과 영화가 만나는 장을 마련한다. 올해 남도영화제는 시즌2를 맞이하며 빛과 철의 도시, 광양에서 5일간 펼쳐진다. 개최지가 달라지며 변화한 것은 콘셉트뿐만이 아니다. 이번 남도영화제는 섹션을 더욱 견고히 구성하며 섹션명을 전면 개편했다. 경쟁부문인 , 을 통해 최신 한국 영화들을 조명한다. 비경쟁부문은 , , 으로 구성된다. 남도영화제가 특별히 주목하고 싶은 영화를 상영하는 , 누구나 편히 즐길 수 있는 과 남도와 관련된 작품을 다루는 은 씨네필부터 영화제를 처음 찾는 관객까지 모두를 아우르는 프로그램이다. 남도영화제는 영화관뿐 아니라, 시민광장, 미술관, 컨테이너 부두까지 영화 상영 장소로 조성해 특별한 상영 경험을 제공한다. 남도영화제의 중심 장소인 ‘남도영화마을’에서는 영화 장면처럼 환상적인 축제 현장을 연출하며 관객들에게 잊을 수 없는 순간을 선사한다. #예술 #전시 #로컬푸드 #참여형 #느린여행 #축제 #야경', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '3012429'
@@ -6537,7 +3729,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3506515', '담양 다미담주 페스티벌 쓰담쓰담 야시장', '광주', null, '축제·공연', null, '전남광주통합특별시 담양군 담양읍 담주4길 24-46', null, 35.3223061188, 126.980808736, '010-9903-0209', null, 'http://tong.visitkorea.or.kr/cms/resource/17/3559417_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '3506515', '담양 다미담주 페스티벌 쓰담쓰담 야시장', '광주', null, '축제·공연', '죽녹원과 떡갈비로 유명한 전남 최고 관광지 담양군에서 10월~11월에 야시장 축제를 개최한다. 담양예술구인 다미담길과 새롭게 개소된 담양시장과 5일장이 위치한 쓰담길을 권역으로 맛, 멋, 흥이 함께 있는 쓰담쓰담야시장이 총 3회 개최된다. 전라도 대표 먹거리와 야시장 공연을 함께 느낄 수 있는 주말 관광지로 추천한다. 쓰담쓰담야시장은 담양 쓰담길에서 열리는 로컬야시장으로 지역 예술인과 전남도립대학교 청년 버스커들이 함께하는 공연행사이며 25년 7월 새롭게 시작되었다. 담양의 아름다운 대나무숲과다미담 예술구의 고택이 멋진 야경을 선사하며 이번 행사는 시즌 2 야시장으로써 총 3회를 진행 예정이다. 참여 공연은 재즈, 트로트, 버스킹 등 다양한 장르를 10여명의 뮤지션들이 가을밤의 야시장 버스킹을 선사하며 전문 MC ''MR.GO''와 함께하는 시민이벤트도 다채롭게 진행될 것이다.', '전남광주통합특별시 담양군 담양읍 담주4길 24-46', null, 35.3223061188, 126.980808736, '010-9903-0209', 'https://daeinya.imweb.me/', 'http://tong.visitkorea.or.kr/cms/resource/17/3559417_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6575,11 +3767,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#공연','#시장','#참여형','#축제']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.75, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
-  '[0.0,0.0,0.75,0.75,0.75,0.0,0.0,1.0]'::extensions.vector(8),
-  '담양 다미담주 페스티벌 쓰담쓰담 야시장 #공연 #시장 #참여형 #축제', '1.0.0',
-  'import', 0.5,
+  array['#숲','#예술','#공연','#로컬푸드','#시장','#체험','#참여형','#축제','#야간']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.75, "food": 0.75, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
+  '[0.5,0.0,0.75,0.75,0.75,0.0,0.0,1.0]'::extensions.vector(8),
+  '담양 다미담주 페스티벌 쓰담쓰담 야시장 죽녹원과 떡갈비로 유명한 전남 최고 관광지 담양군에서 10월~11월에 야시장 축제를 개최한다. 담양예술구인 다미담길과 새롭게 개소된 담양시장과 5일장이 위치한 쓰담길을 권역으로 맛, 멋, 흥이 함께 있는 쓰담쓰담야시장이 총 3회 개최된다. 전라도 대표 먹거리와 야시장 공연을 함께 느낄 수 있는 주말 관광지로 추천한다. 쓰담쓰담야시장은 담양 쓰담길에서 열리는 로컬야시장으로 지역 예술인과 전남도립대학교 청년 버스커들이 함께하는 공연행사이며 25년 7월 새롭게 시작되었다. 담양의 아름다운 대나무숲과다미담 예술구의 고택이 멋진 야경을 선사하며 이번 행사는 시즌 2 야시장으로써 총 3회를 진행 예정이다. 참여 공연은 재즈, 트로트, 버스킹 등 다양한 장르를 10여명의 뮤지션들이 가을밤의 야시장 버스킹을 선사하며 전문 MC ''MR.GO''와 함께하는 시민이벤트도 다채롭게 진행될 것이다. #숲 #예술 #공연 #로컬푸드 #시장 #체험 #참여형 #축제 #야간', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '3506515'
@@ -6591,7 +3783,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3547386', '한국전력과 함께하는 2025 희망·사랑 나눔 콘서트', '광주', null, '축제·공연', null, '전남광주통합특별시 장성군 장성읍 문화로 110', null, 35.3016853956, 126.7675670383, '070-4242-0838', null, 'http://tong.visitkorea.or.kr/cms/resource/85/3547385_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '3547386', '한국전력과 함께하는 2025 희망·사랑 나눔 콘서트', '광주', null, '축제·공연', '한국전력공사와 함께하는 2025 희망·사랑 나눔 콘서트가 장성문화예술회관 대공연장에서 전 좌석 무료로 개최된다. 이번 공연은 취약계층과 지역사회와의 동반성장, 그리고 지역 문화예술 발전에 기여하고자 마련된 뜻깊은 무대이다. 가수 NOHD의 사회로 진행되는 이번 무대에는 50인조 하이톤 심포니 오케스트라가 웅장한 선율을 선사하며, 뮤지컬 배우 윤지인·우정훈, 가수 이희주, 색소포니스트 김소폰 등이 함께해 다채롭고 풍성한 무대를 완성한다. 특히 이번 콘서트에서는 뮤지컬 모차르트, 겨울왕국 등 세계적으로 사랑받은 뮤지컬 넘버와 영화 OST가 새롭게 편곡되어 관객들에게 깊은 감동과 특별한 즐거움을 전할 예정이다.', '전남광주통합특별시 장성군 장성읍 문화로 110', null, 35.3016853956, 126.7675670383, '070-4242-0838', null, 'http://tong.visitkorea.or.kr/cms/resource/85/3547385_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6629,11 +3821,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#공연','#참여형','#축제']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
-  '[0.0,0.0,0.75,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
-  '한국전력과 함께하는 2025 희망·사랑 나눔 콘서트 #공연 #참여형 #축제', '1.0.0',
-  'import', 0.45,
+  array['#역사','#예술','#공연','#참여형','#축제']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
+  '[0.0,0.5,0.75,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
+  '한국전력과 함께하는 2025 희망·사랑 나눔 콘서트 한국전력공사와 함께하는 2025 희망·사랑 나눔 콘서트가 장성문화예술회관 대공연장에서 전 좌석 무료로 개최된다. 이번 공연은 취약계층과 지역사회와의 동반성장, 그리고 지역 문화예술 발전에 기여하고자 마련된 뜻깊은 무대이다. 가수 NOHD의 사회로 진행되는 이번 무대에는 50인조 하이톤 심포니 오케스트라가 웅장한 선율을 선사하며, 뮤지컬 배우 윤지인·우정훈, 가수 이희주, 색소포니스트 김소폰 등이 함께해 다채롭고 풍성한 무대를 완성한다. 특히 이번 콘서트에서는 뮤지컬 모차르트, 겨울왕국 등 세계적으로 사랑받은 뮤지컬 넘버와 영화 OST가 새롭게 편곡되어 관객들에게 깊은 감동과 특별한 즐거움을 전할 예정이다. #역사 #예술 #공연 #참여형 #축제', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '3547386'
@@ -6645,7 +3837,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2737313', '2025섬진강국제실험예술제(SIEAF)', '광주', null, '축제·공연', null, '전남광주통합특별시 곡성군 죽곡면 섬진강로 1012', null, 35.1919998595, 127.3775297835, '010-2344-5004', null, 'http://tong.visitkorea.or.kr/cms/resource/61/3534861_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2737313', '2025섬진강국제실험예술제(SIEAF)', '광주', null, '축제·공연', '2025년 섬진강국제실험예술제 주제는 ‘섬진강별곡［ 蟾津江別曲］’이다. ‘별곡’은 민간에서 불린 이야기 가득한 노래로, 시대와 민중의 삶을 사적 서사로 담고 있다. 본 축제는 이 형식을 현대적으로 재해석하여 섬진강을 따라 흐르는 삶과 설화를 예술 언어로 풀어내고자 한다.도깨비가 웃고 두꺼비가 춤추는 가운데, 국내 외 100여 명의 예술가가 참여하여 자연과 인간, 과거와 미래, 현실과 상상을 연결하는 아름다운 곡조를 선보인다. 이를 통해 치유와 생명, 화합의 장을 제공하는 예술제로 자리 잡는다.', '전남광주통합특별시 곡성군 죽곡면 섬진강로 1012', null, 35.1919998595, 127.3775297835, '010-2344-5004', 'http://www.sieaf.com', 'http://tong.visitkorea.or.kr/cms/resource/61/3534861_image2_1.jpg', 120, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6683,11 +3875,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#공연','#참여형','#축제']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 1.0}'::jsonb,
-  '[0.0,0.0,1.0,0.0,0.75,0.0,0.0,1.0]'::extensions.vector(8),
-  '2025섬진강국제실험예술제(SIEAF) #예술 #공연 #참여형 #축제', '1.0.0',
-  'import', 0.47,
+  array['#자연','#역사','#예술','#공연','#체험','#참여형','#힐링','#축제']::text[],
+  '{"nature": 0.5, "culture": 0.5, "art": 1.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.5, "festival": 1.0}'::jsonb,
+  '[0.5,0.5,1.0,0.0,0.75,0.0,0.5,1.0]'::extensions.vector(8),
+  '2025섬진강국제실험예술제(SIEAF) 2025년 섬진강국제실험예술제 주제는 ‘섬진강별곡［ 蟾津江別曲］’이다. ‘별곡’은 민간에서 불린 이야기 가득한 노래로, 시대와 민중의 삶을 사적 서사로 담고 있다. 본 축제는 이 형식을 현대적으로 재해석하여 섬진강을 따라 흐르는 삶과 설화를 예술 언어로 풀어내고자 한다.도깨비가 웃고 두꺼비가 춤추는 가운데, 국내 외 100여 명의 예술가가 참여하여 자연과 인간, 과거와 미래, 현실과 상상을 연결하는 아름다운 곡조를 선보인다. 이를 통해 치유와 생명, 화합의 장을 제공하는 예술제로 자리 잡는다. #자연 #역사 #예술 #공연 #체험 #참여형 #힐링 #축제', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2737313'
@@ -6699,7 +3891,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2737354', '가마골계곡 핫캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 용면 용소길 131', null, 35.4362301902, 127.0310319445, null, null, 'http://tong.visitkorea.or.kr/cms/resource/07/2737707_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2737354', '가마골계곡 핫캠핑장', '광주', null, '체험·스포츠', '가마골계곡 핫캠핑장은 전남광주통합특별시 담양군 용면에 있다. 담양군청을 기점으로 20Km 가량 떨어져 있다. 자동차를 타고 죽녹원로, 추월산로, 가마골로를 차례로 거치면 35분 안팎이면 도착한다. 캠핑장이 담양호와 가마골 생태공원 사이에 있어 기분 좋은 청량감을 만끽할 수 있다. 캠핑장이 산으로 둘러싸인 형상이라 어느 방향으로 고개를 돌려도 풍경이 좋다. 캠핑장에는 일반 야영장 18면과 카라반 5대가 있다. 일반 야영장은 모두 파쇄석으로 이뤄졌으며, 사이트 크기는 가로 5.6m 세로 9m다. 개인 카라반과 트레일러의 동반 입장도 가능하다. 카라반 내부에는 일상생활이 가능할 정도의 시설을 갖췄다. 외부 전용 데크에는 어닝 아래 바비큐 시설을 배치했다. 사계절 내내 운영하며, 반려동물은 C 구역에만 출입이 가능하다. 예약은 온라인 실시간, 전화, 현장에서도 가능하다.', '전남광주통합특별시 담양군 용면 용소길 131', null, 35.4362301902, 127.0310319445, null, 'https://www.camfit.co.kr/camp/61961035e2a44c001e37bde1', 'http://tong.visitkorea.or.kr/cms/resource/07/2737707_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6737,11 +3929,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '가마골계곡 핫캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#자연','#산','#체험','#스포츠','#공원','#시즌한정']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.5, "festival": 0.5}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.5,0.5]'::extensions.vector(8),
+  '가마골계곡 핫캠핑장 가마골계곡 핫캠핑장은 전남광주통합특별시 담양군 용면에 있다. 담양군청을 기점으로 20Km 가량 떨어져 있다. 자동차를 타고 죽녹원로, 추월산로, 가마골로를 차례로 거치면 35분 안팎이면 도착한다. 캠핑장이 담양호와 가마골 생태공원 사이에 있어 기분 좋은 청량감을 만끽할 수 있다. 캠핑장이 산으로 둘러싸인 형상이라 어느 방향으로 고개를 돌려도 풍경이 좋다. 캠핑장에는 일반 야영장 18면과 카라반 5대가 있다. 일반 야영장은 모두 파쇄석으로 이뤄졌으며, 사이트 크기는 가로 5.6m 세로 9m다. 개인 카라반과 트레일러의 동반 입장도 가능하다. 카라반 내부에는 일상생활이 가능할 정도의 시설을 갖췄다. 외부 전용 데크에는 어닝 아래 바비큐 시설을 배치했다. 사계절 내내 운영하며, 반려동물은 C 구역에만 출입이 가능하다. 예약은 온라인 실시간, 전화, 현장에서도 가능하다. #자연 #산 #체험 #스포츠 #공원 #시즌한정', '1.0.0',
+  'import', 0.53,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2737354'
@@ -6753,7 +3945,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2740970', '가우도카라반펜션', '광주', null, '체험·스포츠', null, '전남광주통합특별시 강진군 대구면 저두바닷길 3', null, 34.5278201918, 126.7920644864, null, null, 'http://tong.visitkorea.or.kr/cms/resource/73/2741273_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2740970', '가우도카라반펜션', '광주', null, '체험·스포츠', '가우도 카라반펜션은 가우도를 조망할 수 있는 강진군 저두바닷길에 자리 잡고 있다. 아름다운 휴양섬 ‘가우도’가 보이는 전망 좋은 곳에 위치하고 있을 뿐 아니라, 잘 가꾼 정원 조경은 입구에서부터 아름다운 풍경을 선보인다. 총면적 4000 m²의 넓은 규모에 일반야영장과 대형 카라반을 구비하고 있으며, 펜션도 함께 운영 중이다. 일반야영장에는 야영 텐트가 설치되어 있으며 카라반에는 각종 편의시설과 주방용품, 욕실용품 등이 구비되어 있어 이용하기에 불편함이 없다. 특히 카라반의 경우, 테라스 천정이 막혀있어 날씨와 상관없이 바비큐 파티를 즐길 수 있다. 일상에 지친 이들이 힐링과 휴가를 즐기기에 적합한 가우도카라반펜션은 인근 볼거리도 많다. 차로 1~2분 거리엔 가우도 출렁다리가 있으며, 품격 높은 디자인의 고바우 전망대가 5분 거리에 있다. 또한 미량항이 차로 10분 이내의 거리에 있어 연계관광이 용이하다.', '전남광주통합특별시 강진군 대구면 저두바닷길 3', null, 34.5278201918, 126.7920644864, null, 'http://www.gaudopension.com/', 'http://tong.visitkorea.or.kr/cms/resource/73/2741273_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6791,11 +3983,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '가우도카라반펜션 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#정원','#전망','#체험','#스포츠','#힐링','#공원']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
+  '가우도카라반펜션 가우도 카라반펜션은 가우도를 조망할 수 있는 강진군 저두바닷길에 자리 잡고 있다. 아름다운 휴양섬 ‘가우도’가 보이는 전망 좋은 곳에 위치하고 있을 뿐 아니라, 잘 가꾼 정원 조경은 입구에서부터 아름다운 풍경을 선보인다. 총면적 4000 m²의 넓은 규모에 일반야영장과 대형 카라반을 구비하고 있으며, 펜션도 함께 운영 중이다. 일반야영장에는 야영 텐트가 설치되어 있으며 카라반에는 각종 편의시설과 주방용품, 욕실용품 등이 구비되어 있어 이용하기에 불편함이 없다. 특히 카라반의 경우, 테라스 천정이 막혀있어 날씨와 상관없이 바비큐 파티를 즐길 수 있다. 일상에 지친 이들이 힐링과 휴가를 즐기기에 적합한 가우도카라반펜션은 인근 볼거리도 많다. 차로 1~2분 거리엔 가우도 출렁다리가 있으며, 품격 높은 디자인의 고바우 전망대가 5분 거리에 있다. 또한 미량항이 차로 10분 이내의 거리에 있어 연계관광이 용이하다. #정원 #전망 #체험 #스포츠 #힐링 #공원', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2740970'
@@ -6807,7 +3999,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2752162', '거금해양낚시공원', '광주', null, '체험·스포츠', null, '전남광주통합특별시 고흥군 금산면 신촌내동길 18-132', null, 34.4694652638, 127.1045912779, null, null, 'http://tong.visitkorea.or.kr/cms/resource/92/2752192_image2_1.jpeg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2752162', '거금해양낚시공원', '광주', null, '체험·스포츠', '고흥 관광의 한 축으로 자리 잡은 거금해양낚시공원은 2015년 4월에 준공되었다. 유료 해상 낚시터 1개소, 해상 펜션 5동, 황토방 4동, 개매기 체험장, 소공원 등 각종 부대시설이 갖춰져 있다. 해상 계류장을 거쳐 바다로 나가면 만날 수 있는 하얀 돔 형의 펜션 눈길을 끈다. 돔형 펜션은 5인 가족이 하룻밤을 묵으며 낚시를 즐길 수 있는 천혜의 해상공원으로 해상에 건설된 부잔교 위에서 파라솔을 펼치면 한 폭의 그림 같은 득량만의 정취를 만끽할 수 있다. 개매기 체험장에서는 직접 손으로 물고기를 잡는 체험도 할 수 있다.', '전남광주통합특별시 고흥군 금산면 신촌내동길 18-132', null, 34.4694652638, 127.1045912779, null, 'http://ggdofishingpark.com/', 'http://tong.visitkorea.or.kr/cms/resource/92/2752192_image2_1.jpeg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6845,11 +4037,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#바다','#체험','#스포츠','#공원']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
-  '거금해양낚시공원 #바다 #체험 #스포츠 #공원', '1.0.0',
-  'import', 0.45,
+  array['#바다','#체험','#가족체험','#스포츠','#공원','#야간','#아이동반']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '거금해양낚시공원 고흥 관광의 한 축으로 자리 잡은 거금해양낚시공원은 2015년 4월에 준공되었다. 유료 해상 낚시터 1개소, 해상 펜션 5동, 황토방 4동, 개매기 체험장, 소공원 등 각종 부대시설이 갖춰져 있다. 해상 계류장을 거쳐 바다로 나가면 만날 수 있는 하얀 돔 형의 펜션 눈길을 끈다. 돔형 펜션은 5인 가족이 하룻밤을 묵으며 낚시를 즐길 수 있는 천혜의 해상공원으로 해상에 건설된 부잔교 위에서 파라솔을 펼치면 한 폭의 그림 같은 득량만의 정취를 만끽할 수 있다. 개매기 체험장에서는 직접 손으로 물고기를 잡는 체험도 할 수 있다. #바다 #체험 #가족체험 #스포츠 #공원 #야간 #아이동반', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2752162'
@@ -6861,7 +4053,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2554912', '곡성기차마을 패러글라이딩', '광주', null, '체험·스포츠', null, '전남광주통합특별시 곡성군 오곡면 덕양서원길 42', null, 35.263612844, 127.3104671975, null, null, null, 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+values ('tourapi', '2554912', '곡성기차마을 패러글라이딩', '광주', null, '체험·스포츠', '550m의 높이에서 하늘을 날아볼 수 있는 단한번의 기회!! 하늘을 나는 새와 이야기 해보자. 단순한 재미를 떠나 평생의 감동과 추억을 만들어준다. 이착륙장을 포함한 모든 시설이 패러글라이딩 전용으로 만들어진 국내 최초의 패러글라이딩 체험장이다. 경찰청을 포함한 여러 관공서및 유수의 대학, 기업과도 MOU를 맺은 믿을 수 있는 곡성 기차마을 패러글라이딩 체험장이다.', '전남광주통합특별시 곡성군 오곡면 덕양서원길 42', null, 35.263612844, 127.3104671975, null, 'http://gspara.com', null, 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6899,10 +4091,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠','#자전거','#느린여행']::text[],
+  array['#체험','#스포츠','#자전거','#느린여행','#아이동반']::text[],
   '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 1.0, "healing": 0.75, "festival": 0.0}'::jsonb,
   '[0.0,0.0,0.0,0.0,0.75,1.0,0.75,0.0]'::extensions.vector(8),
-  '곡성기차마을 패러글라이딩 #체험 #스포츠 #자전거 #느린여행', '1.0.0',
+  '곡성기차마을 패러글라이딩 550m의 높이에서 하늘을 날아볼 수 있는 단한번의 기회!! 하늘을 나는 새와 이야기 해보자. 단순한 재미를 떠나 평생의 감동과 추억을 만들어준다. 이착륙장을 포함한 모든 시설이 패러글라이딩 전용으로 만들어진 국내 최초의 패러글라이딩 체험장이다. 경찰청을 포함한 여러 관공서및 유수의 대학, 기업과도 MOU를 맺은 믿을 수 있는 곡성 기차마을 패러글라이딩 체험장이다. #체험 #스포츠 #자전거 #느린여행 #아이동반', '1.0.0',
   'import', 0.45,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -6915,7 +4107,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2739374', '국립천관산자연휴양림캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 장흥군 관산읍 칠관로 842-1150', null, 34.5453505689, 126.8996796143, null, null, 'http://tong.visitkorea.or.kr/cms/resource/45/2739945_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2739374', '국립천관산자연휴양림캠핑장', '광주', null, '체험·스포츠', '국립 천관산 자연휴양림은 장흥군 관산읍 농안리에 위치한 곳으로 산림욕과 캠핑을 동시에 즐길 수 있다. 해발 723m의 천관산은 수십 개 봉우리가 하늘을 찌를 듯 솟아있는 모습이 마치 천자［天子］의 면류관과 같다'' 는 뜻의 이름을 가진 산으로 호남의 5대 명산 중 하나다. 봄에는 붉디붉은 동백꽃, 가을에는 넓게 펼쳐진 억새가 장관을 이루어 색다른 풍경을 만끽할 수 있다. 또한 등산로를 오르면 다도해를 배경으로 한 기암괴석을 감상할 수 있다. 산을 벗삼아 캠핑할 수 있는 이곳은 50,000여 m²의 넓은 부지에 일반 야영장 20면이 마련되어 있다. 총 20개의 야영데크가 있으며 넉넉한 공간에 서 캠핑을 즐길 수 있다. 또한 야영장은 101~106번, 110~114번까지는 평지에 파쇄석이 깔려있고, 나머지 야영 데크는 약간 경사진 곳에 위치해 있어 간단한 돔 모양의 텐트를 설치하는 게 좋다.', '전남광주통합특별시 장흥군 관산읍 칠관로 842-1150', null, 34.5453505689, 126.8996796143, null, 'https://www.foresttrip.go.kr/indvz/main.do?hmpgId=0196', 'http://tong.visitkorea.or.kr/cms/resource/45/2739945_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -6953,11 +4145,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#산','#체험','#스포츠']::text[],
+  array['#자연','#산','#체험','#스포츠','#등산']::text[],
   '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[1.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '국립천관산자연휴양림캠핑장 #자연 #산 #체험 #스포츠', '1.0.0',
-  'import', 0.45,
+  '국립천관산자연휴양림캠핑장 국립 천관산 자연휴양림은 장흥군 관산읍 농안리에 위치한 곳으로 산림욕과 캠핑을 동시에 즐길 수 있다. 해발 723m의 천관산은 수십 개 봉우리가 하늘을 찌를 듯 솟아있는 모습이 마치 천자［天子］의 면류관과 같다'' 는 뜻의 이름을 가진 산으로 호남의 5대 명산 중 하나다. 봄에는 붉디붉은 동백꽃, 가을에는 넓게 펼쳐진 억새가 장관을 이루어 색다른 풍경을 만끽할 수 있다. 또한 등산로를 오르면 다도해를 배경으로 한 기암괴석을 감상할 수 있다. 산을 벗삼아 캠핑할 수 있는 이곳은 50,000여 m²의 넓은 부지에 일반 야영장 20면이 마련되어 있다. 총 20개의 야영데크가 있으며 넉넉한 공간에 서 캠핑을 즐길 수 있다. 또한 야영장은 101~106번, 110~114번까지는 평지에 파쇄석이 깔려있고, 나머지 야영 데크는 약간 경사진 곳에 위치해 있어 간단한 돔 모양의 텐트를 설치하는 게 좋다. #자연 #산 #체험 #스포츠 #등산', '1.0.0',
+  'import', 0.53,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2739374'
@@ -6969,7 +4161,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2727342', '굴전여가캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 여수시 돌산읍 돌산로 3017-15', null, 34.6924349035, 127.7650168484, null, null, 'http://tong.visitkorea.or.kr/cms/resource/36/2727636_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2727342', '굴전여가캠핑장', '광주', null, '체험·스포츠', '굴전여가캠핑장은 여수 돌산읍 평사리 굴전마을에 위치하고 있다. 이곳은 폐교인 구 굴전초등학교를 여수시에서 매입하여 조성한 캠핑장으로 관리는 여수문화방송에서 운영하고 있다. 교실을 리모델링해 숙박시설과 세미나실로 사용되고 있으며 캠핑장 시설안내도가 잘 표시되어 있어 다양한 시설을 쉽게 찾을 수 있다. 바닥은 타일로 되어 있으며 화장실, 샤워장, 취사장, 세탁실 등의 부대시설이 잘 갖춰져 있다. 또한 캠핑장 한편에 바다 황토 올레길이 있어 산책로로 이용할 수 있다. 주변에 볼거리, 즐길 거리가 많다. 이름처럼 굴이 많이 나오는 마을인 만큼 캠핑장 앞 굴전해안엔 굴 양식장이 펼쳐져 있다. 또 해마다 늦가을이 되면 천연기념물로 지정된 고니가 무리를 지어 날아와 3월 초까지 우아한 자태를 뽐낸다. 더불어 일출 명소인 향일암, 방죽포해수욕장, 무슬목 해변과 전남수산과학관 등 유명관광지가 근처에 있어 연계여행도 가능하다.', '전남광주통합특별시 여수시 돌산읍 돌산로 3017-15', null, 34.6924349035, 127.7650168484, null, 'https://www.yumcorp.or.kr/www/service/guljeon_geumodo', 'http://tong.visitkorea.or.kr/cms/resource/36/2727636_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7007,11 +4199,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '굴전여가캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#산','#바다','#체험','#스포츠','#산책','#느린여행']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
+  '굴전여가캠핑장 굴전여가캠핑장은 여수 돌산읍 평사리 굴전마을에 위치하고 있다. 이곳은 폐교인 구 굴전초등학교를 여수시에서 매입하여 조성한 캠핑장으로 관리는 여수문화방송에서 운영하고 있다. 교실을 리모델링해 숙박시설과 세미나실로 사용되고 있으며 캠핑장 시설안내도가 잘 표시되어 있어 다양한 시설을 쉽게 찾을 수 있다. 바닥은 타일로 되어 있으며 화장실, 샤워장, 취사장, 세탁실 등의 부대시설이 잘 갖춰져 있다. 또한 캠핑장 한편에 바다 황토 올레길이 있어 산책로로 이용할 수 있다. 주변에 볼거리, 즐길 거리가 많다. 이름처럼 굴이 많이 나오는 마을인 만큼 캠핑장 앞 굴전해안엔 굴 양식장이 펼쳐져 있다. 또 해마다 늦가을이 되면 천연기념물로 지정된 고니가 무리를 지어 날아와 3월 초까지 우아한 자태를 뽐낸다. 더불어 일출 명소인 향일암, 방죽포해수욕장, 무슬목 해변과 전남수산과학관 등 유명관광지가 근처에 있어 연계여행도 가능하다. #산 #바다 #체험 #스포츠 #산책 #느린여행', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2727342'
@@ -7023,7 +4215,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2737326', '글램킹 글램핑', '광주', null, '체험·스포츠', null, '전남광주통합특별시 함평군 함평읍 장년길 40', null, 35.0942317798, 126.4768840574, null, null, 'http://tong.visitkorea.or.kr/cms/resource/73/3562073_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2737326', '글램킹 글램핑', '광주', null, '체험·스포츠', '함평에 있는 글램킹 글램핑은 나비 축제로 유명한 함평 나들목 가까이에 있다. 함평에서 주포항 가는 길이다. 작은 마을 안쪽 폐교를 글램핑시설로 리모델링했다. 교실은 관리사무소와 카페, 체험장이며 잔디가 깔린 운동장 양쪽으로 글램핑 텐트가 쳐져 있다. 글램핑 객실은 모두 세 종류인데 디럭스, 스위트, 로열로 내부시설과 비품은 거의 동일하지만 객실 크기가 다르다. 객실 내부에 와이파이, 에어컨, 화장실/샤워부스, 냉장고, 전기밥솥, 전자레인지, 취사도구 일체, 세면도구와 수건을 비치하고 있다. 에어바운스와 개별 바비큐 등을 즐길 수도 있다. 캠핑장에서 차로 10여분 거리에 돌머리해수욕장과 주포항, 주포한옥마을이 있다.', '전남광주통합특별시 함평군 함평읍 장년길 40', null, 35.0942317798, 126.4768840574, null, 'https://www.instagram.com/nature_n_lynn/', 'http://tong.visitkorea.or.kr/cms/resource/73/3562073_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7061,11 +4253,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '글램킹 글램핑 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#전통','#카페','#체험','#참여형','#스포츠','#피크닉','#느린여행','#축제','#아이동반']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.0, "food": 0.5, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[0.0,0.5,0.0,0.5,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '글램킹 글램핑 함평에 있는 글램킹 글램핑은 나비 축제로 유명한 함평 나들목 가까이에 있다. 함평에서 주포항 가는 길이다. 작은 마을 안쪽 폐교를 글램핑시설로 리모델링했다. 교실은 관리사무소와 카페, 체험장이며 잔디가 깔린 운동장 양쪽으로 글램핑 텐트가 쳐져 있다. 글램핑 객실은 모두 세 종류인데 디럭스, 스위트, 로열로 내부시설과 비품은 거의 동일하지만 객실 크기가 다르다. 객실 내부에 와이파이, 에어컨, 화장실/샤워부스, 냉장고, 전기밥솥, 전자레인지, 취사도구 일체, 세면도구와 수건을 비치하고 있다. 에어바운스와 개별 바비큐 등을 즐길 수도 있다. 캠핑장에서 차로 10여분 거리에 돌머리해수욕장과 주포항, 주포한옥마을이 있다. #전통 #카페 #체험 #참여형 #스포츠 #피크닉 #느린여행 #축제 #아이동반', '1.0.0',
+  'import', 0.55,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2737326'
@@ -7077,7 +4269,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2483594', '금오도 비렁길', '광주', null, '체험·스포츠', null, '전남광주통합특별시 여수시 남면 용머리길', null, 34.5371985513, 127.7111643607, null, null, 'http://tong.visitkorea.or.kr/cms/resource/62/3015562_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2483594', '금오도 비렁길', '광주', null, '체험·스포츠', '금오도는 다도해해상국립공원에 속한 지역으로 큰 자라를 닮아서 붙은 이름이다. 이 섬에는 비렁길이라 부르는 천혜 절경 해안 절벽 길이 있다. 비렁은 벼랑의 여수 사투리로, 해안 절벽 위를 연결한 걷기 길을 지칭하며 원래 이 길은 지역 주민들이 땔감을 구하고 낚시를 하기 위해 다니던 해안 길이다. 이 길을 2010년부터 걷기 코스로 개발한 것이 금오도 비렁길이다. 바다 풍광이 빼어난 비렁길은 5개 코스에 총 18.5㎞ 구간으로 종주하려면 8시간 30분 정도 걸린다. 함구미~두포에 이르는 1코스, 두포에서 직포로 넘어가는 2코스를 대표로 꼽는다. 비렁길 코스 곳곳에는 금오도의 특산물 방풍나물과 머위, 대나무와 동백나무들이 빽빽하게 자라고 있다. 금오도로 입도하는 배편은 여수여객선터미널, 백야도, 돌산 신기항에서 출항하지만 신기항을 가장 많이 이용한다. 운항 시간이 25분으로 짧고 하계 기준 07:45~18:00까지 7회차 출항하고 있다. 여수항에서 출발하여 함구미항에 내리는 경우는 하루 3번 왕복하는 배를 이용하며 1시간 30분이 소요된다.', '전남광주통합특별시 여수시 남면 용머리길', null, 34.5371985513, 127.7111643607, null, 'http://www.yeosu.go.kr/tour/travel/10tour/geumodo', 'http://tong.visitkorea.or.kr/cms/resource/62/3015562_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7115,11 +4307,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '금오도 비렁길 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#자연','#산','#특산물','#체험','#스포츠','#산책','#공원']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.5, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[1.0,0.0,0.0,0.5,0.75,0.75,0.75,0.0]'::extensions.vector(8),
+  '금오도 비렁길 금오도는 다도해해상국립공원에 속한 지역으로 큰 자라를 닮아서 붙은 이름이다. 이 섬에는 비렁길이라 부르는 천혜 절경 해안 절벽 길이 있다. 비렁은 벼랑의 여수 사투리로, 해안 절벽 위를 연결한 걷기 길을 지칭하며 원래 이 길은 지역 주민들이 땔감을 구하고 낚시를 하기 위해 다니던 해안 길이다. 이 길을 2010년부터 걷기 코스로 개발한 것이 금오도 비렁길이다. 바다 풍광이 빼어난 비렁길은 5개 코스에 총 18.5㎞ 구간으로 종주하려면 8시간 30분 정도 걸린다. 함구미~두포에 이르는 1코스, 두포에서 직포로 넘어가는 2코스를 대표로 꼽는다. 비렁길 코스 곳곳에는 금오도의 특산물 방풍나물과 머위, 대나무와 동백나무들이 빽빽하게 자라고 있다. 금오도로 입도하는 배편은 여수여객선터미널, 백야도, 돌산 신기항에서 출항하지만 신기항을 가장 많이 이용한다. 운항 시간이 25분으로 짧고 하계 기준 07:45~18:00까지 7회차 출항하고 있다. 여수항에서 출발하여 함구미항에 내리는 경우는 하루 3번 왕복하는 배를 이용하며 1시간 30분이 소요된다. #자연 #산 #특산물 #체험 #스포츠 #산책 #공원', '1.0.0',
+  'import', 0.57,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2483594'
@@ -7131,7 +4323,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2743206', '금오도보금자리펜션', '광주', null, '체험·스포츠', null, '전남광주통합특별시 여수시 남면 금오로 1139', null, 34.5047839401, 127.7815868132, null, null, 'http://tong.visitkorea.or.kr/cms/resource/13/2743513_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2743206', '금오도보금자리펜션', '광주', null, '체험·스포츠', '금오도보금자리펜션은 다도해 해상 국립공원으로 지정된 청정의 섬, 여수 금오도에 있다. 아름다운 자연경관을 바라보며 휴식하기 좋은 이곳은 약 4,000㎡의 대지에 펜션과 캠핑장, 운치 있는 카페를 함께 운영하고 있다. 금오도보금자리펜션의 건물은 누가 봐도 칭찬할 정도로 아름다운데 펜션 지기가 직접 공사의 전 과정에 참여해 구석구석 공을 들여서 내 집 짓듯이 지었다. 이곳에서는 섬 이름과 걸맞게 황토의 기운을 받으며 지낼 수 있다. 돌이 없는 순 황토로 구성된 금오도의 특성을 살려 만들어졌다. 덕분에 섬에 있어도 바다의 비린내가 잘 나지 않는다. 금오도 섬 전체가 황토라 자연 탈취가 되기 때문이다. 또한, 섬인데도 불구하고 화장실이나 샤워장에 온수가 아주 잘 나온다. 금오도는 물이 풍부할 뿐 아니라 수질 또한 최상급인 섬이다. 아름다운 물이라는 뜻의 여수에서도 금오도 물은 특히나 오염이 전혀 없는 좋은 품질을 자랑한다.', '전남광주통합특별시 여수시 남면 금오로 1139', null, 34.5047839401, 127.7815868132, null, null, 'http://tong.visitkorea.or.kr/cms/resource/13/2743513_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7169,11 +4361,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '금오도보금자리펜션 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#자연','#바다','#카페','#체험','#스포츠','#힐링','#공원']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.5, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.5,0.75,0.75,0.75,0.0]'::extensions.vector(8),
+  '금오도보금자리펜션 금오도보금자리펜션은 다도해 해상 국립공원으로 지정된 청정의 섬, 여수 금오도에 있다. 아름다운 자연경관을 바라보며 휴식하기 좋은 이곳은 약 4,000㎡의 대지에 펜션과 캠핑장, 운치 있는 카페를 함께 운영하고 있다. 금오도보금자리펜션의 건물은 누가 봐도 칭찬할 정도로 아름다운데 펜션 지기가 직접 공사의 전 과정에 참여해 구석구석 공을 들여서 내 집 짓듯이 지었다. 이곳에서는 섬 이름과 걸맞게 황토의 기운을 받으며 지낼 수 있다. 돌이 없는 순 황토로 구성된 금오도의 특성을 살려 만들어졌다. 덕분에 섬에 있어도 바다의 비린내가 잘 나지 않는다. 금오도 섬 전체가 황토라 자연 탈취가 되기 때문이다. 또한, 섬인데도 불구하고 화장실이나 샤워장에 온수가 아주 잘 나온다. 금오도는 물이 풍부할 뿐 아니라 수질 또한 최상급인 섬이다. 아름다운 물이라는 뜻의 여수에서도 금오도 물은 특히나 오염이 전혀 없는 좋은 품질을 자랑한다. #자연 #바다 #카페 #체험 #스포츠 #힐링 #공원', '1.0.0',
+  'import', 0.53,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2743206'
@@ -7185,7 +4377,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2909143', '낭도야영장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 여수시 화정면 여산길 150', null, 34.6005580012, 127.541547029, null, null, 'http://tong.visitkorea.or.kr/cms/resource/33/2909133_image2_1.JPG', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2909143', '낭도야영장', '광주', null, '체험·스포츠', '저녁노을이 아름다운 낭만의 섬 낭도에 있는 낭도 야영장은 여수 여객선 터미널에서 낭도항까지 배편으로 2시간이 소요된다. 낭도 해변에 자리하고 있어 그야말로 오션뷰 캠핑장이다. 해안선 둘레길과 신선대, 주상절리까지 바다를 끼고 멋진 자연 풍경이 파노라마처럼 펼쳐지니 섬을 한 바퀴 돌아 볼 수 있는 트레킹을 야영 전후에 추천한다. 여름밤에는 반딧불이도 볼 수 있으며 나로우주발사전망대와 짚라인, 공룡화석 등 주변에서 다양한 체험 활동도 가능하다. 또한 팔영산 국립공원도 함께 둘러보기 좋은 관광 명소이다. ※ 반려견 동반 가능(소형견만 가능)', '전남광주통합특별시 여수시 화정면 여산길 150', null, 34.6005580012, 127.541547029, null, null, 'http://tong.visitkorea.or.kr/cms/resource/33/2909133_image2_1.JPG', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7223,11 +4415,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '낭도야영장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#자연','#산','#체험','#스포츠','#등산','#산책','#공원','#야간','#아이동반']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '낭도야영장 저녁노을이 아름다운 낭만의 섬 낭도에 있는 낭도 야영장은 여수 여객선 터미널에서 낭도항까지 배편으로 2시간이 소요된다. 낭도 해변에 자리하고 있어 그야말로 오션뷰 캠핑장이다. 해안선 둘레길과 신선대, 주상절리까지 바다를 끼고 멋진 자연 풍경이 파노라마처럼 펼쳐지니 섬을 한 바퀴 돌아 볼 수 있는 트레킹을 야영 전후에 추천한다. 여름밤에는 반딧불이도 볼 수 있으며 나로우주발사전망대와 짚라인, 공룡화석 등 주변에서 다양한 체험 활동도 가능하다. 또한 팔영산 국립공원도 함께 둘러보기 좋은 관광 명소이다. ※ 반려견 동반 가능(소형견만 가능) #자연 #산 #체험 #스포츠 #등산 #산책 #공원 #야간 #아이동반', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2909143'
@@ -7239,7 +4431,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2481694', '느랭이골 글램핑', '광주', null, '체험·스포츠', null, '전남광주통합특별시 광양시 다압면 토끼재길 119-32', null, 35.0600705098, 127.7114232446, null, null, 'http://tong.visitkorea.or.kr/cms/resource/22/2844622_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2481694', '느랭이골 글램핑', '광주', null, '체험·스포츠', '느랭이골 자연 리조트 글램핑 캠핑장은 백두대간에서 갈라져 나와 호남뻘을 뻗어 내리는 호남정맥으로 이어지며 내장산, 무등산, 조계산을 힘차게 치달려 기나긴 천리 여정에 위풍당당한 마침표를 찍는 최고 높이가 1,751m나 되는 백운산과 섬진강 700리 물길을 갈무리한 백운산 끝자락 남단 중앙부에 우뚝 솟은 해발 450m 정상 편백나무 숲 속에 위치하고 있다. 캠핑이라고 하면 번거로운 텐트, 불편한 잠자리 등, 캠핑에 익숙치 않은 분들이나 귀차니스트에게 캠핑은 여전히 넘을 수 없는 벽이였지만, 느랭이골 자연 리조트 글램핑 캠핑장은 글램핑 각 객실 안에 화장실과 샤워실, 4인 기준 식기류, 전기밥솥, 냉장고, 인덕션, 침대, 그릴 등이 완비되어있을 뿐만 아니라 자연 속에서 트레킹과 해먹장, 2천여평에 1천4백3십만개가 넘는 LED 전구로 꾸며진 불빛축제, 봄에는 매화꽃, 철쭉, 여름에는 녹음, 가을엔 단충, 겨울에는 설경과 함께 사계절 내내 즐길 수 있는 편백나무 숲과 아름답게 조성된 생태정원 등의 레저와 관람을 체험하고 바비큐를 즐긴 후 따뜻한 글램핑에서 하루를 마무리 할 수 있어서 호텔의 편안함과 여유로움 그리고 럭셔리함을 느끼는 동시에 캠핑의 낭만을 즐길 수 있는 연인 또는 온 가족 모두가 편안히 쉴 수 있는 진정한 힐링 캠핑을 할 수 있는 글램핑 캠핑장이다. ※ 본 캠핑장은(관광진흥법에 의거) 관광사업 등록 캠핑장이다.', '전남광주통합특별시 광양시 다압면 토끼재길 119-32', null, 35.0600705098, 127.7114232446, null, 'http://www.neuraengigol.com', 'http://tong.visitkorea.or.kr/cms/resource/22/2844622_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7277,11 +4469,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '느랭이골 글램핑 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#자연','#산','#체험','#가족체험','#스포츠','#등산','#힐링','#공원','#축제','#야경']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 1.0, "sports": 0.75, "healing": 0.75, "festival": 0.75}'::jsonb,
+  '[1.0,0.0,0.0,0.0,1.0,0.75,0.75,0.75]'::extensions.vector(8),
+  '느랭이골 글램핑 느랭이골 자연 리조트 글램핑 캠핑장은 백두대간에서 갈라져 나와 호남뻘을 뻗어 내리는 호남정맥으로 이어지며 내장산, 무등산, 조계산을 힘차게 치달려 기나긴 천리 여정에 위풍당당한 마침표를 찍는 최고 높이가 1,751m나 되는 백운산과 섬진강 700리 물길을 갈무리한 백운산 끝자락 남단 중앙부에 우뚝 솟은 해발 450m 정상 편백나무 숲 속에 위치하고 있다. 캠핑이라고 하면 번거로운 텐트, 불편한 잠자리 등, 캠핑에 익숙치 않은 분들이나 귀차니스트에게 캠핑은 여전히 넘을 수 없는 벽이였지만, 느랭이골 자연 리조트 글램핑 캠핑장은 글램핑 각 객실 안에 화장실과 샤워실, 4인 기준 식기류, 전기밥솥, 냉장고, 인덕션, 침대, 그릴 등이 완비되어있을 뿐만 아니라 자연 속에서 트레킹과 해먹장, 2천여평에 1천4백3십만개가 넘는 LED 전구로 꾸며진 불빛축제, 봄에는 매화꽃, 철쭉, 여름에는 녹음, 가을엔 단충, 겨울에는 설경과 함께 사계절 내내 즐길 수 있는 편백나무 숲과 아름답게 조성된 생태정원 등의 레저와 관람을 체험하고 바비큐를 즐긴 후 따뜻한 글램핑에서 하루를 마무리 할 수 있어서 호텔의 편안함과 여유로움 그리고 럭셔리함을 느끼는 동시에 캠핑의 낭만을 즐길 수 있는 연인 또는 온 가족 모두가 편안히 쉴 수 있는 진정한 힐링 캠핑을 할 수 있는 글램핑 캠핑장이다. ※ 본 캠핑장은(관광진흥법에 의거) 관광사업 등록 캠핑장이다. #자연 #산 #체험 #가족체험 #스포츠 #등산 #힐링 #공원 #축제 #야경', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2481694'
@@ -7293,7 +4485,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2734187', '달빛담은캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 보성군 벌교읍 장암길 284-37', null, 34.8028109044, 127.4122477195, null, null, 'http://tong.visitkorea.or.kr/cms/resource/39/3069039_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2734187', '달빛담은캠핑장', '광주', null, '체험·스포츠', '달빛담은캠핑장은 벌교 갯벌의 특징을 잘 살린 자연 친화적인 캠핑장으로 아이들과 방문해 볼 만한 곳이다. 캠핑장 입구에 있는 매점이자 관리동인 보성 뻘배전시관에는 꼬막을 잡기 위해 사용했던 뻘배들이 진열되어 있고 갯벌에 대한 정보와 다양한 꼬막이 전시되어 있다. 무엇보다 좋은 점은 벌교 바다만의 매력을 100% 즐길 수 있다는 점이다. 이곳의 사이트는 총 3가지 종류로 놀이시설을 한눈에 볼 수 있는 중앙 사이트, 외각 쪽 데크 사이트, 벌교 바다를 만끽할 수 있는 사랑 사이트로 구성되어 있다. 아이들에게 맞추어진 이 캠핑장에서는 벌교의 특징인 갯벌을 직접 체험해 볼 수 있으며 아이들이 가장 인기있는 체험은 레일 뻘배 체험이다. 레일 뻘배 이외에도 미끄럼틀 두 종류와 함께 시소가 있다. 이외에도 아이들이 모래놀이를 즐길 수 있는 공간이 별도로 있으며 미니 동물 농장과 수목원, 낚시터도 있어 캠핑을 하는 동안 즐길거리가 많다. 낮이 주는 푸르름과 탁 트인 바다의 매력도 분명 좋지만 이름처럼 달빛이 내리쬐는 밤바다의 경치가 너무나도 멋진 캠핑장이다. 따로 전화번호는 없으며 온라인으로 예약하여야 한다.', '전남광주통합특별시 보성군 벌교읍 장암길 284-37', null, 34.8028109044, 127.4122477195, null, 'https://cafe.naver.com/dalbitcamping', 'http://tong.visitkorea.or.kr/cms/resource/39/3069039_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7331,11 +4523,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠','#야경']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.75}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.75]'::extensions.vector(8),
-  '달빛담은캠핑장 #체험 #스포츠 #야경', '1.0.0',
-  'import', 0.42,
+  array['#자연','#숲','#박물관','#전시','#체험','#가족체험','#스포츠','#야간','#야경','#아이동반']::text[],
+  '{"nature": 1.0, "culture": 0.5, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[1.0,0.5,0.5,0.0,0.75,0.75,0.0,0.75]'::extensions.vector(8),
+  '달빛담은캠핑장 달빛담은캠핑장은 벌교 갯벌의 특징을 잘 살린 자연 친화적인 캠핑장으로 아이들과 방문해 볼 만한 곳이다. 캠핑장 입구에 있는 매점이자 관리동인 보성 뻘배전시관에는 꼬막을 잡기 위해 사용했던 뻘배들이 진열되어 있고 갯벌에 대한 정보와 다양한 꼬막이 전시되어 있다. 무엇보다 좋은 점은 벌교 바다만의 매력을 100% 즐길 수 있다는 점이다. 이곳의 사이트는 총 3가지 종류로 놀이시설을 한눈에 볼 수 있는 중앙 사이트, 외각 쪽 데크 사이트, 벌교 바다를 만끽할 수 있는 사랑 사이트로 구성되어 있다. 아이들에게 맞추어진 이 캠핑장에서는 벌교의 특징인 갯벌을 직접 체험해 볼 수 있으며 아이들이 가장 인기있는 체험은 레일 뻘배 체험이다. 레일 뻘배 이외에도 미끄럼틀 두 종류와 함께 시소가 있다. 이외에도 아이들이 모래놀이를 즐길 수 있는 공간이 별도로 있으며 미니 동물 농장과 수목원, 낚시터도 있어 캠핑을 하는 동안 즐길거리가 많다. 낮이 주는 푸르름과 탁 트인 바다의 매력도 분명 좋지만 이름처럼 달빛이 내리쬐는 밤바다의 경치가 너무나도 멋진 캠핑장이다. 따로 전화번호는 없으며 온라인으로 예약하여야 한다. #자연 #숲 #박물관 #전시 #체험 #가족체험 #스포츠 #야간 #야경 #아이동반', '1.0.0',
+  'import', 0.6,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2734187'
@@ -7347,7 +4539,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2013935', '담양 용마루길', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 용면 추월산로 735', null, 35.3875211686, 126.9930309983, null, null, 'http://tong.visitkorea.or.kr/cms/resource/28/3582028_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+values ('tourapi', '2013935', '담양 용마루길', '광주', null, '체험·스포츠', '영산강 발원지 용소에서 흘러내린 물은 담양호로 모여든다. 담양호는 영산강 본류의 최북단에 자리한 호수이다. 담양 용마루길은 담양호의 수려한 전경과 추월산, 금성산성 등 주변 경관을 함께 느낄 수 있는 수변공간의 산책코스이다. 산책로는 총 3.9㎞(나무데크 2.2㎞, 흙 산책길 1.7㎞)로 조성되었으며 도보로 약 2시간 정도 소요되며, 목교는 오르락 내리락 부드러운 곡선미를 살려 설치하였으며 산책로 왼쪽의 울창한 숲과 오른쪽의 담양 호의 맑은 물이 한 폭의 그림같이 펼쳐지는 용마루 길은 많은 관광객들이 찾고 있어 담양의 새로운 랜드 마크로 떠오르고 있다.', '전남광주통합특별시 담양군 용면 추월산로 735', null, 35.3875211686, 126.9930309983, null, 'https://www.water.or.kr', 'http://tong.visitkorea.or.kr/cms/resource/28/3582028_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -7385,11 +4577,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '담양 용마루길 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
+  array['#산','#숲','#체험','#스포츠','#산책']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.5,0.0]'::extensions.vector(8),
+  '담양 용마루길 영산강 발원지 용소에서 흘러내린 물은 담양호로 모여든다. 담양호는 영산강 본류의 최북단에 자리한 호수이다. 담양 용마루길은 담양호의 수려한 전경과 추월산, 금성산성 등 주변 경관을 함께 느낄 수 있는 수변공간의 산책코스이다. 산책로는 총 3.9㎞(나무데크 2.2㎞, 흙 산책길 1.7㎞)로 조성되었으며 도보로 약 2시간 정도 소요되며, 목교는 오르락 내리락 부드러운 곡선미를 살려 설치하였으며 산책로 왼쪽의 울창한 숲과 오른쪽의 담양 호의 맑은 물이 한 폭의 그림같이 펼쳐지는 용마루 길은 많은 관광객들이 찾고 있어 담양의 새로운 랜드 마크로 떠오르고 있다. #산 #숲 #체험 #스포츠 #산책', '1.0.0',
+  'import', 0.5,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2013935'
@@ -7401,655 +4593,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2729195', '담양금성오토캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 금성면 불로리길 135-88', null, 35.3658521341, 127.0361027336, null, null, 'http://tong.visitkorea.or.kr/cms/resource/90/2729490_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '담양금성오토캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2729195'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '715953', '담양레이나 CC', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 담양읍 깊은실길 169 (담양읍)', null, 35.3100775539, 127.0164836657, null, null, null, 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '담양레이나 CC #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '715953'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2726659', '담양힐링파크', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 봉산면 탄금길 9-26', null, 35.2714781967, 126.9609673343, null, null, 'http://tong.visitkorea.or.kr/cms/resource/99/2726999_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠','#힐링']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
-  '담양힐링파크 #체험 #스포츠 #힐링', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2726659'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2747474', '대덕힐링캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 영광군 법성면 대덕길2길 105', null, 35.3499357301, 126.4505884209, null, null, 'http://tong.visitkorea.or.kr/cms/resource/51/2748151_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠','#힐링']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.75,0.0]'::extensions.vector(8),
-  '대덕힐링캠핑장 #체험 #스포츠 #힐링', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2747474'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2732467', '더스타오토캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 여수시 돌산읍 상하동길 268', null, 34.7186544685, 127.7809842316, null, null, null, 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '더스타오토캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2732467'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2748025', '돌풀마루', '광주', null, '체험·스포츠', null, '전남광주통합특별시 구례군 산동면 산수유꽃길로 117', null, 35.3286195113, 127.4777618694, null, null, 'http://tong.visitkorea.or.kr/cms/resource/96/2747596_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '돌풀마루 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2748025'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2729340', '드림캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 보성군 득량면 공룡로 751', null, 34.7030766173, 127.1883587419, null, null, 'http://tong.visitkorea.or.kr/cms/resource/89/2729889_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '드림캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2729340'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2729344', '들소리캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 영암군 신북면 들소리로 384-14', null, 34.9285205024, 126.6789452471, null, null, 'http://tong.visitkorea.or.kr/cms/resource/72/2729872_image2_1.JPG', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '들소리캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2729344'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2747041', '들음카라반펜션', '광주', null, '체험·스포츠', null, '전남광주통합특별시 장성군 북하면 가인길 59-9', null, 35.4350249176, 126.8766623316, null, null, 'http://tong.visitkorea.or.kr/cms/resource/81/2746981_image2_1.JPG', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '들음카라반펜션 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2747041'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2745698', '땅끝오토캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 해남군 송지면 갈산길 25-5', null, 34.3097651449, 126.5200158003, null, null, 'http://tong.visitkorea.or.kr/cms/resource/30/2746430_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '땅끝오토캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2745698'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2745702', '라온 캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 용면 금성산성길 548', null, 35.3761391716, 126.9958338161, null, null, 'http://tong.visitkorea.or.kr/cms/resource/13/2746413_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '라온 캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2745702'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2741004', '마루한캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 금성면 상신기길 108', null, 35.3150721527, 127.0586159215, null, null, 'http://tong.visitkorea.or.kr/cms/resource/90/2741290_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '마루한캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2741004'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2674994', '만연산 오감연결길', '광주', null, '체험·스포츠', null, '전남광주통합특별시 화순군 화순읍 진각로 276-33', null, 35.0772895397, 126.9919694778, null, null, 'http://tong.visitkorea.or.kr/cms/resource/88/2674988_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+values ('tourapi', '2729195', '담양금성오토캠핑장', '광주', null, '체험·스포츠', '담양금성산성오토캠핑장은 호남의 3대 산성 가운데 하나로 꼽히는 금성산성에 위치하고 있다. 이곳은 33,000m² 부지의 대규모 캠핑장으로 일반야영장 30면, 개인카라반사이트 40면을 갖추고 있다. 대형 캠핑장답게 사이트 간격은 타프와 텐트를 따로 칠 수 있을 만큼 넓은 간격을 자랑하며 편의시설 등이 체계적으로 관리되고 있다. 매점에서는 장작과 숯 등 캠핑에 필요한 웬만한 물품 구입이 가능하며 전기 리드선을 두고 왔더라도 무료로 대여할 수 있다. 캠핑에 필요한 각종 장비 대여도 가능하다. 또한 글램핑장에는 한 동에 하나씩 개수대가 설치되어 있다.', '전남광주통합특별시 담양군 금성면 불로리길 135-88', null, 35.3658521341, 127.0361027336, null, 'http://parapark.co.kr/camping_reservation2.htm', 'http://tong.visitkorea.or.kr/cms/resource/90/2729490_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -8088,1849 +4632,67 @@ insert into public.place_profiles (
 )
 select p.id,
   array['#산','#체험','#스포츠']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
+  '담양금성오토캠핑장 담양금성산성오토캠핑장은 호남의 3대 산성 가운데 하나로 꼽히는 금성산성에 위치하고 있다. 이곳은 33,000m² 부지의 대규모 캠핑장으로 일반야영장 30면, 개인카라반사이트 40면을 갖추고 있다. 대형 캠핑장답게 사이트 간격은 타프와 텐트를 따로 칠 수 있을 만큼 넓은 간격을 자랑하며 편의시설 등이 체계적으로 관리되고 있다. 매점에서는 장작과 숯 등 캠핑에 필요한 웬만한 물품 구입이 가능하며 전기 리드선을 두고 왔더라도 무료로 대여할 수 있다. 캠핑에 필요한 각종 장비 대여도 가능하다. 또한 글램핑장에는 한 동에 하나씩 개수대가 설치되어 있다. #산 #체험 #스포츠', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2729195'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '715953', '담양레이나 CC', '광주', null, '체험·스포츠', '추월산 자락 광활하나 초지 위에 펼쳐지는 이국적이고 아름다운 경관, 원초적인 수림과 계곡, 완만한 능선과 자연스런 계류 등 자연 그대로의 지형을 살려 Updown을 조형화 시키고 Undulation을 형상화시켜 트러블 요소를 극대화한 전략코스 레이아웃을 자랑한다. 아테네 신전을 옮겨 놓은 듯한 클럽하우스는 격조 높은 인테리어, 호텔 스위트룸과 비교해도 손색없는 골프텔 등 회원 여러분의 사교와 비즈니스의 동반자가 될 것이다.', '전남광주통합특별시 담양군 담양읍 깊은실길 169 (담양읍)', null, 35.3100775539, 127.0164836657, null, 'http://www.reinacc.co.kr/#main', null, 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연','#산','#체험','#스포츠']::text[],
   '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.75,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '만연산 오감연결길 #산 #체험 #스포츠', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2674994'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2727280', '메타파크', '광주', null, '체험·스포츠', null, '전남광주통합특별시 담양군 금성면 금성산성길 260', null, 35.3708124358, 127.0215594513, null, null, 'http://tong.visitkorea.or.kr/cms/resource/66/2727666_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '메타파크 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2727280'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2739392', '목사골야영장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 곡성군 목사동면 용봉길 91-109', null, 35.1060528847, 127.3131459836, null, null, 'http://tong.visitkorea.or.kr/cms/resource/40/2739940_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '목사골야영장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2739392'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2728208', '몽돌바다캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 신안군 암태면 진작지길 139-63', null, 34.8739344235, 126.1371972607, null, null, 'http://tong.visitkorea.or.kr/cms/resource/38/2728338_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#바다','#체험','#스포츠']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '몽돌바다캠핑장 #바다 #체험 #스포츠', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2728208'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2747447', '무안황토갯벌랜드 캠핑장', '광주', null, '체험·스포츠', null, '전남광주통합특별시 무안군 해제면 황토갯벌길 54-20', null, 35.098181751, 126.3339299684, null, null, 'http://tong.visitkorea.or.kr/cms/resource/54/2747754_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#체험','#스포츠']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.0,0.75,0.75,0.0,0.0]'::extensions.vector(8),
-  '무안황토갯벌랜드 캠핑장 #체험 #스포츠', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2747447'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2435007', '곡성 기차당 뚝방마켓', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 곡성군 곡성읍 곡성로 898', null, 35.2814328952, 127.3012647759, null, null, null, 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#마켓','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.75]'::extensions.vector(8),
-  '곡성 기차당 뚝방마켓 #시장 #마켓 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2435007'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1434518', '곡성기차마을전통시장 (3, 8일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 곡성군 곡성읍 곡성로 856', null, 35.2798080307, 127.2984539545, null, null, 'http://tong.visitkorea.or.kr/cms/resource/67/2032567_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통','#시장','#느린여행','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.75,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '곡성기차마을전통시장 (3, 8일) #전통 #시장 #느린여행 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1434518'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132059', '공산장 (1, 6일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 나주시 공산면 공산로 120 (공산면)', null, 34.9429566034, 126.6091093957, null, null, 'http://tong.visitkorea.or.kr/cms/resource/64/1971564_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '공산장 (1, 6일) #산 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132059'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132054', '과역시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 고흥군 과역면 시장안길 15', null, 34.6794572169, 127.3622690801, null, null, 'http://tong.visitkorea.or.kr/cms/resource/15/3518715_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '과역시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132054'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1976858', '광양5일장 (1, 6일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 광양시 광양읍 백운로 3', null, 34.9711478468, 127.5903972633, null, null, 'http://tong.visitkorea.or.kr/cms/resource/08/3050908_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광양5일장 (1, 6일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1976858'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3010413', '김미영 돌산갓김치', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 돌산읍 향일암로 57', null, 34.5939771211, 127.8026854999, null, null, 'http://tong.visitkorea.or.kr/cms/resource/83/3010383_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#전통음식','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 1.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,1.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '김미영 돌산갓김치 #산 #시장 #전통음식 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3010413'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1976875', '나주목사고을시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 나주시 청동길 14 (삼도동)', null, 35.0370340097, 126.7235497464, null, null, 'http://tong.visitkorea.or.kr/cms/resource/84/3548284_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '나주목사고을시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1976875'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2717546', '남도상회', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 광양시 눈소9길 55 (마동)', null, 34.9464750697, 127.7187894096, null, null, 'http://tong.visitkorea.or.kr/cms/resource/36/3548136_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '남도상회 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2717546'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2758168', '남악시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 무안군 삼향읍 남악5로52번길 13-7', null, 34.8103692926, 126.4728107716, null, null, 'http://tong.visitkorea.or.kr/cms/resource/61/3535461_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '남악시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2758168'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132092', '남창장 (2, 7일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 해남군 북평면 달량진길 52-10', null, 34.4042535393, 126.6270624955, null, null, null, 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '남창장 (2, 7일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132092'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132167', '남평장 (1, 6일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 나주시 남평읍 지석로 21', null, 35.0456544424, 126.8405197515, null, null, null, 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '남평장 (1, 6일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132167'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132067', '녹차골보성향토시장 (2, 7일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 보성군 보성읍 현충로 42-1', null, 34.7656343875, 127.0772586154, null, null, 'http://tong.visitkorea.or.kr/cms/resource/82/3027182_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '녹차골보성향토시장 (2, 7일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132067'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132093', '능주전통시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 화순군 능주면 학포로 1955', null, 34.990929286, 126.959771698, null, null, 'http://tong.visitkorea.or.kr/cms/resource/64/3536164_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '능주전통시장 #전통 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132093'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132061', '대치장 (3, 8일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 담양군 대전면 대치8길 28-12', null, 35.2754209258, 126.8861071953, null, null, 'http://tong.visitkorea.or.kr/cms/resource/45/3582045_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '대치장 (3, 8일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132061'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132070', '덕양시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 소라면 하세동길 12-2', null, 34.7979985577, 127.6320285789, null, null, 'http://tong.visitkorea.or.kr/cms/resource/99/3580299_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '덕양시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132070'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132073', '독천장(4, 9일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 영암군 미암면 독천1길 19', null, 34.7245388526, 126.5680822175, null, null, 'http://tong.visitkorea.or.kr/cms/resource/40/1971640_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '독천장(4, 9일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132073'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1343107', '동박새꿈정원', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 오동도로 238-32 오동도 등대', null, 34.7444819002, 127.7676180755, null, null, null, 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#정원','#시장','#공원','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '동박새꿈정원 #정원 #시장 #공원 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1343107'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2752133', '마량 놀토수산시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 강진군 마량면 미항로 164', null, 34.4490600303, 126.8198556151, null, null, 'http://tong.visitkorea.or.kr/cms/resource/80/2752180_image2_1.JPG', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '마량 놀토수산시장 #산 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2752133'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1143723', '목포 동부시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 목포시 산정로 174', null, 34.8041242271, 126.3921097173, null, null, 'http://tong.visitkorea.or.kr/cms/resource/55/3534255_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '목포 동부시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1143723'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1227095', '목포 신중앙시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 목포시 원산중앙로 51', null, 34.8102316343, 126.3775525232, null, null, 'http://tong.visitkorea.or.kr/cms/resource/47/3534247_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '목포 신중앙시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1227095'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1730879', '목포 청호시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 목포시 석현로 28', null, 34.8153651607, 126.4246260181, null, null, 'http://tong.visitkorea.or.kr/cms/resource/03/3060703_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '목포 청호시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1730879'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2765255', '목포농산물도매시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 목포시 영산로 648-23', null, 34.8219505394, 126.4252035854, null, null, 'http://tong.visitkorea.or.kr/cms/resource/62/3534262_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#특산물','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 1.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,1.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '목포농산물도매시장 #산 #시장 #특산물 #실내 #비오는날', '1.0.0',
-  'import', 0.42,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2765255'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132064', '무안장 (4, 9일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 무안군 무안읍 면성1길 134', null, 34.9865799772, 126.4725176318, null, null, 'http://tong.visitkorea.or.kr/cms/resource/56/1971656_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '무안장 (4, 9일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132064'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2748736', '무안전통시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 무안군 무안읍 성내리 21-13', null, 34.9934958653, 126.4726341196, null, null, 'http://tong.visitkorea.or.kr/cms/resource/46/3582446_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#전통','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.75, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.75,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '무안전통시장 #전통 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2748736'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132069', '서시장 (4, 9일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 광무동', null, 34.7407955187, 127.7281966158, null, null, 'http://tong.visitkorea.or.kr/cms/resource/67/3580367_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '서시장 (4, 9일) #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132069'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '3505810', '순천 웃장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 순천시 북문길 40 (동외동)', null, 34.9586141, 127.4849124008, null, null, null, 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '순천 웃장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '3505810'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '1343398', '여수 특산품전시판매장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 어항단지로 205 (봉산동)', null, 34.7307160898, 127.7280468858, null, null, 'http://tong.visitkorea.or.kr/cms/resource/22/3027322_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#전시','#시장','#특산물','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.75, "food": 1.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.75,1.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '여수 특산품전시판매장 #산 #전시 #시장 #특산물 #실내 #비오는날', '1.0.0',
+  '담양레이나 CC 추월산 자락 광활하나 초지 위에 펼쳐지는 이국적이고 아름다운 경관, 원초적인 수림과 계곡, 완만한 능선과 자연스런 계류 등 자연 그대로의 지형을 살려 Updown을 조형화 시키고 Undulation을 형상화시켜 트러블 요소를 극대화한 전략코스 레이아웃을 자랑한다. 아테네 신전을 옮겨 놓은 듯한 클럽하우스는 격조 높은 인테리어, 호텔 스위트룸과 비교해도 손색없는 골프텔 등 회원 여러분의 사교와 비즈니스의 동반자가 될 것이다. #자연 #산 #체험 #스포츠', '1.0.0',
   'import', 0.45,
   '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
-where p.source = 'tourapi' and p.source_place_id = '1343398'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2783118', '여수수산시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 여수시 여객선터미널길 24 (교동)', null, 34.7381847622, 127.7317935902, null, null, 'http://tong.visitkorea.or.kr/cms/resource/06/2787606_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '여수수산시장 #산 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2783118'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '2876922', '영광고추특화시장', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 영광군 영광읍 신남로 100-35', null, 35.2747616412, 126.4941225265, null, null, 'http://tong.visitkorea.or.kr/cms/resource/01/2876901_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.0,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '영광고추특화시장 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '2876922'
-on conflict (place_id) do update set
-  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
-  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
-  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
-  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
-  reviewed_at = excluded.reviewed_at, updated_at = now();
-
-insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('tourapi', '132166', '영산포풍물시장(5, 10일)', '광주', null, '쇼핑·시장', null, '전남광주통합특별시 나주시 풍물시장2길 12-14 (이창동)', null, 34.9915055499, 126.7078383684, null, null, 'http://tong.visitkorea.or.kr/cms/resource/36/1972036_image2_1.jpg', 70, true, true, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.data.go.kr/data/15101578/openapi.do', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
-on conflict (source, source_place_id) do update set
-  name = excluded.name,
-  region = excluded.region,
-  sigungu = excluded.sigungu,
-  category = excluded.category,
-  description = excluded.description,
-  road_address = excluded.road_address,
-  lot_address = excluded.lot_address,
-  latitude = excluded.latitude,
-  longitude = excluded.longitude,
-  phone = excluded.phone,
-  website_url = excluded.website_url,
-  image_url = excluded.image_url,
-  duration_minutes = excluded.duration_minutes,
-  indoor = excluded.indoor,
-  rain_ok = excluded.rain_ok,
-  family_friendly = excluded.family_friendly,
-  parking_available = excluded.parking_available,
-  wheelchair_accessible = excluded.wheelchair_accessible,
-  pet_friendly = excluded.pet_friendly,
-  requires_reservation = excluded.requires_reservation,
-  price_min = excluded.price_min,
-  price_max = excluded.price_max,
-  status = excluded.status,
-  public_transport_score = excluded.public_transport_score,
-  source_url = excluded.source_url,
-  source_updated_at = excluded.source_updated_at,
-  last_verified_at = excluded.last_verified_at,
-  license = excluded.license,
-  quality_status = excluded.quality_status,
-  updated_at = now();
-
-insert into public.place_profiles (
-  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
-  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
-)
-select p.id,
-  array['#산','#시장','#실내','#비오는날']::text[],
-  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
-  '[0.75,0.0,0.0,0.75,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '영산포풍물시장(5, 10일) #산 #시장 #실내 #비오는날', '1.0.0',
-  'import', 0.4,
-  '[{"source": "tourapi", "source_url": "https://www.data.go.kr/data/15101578/openapi.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
-from public.places p
-where p.source = 'tourapi' and p.source_place_id = '132166'
+where p.source = 'tourapi' and p.source_place_id = '715953'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,

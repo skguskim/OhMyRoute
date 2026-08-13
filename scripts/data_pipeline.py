@@ -548,7 +548,7 @@ def fetch_detail(service_key: str, item: dict[str, Any], skip_details: bool) -> 
     content_type = item.get("contenttypeid")
     merged = dict(item)
     calls = (
-        ("detailCommon2", {"contentId": content_id, "defaultYN": "Y", "firstImageYN": "Y", "addrinfoYN": "Y", "mapinfoYN": "Y", "overviewYN": "Y"}),
+        ("detailCommon2", {"contentId": content_id}),
         ("detailIntro2", {"contentId": content_id, "contentTypeId": content_type}),
     )
     for endpoint, params in calls:
@@ -617,6 +617,28 @@ def collect_tourapi(args: argparse.Namespace) -> tuple[Path, Path]:
     profiles_path = output_dir / "tourapi_place_profiles.csv"
     write_csv(places_path, PLACE_FIELDS, places)
     write_csv(profiles_path, PROFILE_FIELDS, profiles)
+
+    # [추가] TourAPI 수집 시에도 운영 정보 리뷰 CSV 파일 생성
+    operating_reviews = []
+    for item, place in zip(raw_items, places):
+        # TourAPI 응답 데이터에서 운영 시간 및 휴무일 관련 필드 추출 매핑
+        table = {
+            "이용시간": item.get("opentimefood") or item.get("usetime") or "",
+            "휴일": item.get("restdatefood") or item.get("restdate") or "",
+            "이용요금": item.get("usefee") or "",
+            "주차시설": item.get("parking") or item.get("parkingfood") or "",
+            "애견동반": item.get("chkpet") or "",
+            "대중교통": item.get("direction") or "",
+        }
+        raw_record = {"detail_table": table}
+        operating_reviews.append(operating_review_row(place, raw_record))
+        
+    write_csv(
+        output_dir / "tourapi_operating_info_review.csv",
+        OPERATING_REVIEW_FIELDS,
+        operating_reviews,
+    )
+    
     print(f"수집 완료: {len(places)}개 장소")
     print(f"원본: {raw_path}")
     return places_path, profiles_path

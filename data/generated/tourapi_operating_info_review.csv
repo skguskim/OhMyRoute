@@ -1,0 +1,88 @@
+﻿source,source_place_id,name,operating_hours_raw,closed_days_raw,fees_raw,parking_raw,pet_raw,public_transport_raw,source_url
+tourapi,2783851,경암근린공원,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,127069,관덕정의 각궁,06:00~22:00,매주 일요일,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,128158,광주 경찰충혼탑,상시 개방,연중무휴,,불가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2605353,광주 송정동 떡갈비 골목,매장 별 상이,매장 별 상이,,매장 별 상이,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2822573,광주 수완호수공원,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,127325,광주 충효동 왕버들 군,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2489843,광주 평촌마을,상시 개방,매주 월요일,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2605351,광주폴리,상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,126329,광주호,상시 개방,연중무휴,,가능 (약 180대),,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,126425,국립 5·18 민주묘지,09:00~18:00 (입장 마감 17:00),연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1621334,금남로,상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,127356,너릿재공원,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2470068,녹색에너지체험관 (광주전남지역본부),10:00~17:00 (점심시간 12:00~13:00),매주 주말 / 법정 공휴일,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2614773,덕산너덜 (무등산권 국가지질공원),상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1620893,도림사(광주),상시 개방,연중무휴,,불가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1621168,고싸움놀이전수교육관,,,무료 (체험 활동 비용 별도),,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130032,광산문화원,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130391,광주 동구문화원,,,프로그램 별 상이,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130208,광주 북구문화원,,,강좌별 상이,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130808,광주 송정다가치문화도서관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2733545,광주 전통문화관,,,무료<br>※ 강좌 및 체험 등은 별도,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130033,광주광역시 서구문화원,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2779116,광주비엔날레전시관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129761,광주시립미술관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,969963,광주야외음악당,,,공연마다 상이하므로 전화문의,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3380159,광주자동차극장,,,"차량 1대당 23,000원",,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2009775,국립아시아문화전당,,,시설에 따라 상이하므로 홈페이지 참고 요망,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130807,금호평생교육관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1745001,빛고을시민문화관,,,공연에 따라 상이하므로 홈페이지 참조,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2605338,수피아여자중고등학교,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3460731,광주여성영화제,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,131450,광주북구청소년수련관,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2739385,광주시패밀리랜드 카라반캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2728916,승촌보오토캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2661532,시민의 숲 야영장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1622267,염주실내수영장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2763536,주노글램핑 인 광주시,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2718673,휴파크 광산점,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,127480,가거도,상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,126273,가계해수욕장,09:00~18:00 (7~8월 해수욕장 개장 기간),연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,127423,가마골계곡,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,126289,가마미해수욕장,상시 개방 (해수욕장 09:00~18:00 물놀이 가능),연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2615324,가사동백숲해변,,,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1916695,가사해수욕장,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1957336,가산서원,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2732489,가야금산조테마공원,10:00~17:00,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3013529,가야정원,상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129024,갈두마을(땅끝마을),상시개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1957338,강덕사,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1349796,강진 백사어촌체험마을,09:00~17:00 (전화문의),연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2515265,강진 백운동별서정원,상시 개방,연중무휴,,가능,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,128952,강진 병영마을 옛 담장,상시 개방,연중무휴,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129693,강진 삼인리 비자나무,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1623643,강진군도서관,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1778079,강진아트홀,,,공연에 따라 다름,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2612901,고산 윤선도 박물관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129996,고흥문화원,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2605786,고흥분청문화박물관,,,"[개인]<br>- 일반 2,000원<br>- 청소년, 군인 1,500원<br>- 어린이 1,000원<br>[단체]<br>- 일반 1,000원<br>- 청소년, 군인 700원<br>- 어린이 500원",,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3351638,곡성기차마을 생태학습관,,,"대인 5,000원, 소인/경로 4,500원, 곡성군민/장애인 무료",,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,1054221,곡성레저문화센터,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129991,곡성문화원,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2733394,광양 역사문화관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2782651,광양매화문화관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129987,광양문화원,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130205,광양시문화예술회관,,,※ 공연 별로 상이함,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2732668,광양예술창고,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,130559,구례향제줄풍류전수관,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,129896,국립해양유산연구소,,,무료,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3012429,남도영화제 시즌2 광양,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3506515,담양 다미담주 페스티벌 쓰담쓰담 야시장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,3547386,한국전력과 함께하는 2025 희망·사랑 나눔 콘서트,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2737313,2025섬진강국제실험예술제(SIEAF),,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2737354,가마골계곡 핫캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2740970,가우도카라반펜션,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2752162,거금해양낚시공원,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2554912,곡성기차마을 패러글라이딩,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2739374,국립천관산자연휴양림캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2727342,굴전여가캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2737326,글램킹 글램핑,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2483594,금오도 비렁길,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2743206,금오도보금자리펜션,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2909143,낭도야영장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2481694,느랭이골 글램핑,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2734187,달빛담은캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2013935,담양 용마루길,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,2729195,담양금성오토캠핑장,,,,,,,https://www.data.go.kr/data/15101578/openapi.do
+tourapi,715953,담양레이나 CC,,,,,,,https://www.data.go.kr/data/15101578/openapi.do

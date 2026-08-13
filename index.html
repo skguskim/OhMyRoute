@@ -9,7 +9,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260806-9" />
+    <link rel="stylesheet" href="./styles.css?v=20260813-1" />
   </head>
   <body class="splash-open">
     <section id="splashView" class="splash-view" aria-labelledby="splashTitle" aria-hidden="false">
@@ -240,6 +240,10 @@
                     <span>⚾ BASEBALL DAY</span>
                     <strong>야구 직관을 일정에 포함할까요?</strong>
                     <p id="baseballScheduleStatus">경기 시작 시간과 챔피언스필드 먹거리를 일정에 고정합니다.</p>
+                    <label id="baseballDayField" class="baseball-day-field" for="baseballDaySelect">
+                      <b>직관 날짜</b>
+                      <select id="baseballDaySelect" aria-label="야구 직관 날짜 선택"></select>
+                    </label>
                   </div>
                   <label class="baseball-attendance-toggle" for="baseballAttendance">
                     <input id="baseballAttendance" type="checkbox" />
@@ -546,6 +550,6 @@
     </div>
 
     <script src="./config.js?v=20260806-1"></script>
-    <script type="module" src="./app.js?v=20260813-2"></script>
+    <script type="module" src="./app.js?v=20260813-3"></script>
   </body>
 </html>

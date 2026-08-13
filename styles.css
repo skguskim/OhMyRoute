@@ -3037,6 +3037,44 @@ body:has(#formView.active) .app-main {
   line-height: 1.55;
 }
 
+.baseball-day-field {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.baseball-day-field[hidden] {
+  display: none;
+}
+
+.baseball-day-field b {
+  flex: 0 0 auto;
+  color: #194aa6;
+  font-size: 10px;
+}
+
+.baseball-day-field select {
+  min-width: 0;
+  padding: 7px 28px 7px 9px;
+  color: #194aa6;
+  background: rgba(255, 255, 255, .82);
+  border: 1px solid #90c2ff;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.baseball-day-field select:focus-visible {
+  outline: 3px solid rgba(49, 130, 246, .2);
+  outline-offset: 1px;
+}
+
+.baseball-day-field select:disabled {
+  opacity: .7;
+}
+
 .baseball-attendance-toggle {
   flex: 0 0 auto;
   display: flex;

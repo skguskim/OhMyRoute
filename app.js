@@ -72,11 +72,11 @@ const CHAMPIONS_FIELD_GAME = {
   requiresReservation: true,
   score: 2,
   displayScore: 1,
-  reasons: ["스포츠·야구 매우 선호", "야구 직관 선택", "여행 마지막 일정"],
+  reasons: ["스포츠·야구 매우 선호", "야구 직관 선택", "선택한 직관일 마지막 일정"],
   recommendedPlayers: [],
   activeRecommendedPlayers: [],
   isBaseballGame: true,
-  endsTrip: true,
+  endsTrip: false,
 };
 const WEATHER_LABELS = { sunny: "맑음", cloudy: "구름많음", rainy: "비·눈" };
 const WEATHER_ICONS = { sunny: "☀️", cloudy: "☁️", rainy: "🌧️" };
@@ -187,7 +187,10 @@ const state = {
   reviews: [],
   rewards: [],
   baseballAttendance: false,
+  baseballDayIndex: null,
+  baseballDaySelectionTouched: false,
   baseballPreviousEnd: null,
+  baseballAdjustedFinalEnd: false,
 };
 
 let kakaoSdkPromise = null;
@@ -373,6 +376,7 @@ function currentConditions() {
     promptFamily: state.promptAnalysis.family,
     sportsBaseballHighlyPreferred,
     baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance,
+    baseballDayIndex: selectedBaseballDayIndex(),
     transport: state.transport,
     duration: state.duration,
   };
@@ -473,41 +477,109 @@ function baseballScheduleForDate(dateValue) {
   };
 }
 
+function baseballTripDates() {
+  const startDate = $("#travelDate")?.value;
+  const endDate = $("#endDate")?.value || startDate;
+  const startOrdinal = dateOrdinal(startDate);
+  const endOrdinal = dateOrdinal(endDate);
+  if (!Number.isFinite(startOrdinal) || !Number.isFinite(endOrdinal) || endOrdinal < startOrdinal) {
+    return startDate ? [startDate] : [];
+  }
+  const dayCount = Math.min(endOrdinal - startOrdinal + 1, MAX_TRIP_DAYS);
+  return Array.from({ length: dayCount }, (_, index) => shiftDateValue(startDate, index));
+}
+
+function selectedBaseballDayIndex() {
+  const dates = baseballTripDates();
+  if (!dates.length) return 0;
+  const select = $("#baseballDaySelect");
+  const selectValue = select?.value === "" ? Number.NaN : Number(select?.value);
+  const stateValue = state.baseballDayIndex;
+  const requested = Number.isInteger(selectValue)
+    ? selectValue
+    : Number.isInteger(stateValue)
+      ? stateValue
+      : dates.length - 1;
+  const index = clamp(requested, 0, dates.length - 1);
+  state.baseballDayIndex = index;
+  return index;
+}
+
+function formatBaseballDayOption(dateValue, index) {
+  const [year, month, day] = String(dateValue).split("-").map(Number);
+  const ordinal = dateOrdinal(dateValue);
+  const weekday = Number.isFinite(ordinal)
+    ? ["일", "월", "화", "수", "목", "금", "토"][new Date(ordinal * 86400000).getUTCDay()]
+    : "";
+  return `Day ${index + 1} · ${year}년 ${month}월 ${day}일 (${weekday})`;
+}
+
+function populateBaseballDaySelect() {
+  const select = $("#baseballDaySelect");
+  if (!select) return baseballTripDates();
+  const dates = baseballTripDates();
+  const selectedIndex = state.baseballDaySelectionTouched
+    ? selectedBaseballDayIndex()
+    : Math.max(0, dates.length - 1);
+  select.innerHTML = dates
+    .map((dateValue, index) => `<option value="${index}">${formatBaseballDayOption(dateValue, index)}</option>`)
+    .join("");
+  select.value = String(clamp(selectedIndex, 0, Math.max(0, dates.length - 1)));
+  select.disabled = dates.length <= 1;
+  state.baseballDayIndex = Number(select.value) || 0;
+  return dates;
+}
+
+function restoreBaseballTravelEnd() {
+  if (!state.baseballPreviousEnd) return;
+  $("#endDate").value = state.baseballPreviousEnd.endDate;
+  setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
+  state.baseballAdjustedFinalEnd = false;
+}
+
 function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
   const panel = $("#baseballAttendancePanel");
   const checkbox = $("#baseballAttendance");
   const status = $("#baseballScheduleStatus");
+  const dayField = $("#baseballDayField");
   if (!panel || !checkbox || !status) return;
 
   const eligible = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
   panel.hidden = !eligible;
   if (!eligible) {
     if (state.baseballAttendance && state.baseballPreviousEnd) {
-      $("#endDate").value = state.baseballPreviousEnd.endDate;
-      setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
+      restoreBaseballTravelEnd();
     }
     checkbox.checked = false;
     state.baseballAttendance = false;
     state.baseballPreviousEnd = null;
+    state.baseballAdjustedFinalEnd = false;
     syncTravelWindow();
     return;
   }
 
-  const gameDate = $("#endDate").value || $("#travelDate").value;
+  const tripDates = populateBaseballDaySelect();
+  const baseballDayIndex = selectedBaseballDayIndex();
+  const gameDate = tripDates[baseballDayIndex] || $("#travelDate").value;
   const schedule = baseballScheduleForDate(gameDate);
+  if (dayField) dayField.hidden = tripDates.length === 0;
   if (!checkbox.checked) {
     state.baseballAttendance = false;
-    status.textContent = `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 · 직관을 선택하면 구장 먹거리와 경기 시간을 고정합니다.`;
+    status.textContent = `${formatBaseballDayOption(gameDate, baseballDayIndex)} · ${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
     return;
   }
 
   state.baseballAttendance = true;
   if (adjustTravelWindow) {
-    $("#endDate").value = gameDate;
-    setTimeFieldValue($("#endTime"), formatClockMinutes(schedule.gameEndMinutes));
+    if (state.baseballAdjustedFinalEnd) restoreBaseballTravelEnd();
+    const isFinalDay = baseballDayIndex === tripDates.length - 1;
+    if (isFinalDay) {
+      setTimeFieldValue($("#endTime"), formatClockMinutes(schedule.gameEndMinutes));
+      state.baseballAdjustedFinalEnd = true;
+    }
     syncTravelWindow();
   }
-  status.textContent = `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 구장 먹거리 · ${formatClockMinutes(schedule.gameEndMinutes)} 종료`;
+  status.textContent = `${formatBaseballDayOption(gameDate, baseballDayIndex)} · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 구장 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
 }
 
 function setBaseballAttendance(active) {
@@ -521,8 +593,7 @@ function setBaseballAttendance(active) {
   }
   checkbox.checked = active;
   if (!active && state.baseballPreviousEnd) {
-    $("#endDate").value = state.baseballPreviousEnd.endDate;
-    setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
+    restoreBaseballTravelEnd();
     state.baseballPreviousEnd = null;
     state.baseballAttendance = false;
     syncTravelWindow();
@@ -1702,7 +1773,7 @@ function selectStadiumFood(results, schedule) {
   };
 }
 
-function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window) {
+function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDay) {
   const schedule = baseballScheduleForDate(window.date);
   const day = [];
   let current = conditions.origin;
@@ -1784,10 +1855,11 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window) {
     expectedEndMinutes: schedule.gameEndMinutes,
     gameDate: window.date,
     gameDayType: schedule.dayTypeLabel,
+    endsTrip: isFinalDay,
     reasons: [
       `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 시작`,
       "3시간~3시간 30분 관람",
-      "여행 마지막 일정",
+      `Day ${dayIndex + 1} 마지막 일정`,
     ],
   });
   return day;
@@ -1801,8 +1873,8 @@ function createRoute(results) {
   const builtDays = windows
     .map((window, dayIndex) => ({
       window,
-      day: conditions.baseballAttendance && dayIndex === windows.length - 1
-        ? buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window)
+      day: conditions.baseballAttendance && dayIndex === conditions.baseballDayIndex
+        ? buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
         : buildRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
     }))
     .filter(({ day }) => day.length);
@@ -2664,7 +2736,8 @@ function renderTips() {
     const gameStop = state.route.find((place) => place.isBaseballGame);
     const stadiumFood = state.route.find((place) => place.stadiumFood);
     if (gameStop) {
-      tips.unshift(`${gameStop.gameDayType} ${formatClockMinutes(gameStop.fixedStartMinutes)} 챔피언스필드 경기를 마지막 일정으로 고정했고 ${formatClockMinutes(gameStop.expectedEndMinutes)} 종료로 계산했습니다.`);
+      const gameDayIndex = state.routeDays.findIndex((day) => day.some((place) => place.isBaseballGame));
+      tips.unshift(`Day ${gameDayIndex + 1} ${gameStop.gameDate} · ${gameStop.gameDayType} ${formatClockMinutes(gameStop.fixedStartMinutes)} 챔피언스필드 경기를 해당 날짜의 마지막 일정으로 고정했고 ${formatClockMinutes(gameStop.expectedEndMinutes)} 종료로 계산했습니다.`);
     }
     if (stadiumFood) {
       const dinnerMenu = stadiumFood.menuItems?.find((menu) => menu.signature) || stadiumFood.menuItems?.[0];
@@ -2862,7 +2935,8 @@ function setupTravelWindow() {
 }
 
 function routeSignature(route = state.route) {
-  return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}`;
+  const baseballKey = state.baseballAttendance ? `baseball-day-${selectedBaseballDayIndex()}` : "baseball-off";
+  return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}:${baseballKey}`;
 }
 
 function preferenceByKey(preference = state.preference) {
@@ -2924,6 +2998,7 @@ function saveCurrentRoute() {
       companion: $("#companion").value,
       weather: $("#weather").value,
       baseballAttendance: state.baseballAttendance,
+      baseballDayIndex: state.baseballDayIndex,
       weatherForecast: state.weatherForecast?.status === "ready" ? state.weatherForecast : null,
       createdAt: new Date().toISOString(),
     });
@@ -2994,6 +3069,18 @@ function restoreSavedRoute(id) {
   state.transport = saved.transport;
   state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
+  const savedBaseballDayIndex = Number(saved.baseballDayIndex);
+  const legacyBaseballDayIndex = Array.isArray(saved.routeDays)
+    ? saved.routeDays.findIndex((day) => day.some((stop) => stop.isBaseballGame))
+    : -1;
+  state.baseballDayIndex = Number.isInteger(savedBaseballDayIndex)
+    ? savedBaseballDayIndex
+    : legacyBaseballDayIndex >= 0
+      ? legacyBaseballDayIndex
+      : null;
+  state.baseballDaySelectionTouched = state.baseballAttendance && state.baseballDayIndex != null;
+  state.baseballPreviousEnd = null;
+  state.baseballAdjustedFinalEnd = false;
   $("#baseballAttendance").checked = state.baseballAttendance;
   $("#travelPrompt").value = saved.prompt || "";
   if (saved.companion) $("#companion").value = saved.companion;
@@ -3120,6 +3207,11 @@ function bindEvents() {
       if (input === $("#travelDate") && (!$("#endDate").value || $("#endDate").value < input.value)) {
         $("#endDate").value = input.value;
       }
+      if (state.baseballAttendance && state.baseballPreviousEnd) {
+        if (input === $("#travelDate")) state.baseballPreviousEnd.endDate = $("#endDate").value;
+        if (input === $("#endDate")) state.baseballPreviousEnd.endDate = input.value;
+        if (input === $("#endTime")) state.baseballPreviousEnd.endTime = input.value;
+      }
       syncTravelWindow();
       if (state.baseballAttendance) {
         updateBaseballAttendanceControl({ adjustTravelWindow: true });
@@ -3132,6 +3224,11 @@ function bindEvents() {
   $("#baseballAttendance").addEventListener("change", (event) => {
     setBaseballAttendance(event.currentTarget.checked);
     invalidateWeatherForecast({ reload: false });
+  });
+  $("#baseballDaySelect").addEventListener("change", (event) => {
+    state.baseballDayIndex = Number(event.currentTarget.value) || 0;
+    state.baseballDaySelectionTouched = true;
+    updateBaseballAttendanceControl({ adjustTravelWindow: state.baseballAttendance });
   });
   $("#weather").addEventListener("change", () => {
     if ($("#weather").value === "auto") invalidateWeatherForecast({ reload: false });

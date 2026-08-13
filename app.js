@@ -151,6 +151,7 @@ const state = {
   route: [],
   routeDays: [],
   dayWindows: [],
+  replannedDays: new Map(),
   selectedDay: 0,
   duration: 240,
   transport: "public",
@@ -388,6 +389,66 @@ function formatClockMinutes(value) {
   return `${String(Math.floor(normalized / 60)).padStart(2, "0")}:${String(normalized % 60).padStart(2, "0")}`;
 }
 
+function setTimeFieldValue(hiddenInput, value) {
+  if (!hiddenInput) return;
+  hiddenInput.value = value;
+  const minutes = parseClockMinutes(value);
+  const wrap = hiddenInput.closest(".time-field-wrap");
+  const hourInput = wrap?.querySelector('[data-role="hour"]');
+  const minuteInput = wrap?.querySelector('[data-role="minute"]');
+  if (hourInput) hourInput.value = String(Math.floor(minutes / 60)).padStart(2, "0");
+  if (minuteInput) minuteInput.value = String(minutes % 60).padStart(2, "0");
+}
+
+function bindTimeSegments(hiddenInput, minuteStep = 1) {
+  if (!hiddenInput) return;
+  const wrap = hiddenInput.closest(".time-field-wrap");
+  const hourInput = wrap?.querySelector('[data-role="hour"]');
+  const minuteInput = wrap?.querySelector('[data-role="minute"]');
+  if (!hourInput || !minuteInput) return;
+
+  const commit = () => {
+    const hour = clamp(Number(hourInput.value) || 0, 0, 23);
+    const minute = clamp(Number(minuteInput.value) || 0, 0, 59);
+    hourInput.value = String(hour).padStart(2, "0");
+    minuteInput.value = String(minute).padStart(2, "0");
+    const combined = `${hourInput.value}:${minuteInput.value}`;
+    if (hiddenInput.value !== combined) {
+      hiddenInput.value = combined;
+      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  };
+
+  const adjustSegment = (input, delta, max) => {
+    const current = Number(input.value) || 0;
+    input.value = String((((current + delta) % max) + max) % max).padStart(2, "0");
+    commit();
+  };
+
+  [
+    { input: hourInput, max: 24, step: 1 },
+    { input: minuteInput, max: 60, step: minuteStep },
+  ].forEach(({ input, max, step }) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "").slice(0, 2);
+    });
+    input.addEventListener("blur", commit);
+    input.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      adjustSegment(input, event.deltaY < 0 ? step : -step, max);
+    }, { passive: false });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        adjustSegment(input, step, max);
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        adjustSegment(input, -step, max);
+      }
+    });
+  });
+}
+
 function dateOrdinal(value) {
   const [year, month, day] = String(value || "").split("-").map(Number);
   if (![year, month, day].every(Number.isFinite)) return Number.NaN;
@@ -423,7 +484,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
   if (!eligible) {
     if (state.baseballAttendance && state.baseballPreviousEnd) {
       $("#endDate").value = state.baseballPreviousEnd.endDate;
-      $("#endTime").value = state.baseballPreviousEnd.endTime;
+      setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
     }
     checkbox.checked = false;
     state.baseballAttendance = false;
@@ -443,7 +504,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
   state.baseballAttendance = true;
   if (adjustTravelWindow) {
     $("#endDate").value = gameDate;
-    $("#endTime").value = formatClockMinutes(schedule.gameEndMinutes);
+    setTimeFieldValue($("#endTime"), formatClockMinutes(schedule.gameEndMinutes));
     syncTravelWindow();
   }
   status.textContent = `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 구장 먹거리 · ${formatClockMinutes(schedule.gameEndMinutes)} 종료`;
@@ -461,7 +522,7 @@ function setBaseballAttendance(active) {
   checkbox.checked = active;
   if (!active && state.baseballPreviousEnd) {
     $("#endDate").value = state.baseballPreviousEnd.endDate;
-    $("#endTime").value = state.baseballPreviousEnd.endTime;
+    setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
     state.baseballPreviousEnd = null;
     state.baseballAttendance = false;
     syncTravelWindow();
@@ -1301,7 +1362,9 @@ function scheduleLeg(current, clockMinutes, place, targetMinutes = null) {
   const arrivalMinutes = clockMinutes + travelMinutes;
   const waitMinutes = targetMinutes === null ? 0 : Math.max(0, targetMinutes - arrivalMinutes);
   const startMinutes = arrivalMinutes + waitMinutes;
-  const endMinutes = startMinutes + place.durationMinutes;
+  const endMinutes = place.overrideEndMinutes != null
+    ? Math.max(startMinutes, place.overrideEndMinutes)
+    : startMinutes + place.durationMinutes;
   return { distance, travelMinutes, arrivalMinutes, waitMinutes, startMinutes, endMinutes };
 }
 
@@ -1435,6 +1498,164 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
     clockMinutes = leg.endMinutes;
   }
   return day;
+}
+
+function preferenceScoreOf(place) {
+  return place.displayScore ?? place.score ?? 0;
+}
+
+function subsetsOf(list) {
+  return list.reduce((acc, item) => acc.concat(acc.map((set) => [...set, item])), [[]]);
+}
+
+function permutationsOf(list) {
+  if (list.length <= 1) return [list];
+  return list.flatMap((item, index) => {
+    const rest = [...list.slice(0, index), ...list.slice(index + 1)];
+    return permutationsOf(rest).map((perm) => [item, ...perm]);
+  });
+}
+
+function validateFixedSchedule(startPlace, startMinutes, fixedStops) {
+  let current = startPlace;
+  let clockMinutes = startMinutes;
+  for (const place of fixedStops) {
+    const leg = scheduleLeg(current, clockMinutes, place, place.fixedStartMinutes);
+    if (leg.startMinutes > place.fixedStartMinutes) {
+      return {
+        ok: false,
+        place,
+        lateMinutes: Math.ceil(leg.startMinutes - place.fixedStartMinutes),
+      };
+    }
+    current = place;
+    clockMinutes = leg.endMinutes;
+  }
+  return { ok: true };
+}
+
+function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
+  const day = state.routeDays[dayIndex];
+  if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
+  const window = state.dayWindows[dayIndex];
+  const isFinalDay = dayIndex === state.routeDays.length - 1;
+  const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
+  const keptStops = [...day.slice(0, stopIndex), anchorPlace];
+  const fixedRemainder = day.slice(stopIndex + 1).filter((place) => place.fixedStartMinutes != null);
+  const nextFixedStop = fixedRemainder[0] || null;
+  const returnDestination = nextFixedStop || (isFinalDay ? currentConditions().origin : null);
+  const dayEndMinutes = nextFixedStop
+    ? Math.min(window.endMinutes, nextFixedStop.fixedStartMinutes)
+    : window.endMinutes;
+  const fixedScheduleCheck = validateFixedSchedule(anchorPlace, newDepartureMinutes, fixedRemainder);
+  if (!fixedScheduleCheck.ok) {
+    return {
+      ok: false,
+      message: `${fixedScheduleCheck.place.name} 고정 일정에 약 ${fixedScheduleCheck.lateMinutes}분 늦습니다. 더 이른 출발 시각을 선택해주세요.`,
+    };
+  }
+  const maxStops = window.endMinutes - window.startMinutes >= 480 ? 4 : 3;
+  const otherDaysIds = state.routeDays.flatMap((otherDay, index) => (index === dayIndex ? [] : otherDay));
+  const usedIds = new Set([...otherDaysIds, ...keptStops, ...fixedRemainder].map((place) => place.id));
+  const consumedMealKeys = new Set(keptStops.filter((place) => place.mealSlot).map((place) => place.mealSlot));
+  const pendingMealSlots = mealSlotsForDay(window.startMinutes, window.endMinutes - window.startMinutes)
+    .filter((slot) => !consumedMealKeys.has(slot.key));
+
+  let current = keptStops[keptStops.length - 1];
+  let clockMinutes = newDepartureMinutes;
+  const rebuilt = [];
+
+  for (let slotIndex = 0; slotIndex < pendingMealSlots.length; slotIndex += 1) {
+    const slot = pendingMealSlots[slotIndex];
+    const remainingSlotsAfter = pendingMealSlots.length - slotIndex;
+    if (keptStops.length + rebuilt.length < maxStops - remainingSlotsAfter) {
+      const filler = chooseFillerBeforeMeal(
+        state.results,
+        current,
+        clockMinutes,
+        usedIds,
+        slot,
+        dayEndMinutes,
+        returnDestination,
+      );
+      if (filler) {
+        rebuilt.push(filler.place);
+        usedIds.add(filler.place.id);
+        current = filler.place;
+        clockMinutes = filler.leg.endMinutes;
+      }
+    }
+
+    const meal = chooseMealCandidate(state.results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination);
+    if (!meal) {
+      state.mealWarnings.push(`Day ${dayIndex + 1} ${slot.label} 후보를 찾지 못했습니다.`);
+      continue;
+    }
+    const mealPlace = annotateMealPlace(meal.place, slot);
+    rebuilt.push(mealPlace);
+    usedIds.add(meal.place.id);
+    current = mealPlace;
+    clockMinutes = meal.leg.endMinutes;
+  }
+
+  // 남은 칸 수만큼 순위 기준으로 우선 채택한다 (이 시점에는 체류시간을 고려하지 않음).
+  const fillerCandidates = [];
+  let pickCurrent = current;
+  while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
+    let next = chooseBestCandidate(state.results, pickCurrent, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(state.results, pickCurrent, usedIds);
+    if (!next) break;
+    fillerCandidates.push(next);
+    usedIds.add(next.id);
+    pickCurrent = next;
+  }
+
+  // 후보 풀(최대 몇 개뿐)의 모든 부분집합 × 방문 순서를 전수 계산해서,
+  // "포함된 곳 전부가 원래 duration의 절반 이상을 확보"하는 조합 중 선호도 점수 합이 가장 높은 조합을 찾는다.
+  const returnMinutesFor = (lastPlace) =>
+    returnTravelMinutes(lastPlace ?? current, returnDestination);
+  let bestPlan = { places: [], legs: [], score: 0, totalTravel: 0 };
+  subsetsOf(fillerCandidates).forEach((subset) => {
+    if (!subset.length) return;
+    permutationsOf(subset).forEach((order) => {
+      let walker = current;
+      const legs = order.map((place) => {
+        const travelMinutes = estimateTravelMinutes(haversineKm(walker, place));
+        walker = place;
+        return travelMinutes;
+      });
+      const totalTravel = legs.reduce((sum, minutes) => sum + minutes, 0);
+      const totalNominal = order.reduce((sum, place) => sum + place.durationMinutes, 0);
+      const available = dayEndMinutes - clockMinutes - totalTravel - returnMinutesFor(order.at(-1));
+      const feasible = totalNominal > 0 && available >= totalNominal * 0.5;
+      if (!feasible) return;
+      const score = order.reduce((sum, place) => sum + preferenceScoreOf(place), 0);
+      const better = score > bestPlan.score
+        || (score === bestPlan.score && order.length > bestPlan.places.length)
+        || (score === bestPlan.score && order.length === bestPlan.places.length && totalTravel < bestPlan.totalTravel);
+      if (better) bestPlan = { places: order, legs, score, totalTravel };
+    });
+  });
+
+  const totalNominalDuration = bestPlan.places.reduce((sum, place) => sum + place.durationMinutes, 0);
+  const availableForVisits = dayEndMinutes - clockMinutes
+    - bestPlan.totalTravel
+    - returnMinutesFor(bestPlan.places.at(-1));
+  const scaleFactor = totalNominalDuration > 0 ? Math.min(1, availableForVisits / totalNominalDuration) : 1;
+
+  bestPlan.places.forEach((place) => {
+    const compressedDuration = Math.max(place.durationMinutes / 2, Math.round(place.durationMinutes * scaleFactor));
+    const compressedPlace = { ...place, durationMinutes: compressedDuration };
+    const leg = scheduleLeg(current, clockMinutes, compressedPlace);
+    rebuilt.push(compressedPlace);
+    current = compressedPlace;
+    clockMinutes = leg.endMinutes;
+  });
+
+  state.routeDays[dayIndex] = [...keptStops, ...rebuilt, ...fixedRemainder];
+  state.route = state.routeDays.flat();
+  state.replannedDays.set(dayIndex, stopIndex);
+  return { ok: true };
 }
 
 function stadiumDinnerSuitability(place) {
@@ -1589,6 +1810,7 @@ function createRoute(results) {
   state.routeDays = builtDays.map(({ day }) => day);
   state.route = state.routeDays.flat();
   state.selectedDay = 0;
+  state.replannedDays = new Map();
 }
 
 function buildRouteSchedule(day, dayIndex = 0) {
@@ -2305,10 +2527,59 @@ function renderItinerary() {
   const day = state.routeDays[state.selectedDay] || [];
   const schedule = buildRouteSchedule(day, state.selectedDay);
   const isFinalDay = state.selectedDay === state.routeDays.length - 1;
+  const replanAnchorIndex = state.replannedDays.get(state.selectedDay);
   renderDayTabs();
   $("#dayTheme").textContent = dayTheme(day);
-  $("#itineraryTimeline").innerHTML = schedule.map((stop, index) => {
-    const { place, travelMinutes, waitMinutes, startMinutes } = stop;
+  $("#replanStopSelect").innerHTML = schedule
+    .map((stop, index) => `<option value="${index}">${index + 1}. ${escapeHtml(stop.place.name)}</option>`)
+    .join("");
+  if (schedule.length) {
+    const lastIndex = schedule.length - 1;
+    $("#replanStopSelect").value = String(lastIndex);
+    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(schedule[lastIndex].endMinutes));
+  }
+  $("#replanStatus").hidden = true;
+  const originStartCard = state.selectedDay === 0 ? `
+    <article class="itinerary-stop origin-stop">
+      <i class="timeline-node"></i>
+      <div class="stop-card" tabindex="0">
+        <div class="stop-meta">
+          <span class="stop-time">◷ ${formatClockMinutes(state.dayWindows[0]?.startMinutes ?? parseClockMinutes(conditions.startTime))}</span>
+          <span class="type-chip">출발지</span>
+        </div>
+        <h3>📍 ${escapeHtml(conditions.origin.name)}</h3>
+        <p>선택하신 출발지에서 첫 일정을 시작합니다.</p>
+        ${schedule.length ? `
+          <div class="stop-details">
+            <div class="stop-detail-actions">
+              <a class="kakao-directions-link" href="${kakaoMapLink(conditions.origin, schedule[0].place)}" target="_blank" rel="noopener noreferrer">첫 장소 길찾기 ↗</a>
+            </div>
+          </div>
+        ` : ""}
+      </div>
+    </article>
+  ` : "";
+  const lastPlace = day.at(-1);
+  const returnCard = isFinalDay && lastPlace && !lastPlace.endsTrip && schedule.length ? `
+    <article class="itinerary-stop origin-stop">
+      <i class="timeline-node"></i>
+      <div class="stop-card" tabindex="0">
+        <div class="stop-meta">
+          <span class="stop-time">◷ 약 ${formatClockMinutes(schedule.at(-1).endMinutes + returnTravelMinutes(lastPlace, conditions.origin))}</span>
+          <span class="type-chip">도착지</span>
+        </div>
+        <h3>📍 ${escapeHtml(conditions.origin.name)}</h3>
+        <p>${escapeHtml(lastPlace.name)}에서 출발지로 복귀하며 여행이 마무리됩니다.</p>
+        <div class="stop-details">
+          <div class="stop-detail-actions">
+            <a class="kakao-directions-link" href="${kakaoMapLink(lastPlace, conditions.origin)}" target="_blank" rel="noopener noreferrer">복귀 길찾기 ↗</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  ` : "";
+  $("#itineraryTimeline").innerHTML = originStartCard + schedule.map((stop, index) => {
+    const { place, travelMinutes, waitMinutes, startMinutes, endMinutes } = stop;
     const nextPlace = day[index + 1];
     const stadiumMenu = place.stadiumFood
       ? place.menuItems?.find((menu) => menu.signature) || place.menuItems?.[0]
@@ -2326,6 +2597,7 @@ function renderItinerary() {
         <div class="stop-card" tabindex="0">
           <div class="stop-meta">
             <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)}</span>
+            ${replanAnchorIndex != null && index >= replanAnchorIndex ? `<span class="stop-time departure-time">→ 출발 약 ${formatClockMinutes(endMinutes)}</span>` : ""}
             ${place.isBaseballGame ? '<span class="meal-time-chip">⚾ 야구 직관</span>' : ""}
             ${place.mealSlot ? `<span class="meal-time-chip">🍚 ${escapeHtml(place.mealLabel)} 추천</span>` : ""}
             <span class="type-chip">${escapeHtml(place.category)}</span>
@@ -2352,7 +2624,7 @@ function renderItinerary() {
         </div>
       </article>
     `;
-  }).join("");
+  }).join("") + returnCard;
   renderWeatherBriefing();
 }
 
@@ -2715,9 +2987,9 @@ function restoreSavedRoute(id) {
   const restoredStartTime = saved.startTime || "10:00";
   const legacyEnd = legacyEndDateTime(restoredTravelDate, restoredStartTime, saved.duration);
   $("#travelDate").value = restoredTravelDate;
-  $("#startTime").value = restoredStartTime;
+  setTimeFieldValue($("#startTime"), restoredStartTime);
   $("#endDate").value = saved.endDate || legacyEnd.endDate;
-  $("#endTime").value = saved.endTime || legacyEnd.endTime;
+  setTimeFieldValue($("#endTime"), saved.endTime || legacyEnd.endTime);
   syncTravelWindow();
   state.transport = saved.transport;
   state.preference = normalizeSavedPreference(saved);
@@ -2840,6 +3112,9 @@ function bindEvents() {
   });
 
   $("#origin").addEventListener("change", () => invalidateWeatherForecast({ reload: false }));
+  bindTimeSegments($("#startTime"), 1);
+  bindTimeSegments($("#endTime"), 1);
+  bindTimeSegments($("#replanTimeInput"), 1);
   [$("#travelDate"), $("#startTime"), $("#endDate"), $("#endTime")].forEach((input) => {
     input.addEventListener("change", () => {
       if (input === $("#travelDate") && (!$("#endDate").value || $("#endDate").value < input.value)) {
@@ -2922,6 +3197,29 @@ function bindEvents() {
       event.preventDefault();
       event.target.classList.toggle("expanded");
     }
+  });
+  $("#replanButton").addEventListener("click", () => {
+    const stopIndex = Number($("#replanStopSelect").value);
+    const timeValue = $("#replanTimeInput").value;
+    const statusEl = $("#replanStatus");
+    if (!Number.isInteger(stopIndex) || !timeValue) {
+      statusEl.textContent = "장소와 새 출발 시각을 모두 선택해주세요.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
+    const replanResult = replanDayFromStop(state.selectedDay, stopIndex, parseClockMinutes(timeValue));
+    if (!replanResult?.ok) {
+      statusEl.textContent = replanResult?.message || "일정을 다시 계산하지 못했습니다.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
+    renderResult();
+    const refreshedStatus = $("#replanStatus");
+    refreshedStatus.textContent = "남은 일정을 다시 계산했습니다.";
+    refreshedStatus.classList.remove("warning");
+    refreshedStatus.hidden = false;
   });
 
   $("#menuButton").addEventListener("click", openDrawer);

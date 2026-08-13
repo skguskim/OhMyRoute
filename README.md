@@ -46,7 +46,7 @@
 | 데이터 저장소 | 구현 완료 | 장소·음식점 데이터는 로컬 JSON, 스탬프·리뷰·저장 루트는 브라우저 `localStorage` 사용 |
 | 접근성·다국어 | 미구현 | 쉬운 설명, 음성 안내, 다국어, 저시력 모드는 향후 구현 필요 |
 
-로컬 데이터에는 관광지 36개, 음식점 43개, 챔피언스필드 먹거리 13개가 포함되어 있다. 광주 공식 관광지 42개 수집본도 생성되어 있으나 현재 모두 검수 전 상태이다.
+현재 앱의 로컬 데이터에는 정제된 광주 공식 관광지 72개, 음식점 43개, 챔피언스필드 먹거리 13개가 포함되어 있다. 관광지는 현재 모두 검수 전 `draft` 상태이다.
 
 ## 추천 방식
 
@@ -77,7 +77,7 @@
 - 장소별 데이터 개수와 카테고리 비율을 통일하고 현재 약 `실내 4 : 실외 6`인 구성의 불균형 조정 (확실치않음)
 - 장소 운영시간과 휴무일을 일정에 반영하고, 실제 운영정보를 검증한 뒤 평일·주말 제외 로직 QA
 - 데이터셋별 사용 항목과 활용 횟수를 추적해 출처와 함께 표시
-- 광주 공식 관광지 42개의 운영시간, 좌표, 접근성, 출처를 검수한 뒤 `draft` 해제
+- 광주 공식 관광지 72개의 운영시간, 좌표, 접근성, 출처를 검수한 뒤 `draft` 해제
 
 #### P0 — UI/UX 간소화
 
@@ -123,6 +123,12 @@
 py -m http.server 4173
 ```
 
+또는 포함된 실행 스크립트를 사용
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\start_server.ps1"
+```
+
 서버가 실행되면 브라우저에서 [http://localhost:4173](http://localhost:4173)에 접속
 
 ## GitHub Pages 배포
@@ -160,12 +166,12 @@ window.OMAEROUTE_CONFIG = {
 정적 브라우저에서 직접 호출하면 인증키가 개발자도구에 노출됨. 로컬 해커톤 시연 외의 실제 배포에서는 브라우저가 자체 `/api/weather`를 호출하고 서버·서버리스 함수가 기상청 API를 대리 호출하도록 구성함.
 
 
-### TourAPI에서 광주 장소 수집
+### 광주관광 공식 페이지에서 장소 수집
 
 인증키가 없어도 광주관광 공식 페이지에서 공개된 장소 초안을 수집 가능
 
 ```powershell
-.\scripts\run_data_pipeline.cmd collect-gwangju --limit 42
+.\scripts\run_data_pipeline.cmd collect-gwangju --limit 100
 ```
 
 이 명령은 분야별 장소를 고르게 가져와 다음 파일 생성
@@ -176,6 +182,7 @@ window.OMAEROUTE_CONFIG = {
 - `gwangju_official_quality_report.json`
 - `gwangju_official_seed.sql`
 
+현재 정제본에는 광주 공식 장소 72개가 들어 있으며 자연·경관, 역사·전통, 문화·예술, 체험·스포츠, 도보·산책, 공원·정원 6개 분야와 광주 5개 구를 포함합니다. 음식·로컬 장소는 별도 음식점 DB와의 중복을 피하기 위해 제외했으며, 현재 장소의 품질 상태는 모두 `draft`입니다.
 
 더 넓은 TourAPI 데이터를 수집하려면 다음 설정을 사용함
 
@@ -191,13 +198,13 @@ window.OMAEROUTE_CONFIG = {
 
 자동 라벨은 `quality_status=draft`로 저장되며 사람의 검수를 거쳐 사용
 
-### 수정한 CSV 다시 검사
+### 현재 광주 공식 장소 CSV 다시 검사
 
 ```powershell
 .\scripts\run_data_pipeline.cmd validate `
-  --places .\data\generated\tourapi_places.csv `
-  --profiles .\data\generated\tourapi_place_profiles.csv `
-  --report .\data\generated\tourapi_quality_report.json
+  --places .\data\generated\gwangju_official_places.csv `
+  --profiles .\data\generated\gwangju_official_place_profiles.csv `
+  --report .\data\generated\gwangju_official_quality_report.json
 ```
 
 광주 30개 우선 수집 대상은 `data/curated/gwangju_candidate_queue.csv`에 정리되어 있음

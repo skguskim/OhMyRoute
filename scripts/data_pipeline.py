@@ -570,30 +570,41 @@ def collect_tourapi(args: argparse.Namespace) -> tuple[Path, Path]:
         raise PipelineError("TOUR_API_SERVICE_KEY가 없습니다. .env.example을 복사해 .env에 인증키를 입력하세요.")
     output_dir = Path(args.output_dir)
     raw_items: list[dict[str, Any]] = []
-    page = 1
-    total = None
-    while len(raw_items) < args.limit and (total is None or len(raw_items) < total):
-        params: dict[str, Any] = {
-            "numOfRows": min(100, args.limit - len(raw_items)),
-            "pageNo": page,
-            "arrange": "A",
-        }
-        if args.ldong_regn_code:
-            params["lDongRegnCd"] = args.ldong_regn_code
-        else:
-            params["areaCode"] = args.area_code
-        payload = api_get("areaBasedList2", params, service_key)
-        rows, total_count = as_items(payload)
-        total = total_count
-        if not rows:
-            break
-        for row in rows:
-            if str(row.get("contenttypeid", "")) not in CONTENT_TYPE_CATEGORY:
-                continue
-            raw_items.append(fetch_detail(service_key, row, args.skip_details))
-            if len(raw_items) >= args.limit:
-                break
-        page += 1
+
+    area_codes = args.area_codes if args.area_codes else ["5"]
+    content_types = args.content_types if args.content_types else [""]
+
+    for area_code in area_codes:
+        for c_type in content_types:
+            type_items: list[dict[str, Any]] = []
+            page = 1
+            total = None
+            while len(type_items) < args.limit and (total is None or len(type_items) < total):
+                params: dict[str, Any] = {
+                    "numOfRows": min(100, args.limit - len(type_items)),
+                    "pageNo": page,
+                    "arrange": "A",
+                    "areaCode": area_code,
+                }
+                if args.ldong_regn_code:
+                    params["lDongRegnCd"] = args.ldong_regn_code
+                
+                if c_type:
+                    params["contentTypeId"] = c_type
+
+                payload = api_get("areaBasedList2", params, service_key)
+                rows, total_count = as_items(payload)
+                total = total_count
+                if not rows:
+                    break
+                for row in rows:
+                    if str(row.get("contenttypeid", "")) not in CONTENT_TYPE_CATEGORY:
+                        continue
+                    type_items.append(fetch_detail(service_key, row, args.skip_details))
+                    if len(type_items) >= args.limit:
+                        break
+                page += 1
+            raw_items.extend(type_items)
 
     if not raw_items:
         raise PipelineError("조건에 맞는 TourAPI 장소가 없습니다. 지역 코드와 인증키 상태를 확인하세요.")
@@ -999,7 +1010,8 @@ def build_parser() -> argparse.ArgumentParser:
     collect = subparsers.add_parser("collect", help="TourAPI 광주 장소를 수집하고 CSV·SQL 생성")
     collect.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     collect.add_argument("--limit", type=int, default=100)
-    collect.add_argument("--area-code", default=os.environ.get("TOUR_API_AREA_CODE", "5"))
+    collect.add_argument("--content-types", nargs="*", default=[])      # 수집 명령어에 --content-type 인자를 받을 수 있도록 함.
+    collect.add_argument("--area-codes", nargs="*", default=[os.environ.get("TOUR_API_AREA_CODE", "5")])        # 수집 명령어에 --area-code 인자를 받을 수 있도록 함.
     collect.add_argument("--ldong-regn-code", default=os.environ.get("TOUR_API_LDONG_REGN_CD", ""))
     collect.add_argument("--skip-details", action="store_true")
     collect.set_defaults(func=command_collect)

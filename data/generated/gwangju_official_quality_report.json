@@ -1,135 +1,139 @@
 {
-  "generated_at": "2026-07-28T06:54:00.828151+00:00",
+  "generated_at": "2026-08-13T06:02:05.514107+00:00",
   "places_file": "data\\generated\\gwangju_official_places.csv",
-  "profiles_file": "data\\generated\\gwangju_official_place_profiles_validated.csv",
-  "place_rows": 42,
-  "profile_rows": 42,
+  "profiles_file": "data\\generated\\gwangju_official_place_profiles.csv",
+  "place_rows": 72,
+  "profile_rows": 72,
   "category_counts": {
-    "자연·경관": 7,
-    "역사·전통": 6,
-    "문화·예술": 6,
-    "음식·로컬": 6,
-    "체험·스포츠": 6,
-    "도보·산책": 5,
-    "공원·정원": 6
+    "자연·경관": 15,
+    "역사·전통": 18,
+    "문화·예술": 13,
+    "체험·스포츠": 10,
+    "도보·산책": 4,
+    "공원·정원": 12
   },
   "region_counts": {
-    "광주광역시": 42
+    "광주 북구": 11,
+    "광주 동구": 17,
+    "광주 남구": 18,
+    "광주 광산구": 12,
+    "광주 서구": 13,
+    "광주": 1
   },
   "completeness": {
     "name": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "region": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "category": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "description": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "road_address": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "latitude": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "longitude": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "phone": {
-      "filled": 41,
-      "rate": 0.9762
+      "filled": 70,
+      "rate": 0.9722
     },
     "website_url": {
-      "filled": 21,
-      "rate": 0.5
+      "filled": 40,
+      "rate": 0.5556
     },
     "image_url": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "parking_available": {
-      "filled": 18,
-      "rate": 0.4286
+      "filled": 29,
+      "rate": 0.4028
     },
     "wheelchair_accessible": {
-      "filled": 7,
+      "filled": 12,
       "rate": 0.1667
     },
     "pet_friendly": {
-      "filled": 13,
-      "rate": 0.3095
+      "filled": 21,
+      "rate": 0.2917
     },
     "price_min": {
-      "filled": 12,
-      "rate": 0.2857
+      "filled": 24,
+      "rate": 0.3333
     },
     "source_url": {
-      "filled": 42,
+      "filled": 72,
       "rate": 1.0
     },
     "last_verified_at": {
-      "filled": 42,
-      "rate": 1.0
+      "filled": 0,
+      "rate": 0.0
     }
   },
   "vector_profile": {
     "nature": {
-      "mean": 0.5179,
-      "min": 0.0,
-      "max": 1.0,
-      "zero_count": 10
-    },
-    "culture": {
-      "mean": 0.3095,
-      "min": 0.0,
-      "max": 1.0,
-      "zero_count": 23
-    },
-    "art": {
-      "mean": 0.1964,
-      "min": 0.0,
-      "max": 1.0,
-      "zero_count": 29
-    },
-    "food": {
-      "mean": 0.1607,
-      "min": 0.0,
-      "max": 1.0,
-      "zero_count": 35
-    },
-    "activity": {
-      "mean": 0.2679,
+      "mean": 0.4965,
       "min": 0.0,
       "max": 1.0,
       "zero_count": 24
     },
-    "sports": {
-      "mean": 0.2202,
-      "min": 0.0,
-      "max": 0.75,
-      "zero_count": 28
-    },
-    "healing": {
-      "mean": 0.3452,
-      "min": 0.0,
-      "max": 0.75,
-      "zero_count": 20
-    },
-    "festival": {
-      "mean": 0.1012,
+    "culture": {
+      "mean": 0.3819,
       "min": 0.0,
       "max": 1.0,
+      "zero_count": 35
+    },
+    "art": {
+      "mean": 0.2396,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 45
+    },
+    "food": {
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "zero_count": 72
+    },
+    "activity": {
+      "mean": 0.2465,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 43
+    },
+    "sports": {
+      "mean": 0.1667,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 54
+    },
+    "healing": {
+      "mean": 0.3264,
+      "min": 0.0,
+      "max": 0.75,
       "zero_count": 34
+    },
+    "festival": {
+      "mean": 0.1146,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 58
     }
   },
   "severity_counts": {},

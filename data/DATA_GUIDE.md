@@ -145,7 +145,7 @@ TourAPI 인증키를 `.env`에 설정한 후 광주 데이터를 수집하려면
 TourAPI 인증키가 아직 없으면 광주관광 공식 페이지에서 공개된 초안을 먼저 수집할 수 있습니다.
 
 ```powershell
-.\scripts\run_data_pipeline.cmd collect-gwangju --limit 42
+.\scripts\run_data_pipeline.cmd collect-gwangju --limit 100
 ```
 
 자동 생성되는 해시태그와 점수는 키워드 규칙 기반 초안입니다. `labeling_method=import`, `quality_status=draft`로 기록되며, 두 사람의 검수를 통과한 데이터만 `reviewed` 또는 `verified`로 변경합니다.

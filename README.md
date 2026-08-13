@@ -136,12 +136,12 @@ window.OMAEROUTE_CONFIG = {
 - `bootstrap_quality_report.json`
 - `bootstrap_seed.sql`
 
-### TourAPI에서 광주 장소 수집
+### 광주관광 공식 페이지에서 장소 수집
 
 인증키가 없어도 광주관광 공식 페이지에서 공개된 장소 초안을 수집할 수 있습니다.
 
 ```powershell
-.\scripts\run_data_pipeline.cmd collect-gwangju --limit 42
+.\scripts\run_data_pipeline.cmd collect-gwangju --limit 100
 ```
 
 이 명령은 분야별 장소를 고르게 가져와 다음 파일을 생성합니다.
@@ -152,7 +152,7 @@ window.OMAEROUTE_CONFIG = {
 - `gwangju_official_quality_report.json`
 - `gwangju_official_seed.sql`
 
-현재 생성본에는 광주 공식 장소 42개가 들어 있으며 자연·역사·문화·음식·체험·도보·공원 7개 분야와 광주 5개 구를 포함합니다. 모두 검수 전 `draft` 상태입니다.
+현재 정제본에는 광주 공식 장소 72개가 들어 있으며 자연·경관, 역사·전통, 문화·예술, 체험·스포츠, 도보·산책, 공원·정원 6개 분야와 광주 5개 구를 포함합니다. 음식·로컬 장소는 별도 음식점 DB와의 중복을 피하기 위해 제외했으며, 현재 장소의 품질 상태는 모두 `draft`입니다.
 
 운영시간과 휴무일의 표현 방식이 장소마다 달라 원문을 검수 CSV에 보존합니다. 사람이 확인한 뒤 `place_opening_hours` 형식으로 확정합니다.
 
@@ -168,13 +168,13 @@ window.OMAEROUTE_CONFIG = {
 
 수집기는 장소 기본정보와 상세정보를 합치고, 8축 해시태그 초안을 생성한 뒤 품질검사와 Supabase 적재 SQL 생성까지 수행합니다. 자동 라벨은 `quality_status=draft`로 저장되므로 사람의 검수 전에는 추천 RPC 결과에 포함되지 않습니다.
 
-### 수정한 CSV 다시 검사
+### 현재 광주 공식 장소 CSV 다시 검사
 
 ```powershell
 .\scripts\run_data_pipeline.cmd validate `
-  --places .\data\generated\tourapi_places.csv `
-  --profiles .\data\generated\tourapi_place_profiles.csv `
-  --report .\data\generated\tourapi_quality_report.json
+  --places .\data\generated\gwangju_official_places.csv `
+  --profiles .\data\generated\gwangju_official_place_profiles.csv `
+  --report .\data\generated\gwangju_official_quality_report.json
 ```
 
 광주 30개 우선 수집 대상은 `data/curated/gwangju_candidate_queue.csv`에 정리되어 있습니다.

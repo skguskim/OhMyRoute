@@ -1,14 +1,16 @@
 const AXES = [
-  { key: "sports", label: "스포츠·야구", emoji: "⚾" },
   { key: "nature", label: "자연·풍경", emoji: "🌿" },
   { key: "culture", label: "문화·역사", emoji: "🏛" },
   { key: "art", label: "예술·전시", emoji: "🎨" },
   { key: "food", label: "음식·로컬", emoji: "🍚" },
   { key: "activity", label: "체험·활동", emoji: "🥾" },
+  { key: "sports", label: "스포츠·야구", emoji: "⚾" },
   { key: "healing", label: "휴식·산책", emoji: "🌳" },
   { key: "festival", label: "축제·야간", emoji: "✨" },
 ];
-const SPORTS_AXIS_INDEX = AXES.findIndex((axis) => axis.key === "sports");
+const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity", "healing", "festival"];
+const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
+const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
@@ -91,32 +93,32 @@ const LOADING_PHRASES = [
 
 const PROMPT_AXIS_RULES = [
   {
-    axis: 1,
+    axis: 0,
     label: "자연·풍경",
     terms: ["자연", "숲", "공원", "호수", "정원", "피크닉", "풍경", "경치", "전망", "등산", "산행", "무등산"],
   },
   {
-    axis: 2,
+    axis: 1,
     label: "역사·문화",
     terms: ["역사", "전통", "문화유산", "근대", "민주", "인권", "한옥", "사찰", "기념관", "문화"],
   },
   {
-    axis: 3,
+    axis: 2,
     label: "예술·감성",
     terms: ["예술", "미술", "전시", "갤러리", "공연", "사진", "감성", "미디어아트", "비엔날레"],
   },
   {
-    axis: 4,
+    axis: 3,
     label: "맛집·카페",
     terms: ["맛집", "음식", "먹거리", "미식", "로컬푸드", "카페", "디저트", "시장", "떡갈비", "비빔밥"],
   },
   {
-    axis: 5,
+    axis: 4,
     label: "체험·활동",
     terms: ["체험", "참여", "레저", "수영", "액티비티", "활동", "놀이", "VR", "만들기"],
   },
   {
-    axis: 0,
+    axis: 5,
     label: "스포츠",
     terms: ["스포츠", "축구", "야구", "경기", "응원", "챔피언스필드", "체육"],
   },
@@ -905,8 +907,11 @@ function updateRangeVisual(input) {
 }
 
 function renderSliders() {
-  $("#preferenceSliders").innerHTML = AXES.map(
-    (axis, index) => `
+  $("#preferenceSliders").innerHTML = DISPLAY_AXIS_KEYS.map(
+    (axisKey) => {
+      const index = AXIS_INDEX_BY_KEY[axisKey];
+      const axis = AXES[index];
+      return `
       <label class="slider-row">
         <span class="slider-meta">
           <span class="slider-name"><i>${axis.emoji}</i>${axis.label}</span>
@@ -922,7 +927,8 @@ function renderSliders() {
           aria-label="${axis.label} 선호도"
         />
       </label>
-    `,
+    `;
+    },
   ).join("");
 
   $$('#preferenceSliders input[type="range"]').forEach((input) => {

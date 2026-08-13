@@ -344,6 +344,10 @@ function currentVector() {
   return state.preference.map((value, index) => clamp(value / 100 + (boost[index] || 0), 0, 1));
 }
 
+function hasPreferenceSignals(vector = currentVector()) {
+  return vector.some((value) => value > 0);
+}
+
 function currentConditions() {
   const selectedCompanion = $("#companion").value;
   const weatherMode = $("#weather").value;
@@ -894,8 +898,11 @@ function getPreferenceLevel(value) {
 }
 
 function topAxes(limit = 2) {
-  return currentVector()
+  const vector = currentVector();
+  if (!hasPreferenceSignals(vector)) return [];
+  return vector
     .map((value, index) => ({ value: Math.round(value * 100), ...AXES[index] }))
+    .filter((axis) => axis.value > 0)
     .sort((a, b) => b.value - a.value)
     .slice(0, limit);
 }
@@ -944,9 +951,10 @@ function renderSliders() {
 }
 
 function renderAxisPreview() {
-  $("#axisPreview").innerHTML = topAxes(5)
-    .map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`)
-    .join("");
+  const axes = topAxes(5);
+  $("#axisPreview").innerHTML = axes.length
+    ? axes.map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`).join("")
+    : '<span class="axis-preview-empty">취향을 선택하면 주요 선호가 표시됩니다.</span>';
 }
 
 function promptHasSignals(analysis = state.promptAnalysis) {
@@ -1131,11 +1139,13 @@ function matchReasons(place, vector, conditions) {
       : place.recommendedPlayers || [];
     return [players.length ? `${players.join("·")} 선수 추천` : "KIA 선수 추천"];
   }
-  const preferenceReasons = place.vector
-    .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2)
-    .map((item) => item.label);
+  const preferenceReasons = hasPreferenceSignals(vector)
+    ? place.vector
+      .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map((item) => item.label)
+    : [];
   const contextReasons = [];
   if (conditions.weather === "rainy" && place.rainOk) contextReasons.push("비 오는 날 가능");
   if (conditions.companion === "family" && place.familyFriendly) {
@@ -1144,6 +1154,9 @@ function matchReasons(place, vector, conditions) {
   if (conditions.transport === "public" && place.publicTransportScore >= 0.75) {
     contextReasons.push("대중교통 편리");
   }
+  if (!hasPreferenceSignals(vector) && !contextReasons.length) {
+    contextReasons.push("여행 조건과 동선 적합");
+  }
   return [...promptReasonsForPlace(place, conditions), ...preferenceReasons, ...contextReasons]
     .filter((item, index, items) => items.indexOf(item) === index)
     .slice(0, 3);
@@ -1151,6 +1164,7 @@ function matchReasons(place, vector, conditions) {
 
 function rankPlacesLocal() {
   const vector = currentVector();
+  const usePreferenceScore = hasPreferenceSignals(vector);
   const conditions = currentConditions();
   let candidates = state.places.filter((place) => placePassesFilters(place, conditions));
   state.promptAnalysis.relaxed = false;
@@ -1179,8 +1193,12 @@ function rankPlacesLocal() {
       const situationalScore = contextScore(place, conditions);
       const promptScore = promptFitScore(place, conditions);
       const baseScore = usePromptScore
-        ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
-        : preferenceScore * 0.78 + situationalScore * 0.22;
+        ? usePreferenceScore
+          ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
+          : situationalScore * 0.45 + promptScore * 0.55
+        : usePreferenceScore
+          ? preferenceScore * 0.78 + situationalScore * 0.22
+          : situationalScore;
       const sportsPreferenceBoost = conditions.sportsBaseballHighlyPreferred && place.playerRecommended
         ? place.activePlayerRecommended ? 1.5 : 1.15
         : 0;
@@ -1209,6 +1227,7 @@ function parseVector(value) {
 async function rankPlacesSupabase() {
   const config = window.OMAEROUTE_CONFIG || {};
   const conditions = currentConditions();
+  if (!hasPreferenceSignals()) return rankPlacesLocal();
   const response = await fetch(`${config.supabaseUrl}/rest/v1/rpc/recommend_places`, {
     method: "POST",
     headers: {
@@ -2263,7 +2282,12 @@ function dayTheme(day) {
   const axes = topAxes(2);
   if (!day.length) return "조건에 맞는 장소를 찾지 못했습니다.";
   const mealLabels = day.filter((place) => place.mealSlot).map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`);
-  return `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로 ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
+  const themeCopy = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 중심으로`
+      : "여행 조건에 맞춰";
+  return `${themeCopy} ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
 }
 
 function renderDayTabs() {
@@ -2349,6 +2373,7 @@ function renderAlternatives() {
 function renderTips() {
   const conditions = currentConditions();
   const mealStops = state.route.filter((place) => place.mealSlot);
+  const preferredAxes = topAxes(2);
   const tips = [
     `${conditions.origin.name}에서 첫 장소까지 ${state.transport === "public" ? "대중교통 환승 시간을 포함해" : "실제 교통 상황을 확인하며"} 출발하세요.`,
     conditions.weather === "rainy"
@@ -2356,7 +2381,9 @@ function renderTips() {
         ? "비 대응 장소를 우선했고, 함께 요청한 조건을 만족시키기 위해 일부 후보는 유연하게 포함했습니다. 우산과 운영 여부를 확인하세요."
         : "비 오는 날 이용 가능한 장소만 포함했습니다. 실외 이동 구간에는 우산을 준비하세요."
       : "실외 장소가 포함되어 있으니 출발 전 운영시간과 기상 상황을 한 번 더 확인하세요.",
-    `추천은 ${topAxes(2).map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`,
+    preferredAxes.length
+      ? `추천은 ${preferredAxes.map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`
+      : "취향을 따로 선택하지 않아 이동수단·날씨·동행·체류시간 등 여행 조건을 중심으로 추천했습니다.",
   ];
   if (mealStops.length) {
     tips.unshift(`${mealStops.map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`).join(" · ")} 시간에 맞춰 음식점을 동선에 포함했습니다.`);
@@ -2431,7 +2458,11 @@ function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
   const metrics = routeMetrics();
-  const title = `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`;
+  const title = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 담은 ${durationLabel()} 여행`
+      : `여행 조건에 맞춘 ${durationLabel()} 여행`;
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
   $("#resultTitle").textContent = title;
   $("#resultDescription").textContent = conditions.baseballAttendance
@@ -2440,7 +2471,9 @@ function renderResult() {
       ? `${travelWindowCopy}, 슬라이더 취향과 한 줄 요청 및 출발지 복귀시간을 함께 반영한 동선입니다.`
       : conditions.sportsBaseballHighlyPreferred
         ? `${travelWindowCopy}, 스포츠·야구 취향과 KIA 선수 추천 맛집 및 복귀시간을 우선 반영한 동선입니다.`
-        : `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`;
+        : axes.length
+          ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
+          : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
   renderPromptResultSummary();
   $("#mapSummary").textContent = `${conditions.origin.name} 왕복 · ${metrics.distance.toFixed(1)}km`;
   renderMap();

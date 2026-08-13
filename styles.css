@@ -3237,22 +3237,6 @@ body {
   letter-spacing: .18em;
 }
 
-.header-live-pill {
-  margin-left: 22px;
-  padding: 8px 13px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--green);
-  background: rgba(255,255,255,.58);
-  border: 1px solid rgba(19,38,31,.1);
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  backdrop-filter: blur(12px);
-}
-
-.header-live-pill i,
 .side-status i {
   width: 7px;
   height: 7px;
@@ -3766,10 +3750,6 @@ body {
 }
 
 @media (max-width: 760px) {
-  .header-live-pill {
-    display: none;
-  }
-
   .content-layout {
     padding-top: 44px;
   }
@@ -4103,16 +4083,6 @@ code {
 .brand-text small {
   color: var(--muted);
   letter-spacing: .12em;
-}
-
-.header-live-pill {
-  color: var(--green-dark);
-  background: var(--green-soft);
-  border-color: #c9e2ff;
-}
-
-.header-live-pill i {
-  background: var(--blue);
 }
 
 .profile-button {
@@ -5302,8 +5272,7 @@ body:has(#resultView.active) .app-footer {
     height: 64px;
   }
 
-  .brand-text small,
-  .header-live-pill {
+  .brand-text small {
     display: none;
   }
 

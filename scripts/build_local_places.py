@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PLACES = ROOT / "data" / "generated" / "gwangju_official_places.csv"
-DEFAULT_PROFILES = ROOT / "data" / "generated" / "gwangju_official_place_profiles_validated.csv"
+DEFAULT_PROFILES = ROOT / "data" / "generated" / "gwangju_official_place_profiles.csv"
 DEFAULT_OUTPUT = ROOT / "data" / "places.json"
 VECTOR_FIELDS = ("nature", "culture", "art", "food", "activity", "sports", "healing", "festival")
 

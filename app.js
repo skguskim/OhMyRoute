@@ -16,7 +16,11 @@ const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
 
 const ORIGINS = {
-  gwangju_station: { name: "광주역", latitude: 35.1653, longitude: 126.9096 },
+  songjeong_station: {
+    name: "광주송정역",
+    latitude: 35.1377,
+    longitude: 126.7914,
+  },
   bus_terminal: {
     name: "광주종합버스터미널",
     latitude: 35.1598,
@@ -27,11 +31,7 @@ const ORIGINS = {
     latitude: 35.1682,
     longitude: 126.8891,
   },
-  songjeong_station: {
-    name: "광주송정역",
-    latitude: 35.1377,
-    longitude: 126.7914,
-  },
+  gwangju_station: { name: "광주역", latitude: 35.1653, longitude: 126.9096 },
 };
 
 const DAY_START_MINUTES = 10 * 60;

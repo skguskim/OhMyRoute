@@ -2593,6 +2593,26 @@ function routeSignature(route = state.route) {
   return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}`;
 }
 
+function preferenceByKey(preference = state.preference) {
+  return Object.fromEntries(AXES.map((axis, index) => [axis.key, Number(preference[index]) || 0]));
+}
+
+function normalizeSavedPreference(saved) {
+  if (saved?.preferenceByKey && typeof saved.preferenceByKey === "object") {
+    return AXES.map((axis) => Number(saved.preferenceByKey[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference) && Array.isArray(saved.preferenceOrder)) {
+    const keyedPreference = Object.fromEntries(
+      saved.preferenceOrder.map((axisKey, index) => [axisKey, saved.preference[index]]),
+    );
+    return AXES.map((axis) => Number(keyedPreference[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference)) {
+    return AXES.map((_, index) => Number(saved.preference[index]) || 0);
+  }
+  return Array(AXES.length).fill(0);
+}
+
 function saveCurrentRoute() {
   if (!state.route.length) return;
   const signature = routeSignature();
@@ -2626,6 +2646,8 @@ function saveCurrentRoute() {
       duration: state.duration,
       transport: state.transport,
       preference: [...state.preference],
+      preferenceOrder: AXES.map((axis) => axis.key),
+      preferenceByKey: preferenceByKey(),
       prompt: state.travelPrompt,
       companion: $("#companion").value,
       weather: $("#weather").value,
@@ -2698,7 +2720,7 @@ function restoreSavedRoute(id) {
   $("#endTime").value = saved.endTime || legacyEnd.endTime;
   syncTravelWindow();
   state.transport = saved.transport;
-  state.preference = [...saved.preference];
+  state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
   $("#baseballAttendance").checked = state.baseballAttendance;
   $("#travelPrompt").value = saved.prompt || "";

@@ -1491,18 +1491,44 @@ function permutationsOf(list) {
   });
 }
 
+function validateFixedSchedule(startPlace, startMinutes, fixedStops) {
+  let current = startPlace;
+  let clockMinutes = startMinutes;
+  for (const place of fixedStops) {
+    const leg = scheduleLeg(current, clockMinutes, place, place.fixedStartMinutes);
+    if (leg.startMinutes > place.fixedStartMinutes) {
+      return {
+        ok: false,
+        place,
+        lateMinutes: Math.ceil(leg.startMinutes - place.fixedStartMinutes),
+      };
+    }
+    current = place;
+    clockMinutes = leg.endMinutes;
+  }
+  return { ok: true };
+}
+
 function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const day = state.routeDays[dayIndex];
-  if (!day || !day[stopIndex]) return;
+  if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
   const isFinalDay = dayIndex === state.routeDays.length - 1;
-  const returnDestination = isFinalDay ? currentConditions().origin : null;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
   const fixedRemainder = day.slice(stopIndex + 1).filter((place) => place.fixedStartMinutes != null);
-  const dayEndMinutes = fixedRemainder.length
-    ? Math.min(window.endMinutes, fixedRemainder[0].fixedStartMinutes)
+  const nextFixedStop = fixedRemainder[0] || null;
+  const returnDestination = nextFixedStop || (isFinalDay ? currentConditions().origin : null);
+  const dayEndMinutes = nextFixedStop
+    ? Math.min(window.endMinutes, nextFixedStop.fixedStartMinutes)
     : window.endMinutes;
+  const fixedScheduleCheck = validateFixedSchedule(anchorPlace, newDepartureMinutes, fixedRemainder);
+  if (!fixedScheduleCheck.ok) {
+    return {
+      ok: false,
+      message: `${fixedScheduleCheck.place.name} 고정 일정에 약 ${fixedScheduleCheck.lateMinutes}분 늦습니다. 더 이른 출발 시각을 선택해주세요.`,
+    };
+  }
   const maxStops = window.endMinutes - window.startMinutes >= 480 ? 4 : 3;
   const otherDaysIds = state.routeDays.flatMap((otherDay, index) => (index === dayIndex ? [] : otherDay));
   const usedIds = new Set([...otherDaysIds, ...keptStops, ...fixedRemainder].map((place) => place.id));
@@ -1562,7 +1588,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   // 후보 풀(최대 몇 개뿐)의 모든 부분집합 × 방문 순서를 전수 계산해서,
   // "포함된 곳 전부가 원래 duration의 절반 이상을 확보"하는 조합 중 선호도 점수 합이 가장 높은 조합을 찾는다.
   const returnMinutesFor = (lastPlace) =>
-    fixedRemainder.length ? 0 : returnTravelMinutes(lastPlace ?? current, returnDestination);
+    returnTravelMinutes(lastPlace ?? current, returnDestination);
   let bestPlan = { places: [], legs: [], score: 0, totalTravel: 0 };
   subsetsOf(fillerCandidates).forEach((subset) => {
     if (!subset.length) return;
@@ -1604,6 +1630,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   state.routeDays[dayIndex] = [...keptStops, ...rebuilt, ...fixedRemainder];
   state.route = state.routeDays.flat();
   state.replannedDays.set(dayIndex, stopIndex);
+  return { ok: true };
 }
 
 function stadiumDinnerSuitability(place) {
@@ -3108,7 +3135,13 @@ function bindEvents() {
       statusEl.hidden = false;
       return;
     }
-    replanDayFromStop(state.selectedDay, stopIndex, parseClockMinutes(timeValue));
+    const replanResult = replanDayFromStop(state.selectedDay, stopIndex, parseClockMinutes(timeValue));
+    if (!replanResult?.ok) {
+      statusEl.textContent = replanResult?.message || "일정을 다시 계산하지 못했습니다.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
     renderResult();
     const refreshedStatus = $("#replanStatus");
     refreshedStatus.textContent = "남은 일정을 다시 계산했습니다.";

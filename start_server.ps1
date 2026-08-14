@@ -1,18 +1,56 @@
 param(
     [int]$Port = 4173,
     [switch]$NoBrowser,
-    [string]$RootPath = $PSScriptRoot
+    [string]$RootPath = $PSScriptRoot,
+    [string]$EnvFile = ""
 )
 
 $ErrorActionPreference = "Stop"
 $Root = [System.IO.Path]::GetFullPath($RootPath)
 $Utf8 = New-Object System.Text.UTF8Encoding($false)
 
+Add-Type -AssemblyName System.Net.Http
+Add-Type -AssemblyName System.Web
+
+function Import-DotEnv([string]$Path) {
+    if (-not [System.IO.File]::Exists($Path)) { return }
+    foreach ($rawLine in [System.IO.File]::ReadAllLines($Path, $Utf8)) {
+        $line = $rawLine.Trim()
+        if (-not $line -or $line.StartsWith("#")) { continue }
+        $separator = $line.IndexOf("=")
+        if ($separator -le 0) { continue }
+        $name = $line.Substring(0, $separator).Trim()
+        $value = $line.Substring($separator + 1).Trim()
+        if ($value.Length -ge 2) {
+            $quoted = ($value.StartsWith('"') -and $value.EndsWith('"')) -or
+                      ($value.StartsWith("'") -and $value.EndsWith("'"))
+            if ($quoted) { $value = $value.Substring(1, $value.Length - 2) }
+        }
+        if ($name -match '^[A-Za-z_][A-Za-z0-9_]*$' -and
+            [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name, "Process"))) {
+            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+        }
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($EnvFile)) {
+    $EnvFile = Join-Path $Root ".env"
+}
+Import-DotEnv ([System.IO.Path]::GetFullPath($EnvFile))
+$KmaServiceKey = [Environment]::GetEnvironmentVariable("KMA_API_SERVICE_KEY", "Process")
+if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+    $KmaServiceKey = [Environment]::GetEnvironmentVariable("KMA_SERVICE_KEY", "Process")
+}
+if (-not [string]::IsNullOrWhiteSpace($KmaServiceKey) -and $KmaServiceKey.Contains("%")) {
+    try { $KmaServiceKey = [System.Uri]::UnescapeDataString($KmaServiceKey) } catch { }
+}
+
 function Get-ContentType([string]$Path) {
     switch ([System.IO.Path]::GetExtension($Path).ToLowerInvariant()) {
         ".html" { return "text/html; charset=utf-8" }
         ".htm"  { return "text/html; charset=utf-8" }
         ".js"   { return "text/javascript; charset=utf-8" }
+        ".mjs"  { return "text/javascript; charset=utf-8" }
         ".css"  { return "text/css; charset=utf-8" }
         ".json" { return "application/json; charset=utf-8" }
         ".csv"  { return "text/csv; charset=utf-8" }
@@ -55,6 +93,26 @@ function Send-Response(
     $Stream.Flush()
 }
 
+function Send-JsonError(
+    [System.IO.Stream]$Stream,
+    [int]$StatusCode,
+    [string]$StatusText,
+    [string]$Code,
+    [string]$Message,
+    [bool]$HeadOnly
+) {
+    $json = @{ error = @{ code = $Code; message = $Message } } | ConvertTo-Json -Compress
+    Send-Response $Stream $StatusCode $StatusText "application/json; charset=utf-8" $Utf8.GetBytes($json) $HeadOnly
+}
+
+function Test-WeatherQuery([System.Collections.Specialized.NameValueCollection]$Query) {
+    if ($Query["base_date"] -notmatch '^\d{8}$') { return $false }
+    if ($Query["base_time"] -notmatch '^\d{4}$') { return $false }
+    if ($Query["nx"] -notmatch '^\d{1,3}$' -or [int]$Query["nx"] -lt 1 -or [int]$Query["nx"] -gt 200) { return $false }
+    if ($Query["ny"] -notmatch '^\d{1,3}$' -or [int]$Query["ny"] -lt 1 -or [int]$Query["ny"] -gt 200) { return $false }
+    return $true
+}
+
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
 
 try {
@@ -62,6 +120,7 @@ try {
     Write-Host ""
     Write-Host "Omaeroute server is running."
     Write-Host "Open: http://localhost:$Port/"
+    Write-Host $(if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) { "KMA weather proxy: key not configured" } else { "KMA weather proxy: ready" })
     Write-Host "Keep this window open. Press Ctrl+C to stop."
     Write-Host ""
 
@@ -71,11 +130,16 @@ try {
 
     while ($true) {
         $client = $listener.AcceptTcpClient()
+        $client.NoDelay = $true
+        $client.ReceiveTimeout = 5000
+        $client.SendTimeout = 5000
         $stream = $null
         $reader = $null
 
         try {
             $stream = $client.GetStream()
+            $stream.ReadTimeout = 5000
+            $stream.WriteTimeout = 5000
             $reader = New-Object System.IO.StreamReader(
                 $stream,
                 [System.Text.Encoding]::ASCII,
@@ -105,6 +169,43 @@ try {
             if ($method -ne "GET" -and -not $headOnly) {
                 $body = $Utf8.GetBytes("405 Method Not Allowed")
                 Send-Response $stream 405 "Method Not Allowed" "text/plain; charset=utf-8" $body $false
+                continue
+            }
+
+            $requestUri = [System.Uri]::new("http://localhost$($parts[1])")
+            if ($requestUri.AbsolutePath -eq "/api/weather") {
+                if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "KMA_KEY_MISSING" ".env에 KMA_API_SERVICE_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                if (-not (Test-WeatherQuery $query)) {
+                    Send-JsonError $stream 400 "Bad Request" "KMA_INVALID_QUERY" "base_date, base_time, nx, ny 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $encodedKey = [System.Uri]::EscapeDataString($KmaServiceKey)
+                $upstreamUrl = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst" +
+                               "?serviceKey=$encodedKey&pageNo=1&numOfRows=2000&dataType=JSON" +
+                               "&base_date=$($query['base_date'])&base_time=$($query['base_time'])" +
+                               "&nx=$($query['nx'])&ny=$($query['ny'])"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(12)
+                try {
+                    $upstream = $httpClient.GetAsync($upstreamUrl).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    $contentType = if ($null -ne $upstream.Content.Headers.ContentType) {
+                        $upstream.Content.Headers.ContentType.ToString()
+                    } else {
+                        "application/json; charset=utf-8"
+                    }
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase $contentType $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "KMA_UPSTREAM_FAILED" "기상청 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
                 continue
             }
 

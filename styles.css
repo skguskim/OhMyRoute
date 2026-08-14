@@ -3039,40 +3039,71 @@ body:has(#formView.active) .app-main {
 
 .baseball-day-field {
   margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  padding: 0;
+  display: block;
+  border: 0;
 }
 
 .baseball-day-field[hidden] {
   display: none;
 }
 
-.baseball-day-field b {
-  flex: 0 0 auto;
+.baseball-day-field legend {
+  margin-bottom: 7px;
+  padding: 0;
   color: #194aa6;
   font-size: 10px;
+  font-weight: 800;
 }
 
-.baseball-day-field select {
-  min-width: 0;
-  padding: 7px 28px 7px 9px;
+.baseball-day-field legend span {
+  margin-left: 4px;
+  color: #6b7684;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.baseball-day-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.baseball-day-option {
+  cursor: pointer;
+}
+
+.baseball-day-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.baseball-day-option span {
+  display: block;
+  padding: 7px 9px;
   color: #194aa6;
   background: rgba(255, 255, 255, .82);
   border: 1px solid #90c2ff;
   border-radius: 9px;
-  font: inherit;
   font-size: 10px;
   font-weight: 700;
+  line-height: 1.25;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
-.baseball-day-field select:focus-visible {
+.baseball-day-option input:checked + span {
+  color: #fff;
+  background: #3182f6;
+  border-color: #3182f6;
+  box-shadow: 0 3px 9px rgba(49, 130, 246, .22);
+}
+
+.baseball-day-option input:focus-visible + span {
   outline: 3px solid rgba(49, 130, 246, .2);
   outline-offset: 1px;
-}
-
-.baseball-day-field select:disabled {
-  opacity: .7;
 }
 
 .baseball-attendance-toggle {

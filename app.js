@@ -196,7 +196,7 @@ const state = {
   reviews: [],
   rewards: [],
   baseballAttendance: false,
-  baseballDayIndex: null,
+  baseballDayIndexes: [],
   baseballDaySelectionTouched: false,
   baseballPreviousEnd: null,
   baseballAdjustedFinalEnd: false,
@@ -385,7 +385,7 @@ function currentConditions() {
     promptFamily: state.promptAnalysis.family,
     sportsBaseballHighlyPreferred,
     baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance,
-    baseballDayIndex: selectedBaseballDayIndex(),
+    baseballDayIndexes: selectedBaseballDayIndexes(),
     transport: state.transport,
     duration: state.duration,
   };
@@ -498,20 +498,23 @@ function baseballTripDates() {
   return Array.from({ length: dayCount }, (_, index) => shiftDateValue(startDate, index));
 }
 
-function selectedBaseballDayIndex() {
+function selectedBaseballDayIndexes({ ensureSelection = state.baseballAttendance } = {}) {
   const dates = baseballTripDates();
-  if (!dates.length) return 0;
-  const select = $("#baseballDaySelect");
-  const selectValue = select?.value === "" ? Number.NaN : Number(select?.value);
-  const stateValue = state.baseballDayIndex;
-  const requested = Number.isInteger(selectValue)
-    ? selectValue
-    : Number.isInteger(stateValue)
-      ? stateValue
-      : dates.length - 1;
-  const index = clamp(requested, 0, dates.length - 1);
-  state.baseballDayIndex = index;
-  return index;
+  if (!dates.length) {
+    state.baseballDayIndexes = [];
+    return [];
+  }
+  const checkedIndexes = $$('#baseballDayOptions input[type="checkbox"]:checked')
+    .map((input) => Number(input.value))
+    .filter(Number.isInteger);
+  const requested = checkedIndexes.length ? checkedIndexes : state.baseballDayIndexes;
+  const normalized = [...new Set((Array.isArray(requested) ? requested : [])
+    .map(Number)
+    .filter((index) => Number.isInteger(index) && index >= 0 && index < dates.length))]
+    .sort((a, b) => a - b);
+  if (ensureSelection && !normalized.length) normalized.push(dates.length - 1);
+  state.baseballDayIndexes = normalized;
+  return normalized;
 }
 
 function formatBaseballDayOption(dateValue, index) {
@@ -523,20 +526,30 @@ function formatBaseballDayOption(dateValue, index) {
   return `Day ${index + 1} · ${year}년 ${month}월 ${day}일 (${weekday})`;
 }
 
-function populateBaseballDaySelect() {
-  const select = $("#baseballDaySelect");
-  if (!select) return baseballTripDates();
+function populateBaseballDayOptions() {
+  const options = $("#baseballDayOptions");
+  if (!options) return baseballTripDates();
   const dates = baseballTripDates();
-  const selectedIndex = state.baseballDaySelectionTouched
-    ? selectedBaseballDayIndex()
-    : Math.max(0, dates.length - 1);
-  select.innerHTML = dates
-    .map((dateValue, index) => `<option value="${index}">${formatBaseballDayOption(dateValue, index)}</option>`)
+  if (!state.baseballDaySelectionTouched && !state.baseballDayIndexes.length && dates.length) {
+    state.baseballDayIndexes = [dates.length - 1];
+  }
+  const selectedIndexes = selectedBaseballDayIndexes({ ensureSelection: true });
+  options.innerHTML = dates
+    .map((dateValue, index) => `
+      <label class="baseball-day-option">
+        <input type="checkbox" value="${index}" ${selectedIndexes.includes(index) ? "checked" : ""} />
+        <span>${escapeHtml(formatBaseballDayOption(dateValue, index))}</span>
+      </label>
+    `)
     .join("");
-  select.value = String(clamp(selectedIndex, 0, Math.max(0, dates.length - 1)));
-  select.disabled = dates.length <= 1;
-  state.baseballDayIndex = Number(select.value) || 0;
   return dates;
+}
+
+function clearBaseballDaySelection() {
+  state.baseballDayIndexes = [];
+  state.baseballDaySelectionTouched = false;
+  const options = $("#baseballDayOptions");
+  if (options) options.innerHTML = "";
 }
 
 function restoreBaseballTravelEnd() {
@@ -561,34 +574,42 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     }
     checkbox.checked = false;
     state.baseballAttendance = false;
+    clearBaseballDaySelection();
     state.baseballPreviousEnd = null;
     state.baseballAdjustedFinalEnd = false;
     syncTravelWindow();
     return;
   }
 
-  const tripDates = populateBaseballDaySelect();
-  const baseballDayIndex = selectedBaseballDayIndex();
-  const gameDate = tripDates[baseballDayIndex] || $("#travelDate").value;
-  const schedule = baseballScheduleForDate(gameDate);
-  if (dayField) dayField.hidden = tripDates.length === 0;
   if (!checkbox.checked) {
     state.baseballAttendance = false;
-    status.textContent = `${formatBaseballDayOption(gameDate, baseballDayIndex)} · ${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
+    if (dayField) dayField.hidden = true;
+    clearBaseballDaySelection();
+    status.textContent = "직관 포함을 켜면 여행 기간에서 경기 날짜를 여러 개 고를 수 있습니다.";
     return;
   }
 
   state.baseballAttendance = true;
+  const tripDates = populateBaseballDayOptions();
+  const baseballDayIndexes = selectedBaseballDayIndexes({ ensureSelection: true });
+  if (dayField) dayField.hidden = tripDates.length === 0;
   if (adjustTravelWindow) {
     if (state.baseballAdjustedFinalEnd) restoreBaseballTravelEnd();
-    const isFinalDay = baseballDayIndex === tripDates.length - 1;
-    if (isFinalDay) {
-      setTimeFieldValue($("#endTime"), formatClockMinutes(schedule.gameEndMinutes));
+    const finalDayIndex = tripDates.length - 1;
+    if (baseballDayIndexes.includes(finalDayIndex)) {
+      const finalDaySchedule = baseballScheduleForDate(tripDates[finalDayIndex]);
+      setTimeFieldValue($("#endTime"), formatClockMinutes(finalDaySchedule.gameEndMinutes));
       state.baseballAdjustedFinalEnd = true;
     }
     syncTravelWindow();
   }
-  status.textContent = `${formatBaseballDayOption(gameDate, baseballDayIndex)} · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 구장 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
+  status.textContent = baseballDayIndexes
+    .map((dayIndex) => {
+      const gameDate = tripDates[dayIndex];
+      const schedule = baseballScheduleForDate(gameDate);
+      return `${formatBaseballDayOption(gameDate, dayIndex)} · ${schedule.dayTypeLabel} · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
+    })
+    .join(" / ");
 }
 
 function setBaseballAttendance(active) {
@@ -601,10 +622,11 @@ function setBaseballAttendance(active) {
     };
   }
   checkbox.checked = active;
-  if (!active && state.baseballPreviousEnd) {
-    restoreBaseballTravelEnd();
+  if (!active) {
+    if (state.baseballPreviousEnd) restoreBaseballTravelEnd();
     state.baseballPreviousEnd = null;
     state.baseballAttendance = false;
+    clearBaseballDaySelection();
     syncTravelWindow();
     updateBaseballAttendanceControl();
     return;
@@ -1671,10 +1693,11 @@ function stadiumDinnerSuitability(place) {
   return 0.65;
 }
 
-function selectStadiumFood(results, schedule) {
+function selectStadiumFood(results, schedule, usedIds = new Set()) {
   const selected = state.stadiumFoods
     .filter((place) =>
       place.stadiumFood
+      && !usedIds.has(place.id)
       && place.venueId === "gwangju-kia-champions-field"
       && place.routeEligible !== false
       && place.availabilityStatus !== "closed"
@@ -1710,7 +1733,7 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
   const day = [];
   let current = conditions.origin;
   let clockMinutes = window.startMinutes;
-  const stadiumFood = selectStadiumFood(results, schedule);
+  const stadiumFood = selectStadiumFood(results, schedule, usedIds);
   const pregameEndMinutes = schedule.stadiumFoodStartMinutes;
   const lunchSlot = MEAL_SLOTS.find((slot) =>
     slot.key === "lunch"
@@ -1805,7 +1828,7 @@ function createRoute(results) {
   const builtDays = windows
     .map((window, dayIndex) => ({
       window,
-      day: conditions.baseballAttendance && dayIndex === conditions.baseballDayIndex
+      day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
         ? buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
         : buildRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
     }))
@@ -2665,15 +2688,18 @@ function renderTips() {
     tips.unshift(`${mealStops.map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`).join(" · ")} 시간에 맞춰 음식점을 동선에 포함했습니다.`);
   }
   if (conditions.baseballAttendance) {
-    const gameStop = state.route.find((place) => place.isBaseballGame);
-    const stadiumFood = state.route.find((place) => place.stadiumFood);
-    if (gameStop) {
-      const gameDayIndex = state.routeDays.findIndex((day) => day.some((place) => place.isBaseballGame));
-      tips.unshift(`Day ${gameDayIndex + 1} ${gameStop.gameDate} · ${gameStop.gameDayType} ${formatClockMinutes(gameStop.fixedStartMinutes)} 챔피언스필드 경기를 해당 날짜의 마지막 일정으로 고정했고 ${formatClockMinutes(gameStop.expectedEndMinutes)} 종료로 계산했습니다.`);
+    const gameStops = state.routeDays.flatMap((day, dayIndex) =>
+      day.filter((place) => place.isBaseballGame).map((place) => ({ place, dayIndex })),
+    );
+    const stadiumFoods = state.route.filter((place) => place.stadiumFood);
+    if (gameStops.length) {
+      const gameSummary = gameStops
+        .map(({ place, dayIndex }) => `Day ${dayIndex + 1} ${place.gameDate} ${formatClockMinutes(place.fixedStartMinutes)}~${formatClockMinutes(place.expectedEndMinutes)}`)
+        .join(" · ");
+      tips.unshift(`${gameSummary} 챔피언스필드 경기를 각 날짜의 마지막 일정으로 고정했습니다.`);
     }
-    if (stadiumFood) {
-      const dinnerMenu = stadiumFood.menuItems?.find((menu) => menu.signature) || stadiumFood.menuItems?.[0];
-      tips.unshift(`${formatClockMinutes(stadiumFood.fixedStartMinutes)} ${stadiumFood.name}에서 ${dinnerMenu?.name || "저녁 메뉴"} 구매 후, 경기 시작부터 관람석에서 먹는 일정입니다. 경기 당일 영업·재고·가격을 다시 확인하세요.`);
+    if (stadiumFoods.length) {
+      tips.unshift(`직관일마다 경기 전에 구장 먹거리를 구매해 관람석에서 먹도록 구성했습니다. 경기 당일 영업·재고·가격을 다시 확인하세요.`);
     }
   }
   if (conditions.sportsBaseballHighlyPreferred) {
@@ -2867,7 +2893,9 @@ function setupTravelWindow() {
 }
 
 function routeSignature(route = state.route) {
-  const baseballKey = state.baseballAttendance ? `baseball-day-${selectedBaseballDayIndex()}` : "baseball-off";
+  const baseballKey = state.baseballAttendance
+    ? `baseball-days-${selectedBaseballDayIndexes().join("-")}`
+    : "baseball-off";
   return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}:${baseballKey}`;
 }
 
@@ -2930,7 +2958,8 @@ function saveCurrentRoute() {
       companion: $("#companion").value,
       weather: $("#weather").value,
       baseballAttendance: state.baseballAttendance,
-      baseballDayIndex: state.baseballDayIndex,
+      baseballDayIndexes: [...state.baseballDayIndexes],
+      baseballDayIndex: state.baseballDayIndexes[0] ?? null,
       weatherForecast: state.weatherForecast?.status === "ready" ? state.weatherForecast : null,
       createdAt: new Date().toISOString(),
     });
@@ -3001,16 +3030,21 @@ function restoreSavedRoute(id) {
   state.transport = saved.transport;
   state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
+  const savedBaseballDayIndexes = Array.isArray(saved.baseballDayIndexes)
+    ? saved.baseballDayIndexes.map(Number).filter(Number.isInteger)
+    : [];
   const savedBaseballDayIndex = Number(saved.baseballDayIndex);
-  const legacyBaseballDayIndex = Array.isArray(saved.routeDays)
-    ? saved.routeDays.findIndex((day) => day.some((stop) => stop.isBaseballGame))
-    : -1;
-  state.baseballDayIndex = Number.isInteger(savedBaseballDayIndex)
-    ? savedBaseballDayIndex
-    : legacyBaseballDayIndex >= 0
-      ? legacyBaseballDayIndex
-      : null;
-  state.baseballDaySelectionTouched = state.baseballAttendance && state.baseballDayIndex != null;
+  const legacyBaseballDayIndexes = Array.isArray(saved.routeDays)
+    ? saved.routeDays
+      .map((day, index) => day.some((stop) => stop.isBaseballGame) ? index : -1)
+      .filter((index) => index >= 0)
+    : [];
+  state.baseballDayIndexes = savedBaseballDayIndexes.length
+    ? savedBaseballDayIndexes
+    : Number.isInteger(savedBaseballDayIndex)
+      ? [savedBaseballDayIndex]
+      : legacyBaseballDayIndexes;
+  state.baseballDaySelectionTouched = state.baseballAttendance && state.baseballDayIndexes.length > 0;
   state.baseballPreviousEnd = null;
   state.baseballAdjustedFinalEnd = false;
   $("#baseballAttendance").checked = state.baseballAttendance;
@@ -3157,8 +3191,11 @@ function bindEvents() {
     setBaseballAttendance(event.currentTarget.checked);
     invalidateWeatherForecast({ reload: false });
   });
-  $("#baseballDaySelect").addEventListener("change", (event) => {
-    state.baseballDayIndex = Number(event.currentTarget.value) || 0;
+  $("#baseballDayOptions").addEventListener("change", () => {
+    const selectedIndexes = $$('#baseballDayOptions input[type="checkbox"]:checked')
+      .map((input) => Number(input.value))
+      .filter(Number.isInteger);
+    state.baseballDayIndexes = selectedIndexes;
     state.baseballDaySelectionTouched = true;
     updateBaseballAttendanceControl({ adjustTravelWindow: state.baseballAttendance });
   });

@@ -240,10 +240,10 @@
                     <span>⚾ BASEBALL DAY</span>
                     <strong>야구 직관을 일정에 포함할까요?</strong>
                     <p id="baseballScheduleStatus">경기 시작 시간과 챔피언스필드 먹거리를 일정에 고정합니다.</p>
-                    <label id="baseballDayField" class="baseball-day-field" for="baseballDaySelect">
-                      <b>직관 날짜</b>
-                      <select id="baseballDaySelect" aria-label="야구 직관 날짜 선택"></select>
-                    </label>
+                    <fieldset id="baseballDayField" class="baseball-day-field" hidden>
+                      <legend>직관 날짜 <span>복수 선택 가능</span></legend>
+                      <div id="baseballDayOptions" class="baseball-day-options" aria-label="야구 직관 날짜 선택"></div>
+                    </fieldset>
                   </div>
                   <label class="baseball-attendance-toggle" for="baseballAttendance">
                     <input id="baseballAttendance" type="checkbox" />

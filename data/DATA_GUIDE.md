@@ -94,6 +94,7 @@
 - `templates/places.csv`: 장소 기본정보와 방문 조건
 - `templates/place_profiles.csv`: 해시태그와 8축 점수
 - `templates/place_opening_hours.csv`: 요일별 운영시간
+- `place_opening_hours.json`: 로컬 추천에서 사용하는 검수 완료 요일별 운영시간·휴무 정보 (`0=일요일`, `6=토요일`)
 - `templates/route_edges.csv`: 장소 간 이동시간 캐시
 - `tag_taxonomy.json`: 해시태그와 점수 축의 통제 사전
 - `restaurants.json`: 일반 음식점과 KIA 선수 추천 음식점을 합친 단일 운영 DB

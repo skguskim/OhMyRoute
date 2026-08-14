@@ -742,9 +742,10 @@ def bootstrap_local(args: argparse.Namespace) -> tuple[Path, Path]:
     for item in source:
         region = clean_text(item.get("region"))
         sigungu = region.split()[-1] if region else ""
-        source_place_id = PROTOTYPE_SOURCE_IDS.get(item.get("name", ""), str(item["id"]))
+        source_name = clean_text(item.get("source")) or "prototype"
+        source_place_id = clean_text(item.get("sourcePlaceId")) or PROTOTYPE_SOURCE_IDS.get(item.get("name", ""), str(item["id"]))
         places.append({
-            "source": "prototype",
+            "source": source_name,
             "source_place_id": source_place_id,
             "name": item.get("name", ""),
             "region": region,
@@ -778,7 +779,7 @@ def bootstrap_local(args: argparse.Namespace) -> tuple[Path, Path]:
         })
         vector = item.get("vector", [0] * 8)
         profiles.append({
-            "source": "prototype",
+            "source": source_name,
             "source_place_id": source_place_id,
             "hashtags": "|".join(item.get("hashtags", [])),
             **dict(zip(VECTOR_KEYS, vector)),
@@ -786,7 +787,7 @@ def bootstrap_local(args: argparse.Namespace) -> tuple[Path, Path]:
             "taxonomy_version": "1.0.0",
             "labeling_method": "manual",
             "labeling_confidence": 0.85,
-            "labeling_evidence": json.dumps([{"source": "prototype", "note": "기존 MVP 수동 라벨"}], ensure_ascii=False),
+            "labeling_evidence": json.dumps([{"source": source_name, "note": "기존 MVP 수동 라벨"}], ensure_ascii=False),
             "reviewed_at": now,
         })
     output_dir = Path(args.output_dir)
@@ -794,7 +795,9 @@ def bootstrap_local(args: argparse.Namespace) -> tuple[Path, Path]:
     profiles_path = output_dir / "bootstrap_place_profiles.csv"
     write_csv(places_path, PLACE_FIELDS, places)
     write_csv(profiles_path, PROFILE_FIELDS, profiles)
-    write_csv(output_dir / "bootstrap_place_opening_hours.csv", HOUR_FIELDS, [])
+    opening_hours_path = DATA_DIR / "place_opening_hours.json"
+    opening_hours = json.loads(opening_hours_path.read_text(encoding="utf-8")) if opening_hours_path.exists() else []
+    write_csv(output_dir / "bootstrap_place_opening_hours.csv", HOUR_FIELDS, opening_hours)
     print(f"기존 샘플 변환 완료: {len(places)}개 장소")
     return places_path, profiles_path
 

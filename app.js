@@ -156,6 +156,8 @@ const state = {
   places: [],
   stadiumFoods: [],
   stadiumFoodLoadFailed: false,
+  openingHoursByPlace: new Map(),
+  openingHoursLoadFailed: false,
   results: [],
   route: [],
   routeDays: [],
@@ -180,6 +182,7 @@ const state = {
   weatherAbortController: null,
   weatherCache: new Map(),
   mealWarnings: [],
+  scheduleWarnings: [],
   loading: false,
   kakaoMap: null,
   kakaoPolyline: null,
@@ -484,6 +487,46 @@ function baseballScheduleForDate(dateValue) {
     gameEndMinutes,
     stadiumFoodStartMinutes: gameStartMinutes - STADIUM_FOOD_LEAD_MINUTES,
   };
+}
+
+function openingHoursForPlace(place) {
+  return state.openingHoursByPlace.get(String(place?.id)) || [];
+}
+
+function openingHoursForDate(place, dateValue) {
+  const ordinal = dateOrdinal(dateValue);
+  if (!Number.isFinite(ordinal)) return null;
+  const dayOfWeek = new Date(ordinal * 86400000).getUTCDay();
+  return openingHoursForPlace(place)
+    .filter((hours) => Number(hours.day_of_week) === dayOfWeek)
+    .filter((hours) => !hours.valid_from || dateValue >= hours.valid_from)
+    .filter((hours) => !hours.valid_until || dateValue <= hours.valid_until)
+    .sort((a, b) => String(b.valid_from || "").localeCompare(String(a.valid_from || "")))[0] || null;
+}
+
+function placeIsOpenOnDate(place, dateValue) {
+  const hours = openingHoursForDate(place, dateValue);
+  return !hours || hours.is_closed !== true;
+}
+
+function formatTripDate(dateValue) {
+  const ordinal = dateOrdinal(dateValue);
+  const [, month, day] = String(dateValue).split("-").map(Number);
+  const weekday = Number.isFinite(ordinal)
+    ? ["일", "월", "화", "수", "목", "금", "토"][new Date(ordinal * 86400000).getUTCDay()]
+    : "";
+  return `${month}월 ${day}일${weekday ? `(${weekday})` : ""}`;
+}
+
+function addClosedNamedPlaceWarnings(dateValue, dayIndex) {
+  state.promptAnalysis.namedPlaceIds.forEach((placeId) => {
+    const place = state.places.find((candidate) => String(candidate.id) === String(placeId));
+    if (!place || placeIsOpenOnDate(place, dateValue)) return;
+    const hours = openingHoursForDate(place, dateValue);
+    const reason = hours?.notes || "휴무일";
+    const warning = `Day ${dayIndex + 1} · ${formatTripDate(dateValue)} ${place.name}은 ${reason}라 일정에서 제외했습니다.`;
+    if (!state.scheduleWarnings.includes(warning)) state.scheduleWarnings.push(warning);
+  });
 }
 
 function baseballTripDates() {
@@ -1563,6 +1606,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const day = state.routeDays[dayIndex];
   if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
+  const availableResults = state.results.filter((place) => placeIsOpenOnDate(place, window.date));
   const isFinalDay = dayIndex === state.routeDays.length - 1;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
@@ -1595,7 +1639,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
     const remainingSlotsAfter = pendingMealSlots.length - slotIndex;
     if (keptStops.length + rebuilt.length < maxStops - remainingSlotsAfter) {
       const filler = chooseFillerBeforeMeal(
-        state.results,
+        availableResults,
         current,
         clockMinutes,
         usedIds,
@@ -1611,7 +1655,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
       }
     }
 
-    const meal = chooseMealCandidate(state.results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination);
+    const meal = chooseMealCandidate(availableResults, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination);
     if (!meal) {
       state.mealWarnings.push(`Day ${dayIndex + 1} ${slot.label} 후보를 찾지 못했습니다.`);
       continue;
@@ -1627,8 +1671,8 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const fillerCandidates = [];
   let pickCurrent = current;
   while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
-    let next = chooseBestCandidate(state.results, pickCurrent, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(state.results, pickCurrent, usedIds);
+    let next = chooseBestCandidate(availableResults, pickCurrent, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(availableResults, pickCurrent, usedIds);
     if (!next) break;
     fillerCandidates.push(next);
     usedIds.add(next.id);
@@ -1825,13 +1869,18 @@ function createRoute(results) {
   const windows = travelDayWindows(conditions);
   const usedIds = new Set();
   state.mealWarnings = [];
+  state.scheduleWarnings = [];
   const builtDays = windows
-    .map((window, dayIndex) => ({
-      window,
-      day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
-        ? buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
-        : buildRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
-    }))
+    .map((window, dayIndex) => {
+      addClosedNamedPlaceWarnings(window.date, dayIndex);
+      const availableResults = results.filter((place) => placeIsOpenOnDate(place, window.date));
+      return {
+        window,
+        day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
+          ? buildBaseballRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
+          : buildRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
+      };
+    })
     .filter(({ day }) => day.length);
   state.dayWindows = builtDays.map(({ window }) => window);
   state.routeDays = builtDays.map(({ day }) => day);
@@ -2711,6 +2760,9 @@ function renderTips() {
   if (state.mealWarnings.length) {
     tips.push(`${state.mealWarnings.join(" ")} 현재 필터에서 이용 가능한 음식점 데이터가 더 필요합니다.`);
   }
+  if (state.scheduleWarnings.length) {
+    tips.unshift(...state.scheduleWarnings);
+  }
   if (conditions.weatherMode === "auto" && state.weatherForecast?.status !== "ready") {
     tips.push("기상청 예보를 적용하지 못해 날씨 조건은 제외했습니다. 입력 화면의 상태 안내를 확인하세요.");
   }
@@ -3113,6 +3165,7 @@ function restoreSavedRoute(id) {
     state.dayWindows = state.dayWindows.slice(0, state.routeDays.length);
   }
   state.mealWarnings = [];
+  state.scheduleWarnings = [];
   state.selectedDay = 0;
   renderResult();
   closeDrawer();
@@ -3419,10 +3472,20 @@ async function loadPlaces() {
       console.warn(error);
       return { foods: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult] = await Promise.all([
+  const openingHoursRequest = fetch("./data/place_opening_hours.json")
+    .then(async (response) => {
+      if (!response.ok) throw new Error(`운영시간 데이터 오류: ${response.status}`);
+      return { rows: await response.json(), failed: false };
+    })
+    .catch((error) => {
+      console.warn(error);
+      return { rows: [], failed: true };
+    });
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
+    openingHoursRequest,
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3430,12 +3493,21 @@ async function loadPlaces() {
   state.places = [...places, ...restaurants];
   state.stadiumFoods = Array.isArray(stadiumFoodResult.foods) ? stadiumFoodResult.foods : [];
   state.stadiumFoodLoadFailed = stadiumFoodResult.failed;
+  state.openingHoursByPlace = new Map();
+  (Array.isArray(openingHoursResult.rows) ? openingHoursResult.rows : []).forEach((hours) => {
+    const placeKey = `${hours.source}:${hours.source_place_id}`;
+    const rows = state.openingHoursByPlace.get(placeKey) || [];
+    rows.push(hours);
+    state.openingHoursByPlace.set(placeKey, rows);
+  });
+  state.openingHoursLoadFailed = openingHoursResult.failed;
   renderSavedRoutes();
   const config = window.OMAEROUTE_CONFIG || {};
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;
+  const openingHoursPlaceCount = state.openingHoursByPlace.size;
   $("#dataStatus").textContent = config.useSupabase
     ? "Supabase pgvector 연결"
-    : `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}`;
+    : `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 운영정보 ${openingHoursPlaceCount}곳 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}${state.openingHoursLoadFailed ? " · 운영시간 DB 확인 필요" : ""}`;
 }
 
 async function init() {

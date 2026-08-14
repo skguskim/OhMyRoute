@@ -57,7 +57,11 @@ def filter_sql_by_csv(csv_path, sql_path, output_sql_path):
         f.write('\n\n'.join(filtered_statements))
 
 ROOT_DIR = Path(".").resolve()
-CSV_PATH = ROOT_DIR / "OhMyRoute" / "data" / "generated" / "gwangju_official_places.csv"
-SQL_PATH = ROOT_DIR / "OhMyRoute" / "data" / "generated" / "gwangju_official_seed.sql"
+
+# PREFIX = "gwangju_official"
+PREFIX = "tourapi"
+
+CSV_PATH = ROOT_DIR / "OhMyRoute" / "data" / "generated" / f"{PREFIX}_places.csv"
+SQL_PATH = ROOT_DIR / "OhMyRoute" / "data" / "generated" / f"{PREFIX}_seed.sql"
 
 filter_sql_by_csv(CSV_PATH, SQL_PATH, SQL_PATH)  # 기존 SQL 파일을 덮어쓰도록 설정

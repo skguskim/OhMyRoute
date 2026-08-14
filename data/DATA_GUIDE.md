@@ -138,8 +138,8 @@ TourAPI 인증키를 `.env`에 설정한 후 광주 데이터를 수집하려면
 ```powershell
 .\scripts\run_data_pipeline.cmd collect --limit 100
 혹은
-.\scripts\run_data_pipeline.cmd collect --limit 15 --content-types 12,14,15,28,39
-로 분야 설정
+.\scripts\run_data_pipeline.cmd collect --limit 15 --area-codes 5 38 --content-types 12 14 15 28
+로 분야, 지역 설정
 ```
 
 TourAPI 인증키가 아직 없으면 광주관광 공식 페이지에서 공개된 초안을 먼저 수집할 수 있습니다.

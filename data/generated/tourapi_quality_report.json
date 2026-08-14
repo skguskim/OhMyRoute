@@ -1,68 +1,62 @@
 {
-  "generated_at": "2026-08-10T17:30:05.028581+00:00",
-  "places_file": "D:\\01_SNUST\\대회\\02_해커톤\\2026 AI+X 융합 문제발굴 산학연계 해커톤\\OhMyRoute\\data\\generated\\tourapi_places.csv",
-  "profiles_file": "D:\\01_SNUST\\대회\\02_해커톤\\2026 AI+X 융합 문제발굴 산학연계 해커톤\\OhMyRoute\\data\\generated\\tourapi_place_profiles.csv",
-  "place_rows": 184,
-  "profile_rows": 184,
+  "generated_at": "2026-08-13T20:15:39.209738+00:00",
+  "places_file": "data\\generated\\tourapi_places.csv",
+  "profiles_file": "data\\generated\\tourapi_place_profiles.csv",
+  "place_rows": 59,
+  "profile_rows": 59,
   "category_counts": {
-    "관광지": 60,
-    "문화·예술": 47,
-    "축제·공연": 5,
-    "체험·스포츠": 37,
-    "쇼핑·시장": 35
+    "관광지": 33,
+    "문화·예술": 24,
+    "체험·스포츠": 2
   },
   "region_counts": {
-    "광주 광산구": 12,
-    "광주 남구": 9,
-    "광주 북구": 21,
-    "광주 동구": 11,
-    "광주 서구": 7,
-    "광주": 124
+    "광주": 27,
+    "전남": 32
   },
   "completeness": {
     "name": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "region": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "category": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "description": {
-      "filled": 0,
-      "rate": 0.0
+      "filled": 59,
+      "rate": 1.0
     },
     "road_address": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "latitude": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "longitude": {
-      "filled": 184,
+      "filled": 59,
       "rate": 1.0
     },
     "phone": {
-      "filled": 63,
-      "rate": 0.3424
+      "filled": 33,
+      "rate": 0.5593
     },
     "website_url": {
-      "filled": 0,
-      "rate": 0.0
+      "filled": 49,
+      "rate": 0.8305
     },
     "image_url": {
-      "filled": 170,
-      "rate": 0.9239
+      "filled": 54,
+      "rate": 0.9153
     },
     "parking_available": {
-      "filled": 56,
-      "rate": 0.3043
+      "filled": 45,
+      "rate": 0.7627
     },
     "wheelchair_accessible": {
       "filled": 0,
@@ -77,8 +71,8 @@
       "rate": 0.0
     },
     "source_url": {
-      "filled": 184,
-      "rate": 1.0
+      "filled": 49,
+      "rate": 0.8305
     },
     "last_verified_at": {
       "filled": 0,
@@ -87,52 +81,52 @@
   },
   "vector_profile": {
     "nature": {
-      "mean": 0.1617,
+      "mean": 0.5042,
       "min": 0.0,
       "max": 1.0,
-      "zero_count": 146
+      "zero_count": 20
     },
     "culture": {
-      "mean": 0.0924,
+      "mean": 0.3644,
       "min": 0.0,
       "max": 1.0,
-      "zero_count": 162
+      "zero_count": 25
     },
     "art": {
-      "mean": 0.2391,
+      "mean": 0.4195,
       "min": 0.0,
       "max": 1.0,
-      "zero_count": 131
+      "zero_count": 28
     },
     "food": {
-      "mean": 0.159,
+      "mean": 0.0085,
       "min": 0.0,
-      "max": 1.0,
-      "zero_count": 146
+      "max": 0.25,
+      "zero_count": 57
     },
     "activity": {
-      "mean": 0.2011,
+      "mean": 0.3559,
       "min": 0.0,
       "max": 1.0,
-      "zero_count": 135
+      "zero_count": 27
     },
     "sports": {
-      "mean": 0.1766,
+      "mean": 0.0593,
       "min": 0.0,
       "max": 1.0,
-      "zero_count": 141
+      "zero_count": 54
     },
     "healing": {
-      "mean": 0.1141,
+      "mean": 0.2881,
       "min": 0.0,
       "max": 0.75,
-      "zero_count": 156
+      "zero_count": 32
     },
     "festival": {
-      "mean": 0.0394,
+      "mean": 0.0975,
       "min": 0.0,
-      "max": 1.0,
-      "zero_count": 176
+      "max": 0.75,
+      "zero_count": 50
     }
   },
   "severity_counts": {},

@@ -167,6 +167,18 @@ LABEL_RULES = {
     },
 }
 
+JEONNAM_SIGUNGU = {
+    "목포시", "여수시", "순천시", "나주시", "광양시", "담양군", "곡성군", "구례군", 
+    "고흥군", "보성군", "화순군", "장흥군", "강진군", "해남군", "영암군", "무안군", 
+    "함평군", "영광군", "장성군", "완도군", "진도군", "신안군"
+}
+
+JEONBUK_SIGUNGU = {
+    "전주시", "군산시", "익산시", "정읍시", "남원시", "김제시", "완주군", "진안군", 
+    "무주군", "장수군", "임실군", "순창군", "고창군", "부안군"
+}
+
+GWANGJU_SIGUNGU = {"광산구", "동구", "서구", "남구", "북구"}
 
 class PipelineError(RuntimeError):
     pass
@@ -411,13 +423,22 @@ def parse_optional_bool(value: Any) -> bool | str:
 
 
 def normalize_region(address: str) -> tuple[str, str]:
-    gu_match = re.search(r"(광산구|동구|서구|남구|북구)", address)
-    sigungu = gu_match.group(1) if gu_match else ""
-    if "광주" in address:
-        return (f"광주 {sigungu}".strip(), sigungu)
     tokens = address.split()
-    return (" ".join(tokens[:2]) if tokens else "", sigungu)
+    if not tokens:
+        return ("", "")
+    
+    target_sigungu = tokens[1] if len(tokens) > 1 else ""
+    if target_sigungu in GWANGJU_SIGUNGU:
+        return ("광주", target_sigungu)
+    if target_sigungu in JEONNAM_SIGUNGU:
+        return ("전남", target_sigungu)
+    if target_sigungu in JEONBUK_SIGUNGU:
+        return ("전북", target_sigungu)
 
+    region = " ".join(tokens[:2]) if len(tokens) >= 2 else tokens[0]
+    sigungu = target_sigungu if any(target_sigungu.endswith(s) for s in ("시", "군", "구")) else ""
+
+    return (region, sigungu)
 
 def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
     content_type = str(item.get("contenttypeid", ""))
@@ -457,7 +478,7 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
         "price_max": "",
         "status": "active",
         "public_transport_score": 0.5,
-        "source_url": TOUR_API_SOURCE_URL,
+        "source_url": extract_url(item.get("homepage")),
         "source_updated_at": parse_timestamp(item.get("modifiedtime")),
         "last_verified_at": "",
         "license": clean_text(item.get("cpyrhtDivCd")),
@@ -548,7 +569,7 @@ def fetch_detail(service_key: str, item: dict[str, Any], skip_details: bool) -> 
     content_type = item.get("contenttypeid")
     merged = dict(item)
     calls = (
-        ("detailCommon2", {"contentId": content_id, "defaultYN": "Y", "firstImageYN": "Y", "addrinfoYN": "Y", "mapinfoYN": "Y", "overviewYN": "Y"}),
+        ("detailCommon2", {"contentId": content_id}),
         ("detailIntro2", {"contentId": content_id, "contentTypeId": content_type}),
     )
     for endpoint, params in calls:
@@ -617,6 +638,28 @@ def collect_tourapi(args: argparse.Namespace) -> tuple[Path, Path]:
     profiles_path = output_dir / "tourapi_place_profiles.csv"
     write_csv(places_path, PLACE_FIELDS, places)
     write_csv(profiles_path, PROFILE_FIELDS, profiles)
+
+    # [추가] TourAPI 수집 시에도 운영 정보 리뷰 CSV 파일 생성
+    operating_reviews = []
+    for item, place in zip(raw_items, places):
+        # TourAPI 응답 데이터에서 운영 시간 및 휴무일 관련 필드 추출 매핑
+        table = {
+            "이용시간": item.get("opentimefood") or item.get("usetime") or "",
+            "휴일": item.get("restdatefood") or item.get("restdate") or "",
+            "이용요금": item.get("usefee") or "",
+            "주차시설": item.get("parking") or item.get("parkingfood") or "",
+            "애견동반": item.get("chkpet") or "",
+            "대중교통": item.get("direction") or "",
+        }
+        raw_record = {"detail_table": table}
+        operating_reviews.append(operating_review_row(place, raw_record))
+        
+    write_csv(
+        output_dir / "tourapi_operating_info_review.csv",
+        OPERATING_REVIEW_FIELDS,
+        operating_reviews,
+    )
+
     print(f"수집 완료: {len(places)}개 장소")
     print(f"원본: {raw_path}")
     return places_path, profiles_path

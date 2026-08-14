@@ -5,7 +5,8 @@ window.OMAEROUTE_CONFIG = {
   anonKey: "",
   // Kakao Developers에서 발급한 JavaScript 키입니다.
   kakaoJavaScriptKey: "",
-  // 공공데이터포털 '기상청_단기예보 조회서비스' 일반 인증키입니다.
-  // 로컬 시연용입니다. 실제 배포에서는 키가 노출되지 않도록 서버 프록시를 사용하세요.
+  // 로컬 서버의 기상청 프록시입니다. 인증키는 브라우저가 아닌 .env에 보관합니다.
+  kmaWeatherProxyUrl: "/api/weather",
+  // 정적 호스팅에서만 쓰는 레거시 직접 호출 옵션입니다. 키 노출 위험 때문에 비워두세요.
   kmaServiceKey: "",
 };

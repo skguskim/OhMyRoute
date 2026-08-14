@@ -1,8 +1,4 @@
-// Supabase를 연결할 때만 값을 채우세요. service_role 키는 브라우저에 넣지 마세요.
 window.OMAEROUTE_CONFIG = {
-  useSupabase: false,
-  supabaseUrl: "",
-  anonKey: "",
   // Kakao Developers에서 발급한 JavaScript 키입니다.
   kakaoJavaScriptKey: "",
   // 로컬 서버의 기상청 프록시입니다. 인증키는 브라우저가 아닌 .env에 보관합니다.

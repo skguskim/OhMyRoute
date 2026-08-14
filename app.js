@@ -158,6 +158,9 @@ const state = {
   stadiumFoodLoadFailed: false,
   openingHoursByPlace: new Map(),
   openingHoursLoadFailed: false,
+  baseballGamesByDate: new Map(),
+  baseballGamesLoadFailed: false,
+  baseballGamesSource: "local",
   results: [],
   route: [],
   routeDays: [],
@@ -372,6 +375,7 @@ function currentConditions() {
     : "sunny";
   const selectedWeather = weatherMode === "auto" ? automaticWeather : weatherMode;
   const sportsBaseballHighlyPreferred = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
+  const baseballDayIndexes = selectedBaseballDayIndexes();
   return {
     originKey: $("#origin").value,
     origin: ORIGINS[$("#origin").value],
@@ -387,8 +391,8 @@ function currentConditions() {
     promptRainy: state.promptAnalysis.rainy,
     promptFamily: state.promptAnalysis.family,
     sportsBaseballHighlyPreferred,
-    baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance,
-    baseballDayIndexes: selectedBaseballDayIndexes(),
+    baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance && baseballDayIndexes.length > 0,
+    baseballDayIndexes,
     transport: state.transport,
     duration: state.duration,
   };
@@ -472,21 +476,62 @@ function dateOrdinal(value) {
 }
 
 function baseballScheduleForDate(dateValue) {
+  const game = baseballGameForDate(dateValue, { selectableOnly: true });
+  if (!game) return null;
   const ordinal = dateOrdinal(dateValue);
   const dayOfWeek = Number.isFinite(ordinal)
     ? new Date(ordinal * 86400000).getUTCDay()
     : 1;
   const weekend = dayOfWeek === 0 || dayOfWeek === 6;
-  const gameStartMinutes = weekend ? 18 * 60 : 18 * 60 + 30;
+  const timeMatch = String(game.scheduled_start_at || "").match(/T(\d{2}):(\d{2})/);
+  const gameStartMinutes = timeMatch
+    ? Number(timeMatch[1]) * 60 + Number(timeMatch[2])
+    : parseClockMinutes(game.start_time || "19:00");
   const gameEndMinutes = gameStartMinutes + BASEBALL_GAME_DURATION_MINUTES;
   return {
     date: dateValue,
+    game,
     weekend,
     dayTypeLabel: weekend ? "주말" : "평일",
     gameStartMinutes,
     gameEndMinutes,
     stadiumFoodStartMinutes: gameStartMinutes - STADIUM_FOOD_LEAD_MINUTES,
   };
+}
+
+function baseballGamesForDate(dateValue) {
+  return state.baseballGamesByDate.get(String(dateValue)) || [];
+}
+
+function baseballGameForDate(dateValue, { selectableOnly = false } = {}) {
+  const games = baseballGamesForDate(dateValue);
+  if (selectableOnly) {
+    return games.find((game) => ["scheduled", "in_progress"].includes(game.status)) || null;
+  }
+  return games.find((game) => ["scheduled", "in_progress"].includes(game.status))
+    || games.find((game) => game.status === "cancelled")
+    || games[0]
+    || null;
+}
+
+function baseballGameOptionStatus(dateValue) {
+  const games = baseballGamesForDate(dateValue);
+  const selectableGame = baseballGameForDate(dateValue, { selectableOnly: true });
+  if (selectableGame) {
+    const schedule = baseballScheduleForDate(dateValue);
+    return {
+      selectable: true,
+      game: selectableGame,
+      label: `${selectableGame.away_team_name} vs KIA · ${formatClockMinutes(schedule.gameStartMinutes)}`,
+    };
+  }
+  const cancelled = games.find((game) => game.status === "cancelled");
+  if (cancelled) return { selectable: false, game: cancelled, label: `${cancelled.away_team_name}전 취소` };
+  const postponed = games.find((game) => game.status === "postponed");
+  if (postponed) return { selectable: false, game: postponed, label: `${postponed.away_team_name}전 연기` };
+  const completed = games.find((game) => game.status === "completed");
+  if (completed) return { selectable: false, game: completed, label: `${completed.away_team_name}전 종료` };
+  return { selectable: false, game: null, label: "광주 홈경기 없음" };
 }
 
 function openingHoursForPlace(place) {
@@ -553,9 +598,18 @@ function selectedBaseballDayIndexes({ ensureSelection = state.baseballAttendance
   const requested = checkedIndexes.length ? checkedIndexes : state.baseballDayIndexes;
   const normalized = [...new Set((Array.isArray(requested) ? requested : [])
     .map(Number)
-    .filter((index) => Number.isInteger(index) && index >= 0 && index < dates.length))]
+    .filter((index) => Number.isInteger(index)
+      && index >= 0
+      && index < dates.length
+      && Boolean(baseballGameForDate(dates[index], { selectableOnly: true }))))]
     .sort((a, b) => a - b);
-  if (ensureSelection && !normalized.length) normalized.push(dates.length - 1);
+  if (ensureSelection && !normalized.length) {
+    const fallbackIndex = dates
+      .map((dateValue, index) => baseballGameForDate(dateValue, { selectableOnly: true }) ? index : -1)
+      .filter((index) => index >= 0)
+      .at(-1);
+    if (Number.isInteger(fallbackIndex)) normalized.push(fallbackIndex);
+  }
   state.baseballDayIndexes = normalized;
   return normalized;
 }
@@ -573,17 +627,28 @@ function populateBaseballDayOptions() {
   const options = $("#baseballDayOptions");
   if (!options) return baseballTripDates();
   const dates = baseballTripDates();
-  if (!state.baseballDaySelectionTouched && !state.baseballDayIndexes.length && dates.length) {
-    state.baseballDayIndexes = [dates.length - 1];
+  const selectableIndexes = dates
+    .map((dateValue, index) => baseballGameForDate(dateValue, { selectableOnly: true }) ? index : -1)
+    .filter((index) => index >= 0);
+  if (!state.baseballDaySelectionTouched && !state.baseballDayIndexes.length && selectableIndexes.length) {
+    state.baseballDayIndexes = [selectableIndexes.at(-1)];
   }
   const selectedIndexes = selectedBaseballDayIndexes({ ensureSelection: true });
   options.innerHTML = dates
-    .map((dateValue, index) => `
-      <label class="baseball-day-option">
-        <input type="checkbox" value="${index}" ${selectedIndexes.includes(index) ? "checked" : ""} />
-        <span>${escapeHtml(formatBaseballDayOption(dateValue, index))}</span>
-      </label>
-    `)
+    .map((dateValue, index) => {
+      const optionStatus = baseballGameOptionStatus(dateValue);
+      return `
+        <label class="baseball-day-option ${optionStatus.selectable ? "" : "unavailable"}">
+          <input type="checkbox" value="${index}"
+            ${selectedIndexes.includes(index) ? "checked" : ""}
+            ${optionStatus.selectable ? "" : "disabled"} />
+          <span>
+            <b>${escapeHtml(formatBaseballDayOption(dateValue, index))}</b>
+            <small>${escapeHtml(optionStatus.label)}</small>
+          </span>
+        </label>
+      `;
+    })
     .join("");
   return dates;
 }
@@ -628,6 +693,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     state.baseballAttendance = false;
     if (dayField) dayField.hidden = true;
     clearBaseballDaySelection();
+    status.classList.remove("warning");
     status.textContent = "직관 포함을 켜면 여행 기간에서 경기 날짜를 여러 개 고를 수 있습니다.";
     return;
   }
@@ -641,18 +707,29 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     const finalDayIndex = tripDates.length - 1;
     if (baseballDayIndexes.includes(finalDayIndex)) {
       const finalDaySchedule = baseballScheduleForDate(tripDates[finalDayIndex]);
-      setTimeFieldValue($("#endTime"), formatClockMinutes(finalDaySchedule.gameEndMinutes));
-      state.baseballAdjustedFinalEnd = true;
+      if (finalDaySchedule) {
+        setTimeFieldValue($("#endTime"), formatClockMinutes(finalDaySchedule.gameEndMinutes));
+        state.baseballAdjustedFinalEnd = true;
+      }
     }
     syncTravelWindow();
   }
-  status.textContent = baseballDayIndexes
-    .map((dayIndex) => {
-      const gameDate = tripDates[dayIndex];
-      const schedule = baseballScheduleForDate(gameDate);
-      return `${formatBaseballDayOption(gameDate, dayIndex)} · ${schedule.dayTypeLabel} · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기`;
-    })
-    .join(" / ");
+  status.classList.toggle("warning", baseballDayIndexes.length === 0 || state.baseballGamesLoadFailed);
+  if (state.baseballGamesLoadFailed) {
+    status.textContent = "경기 DB를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.";
+  } else if (!baseballDayIndexes.length) {
+    status.textContent = "선택한 여행 기간에는 관람 가능한 광주 KIA 홈경기가 없습니다. 경기 없는 날·종료·취소·연기 경기는 선택할 수 없습니다.";
+  } else {
+    status.textContent = baseballDayIndexes
+      .map((dayIndex) => {
+        const gameDate = tripDates[dayIndex];
+        const schedule = baseballScheduleForDate(gameDate);
+        const game = schedule.game;
+        const timeChangeLabel = game.time_change_reason ? " · 폭염 대응 시간 변경 반영" : "";
+        return `${formatBaseballDayOption(gameDate, dayIndex)} · ${game.away_team_name} vs KIA · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기${timeChangeLabel}`;
+      })
+      .join(" / ");
+  }
 }
 
 function setBaseballAttendance(active) {
@@ -1338,64 +1415,6 @@ function rankPlacesLocal() {
     .sort((a, b) => b.score - a.score);
 }
 
-function parseVector(value) {
-  if (Array.isArray(value)) return value.map(Number);
-  if (typeof value === "string") {
-    return value.replaceAll("[", "").replaceAll("]", "").split(",").map(Number);
-  }
-  return currentVector();
-}
-
-async function rankPlacesSupabase() {
-  const config = window.OMAEROUTE_CONFIG || {};
-  const conditions = currentConditions();
-  if (!hasPreferenceSignals()) return rankPlacesLocal();
-  const response = await fetch(`${config.supabaseUrl}/rest/v1/rpc/recommend_places`, {
-    method: "POST",
-    headers: {
-      apikey: config.anonKey,
-      Authorization: `Bearer ${config.anonKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query_vector: `[${currentVector().join(",")}]`,
-      match_count: 30,
-      filter_rain_ok: conditions.weather === "rainy",
-      filter_family_friendly: conditions.companion === "family",
-      min_public_transport_score: conditions.transport === "public" ? 0.48 : 0,
-    }),
-  });
-  if (!response.ok) throw new Error(`Supabase RPC 오류: ${response.status}`);
-
-  return (await response.json()).map((row) => {
-    const place = {
-      id: Number(row.place_id),
-      name: row.place_name,
-      region: row.region,
-      category: row.category,
-      description: row.description,
-      hashtags: row.hashtags || [],
-      vector: parseVector(row.preference_vector),
-      latitude: row.latitude,
-      longitude: row.longitude,
-      durationMinutes: row.duration_minutes,
-      indoor: row.indoor,
-      rainOk: row.rain_ok,
-      familyFriendly: row.family_friendly,
-      publicTransportScore: row.public_transport_score,
-      score: Number(row.similarity),
-    };
-    const rainIndoorBoost = conditions.weather === "rainy" && place.indoor ? 0.14 : 0;
-    return {
-      ...place,
-      displayScore: place.score,
-      rainIndoorBoost,
-      score: place.score + rainIndoorBoost,
-      reasons: matchReasons(place, currentVector(), conditions),
-    };
-  }).sort((a, b) => b.score - a.score);
-}
-
 function estimateTravelMinutes(distanceKm) {
   const speed = state.transport === "walk" ? 4.5 : state.transport === "car" ? 45 : 25;
   const buffer = state.transport === "public" ? 13 : state.transport === "car" ? 7 : 0;
@@ -1774,6 +1793,10 @@ function selectStadiumFood(results, schedule, usedIds = new Set()) {
 
 function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDay) {
   const schedule = baseballScheduleForDate(window.date);
+  if (!schedule) {
+    state.scheduleWarnings.push(`Day ${dayIndex + 1} · ${formatTripDate(window.date)} 관람 가능한 광주 홈경기가 없어 일반 여행 일정으로 구성했습니다.`);
+    return buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDay);
+  }
   const day = [];
   let current = conditions.origin;
   let clockMinutes = window.startMinutes;
@@ -1854,12 +1877,17 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
     expectedEndMinutes: schedule.gameEndMinutes,
     gameDate: window.date,
     gameDayType: schedule.dayTypeLabel,
+    sourceGameId: schedule.game.source_game_id,
+    opponent: schedule.game.away_team_name,
+    gameStatus: schedule.game.status,
+    gameTimeChangeReason: schedule.game.time_change_reason,
     endsTrip: isFinalDay,
     reasons: [
-      `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 시작`,
+      `${schedule.game.away_team_name}전 · ${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 시작`,
+      ...(schedule.game.time_change_reason ? ["폭염 대응 변경 시간 반영"] : []),
       "3시간~3시간 30분 관람",
       `Day ${dayIndex + 1} 마지막 일정`,
-    ],
+    ].slice(0, 3),
   });
   return day;
 }
@@ -2899,14 +2927,8 @@ async function generateRoute() {
 
   try {
     const startedAt = performance.now();
-    const config = window.OMAEROUTE_CONFIG || {};
     await refreshWeatherForecast();
-    try {
-      state.results = config.useSupabase ? await rankPlacesSupabase() : rankPlacesLocal();
-    } catch (error) {
-      console.warn("Supabase 추천 실패, 로컬 데이터로 전환합니다.", error);
-      state.results = rankPlacesLocal();
-    }
+    state.results = rankPlacesLocal();
     createRoute(state.results);
     renderResult();
     await wait(Math.max(1050 - (performance.now() - startedAt), 250));
@@ -2995,6 +3017,10 @@ function saveCurrentRoute() {
         endsTrip: Boolean(place.endsTrip),
         gameDate: place.gameDate || null,
         gameDayType: place.gameDayType || null,
+        sourceGameId: place.sourceGameId || null,
+        opponent: place.opponent || null,
+        gameStatus: place.gameStatus || null,
+        gameTimeChangeReason: place.gameTimeChangeReason || null,
       }))),
       originKey: currentConditions().originKey,
       travelDate: $("#travelDate").value,
@@ -3131,6 +3157,10 @@ function restoreSavedRoute(id) {
       endsTrip: Boolean(savedStop.endsTrip || basePlace.endsTrip),
       gameDate: savedStop.gameDate || basePlace.gameDate,
       gameDayType: savedStop.gameDayType || basePlace.gameDayType,
+      sourceGameId: savedStop.sourceGameId || basePlace.sourceGameId,
+      opponent: savedStop.opponent || basePlace.opponent,
+      gameStatus: savedStop.gameStatus || basePlace.gameStatus,
+      gameTimeChangeReason: savedStop.gameTimeChangeReason || basePlace.gameTimeChangeReason,
     };
     if (!savedStop.mealSlot) return place;
     if (savedStop.mealSlot === "stadium_food") {
@@ -3462,6 +3492,17 @@ function bindEvents() {
   }
 }
 
+async function loadBaseballGames() {
+  try {
+    const response = await fetch("./data/baseball_games.json");
+    if (!response.ok) throw new Error(`야구 경기 데이터 오류: ${response.status}`);
+    return { rows: await response.json(), failed: false, source: "local" };
+  } catch (error) {
+    console.warn(error);
+    return { rows: [], failed: true, source: "failed" };
+  }
+}
+
 async function loadPlaces() {
   const stadiumFoodRequest = fetch("./data/stadium_foods.json")
     .then(async (response) => {
@@ -3481,11 +3522,12 @@ async function loadPlaces() {
       console.warn(error);
       return { rows: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult] = await Promise.all([
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
     openingHoursRequest,
+    loadBaseballGames(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3501,13 +3543,21 @@ async function loadPlaces() {
     state.openingHoursByPlace.set(placeKey, rows);
   });
   state.openingHoursLoadFailed = openingHoursResult.failed;
+  state.baseballGamesByDate = new Map();
+  (Array.isArray(baseballGamesResult.rows) ? baseballGamesResult.rows : []).forEach((game) => {
+    const rows = state.baseballGamesByDate.get(game.game_date) || [];
+    rows.push(game);
+    rows.sort((a, b) => String(a.scheduled_start_at).localeCompare(String(b.scheduled_start_at)));
+    state.baseballGamesByDate.set(game.game_date, rows);
+  });
+  state.baseballGamesLoadFailed = baseballGamesResult.failed;
+  state.baseballGamesSource = baseballGamesResult.source;
   renderSavedRoutes();
-  const config = window.OMAEROUTE_CONFIG || {};
+  updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;
   const openingHoursPlaceCount = state.openingHoursByPlace.size;
-  $("#dataStatus").textContent = config.useSupabase
-    ? "Supabase pgvector 연결"
-    : `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 운영정보 ${openingHoursPlaceCount}곳 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}${state.openingHoursLoadFailed ? " · 운영시간 DB 확인 필요" : ""}`;
+  const baseballGameCount = [...state.baseballGamesByDate.values()].flat().length;
+  $("#dataStatus").textContent = `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 운영정보 ${openingHoursPlaceCount}곳 · KIA 광주 홈경기 ${baseballGameCount}건 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}${state.openingHoursLoadFailed ? " · 운영시간 DB 확인 필요" : ""}${state.baseballGamesLoadFailed ? " · 경기 DB 확인 필요" : ""}`;
 }
 
 async function init() {

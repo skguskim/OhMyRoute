@@ -911,111 +911,6 @@ def validate_dataset(places_path: Path, profiles_path: Path, report_path: Path) 
     return report
 
 
-def sql_text(value: Any) -> str:
-    if value is None or str(value).strip() == "":
-        return "null"
-    return "'" + str(value).replace("'", "''") + "'"
-
-
-def sql_number(value: Any, default: str = "null") -> str:
-    parsed = as_float(value)
-    if parsed is None:
-        return default
-    return str(int(parsed)) if parsed.is_integer() else str(parsed)
-
-
-def sql_bool(value: Any, default: str = "null") -> str:
-    text = str(value).strip().lower()
-    if text in {"true", "1", "yes", "y"}:
-        return "true"
-    if text in {"false", "0", "no", "n"}:
-        return "false"
-    return default
-
-
-def sql_array(pipe_value: str) -> str:
-    values = [value.strip() for value in str(pipe_value or "").split("|") if value.strip()]
-    return "array[" + ",".join(sql_text(value) for value in values) + "]::text[]"
-
-
-def build_seed_sql(places_path: Path, profiles_path: Path, output_path: Path) -> None:
-    places = read_csv(places_path)
-    profiles = read_csv(profiles_path)
-    profile_by_key = {(row["source"], row["source_place_id"]): row for row in profiles}
-    lines = [
-        "-- data_pipeline.py가 생성한 오매루트 장소 적재 SQL",
-        "-- 검수 후 Supabase SQL Editor에서 실행하세요.",
-        "begin;",
-        "",
-    ]
-    text_fields = {
-        "source", "source_place_id", "name", "region", "sigungu", "category", "description",
-        "road_address", "lot_address", "phone", "website_url", "image_url", "status", "source_url",
-        "source_updated_at", "last_verified_at", "license", "quality_status",
-    }
-    number_fields = {"latitude", "longitude", "duration_minutes", "price_min", "price_max", "public_transport_score"}
-    bool_defaults_false = {"indoor", "rain_ok", "family_friendly"}
-    bool_fields = bool_defaults_false | {"parking_available", "wheelchair_accessible", "pet_friendly", "requires_reservation"}
-    db_fields = list(PLACE_FIELDS)
-    for place in places:
-        values: list[str] = []
-        for field in db_fields:
-            value = place.get(field, "")
-            if field in text_fields:
-                cast = "::timestamptz" if field in {"source_updated_at", "last_verified_at"} and value else ""
-                values.append(sql_text(value) + cast)
-            elif field in number_fields:
-                default = "90" if field == "duration_minutes" else ("0.5" if field == "public_transport_score" else "null")
-                values.append(sql_number(value, default))
-            elif field in bool_fields:
-                values.append(sql_bool(value, "false" if field in bool_defaults_false else "null"))
-            else:
-                values.append(sql_text(value))
-        updates = [f"{field} = excluded.{field}" for field in db_fields if field not in {"source", "source_place_id"}]
-        lines.extend((
-            f"insert into public.places ({', '.join(db_fields)})",
-            f"values ({', '.join(values)})",
-            "on conflict (source, source_place_id) do update set",
-            "  " + ",\n  ".join(updates) + ",\n  updated_at = now();",
-            "",
-        ))
-        profile = profile_by_key.get((place["source"], place["source_place_id"]))
-        if not profile:
-            continue
-        scores = {key: float(profile[key]) for key in VECTOR_KEYS}
-        vector = "[" + ",".join(str(scores[key]) for key in VECTOR_KEYS) + "]"
-        evidence = profile.get("labeling_evidence") or "[]"
-        reviewed_at = sql_text(profile.get("reviewed_at"))
-        if reviewed_at != "null":
-            reviewed_at += "::timestamptz"
-        lines.extend((
-            "insert into public.place_profiles (",
-            "  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,",
-            "  labeling_method, labeling_confidence, labeling_evidence, reviewed_at",
-            ")",
-            "select p.id,",
-            f"  {sql_array(profile.get('hashtags', ''))},",
-            f"  {sql_text(json.dumps(scores, ensure_ascii=False))}::jsonb,",
-            f"  {sql_text(vector)}::extensions.vector(8),",
-            f"  {sql_text(profile.get('semantic_text'))}, {sql_text(profile.get('taxonomy_version') or '1.0.0')},",
-            f"  {sql_text(profile.get('labeling_method') or 'import')}, {sql_number(profile.get('labeling_confidence'), '0.35')},",
-            f"  {sql_text(evidence)}::jsonb, {reviewed_at}",
-            "from public.places p",
-            f"where p.source = {sql_text(place['source'])} and p.source_place_id = {sql_text(place['source_place_id'])}",
-            "on conflict (place_id) do update set",
-            "  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,",
-            "  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,",
-            "  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,",
-            "  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,",
-            "  reviewed_at = excluded.reviewed_at, updated_at = now();",
-            "",
-        ))
-    lines.extend(("commit;", ""))
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Supabase SQL 생성: {output_path}")
-
-
 def command_validate(args: argparse.Namespace) -> int:
     report = validate_dataset(Path(args.places), Path(args.profiles), Path(args.report))
     return 0 if report["passed"] else 1
@@ -1025,7 +920,6 @@ def command_bootstrap(args: argparse.Namespace) -> int:
     places_path, profiles_path = bootstrap_local(args)
     output_dir = Path(args.output_dir)
     report = validate_dataset(places_path, profiles_path, output_dir / "bootstrap_quality_report.json")
-    build_seed_sql(places_path, profiles_path, output_dir / "bootstrap_seed.sql")
     return 0 if report["passed"] else 1
 
 
@@ -1033,7 +927,6 @@ def command_collect(args: argparse.Namespace) -> int:
     places_path, profiles_path = collect_tourapi(args)
     output_dir = Path(args.output_dir)
     report = validate_dataset(places_path, profiles_path, output_dir / "tourapi_quality_report.json")
-    build_seed_sql(places_path, profiles_path, output_dir / "tourapi_seed.sql")
     return 0 if report["passed"] else 1
 
 
@@ -1041,7 +934,6 @@ def command_collect_gwangju(args: argparse.Namespace) -> int:
     places_path, profiles_path = collect_gwangju_official(args)
     output_dir = Path(args.output_dir)
     report = validate_dataset(places_path, profiles_path, output_dir / "gwangju_official_quality_report.json")
-    build_seed_sql(places_path, profiles_path, output_dir / "gwangju_official_seed.sql")
     return 0 if report["passed"] else 1
 
 
@@ -1049,11 +941,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="오매루트 데이터 구축 파이프라인")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    bootstrap = subparsers.add_parser("bootstrap", help="기존 places.json을 CSV·SQL로 변환하고 검사")
+    bootstrap = subparsers.add_parser("bootstrap", help="기존 places.json을 CSV로 변환하고 검사")
     bootstrap.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     bootstrap.set_defaults(func=command_bootstrap)
 
-    collect = subparsers.add_parser("collect", help="TourAPI 광주 장소를 수집하고 CSV·SQL 생성")
+    collect = subparsers.add_parser("collect", help="TourAPI 광주 장소를 수집하고 CSV 생성")
     collect.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     collect.add_argument("--limit", type=int, default=100)
     collect.add_argument("--content-types", nargs="*", default=[])      # 수집 명령어에 --content-type 인자를 받을 수 있도록 함.
@@ -1075,11 +967,6 @@ def build_parser() -> argparse.ArgumentParser:
     validate.add_argument("--report", default=str(DEFAULT_OUTPUT_DIR / "quality_report.json"))
     validate.set_defaults(func=command_validate)
 
-    sql = subparsers.add_parser("build-sql", help="장소·프로필 CSV를 Supabase SQL로 변환")
-    sql.add_argument("--places", required=True)
-    sql.add_argument("--profiles", required=True)
-    sql.add_argument("--output", default=str(DEFAULT_OUTPUT_DIR / "seed.sql"))
-    sql.set_defaults(func=lambda args: (build_seed_sql(Path(args.places), Path(args.profiles), Path(args.output)) or 0))
     return parser
 
 

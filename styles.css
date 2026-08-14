@@ -3094,6 +3094,29 @@ body:has(#formView.active) .app-main {
   transition: color 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
+.baseball-day-option span b,
+.baseball-day-option span small {
+  display: block;
+}
+
+.baseball-day-option span small {
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 600;
+  opacity: .82;
+}
+
+.baseball-day-option.unavailable {
+  cursor: not-allowed;
+}
+
+.baseball-day-option.unavailable span {
+  color: #7d8796;
+  background: rgba(245, 247, 250, .9);
+  border-color: #d7dde5;
+  box-shadow: none;
+}
+
 .baseball-day-option input:checked + span {
   color: #fff;
   background: #3182f6;

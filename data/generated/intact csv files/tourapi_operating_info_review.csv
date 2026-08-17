@@ -1,0 +1,88 @@
+﻿source,source_place_id,name,operating_hours_raw,closed_days_raw,fees_raw,parking_raw,pet_raw,public_transport_raw,source_url
+tourapi,2783851,경암근린공원,상시 개방,연중무휴,,가능,,,
+tourapi,127069,관덕정의 각궁,06:00~22:00,매주 일요일,,,,,https://www.heritage.go.kr/heri/cul/culSelectDetail.do?ccbaKdcd=79&ccbaAsno=06940000&ccbaCtcd=24&pageNo=1_1_1_0
+tourapi,128158,광주 경찰충혼탑,상시 개방,연중무휴,,불가능,,,https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1266
+tourapi,2605353,광주 송정동 떡갈비 골목,매장 별 상이,매장 별 상이,,매장 별 상이,,,https://tour.gwangju.go.kr/home/tour/info/village/003.cs?act=view&infoId=695&category=003&searchCondition=&searchKeyword=&pageIndex=1
+tourapi,2822573,광주 수완호수공원,상시 개방,연중무휴,,가능,,,
+tourapi,127325,광주 충효동 왕버들 군,상시 개방,연중무휴,,가능,,,https://www.heritage.go.kr/heri/cul/culSelectDetail.do?ccbaKdcd=16&ccbaAsno=05390000&ccbaCtcd=24&pageNo=1_1_1_0
+tourapi,2489843,광주 평촌마을,상시 개방,매주 월요일,,가능,,,https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=1282
+tourapi,2605351,광주폴리,상시 개방,연중무휴,,,,,http://gwangjufolly.org/
+tourapi,126329,광주호,상시 개방,연중무휴,,가능 (약 180대),,,https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=2
+tourapi,126425,국립 5·18 민주묘지,09:00~18:00 (입장 마감 17:00),연중무휴,,가능,,,https://www.mpva.go.kr/518/index.do
+tourapi,1621334,금남로,상시 개방,연중무휴,,,,,
+tourapi,127356,너릿재공원,상시 개방,연중무휴,,가능,,,https://tour.gwangju.go.kr/home/tour/info/park/003.cs?act=view&infoId=1284&category=003&searchCondition=&searchKeyword=&pageIndex=2
+tourapi,2470068,녹색에너지체험관 (광주전남지역본부),10:00~17:00 (점심시간 12:00~13:00),매주 주말 / 법정 공휴일,,가능,,,https://dco.energy.or.kr/green/
+tourapi,2614773,덕산너덜 (무등산권 국가지질공원),상시 개방,연중무휴,,,,,http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=26&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE
+tourapi,1620893,도림사(광주),상시 개방,연중무휴,,불가능,,,https://www.grandculture.net/gwangju/toc/GC60001435
+tourapi,1621168,고싸움놀이전수교육관,,,무료 (체험 활동 비용 별도),,,,http://www.gossaum.com/
+tourapi,130032,광산문화원,,,,,,,http://gjgwangsan.kccf.or.kr
+tourapi,130391,광주 동구문화원,,,프로그램 별 상이,,,,http://gjdonggu.kccf.or.kr
+tourapi,130208,광주 북구문화원,,,강좌별 상이,,,,http://gjbukgu.or.kr/
+tourapi,130808,광주 송정다가치문화도서관,,,무료,,,,https://lib.gen.go.kr/songjung/
+tourapi,2733545,광주 전통문화관,,,무료<br>※ 강좌 및 체험 등은 별도,,,,http://www.gtcc.or.kr/
+tourapi,130033,광주광역시 서구문화원,,,무료,,,,http://www.gjsgcc.or.kr/
+tourapi,2779116,광주비엔날레전시관,,,무료,,,,http://www.gwangjubiennale.org/
+tourapi,129761,광주시립미술관,,,무료,,,,http://artmuse.gwangju.go.kr/
+tourapi,969963,광주야외음악당,,,공연마다 상이하므로 전화문의,,,,https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1246
+tourapi,3380159,광주자동차극장,,,"차량 1대당 23,000원",,,,http://gwangjudit.co.kr
+tourapi,2009775,국립아시아문화전당,,,시설에 따라 상이하므로 홈페이지 참고 요망,,,,http://www.acc.go.kr
+tourapi,130807,금호평생교육관,,,무료,,,,http://lib.gen.go.kr/geumho/
+tourapi,1745001,빛고을시민문화관,,,공연에 따라 상이하므로 홈페이지 참조,,,,http://bitculture.gjcf.or.kr
+tourapi,2605338,수피아여자중고등학교,,,,,,,
+tourapi,3460731,광주여성영화제,,,,,,,http://www.wffig.com/
+tourapi,131450,광주북구청소년수련관,,,,,,,http://www.bukguyouth.net
+tourapi,2739385,광주시패밀리랜드 카라반캠핑장,,,,,,,https://familylandcamping.com/index.html
+tourapi,2728916,승촌보오토캠핑장,,,,,,,https://camp.xticket.kr/web/main?shopEncode=a1535c44b7b5b3ab38fd902f0c58f8600f1a57e45999ac4b1a7b8c321f1d2df5
+tourapi,2661532,시민의 숲 야영장,,,,,,,http://www.grandculture.net/gwangju/donggu/toc/GC60000635
+tourapi,1622267,염주실내수영장,,,,,,,https://www.gmcc.co.kr/menu.es?mid=a10105010100
+tourapi,2763536,주노글램핑 인 광주시,,,,,,,https://062town.com
+tourapi,2718673,휴파크 광산점,,,,,,,http://gs.hupark.com/?iFlag=3
+tourapi,127480,가거도,상시 개방,연중무휴,,,,,https://tour.shinan.go.kr/home/tour/island_tour/heuksan/place/place_12/page.wscms
+tourapi,126273,가계해수욕장,09:00~18:00 (7~8월 해수욕장 개장 기간),연중무휴,,가능,,,https://www.jindo.go.kr/tour/tour/info/nature/002.cs?act=view&infoId=1&category=002&searchCondition=&searchKeyword=&pageIndex=1&m=57
+tourapi,127423,가마골계곡,상시 개방,연중무휴,,가능,,,
+tourapi,126289,가마미해수욕장,상시 개방 (해수욕장 09:00~18:00 물놀이 가능),연중무휴,,가능,,,https://tour.yeonggwang.go.kr/tour2?site=tour_2019&mn=7405&type=view&t_idx=4279
+tourapi,2615324,가사동백숲해변,,,,가능,,,https://www.wando.go.kr/tour/sub.cs?m=162&tCimTitle=%EA%B0%80%EC%82%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5&tCimUniqId=TCIM_000000000004499&tCfdMenuChoice=tCfdBeach
+tourapi,1916695,가사해수욕장,상시 개방,연중무휴,,가능,,,https://www.wando.go.kr/tour/sub.cs?m=162&tCimTitle=%EA%B0%80%EC%82%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5&tCimUniqId=TCIM_000000000004499&tCfdMenuChoice=tCfdBeach
+tourapi,1957336,가산서원,상시 개방,연중무휴,,가능,,,https://www.heritage.go.kr/heri/cul/culSelectDetail.do?pageNo=1_1_1_1&sngl=Y&ccbaCpno=3413601640000
+tourapi,2732489,가야금산조테마공원,10:00~17:00,,,,,,https://www.yeongam.go.kr/home/tour/enjoy/enjoy_02/show/31?page=1
+tourapi,3013529,가야정원,상시 개방,연중무휴,,,,,
+tourapi,129024,갈두마을(땅끝마을),상시개방,연중무휴,,가능,,,https://www.haenam.go.kr/tour/index.9is?contentUid=18e3368f68230ef801689ca7b32f7839
+tourapi,1957338,강덕사,상시 개방,연중무휴,,가능,,,
+tourapi,1349796,강진 백사어촌체험마을,09:00~17:00 (전화문의),연중무휴,,가능,,,https://www.gangjin.go.kr/culture/trip/village/baeksa
+tourapi,2515265,강진 백운동별서정원,상시 개방,연중무휴,,가능,,,https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=174
+tourapi,128952,강진 병영마을 옛 담장,상시 개방,연중무휴,,,,,
+tourapi,129693,강진 삼인리 비자나무,,,,,,,https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=83
+tourapi,1623643,강진군도서관,,,,,,,https://www.gjlib.go.kr/
+tourapi,1778079,강진아트홀,,,공연에 따라 다름,,,,http://arthall.gangjin.go.kr
+tourapi,2612901,고산 윤선도 박물관,,,무료,,,,https://gosan.haenam.go.kr/index.9is
+tourapi,129996,고흥문화원,,,,,,,
+tourapi,2605786,고흥분청문화박물관,,,"[개인]<br>- 일반 2,000원<br>- 청소년, 군인 1,500원<br>- 어린이 1,000원<br>[단체]<br>- 일반 1,000원<br>- 청소년, 군인 700원<br>- 어린이 500원",,,,http://buncheong.goheung.go.kr/
+tourapi,3351638,곡성기차마을 생태학습관,,,"대인 5,000원, 소인/경로 4,500원, 곡성군민/장애인 무료",,,,https://www.railtrip.co.kr/homepage/gokseong/
+tourapi,1054221,곡성레저문화센터,,,무료,,,,https://www.gokseong.go.kr/center/
+tourapi,129991,곡성문화원,,,,,,,http://www.gs-culture.or.kr/
+tourapi,2733394,광양 역사문화관,,,무료,,,,
+tourapi,2782651,광양매화문화관,,,무료,,,,http://www.maesil.co.kr/
+tourapi,129987,광양문화원,,,,,,,http://www.광양문화원.kr/
+tourapi,130205,광양시문화예술회관,,,※ 공연 별로 상이함,,,,http://www.gwangyang.go.kr/art
+tourapi,2732668,광양예술창고,,,무료,,,,https://gwangyang.go.kr/tour/gallery.es?mid=a31101020000&bid=0008&act=view&list_no=11119
+tourapi,130559,구례향제줄풍류전수관,,,무료,,,,
+tourapi,129896,국립해양유산연구소,,,무료,,,,https://www.seamuse.go.kr/
+tourapi,3012429,남도영화제 시즌2 광양,,,,,,,http://www.ndff.kr/
+tourapi,3506515,담양 다미담주 페스티벌 쓰담쓰담 야시장,,,,,,,https://daeinya.imweb.me/
+tourapi,3547386,한국전력과 함께하는 2025 희망·사랑 나눔 콘서트,,,,,,,
+tourapi,2737313,2025섬진강국제실험예술제(SIEAF),,,,,,,http://www.sieaf.com
+tourapi,2737354,가마골계곡 핫캠핑장,,,,,,,https://www.camfit.co.kr/camp/61961035e2a44c001e37bde1
+tourapi,2740970,가우도카라반펜션,,,,,,,http://www.gaudopension.com/
+tourapi,2752162,거금해양낚시공원,,,,,,,http://ggdofishingpark.com/
+tourapi,2554912,곡성기차마을 패러글라이딩,,,,,,,http://gspara.com
+tourapi,2739374,국립천관산자연휴양림캠핑장,,,,,,,https://www.foresttrip.go.kr/indvz/main.do?hmpgId=0196
+tourapi,2727342,굴전여가캠핑장,,,,,,,https://www.yumcorp.or.kr/www/service/guljeon_geumodo
+tourapi,2737326,글램킹 글램핑,,,,,,,https://www.instagram.com/nature_n_lynn/
+tourapi,2483594,금오도 비렁길,,,,,,,http://www.yeosu.go.kr/tour/travel/10tour/geumodo
+tourapi,2743206,금오도보금자리펜션,,,,,,,
+tourapi,2909143,낭도야영장,,,,,,,
+tourapi,2734187,달빛담은캠핑장,,,,,,,https://cafe.naver.com/dalbitcamping
+tourapi,2013935,담양 용마루길,,,,,,,https://www.water.or.kr
+tourapi,2729195,담양금성오토캠핑장,,,,,,,http://parapark.co.kr/camping_reservation2.htm
+tourapi,715953,담양레이나 CC,,,,,,,http://www.reinacc.co.kr/#main
+tourapi,2726659,담양힐링파크,,,,,,,http://xn--jk1bk1k8rgckfrnam9heta617d.kr/

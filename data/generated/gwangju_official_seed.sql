@@ -41,11 +41,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#정원','#산책','#공원','#아이동반','#주차가능','#휠체어','#반려동물']::text[],
+  array['#자연','#정원','#역사','#산책','#공원','#아이동반','#주차가능','#휠체어','#반려동물']::text[],
   '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
   '[1.0,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
-  '광주호 호수생태원 광주호는 1976년 완공된 이래 광주와 담양군 일대 농업용수로 활용하고 있는 인공 호수다. 광주호 상류에 2006년 개장한 광주호 호수생태원은 다양한 동식물에게 서식처를 제공하며 생태계 보전에 기여하고 있다. 진달래, 개나리, 자산홍, 장미, 철쭉, 수국 등 형형색색의 야생화가 핀 테마별 꽃 단지와 부엽식물원이 있어 다양한 생물을 관찰할 수 있고, 버들길, 풀피리길, 별뫼길, 가물치길, 돌밑길 등의 산책길에는 각각의 이름과 주제에 맞는 볼거리로 가득하다. 호수생태원 주변에는 환벽당, 취가정 등 조선 시대 가사 문학의 산실이라 할 수 있는 정자들이 있다. 송강 정철이 ''성산별곡'' ''식영정 20영'' 등의 한시를 남긴 식영정, 조선 시대 정원 문화의 진수를 보여주는 소쇄원과도 가깝다. [출처: 광주 트래블 컬렉션] #자연 #정원 #산책 #공원 #아이동반 #주차가능 #휠체어 #반려동물', '1.0.0',
-  'import', 0.55,
+  '광주호 호수생태원 광주호는 1976년 완공된 이래 광주와 담양군 일대 농업용수로 활용하고 있는 인공 호수다. 광주호 상류에 2006년 개장한 광주호 호수생태원은 다양한 동식물에게 서식처를 제공하며 생태계 보전에 기여하고 있다. 진달래, 개나리, 자산홍, 장미, 철쭉, 수국 등 형형색색의 야생화가 핀 테마별 꽃 단지와 부엽식물원이 있어 다양한 생물을 관찰할 수 있고, 버들길, 풀피리길, 별뫼길, 가물치길, 돌밑길 등의 산책길에는 각각의 이름과 주제에 맞는 볼거리로 가득하다. 호수생태원 주변에는 환벽당, 취가정 등 조선 시대 가사 문학의 산실이라 할 수 있는 정자들이 있다. 송강 정철이 ''성산별곡'' ''식영정 20영'' 등의 한시를 남긴 식영정, 조선 시대 정원 문화의 진수를 보여주는 소쇄원과도 가깝다. [출처: 광주 트래블 컬렉션] #자연 #정원 #역사 #산책 #공원 #아이동반 #주차가능 #휠체어 #반려동물', '1.0.0',
+  'import', 0.57,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=2", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'nature.cs:2'
@@ -95,11 +95,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#무등산','#문화유산','#예술','#전시','#공원','#시즌한정','#아이동반','#주차가능','#휠체어']::text[],
+  array['#자연','#무등산','#역사','#문화유산','#예술','#전시','#공원','#시즌한정','#아이동반','#주차가능']::text[],
   '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
   '[1.0,0.0,0.0,0.0,0.0,0.75,0.75,0.5]'::extensions.vector(8),
-  '무등산 국립공원 2025~2026 한국관광100선 선정 국가지질공원이자 유네스코 세계지질공원으로 지정된 무등산국립공원은 전체면적 75.425㎢, 해발1,187m로 광주,담양,화순에 걸쳐 있다. 서석대, 입석대로 불리는 주상절리(용암이 식을 때 수축하여 생기는 절리 중에 단면의 형태가 오각형이나 육각형의 기둥 모양인 것)을 포함해 기암괴석 등 61개의 자연경관을 자랑한다. 수달, 상제나비, 삵, 담비, 하늘다람쥐, 으름난초 등 멸종위기종 8종을 포함해 총 4,012종의 동식물이 서식하는 것으로 알려져 있다. 신의 돌기둥으로 불리는 주상절리, 광주문화재자료 제1호 천년고찰 증심사, 조선시대 가사문학의 정취가 담긴 가사문화권, 문화·예술의 혼이 서린 운림동 미술관, 원효계곡의 산세 속에 위치한 원효사 등 무등산국립공원은 광주의 모든 것을 품고 있다. 뿐만 아니라 청록색의 무등산 수박과 소박한 건강식인 무등산보리밥도 맛볼 수 있다. 광주 도심에 위치해 있어서 계절마다 수많은 사람들이 찾는다. #자연 #무등산 #문화유산 #예술 #전시 #공원 #시즌한정 #아이동반 #주차가능 #휠체어', '1.0.0',
-  'import', 0.57,
+  '무등산 국립공원 2025~2026 한국관광100선 선정 국가지질공원이자 유네스코 세계지질공원으로 지정된 무등산국립공원은 전체면적 75.425㎢, 해발1,187m로 광주,담양,화순에 걸쳐 있다. 서석대, 입석대로 불리는 주상절리(용암이 식을 때 수축하여 생기는 절리 중에 단면의 형태가 오각형이나 육각형의 기둥 모양인 것)을 포함해 기암괴석 등 61개의 자연경관을 자랑한다. 수달, 상제나비, 삵, 담비, 하늘다람쥐, 으름난초 등 멸종위기종 8종을 포함해 총 4,012종의 동식물이 서식하는 것으로 알려져 있다. 신의 돌기둥으로 불리는 주상절리, 광주문화재자료 제1호 천년고찰 증심사, 조선시대 가사문학의 정취가 담긴 가사문화권, 문화·예술의 혼이 서린 운림동 미술관, 원효계곡의 산세 속에 위치한 원효사 등 무등산국립공원은 광주의 모든 것을 품고 있다. 뿐만 아니라 청록색의 무등산 수박과 소박한 건강식인 무등산보리밥도 맛볼 수 있다. 광주 도심에 위치해 있어서 계절마다 수많은 사람들이 찾는다. #자연 #무등산 #역사 #문화유산 #예술 #전시 #공원 #시즌한정 #아이동반 #주차가능', '1.0.0',
+  'import', 0.6,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=360", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'nature.cs:360'
@@ -207,7 +207,7 @@ select p.id,
   '{"nature": 0.75, "culture": 0.75, "art": 0.0, "food": 0.0, "activity": 0.25, "sports": 0.5, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.75,0.75,0.0,0.0,0.25,0.5,0.0,0.0]'::extensions.vector(8),
   '광주천 무등산 남쪽 자락, 용추계곡에서 발원해 도심을 관통한 뒤 영산강으로 합류하는 하천, 천연기념물이자 멸종 위기 종인 수달과 원앙, 황조롱이, 소쩍새, 삵, 말똥가리 등이 서식한다. 광주천은 조선 시대부터 현재까지 도시 역사에서 중요한 의미를 지닌 장소다. ''조탄강''이라 불리던 조선 시대에는 강폭이 지금의 5배 이상이었으며, 드넓은 하천부지는 시민들의 놀이터이자 빨래터였다. 광주천 중류 조탄보에 가둔 물로 광주읍성 바깥에 해자를 지어 적의 침입을 막기도 했다. 일제강점기에에 ''광주천''으로 이름이 바뀌었으며, 직강화 사업을 진행하면서 강폭이 좁아지고 수량도 줄었다. 1970년대에 광주천의 지류를 덮는 복개 사업을 본격화했는데, 그 결과 주요 지류는 하수구가 되고, 복개된 하천 위에는 도로와 시장이 생겼다. 광주천의 계속된 오염으로 환경단체와 시민들이 광주천 살리기 운동을 꾸준히 펼쳐 일부 수질개선과 천변 미화 등의 성과를 거두고 있다. [출처: 광주 관광 트래블 컬렉션] #자연 #무등산 #역사 #근대문화 #시장 #레저', '1.0.0',
-  'import', 0.53,
+  'import', 0.55,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=255", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'nature.cs:255'
@@ -327,7 +327,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1171', '4·19혁명기념관', '광주', '동구', '역사·전통', '광주4·19혁명기념관은 전국에서 유일하다. 3·15부정선거 첫 규탄 이른바 곡(哭)민주주의 장송’ 봉기가 4·19혁명의 첫 횃불로 도화선을 그었던 역사적 상징성을 지니고 있다. 이 기념관은 4·19혁명 46년만에 광주광역시 제4기 박광태 시장의 용단으로 건립된 것으로 매년 1천여명의 전국방문객을 맞고 있다.', '전남광주통합특별시 동구 계림동 562-6', null, 35.16148576, 126.9187832, '062-234-0149, 062-224-0419', 'https://minjuroad.kdemo.or.kr/location/251', 'https://tour.gwangju.go.kr/uploads/tour/info/history/202108270448561450.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1171', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1171', '4·19혁명기념관', '광주', '동구', '역사·전통', '광주4·19혁명기념관은 전국에서 유일하다. 3·15부정선거 첫 규탄 이른바 곡(哭)민주주의 장송’ 봉기가 4·19혁명의 첫 횃불로 도화선을 그었던 역사적 상징성을 지니고 있다. 이 기념관은 4·19혁명 46년만에 광주광역시 제4기 박광태 시장의 용단으로 건립된 것으로 매년 1천여명의 전국방문객을 맞고 있다.', '전남광주통합특별시 동구 계림동 562-6', null, 35.16148575936654, 126.9187831878662, '062-234-0149, 062-224-0419', 'https://minjuroad.kdemo.or.kr/location/251', 'https://tour.gwangju.go.kr/uploads/tour/info/history/202108270448561450.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1171', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -489,7 +489,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1268', '광주 3.1 만세운동 기념비', '광주', '남구', '역사·전통', '광주는 일제강점기 시절 광주학생운동을 시작으로 다양한 독립운동이 펼쳐진 고장이다. 이러한 고장에서 3·1 만세운동이 벌어진 것은 당연한 결과이다. 이러한 광주지역의 3·1 만세운동을 기념하고 당시의 넋을 기리기 위해 만들어진 것이 “광주 3.1 만세운동 기념비”이다. 1995년 5월 10일에 건립한 이 기념비는 양림동 256번지 수피아여고 후문 안에 자리 잡고 있다. 앞면에는 "광주 3·1 만세운동 기념"이라고 새겨져 있고, 뒷면은 1919년 3월 10일 광주 3·1 만세운동에 앞장섰기 때문에 옥고를 치른 수피아 학생들의 이름을 새겨 길이 기념하고자 했다. * 당시의 넋을 기리는 기념비의 추모시 * 기념비에는 박순애, 이태옥, 김양순, 윤혈녀, 김덕순, 조옥희, 이금봉, 하영자, 강화선, 이라혈, 최수향, 김만순, 홍순해 등 23명의 명단이 새겨져 있으며, 옆면은 "역사의 별이 되어" 라는 추모시가 다음과 같이 새겨져 있다.천추에 이름 석자 누구나 남기는가, 기미년 3·1 운동 선두에 서서 구국의 일념으로 충성을 맹세하고 태극기 앞에 두고서 독립만세를 외쳤네. 일제의 총칼 앞에 나라가 침탈 당하자 자유 없는 속박에서 사느니보다 사슬을 끊기 위해 목숨 걸고 싸웠네. 모진 고문을 당하여도 이겨낸 고결한 애국 얼이 역사의 별이 되어 무궁토록 빛나네. * 규 모: 넓이 4㎡ 길이 7m * 형 상: 3·1 운동 때 여학생들이 태극기를 들고 만세를 부르고 있는 형상', '전남광주통합특별시 남구 백서로 13(양림동)', null, 35.13676199, 126.9096947, '062-670-3008', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030552079800.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1268', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1268', '광주 3.1 만세운동 기념비', '광주', '남구', '역사·전통', '광주는 일제강점기 시절 광주학생운동을 시작으로 다양한 독립운동이 펼쳐진 고장이다. 이러한 고장에서 3·1 만세운동이 벌어진 것은 당연한 결과이다. 이러한 광주지역의 3·1 만세운동을 기념하고 당시의 넋을 기리기 위해 만들어진 것이 “광주 3.1 만세운동 기념비”이다. 1995년 5월 10일에 건립한 이 기념비는 양림동 256번지 수피아여고 후문 안에 자리 잡고 있다. 앞면에는 "광주 3·1 만세운동 기념"이라고 새겨져 있고, 뒷면은 1919년 3월 10일 광주 3·1 만세운동에 앞장섰기 때문에 옥고를 치른 수피아 학생들의 이름을 새겨 길이 기념하고자 했다. * 당시의 넋을 기리는 기념비의 추모시 * 기념비에는 박순애, 이태옥, 김양순, 윤혈녀, 김덕순, 조옥희, 이금봉, 하영자, 강화선, 이라혈, 최수향, 김만순, 홍순해 등 23명의 명단이 새겨져 있으며, 옆면은 "역사의 별이 되어" 라는 추모시가 다음과 같이 새겨져 있다.천추에 이름 석자 누구나 남기는가, 기미년 3·1 운동 선두에 서서 구국의 일념으로 충성을 맹세하고 태극기 앞에 두고서 독립만세를 외쳤네. 일제의 총칼 앞에 나라가 침탈 당하자 자유 없는 속박에서 사느니보다 사슬을 끊기 위해 목숨 걸고 싸웠네. 모진 고문을 당하여도 이겨낸 고결한 애국 얼이 역사의 별이 되어 무궁토록 빛나네. * 규 모: 넓이 4㎡ 길이 7m * 형 상: 3·1 운동 때 여학생들이 태극기를 들고 만세를 부르고 있는 형상', '전남광주통합특별시 남구 백서로 13(양림동)', null, 35.136761993, 126.9096947007, '062-670-3008', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030552079800.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1268', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -543,7 +543,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1266', '광주 경찰충혼탑', '광주', '남구', '역사·전통', '경찰충혼답은 광주 사직공원에 위치해 있는 탑으로 높이가 약 14m에 이른다. 광주공원 입구의 계단을 한참 오르다 보면 나타난다. 이 탑은 여순 사건과 한국전쟁 등 당시 국가를 위해 목숨을 바친 광주, 전남출신 순국 경찰관 3,196명의 위패를 봉안하고 있다. 경찰충혼탑은 원래 1956년 전남도청 앞 상무관 정원에 건립되었는데 시간이 지나 탑이 붕괴 위험에 처해졌고, 이것을 1981년 10월 23일 현재의 위치(사구동 177번지)에 이전 건립하여 지금에 이르고 있다. * 경찰충혼탑이 있는 광주 사직공원 * 사직공원은 광주시의 제1호 공원이다. 옛날에는 성거사가 있었으며 일제강점기 때는 일본인들의 신사가 있던 곳인데 현재는 현충각과 광주시립 박물관, 시민관 등이 자리하고 있다.현충탑을 중심으로 한 공터는 노인들의 휴식처로 애용된다. 사직공원은 장수의 상징인 거북이 형상을 하고 있으며, 이곳에는 1974년 새로 설립한 광주시립 국악원과 조선조 이래의 생활도구를 전시한 민속관이 광주시립박물관에 병설되어있다.', '전남광주통합특별시 남구 사직길 49', null, 35.142542, 126.9155968, '062-675-3280', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030549151670.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1266', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1266', '광주 경찰충혼탑', '광주', '남구', '역사·전통', '경찰충혼답은 광주 사직공원에 위치해 있는 탑으로 높이가 약 14m에 이른다. 광주공원 입구의 계단을 한참 오르다 보면 나타난다. 이 탑은 여순 사건과 한국전쟁 등 당시 국가를 위해 목숨을 바친 광주, 전남출신 순국 경찰관 3,196명의 위패를 봉안하고 있다. 경찰충혼탑은 원래 1956년 전남도청 앞 상무관 정원에 건립되었는데 시간이 지나 탑이 붕괴 위험에 처해졌고, 이것을 1981년 10월 23일 현재의 위치(사구동 177번지)에 이전 건립하여 지금에 이르고 있다. * 경찰충혼탑이 있는 광주 사직공원 * 사직공원은 광주시의 제1호 공원이다. 옛날에는 성거사가 있었으며 일제강점기 때는 일본인들의 신사가 있던 곳인데 현재는 현충각과 광주시립 박물관, 시민관 등이 자리하고 있다.현충탑을 중심으로 한 공터는 노인들의 휴식처로 애용된다. 사직공원은 장수의 상징인 거북이 형상을 하고 있으며, 이곳에는 1974년 새로 설립한 광주시립 국악원과 조선조 이래의 생활도구를 전시한 민속관이 광주시립박물관에 병설되어있다.', '전남광주통합특별시 남구 사직길 49', null, 35.142541996, 126.9155968119, '062-675-3280', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030549151670.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1266', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -597,7 +597,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:161', '(전) 광주 성거사지 오층석탑', '광주', '남구', '문화·예술', '광주천변에 위치한 광주공원은 성거산(聖居山)이라 불리웠다. 여기에 성거사라는 절이 있었다고 한다. 이 절에 있던 5층 석탑이라 하여 전 성거사지 오층석탑이라 명했다. 고려시대에 세워진 것으로 추정되며 보물 제109호로 지정되어 있다. 석탑의 아랫부분은 단층이며, 이 위에 2단으로 나누어 5개의 돌을 맞추고 있다. 이는 이전에 볼 수 없던 고려시대에 흔히 나타나는 특색이다. 지붕돌 밑면의 받침은 4단이고 각 귀퉁이는 모두 약간씩 치켜 올려져 있다. 1961년에 석탑을 다시 고쳐 세울 때 2층 탑신에서 금동으로 만든 집 모양의 사리장치가 발견되었다. 이 석탑과 관련하여 이야기 하나가 전해지고 있다. 성거산의 모양이 거북이처럼 생겨 지명도 구동(龜洞)으로 불리운다. 그런데 거북이가 광주를 떠나는 방향으로 가는 형세여서 광주를 떠나지 못하도록 거북의 등 위치에 성거사를 세우고 거북의 목 부근에는 5층석탑을 세웠다는 이야기다. 당초에 석탑은 꼬리부분에 세우려 했으나 몇 번이고 무너지자 지나가는 승려가 움직이는 꼬리에 세우려하니 무너지는 것이라며 움직이지 못하게 목에 세워야 한다고 해서 현재의 자리에 세워졌다 한다.', '전남광주통합특별시 남구 서오층석탑2길 17', null, 35.147863, 126.90791, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805230508347890.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=161', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:161', '(전) 광주 성거사지 오층석탑', '광주', '남구', '문화·예술', '광주천변에 위치한 광주공원은 성거산(聖居山)이라 불리웠다. 여기에 성거사라는 절이 있었다고 한다. 이 절에 있던 5층 석탑이라 하여 전 성거사지 오층석탑이라 명했다. 고려시대에 세워진 것으로 추정되며 보물 제109호로 지정되어 있다. 석탑의 아랫부분은 단층이며, 이 위에 2단으로 나누어 5개의 돌을 맞추고 있다. 이는 이전에 볼 수 없던 고려시대에 흔히 나타나는 특색이다. 지붕돌 밑면의 받침은 4단이고 각 귀퉁이는 모두 약간씩 치켜 올려져 있다. 1961년에 석탑을 다시 고쳐 세울 때 2층 탑신에서 금동으로 만든 집 모양의 사리장치가 발견되었다. 이 석탑과 관련하여 이야기 하나가 전해지고 있다. 성거산의 모양이 거북이처럼 생겨 지명도 구동(龜洞)으로 불리운다. 그런데 거북이가 광주를 떠나는 방향으로 가는 형세여서 광주를 떠나지 못하도록 거북의 등 위치에 성거사를 세우고 거북의 목 부근에는 5층석탑을 세웠다는 이야기다. 당초에 석탑은 꼬리부분에 세우려 했으나 몇 번이고 무너지자 지나가는 승려가 움직이는 꼬리에 세우려하니 무너지는 것이라며 움직이지 못하게 목에 세워야 한다고 해서 현재의 자리에 세워졌다 한다.', '전남광주통합특별시 남구 서오층석탑2길 17', null, 35.147863, 126.90791, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805230508347890.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=161', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -635,10 +635,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#공원','#실내','#비오는날']::text[],
+  array['#예술','#공원']::text[],
   '{"nature": 0.5, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
   '[0.5,0.0,0.75,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
-  '(전) 광주 성거사지 오층석탑 광주천변에 위치한 광주공원은 성거산(聖居山)이라 불리웠다. 여기에 성거사라는 절이 있었다고 한다. 이 절에 있던 5층 석탑이라 하여 전 성거사지 오층석탑이라 명했다. 고려시대에 세워진 것으로 추정되며 보물 제109호로 지정되어 있다. 석탑의 아랫부분은 단층이며, 이 위에 2단으로 나누어 5개의 돌을 맞추고 있다. 이는 이전에 볼 수 없던 고려시대에 흔히 나타나는 특색이다. 지붕돌 밑면의 받침은 4단이고 각 귀퉁이는 모두 약간씩 치켜 올려져 있다. 1961년에 석탑을 다시 고쳐 세울 때 2층 탑신에서 금동으로 만든 집 모양의 사리장치가 발견되었다. 이 석탑과 관련하여 이야기 하나가 전해지고 있다. 성거산의 모양이 거북이처럼 생겨 지명도 구동(龜洞)으로 불리운다. 그런데 거북이가 광주를 떠나는 방향으로 가는 형세여서 광주를 떠나지 못하도록 거북의 등 위치에 성거사를 세우고 거북의 목 부근에는 5층석탑을 세웠다는 이야기다. 당초에 석탑은 꼬리부분에 세우려 했으나 몇 번이고 무너지자 지나가는 승려가 움직이는 꼬리에 세우려하니 무너지는 것이라며 움직이지 못하게 목에 세워야 한다고 해서 현재의 자리에 세워졌다 한다. #예술 #공원 #실내 #비오는날', '1.0.0',
+  '(전) 광주 성거사지 오층석탑 광주천변에 위치한 광주공원은 성거산(聖居山)이라 불리웠다. 여기에 성거사라는 절이 있었다고 한다. 이 절에 있던 5층 석탑이라 하여 전 성거사지 오층석탑이라 명했다. 고려시대에 세워진 것으로 추정되며 보물 제109호로 지정되어 있다. 석탑의 아랫부분은 단층이며, 이 위에 2단으로 나누어 5개의 돌을 맞추고 있다. 이는 이전에 볼 수 없던 고려시대에 흔히 나타나는 특색이다. 지붕돌 밑면의 받침은 4단이고 각 귀퉁이는 모두 약간씩 치켜 올려져 있다. 1961년에 석탑을 다시 고쳐 세울 때 2층 탑신에서 금동으로 만든 집 모양의 사리장치가 발견되었다. 이 석탑과 관련하여 이야기 하나가 전해지고 있다. 성거산의 모양이 거북이처럼 생겨 지명도 구동(龜洞)으로 불리운다. 그런데 거북이가 광주를 떠나는 방향으로 가는 형세여서 광주를 떠나지 못하도록 거북의 등 위치에 성거사를 세우고 거북의 목 부근에는 5층석탑을 세웠다는 이야기다. 당초에 석탑은 꼬리부분에 세우려 했으나 몇 번이고 무너지자 지나가는 승려가 움직이는 꼬리에 세우려하니 무너지는 것이라며 움직이지 못하게 목에 세워야 한다고 해서 현재의 자리에 세워졌다 한다. #예술 #공원', '1.0.0',
   'import', 0.4,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=161", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -651,7 +651,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:1253', '경장각', '광주', '광산구', '문화·예술', '경장각은 조선인조(仁祖1551∼1627) 때의 문신(文臣)이었던 이신의(李信儀)을 배양하는 곳이다. 이 곳에는 이신의의 유물로 선조왕 친필병풍(親筆屛風)과 거문고가 보존되어 있다. 병풍은 인조가 그의 충절을 가상히하여 선조왕 친필을 하사한 것이며, 거문고는 석탄이 평소 애용하던 거문고이다. 이신의는 정묘호란 때 왕을 대동하여 강화도로 가던 중 병으로 인천에 체류하다가 수원 마정리에서 객사하였다.', '전남광주통합특별시 광산구 용아로 460(흑석동)', null, 35.18436319, 126.8052666, '062-960-8253', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030519331520.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1253', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:1253', '경장각', '광주', '광산구', '문화·예술', '경장각은 조선인조(仁祖1551∼1627) 때의 문신(文臣)이었던 이신의(李信儀)을 배양하는 곳이다. 이 곳에는 이신의의 유물로 선조왕 친필병풍(親筆屛風)과 거문고가 보존되어 있다. 병풍은 인조가 그의 충절을 가상히하여 선조왕 친필을 하사한 것이며, 거문고는 석탄이 평소 애용하던 거문고이다. 이신의는 정묘호란 때 왕을 대동하여 강화도로 가던 중 병으로 인천에 체류하다가 수원 마정리에서 객사하였다.', '전남광주통합특별시 광산구 용아로 460(흑석동)', null, 35.1843631887, 126.8052666353, '062-960-8253', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030519331520.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1253', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -689,11 +689,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
+  array['#역사','#예술']::text[],
   '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '경장각 경장각은 조선인조(仁祖1551∼1627) 때의 문신(文臣)이었던 이신의(李信儀)을 배양하는 곳이다. 이 곳에는 이신의의 유물로 선조왕 친필병풍(親筆屛風)과 거문고가 보존되어 있다. 병풍은 인조가 그의 충절을 가상히하여 선조왕 친필을 하사한 것이며, 거문고는 석탄이 평소 애용하던 거문고이다. 이신의는 정묘호란 때 왕을 대동하여 강화도로 가던 중 병으로 인천에 체류하다가 수원 마정리에서 객사하였다. #예술 #실내 #비오는날', '1.0.0',
-  'import', 0.38,
+  '경장각 경장각은 조선인조(仁祖1551∼1627) 때의 문신(文臣)이었던 이신의(李信儀)을 배양하는 곳이다. 이 곳에는 이신의의 유물로 선조왕 친필병풍(親筆屛風)과 거문고가 보존되어 있다. 병풍은 인조가 그의 충절을 가상히하여 선조왕 친필을 하사한 것이며, 거문고는 석탄이 평소 애용하던 거문고이다. 이신의는 정묘호란 때 왕을 대동하여 강화도로 가던 중 병으로 인천에 체류하다가 수원 마정리에서 객사하였다. #역사 #예술', '1.0.0',
+  'import', 0.4,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1253", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'culture.cs:1253'
@@ -705,7 +705,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:1050', '광주 미디어아트 플랫폼', '광주', '남구', '문화·예술', '2014년 12월 국내에서 처음으로 유네스코 미디어아트 창의도시로 선정된 광주시는 ‘광주 미디어아트 창의도시 마스터플랜’ 수립을 시작으로 미디어아트 창의벨트, 미디어아트 플랫폼 조성, 미디어아트 플랫폼 파사드 콘텐츠 개발, 미디어아트 페스티벌 개최 등 ‘미디어아트’를 통해 예술과 삶의 연결을 주도하는 문화산업 도시로서의 기반을 구축해왔다. 광주미디어아트플랫폼(G.MAP/Gwangju Media Art Platform) 은 광주시의 미디어아트 관련 특성화 정책을 총괄적으로 수행하는 컨트롤 타워로서, 시민과 예술가의 창의 역량을 축적하고 창의적인 도시환경 개선을 통해 예술-과학-산업의 선순환 기능을 주도해 나갈 것이다. G.MAP은 지하 2층, 지상 3층 규모로 건립되었으며, 크게 창작과 전시, 교육 및 교류 공간으로 구분된다. G.MAP은 시민, 예술가, 창의 인력이 만드는 미디어아트 문화 공간, 예술, 기술, 산업이 융합하는 미디어아트 창의 공간, 전 세계 창의도시를 연결하는 교류공간 등 세계를 향한 미디어아트의 허브로서 역할을 해나갈 것이다. ○시설현황 - 주요시설: 전시실, 미디어아트라운지, 창·제작실, 세미나실, 네트워킹실 [출처: 광주미디아트플랫폼 누리집]', '전남광주통합특별시 남구 천변좌로 338번길 7 (구동12) 빛고을시민문화관 일대', null, 35.1481359, 126.9086454, '062-613-6124/070-4195-2104', 'http://gmap.gwangju.go.kr/', 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202405230645462440.jpg', 90, true, true, true, null, true, false, null, 0, 0, 'active', 0.9, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1050', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:1050', '광주 미디어아트 플랫폼', '광주', '남구', '문화·예술', '2014년 12월 국내에서 처음으로 유네스코 미디어아트 창의도시로 선정된 광주시는 ‘광주 미디어아트 창의도시 마스터플랜’ 수립을 시작으로 미디어아트 창의벨트, 미디어아트 플랫폼 조성, 미디어아트 플랫폼 파사드 콘텐츠 개발, 미디어아트 페스티벌 개최 등 ‘미디어아트’를 통해 예술과 삶의 연결을 주도하는 문화산업 도시로서의 기반을 구축해왔다. 광주미디어아트플랫폼(G.MAP/Gwangju Media Art Platform) 은 광주시의 미디어아트 관련 특성화 정책을 총괄적으로 수행하는 컨트롤 타워로서, 시민과 예술가의 창의 역량을 축적하고 창의적인 도시환경 개선을 통해 예술-과학-산업의 선순환 기능을 주도해 나갈 것이다. G.MAP은 지하 2층, 지상 3층 규모로 건립되었으며, 크게 창작과 전시, 교육 및 교류 공간으로 구분된다. G.MAP은 시민, 예술가, 창의 인력이 만드는 미디어아트 문화 공간, 예술, 기술, 산업이 융합하는 미디어아트 창의 공간, 전 세계 창의도시를 연결하는 교류공간 등 세계를 향한 미디어아트의 허브로서 역할을 해나갈 것이다. ○시설현황 - 주요시설: 전시실, 미디어아트라운지, 창·제작실, 세미나실, 네트워킹실 [출처: 광주미디아트플랫폼 누리집]', '전남광주통합특별시 남구 천변좌로 338번길 7 (구동12) 빛고을시민문화관 일대', null, 35.1481359, 126.9086454, '062-613-6124/070-4195-2104', 'http://gmap.gwangju.go.kr/', 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202405230645462440.jpg', 90, false, false, true, null, true, false, null, 0, 0, 'active', 0.9, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1050', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -743,10 +743,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#전시','#교육','#축제','#실내','#비오는날','#아이동반','#휠체어']::text[],
+  array['#예술','#전시','#교육','#축제','#아이동반','#휠체어']::text[],
   '{"nature": 0.5, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
   '[0.5,0.0,1.0,0.0,0.5,0.0,0.0,0.5]'::extensions.vector(8),
-  '광주 미디어아트 플랫폼 2014년 12월 국내에서 처음으로 유네스코 미디어아트 창의도시로 선정된 광주시는 ‘광주 미디어아트 창의도시 마스터플랜’ 수립을 시작으로 미디어아트 창의벨트, 미디어아트 플랫폼 조성, 미디어아트 플랫폼 파사드 콘텐츠 개발, 미디어아트 페스티벌 개최 등 ‘미디어아트’를 통해 예술과 삶의 연결을 주도하는 문화산업 도시로서의 기반을 구축해왔다. 광주미디어아트플랫폼(G.MAP/Gwangju Media Art Platform) 은 광주시의 미디어아트 관련 특성화 정책을 총괄적으로 수행하는 컨트롤 타워로서, 시민과 예술가의 창의 역량을 축적하고 창의적인 도시환경 개선을 통해 예술-과학-산업의 선순환 기능을 주도해 나갈 것이다. G.MAP은 지하 2층, 지상 3층 규모로 건립되었으며, 크게 창작과 전시, 교육 및 교류 공간으로 구분된다. G.MAP은 시민, 예술가, 창의 인력이 만드는 미디어아트 문화 공간, 예술, 기술, 산업이 융합하는 미디어아트 창의 공간, 전 세계 창의도시를 연결하는 교류공간 등 세계를 향한 미디어아트의 허브로서 역할을 해나갈 것이다. ○시설현황 - 주요시설: 전시실, 미디어아트라운지, 창·제작실, 세미나실, 네트워킹실 [출처: 광주미디아트플랫폼 누리집] #예술 #전시 #교육 #축제 #실내 #비오는날 #아이동반 #휠체어', '1.0.0',
+  '광주 미디어아트 플랫폼 2014년 12월 국내에서 처음으로 유네스코 미디어아트 창의도시로 선정된 광주시는 ‘광주 미디어아트 창의도시 마스터플랜’ 수립을 시작으로 미디어아트 창의벨트, 미디어아트 플랫폼 조성, 미디어아트 플랫폼 파사드 콘텐츠 개발, 미디어아트 페스티벌 개최 등 ‘미디어아트’를 통해 예술과 삶의 연결을 주도하는 문화산업 도시로서의 기반을 구축해왔다. 광주미디어아트플랫폼(G.MAP/Gwangju Media Art Platform) 은 광주시의 미디어아트 관련 특성화 정책을 총괄적으로 수행하는 컨트롤 타워로서, 시민과 예술가의 창의 역량을 축적하고 창의적인 도시환경 개선을 통해 예술-과학-산업의 선순환 기능을 주도해 나갈 것이다. G.MAP은 지하 2층, 지상 3층 규모로 건립되었으며, 크게 창작과 전시, 교육 및 교류 공간으로 구분된다. G.MAP은 시민, 예술가, 창의 인력이 만드는 미디어아트 문화 공간, 예술, 기술, 산업이 융합하는 미디어아트 창의 공간, 전 세계 창의도시를 연결하는 교류공간 등 세계를 향한 미디어아트의 허브로서 역할을 해나갈 것이다. ○시설현황 - 주요시설: 전시실, 미디어아트라운지, 창·제작실, 세미나실, 네트워킹실 [출처: 광주미디아트플랫폼 누리집] #예술 #전시 #교육 #축제 #아이동반 #휠체어', '1.0.0',
   'import', 0.5,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1050", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -759,7 +759,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:162', '광주 자운사 목조아미타래여좌상 및 복장유물', '광주', '동구', '문화·예술', '이 불상은 복장품에서 1388년 중수개금한 내용의 기문이 밝혀져 그 이전에 조성되었음을 알 수 있다. 재료의 특성상 목제가 오랫동안 전래되기 어려운 한계가 있다는 것을 감안하면 고려시대에 조성된 목조 불상으로서 중요한 자료이다. 1276년에 제작된 개운사 목조 아미타불좌상을 비롯하여 수국사 목조아미타불좌상, 화성 봉림사 목조아미타불좌상 등 대체로 12세기 말에 제작되었다고 생각되는 일련의 목불좌상들과 같은 계열의 불상이다. 자운사의 복장전적은 대수구다라니(大隨求陀羅尼) 및 주금강경(注金剛經) 등 국내에 처음 소개되는 의미 있는 자료가 다수 있으며, 함께 발견된 복장조성기에 의해 복장이 조성된 절대연대가 확실하여 서지학 분야의 판본 연구는 물론, 불교학의 내용 연구와 미술사의 도상(圖像) 연구에 있어서 중요한 자료적 가치를 지닌 복장 유물로 평가된다. 또한 섬유류의 유물이 존속하기 어려운 우리나라의 기후·환경 조건 등을 고려할 때 자운사 복장직물의 역사적·민속적 가치가 크다. 1611년에 내장된 후령통(候鈴筒)과 팔엽연화(八葉蓮花), 오보병(五寶甁)도 일괄 부속품으로 함께 지정한다.', '전남광주통합특별시 동구 지호로106번길 8-8', null, 35.1479923, 126.941531, '062-608-3333', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805290454267220.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=162', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:162', '광주 자운사 목조아미타래여좌상 및 복장유물', '광주', '동구', '문화·예술', '이 불상은 복장품에서 1388년 중수개금한 내용의 기문이 밝혀져 그 이전에 조성되었음을 알 수 있다. 재료의 특성상 목제가 오랫동안 전래되기 어려운 한계가 있다는 것을 감안하면 고려시대에 조성된 목조 불상으로서 중요한 자료이다. 1276년에 제작된 개운사 목조 아미타불좌상을 비롯하여 수국사 목조아미타불좌상, 화성 봉림사 목조아미타불좌상 등 대체로 12세기 말에 제작되었다고 생각되는 일련의 목불좌상들과 같은 계열의 불상이다. 자운사의 복장전적은 대수구다라니(大隨求陀羅尼) 및 주금강경(注金剛經) 등 국내에 처음 소개되는 의미 있는 자료가 다수 있으며, 함께 발견된 복장조성기에 의해 복장이 조성된 절대연대가 확실하여 서지학 분야의 판본 연구는 물론, 불교학의 내용 연구와 미술사의 도상(圖像) 연구에 있어서 중요한 자료적 가치를 지닌 복장 유물로 평가된다. 또한 섬유류의 유물이 존속하기 어려운 우리나라의 기후·환경 조건 등을 고려할 때 자운사 복장직물의 역사적·민속적 가치가 크다. 1611년에 내장된 후령통(候鈴筒)과 팔엽연화(八葉蓮花), 오보병(五寶甁)도 일괄 부속품으로 함께 지정한다.', '전남광주통합특별시 동구 지호로106번길 8-8', null, 35.1479923, 126.941531, '062-608-3333', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805290454267220.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=162', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -797,10 +797,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#역사','#예술','#실내','#비오는날']::text[],
+  array['#역사','#예술']::text[],
   '{"nature": 0.0, "culture": 0.5, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.5,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 자운사 목조아미타래여좌상 및 복장유물 이 불상은 복장품에서 1388년 중수개금한 내용의 기문이 밝혀져 그 이전에 조성되었음을 알 수 있다. 재료의 특성상 목제가 오랫동안 전래되기 어려운 한계가 있다는 것을 감안하면 고려시대에 조성된 목조 불상으로서 중요한 자료이다. 1276년에 제작된 개운사 목조 아미타불좌상을 비롯하여 수국사 목조아미타불좌상, 화성 봉림사 목조아미타불좌상 등 대체로 12세기 말에 제작되었다고 생각되는 일련의 목불좌상들과 같은 계열의 불상이다. 자운사의 복장전적은 대수구다라니(大隨求陀羅尼) 및 주금강경(注金剛經) 등 국내에 처음 소개되는 의미 있는 자료가 다수 있으며, 함께 발견된 복장조성기에 의해 복장이 조성된 절대연대가 확실하여 서지학 분야의 판본 연구는 물론, 불교학의 내용 연구와 미술사의 도상(圖像) 연구에 있어서 중요한 자료적 가치를 지닌 복장 유물로 평가된다. 또한 섬유류의 유물이 존속하기 어려운 우리나라의 기후·환경 조건 등을 고려할 때 자운사 복장직물의 역사적·민속적 가치가 크다. 1611년에 내장된 후령통(候鈴筒)과 팔엽연화(八葉蓮花), 오보병(五寶甁)도 일괄 부속품으로 함께 지정한다. #역사 #예술 #실내 #비오는날', '1.0.0',
+  '광주 자운사 목조아미타래여좌상 및 복장유물 이 불상은 복장품에서 1388년 중수개금한 내용의 기문이 밝혀져 그 이전에 조성되었음을 알 수 있다. 재료의 특성상 목제가 오랫동안 전래되기 어려운 한계가 있다는 것을 감안하면 고려시대에 조성된 목조 불상으로서 중요한 자료이다. 1276년에 제작된 개운사 목조 아미타불좌상을 비롯하여 수국사 목조아미타불좌상, 화성 봉림사 목조아미타불좌상 등 대체로 12세기 말에 제작되었다고 생각되는 일련의 목불좌상들과 같은 계열의 불상이다. 자운사의 복장전적은 대수구다라니(大隨求陀羅尼) 및 주금강경(注金剛經) 등 국내에 처음 소개되는 의미 있는 자료가 다수 있으며, 함께 발견된 복장조성기에 의해 복장이 조성된 절대연대가 확실하여 서지학 분야의 판본 연구는 물론, 불교학의 내용 연구와 미술사의 도상(圖像) 연구에 있어서 중요한 자료적 가치를 지닌 복장 유물로 평가된다. 또한 섬유류의 유물이 존속하기 어려운 우리나라의 기후·환경 조건 등을 고려할 때 자운사 복장직물의 역사적·민속적 가치가 크다. 1611년에 내장된 후령통(候鈴筒)과 팔엽연화(八葉蓮花), 오보병(五寶甁)도 일괄 부속품으로 함께 지정한다. #역사 #예술', '1.0.0',
   'import', 0.45,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=162", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -813,7 +813,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:163', '광주 지산동 오층석탑', '광주', '동구', '문화·예술', '광주광역시내에 상당한 거리를 두고 떨어져 있는 2기의 탑 가운데 동쪽에 위치한 것으로 통일신라 후기의 석탑이다. 탑이 서있는 부근은 백주사(栢州寺)터로 알려져 있기도 하나 추정할 만한 자료는 아직 발견되지 않았다. 탑의 구성은 2단의 기단(基壇) 위에 5층의 탑신(塔身)을 세운 형태로 신라석탑의 기본형을 잃지 않고 있다. 탑의 받침대 역할을 하는 기단부는 여러 개의 돌을 짜맞추어 구성하였으며, 탑신부의 몸돌과 지붕돌은 각각 하나의 돌로 이루어졌다. 특히 지붕돌 밑면의 받침이 1층은 5단인데 비해 2층부터는 4단으로 간략화되어, 양식상 만들어진 시대가 통일신라 후기로 내려옴을 알 수 있다. 1955년 해체, 수리할 때 4층 지붕돌 윗면에서 사리장치가 발견되었고 1961년에 다시 수리를 하여 일부 석재를 보완하였다. 광주 전남지방에 남아있는 몇 안 되는 5층석탑 가운데서도 우수한 통일신라 후기의 석탑이다.', '전남광주통합특별시 동구 지산로 57', null, 35.149016, 126.9327667, '062-608-3333', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805290452105490.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=163', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:163', '광주 지산동 오층석탑', '광주', '동구', '문화·예술', '광주광역시내에 상당한 거리를 두고 떨어져 있는 2기의 탑 가운데 동쪽에 위치한 것으로 통일신라 후기의 석탑이다. 탑이 서있는 부근은 백주사(栢州寺)터로 알려져 있기도 하나 추정할 만한 자료는 아직 발견되지 않았다. 탑의 구성은 2단의 기단(基壇) 위에 5층의 탑신(塔身)을 세운 형태로 신라석탑의 기본형을 잃지 않고 있다. 탑의 받침대 역할을 하는 기단부는 여러 개의 돌을 짜맞추어 구성하였으며, 탑신부의 몸돌과 지붕돌은 각각 하나의 돌로 이루어졌다. 특히 지붕돌 밑면의 받침이 1층은 5단인데 비해 2층부터는 4단으로 간략화되어, 양식상 만들어진 시대가 통일신라 후기로 내려옴을 알 수 있다. 1955년 해체, 수리할 때 4층 지붕돌 윗면에서 사리장치가 발견되었고 1961년에 다시 수리를 하여 일부 석재를 보완하였다. 광주 전남지방에 남아있는 몇 안 되는 5층석탑 가운데서도 우수한 통일신라 후기의 석탑이다.', '전남광주통합특별시 동구 지산로 57', null, 35.149016, 126.9327667, '062-608-3333', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/201805290452105490.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=163', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -851,10 +851,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#실내','#비오는날']::text[],
+  array['#예술']::text[],
   '{"nature": 0.75, "culture": 0.0, "art": 0.75, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.75,0.0,0.75,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '광주 지산동 오층석탑 광주광역시내에 상당한 거리를 두고 떨어져 있는 2기의 탑 가운데 동쪽에 위치한 것으로 통일신라 후기의 석탑이다. 탑이 서있는 부근은 백주사(栢州寺)터로 알려져 있기도 하나 추정할 만한 자료는 아직 발견되지 않았다. 탑의 구성은 2단의 기단(基壇) 위에 5층의 탑신(塔身)을 세운 형태로 신라석탑의 기본형을 잃지 않고 있다. 탑의 받침대 역할을 하는 기단부는 여러 개의 돌을 짜맞추어 구성하였으며, 탑신부의 몸돌과 지붕돌은 각각 하나의 돌로 이루어졌다. 특히 지붕돌 밑면의 받침이 1층은 5단인데 비해 2층부터는 4단으로 간략화되어, 양식상 만들어진 시대가 통일신라 후기로 내려옴을 알 수 있다. 1955년 해체, 수리할 때 4층 지붕돌 윗면에서 사리장치가 발견되었고 1961년에 다시 수리를 하여 일부 석재를 보완하였다. 광주 전남지방에 남아있는 몇 안 되는 5층석탑 가운데서도 우수한 통일신라 후기의 석탑이다. #예술 #실내 #비오는날', '1.0.0',
+  '광주 지산동 오층석탑 광주광역시내에 상당한 거리를 두고 떨어져 있는 2기의 탑 가운데 동쪽에 위치한 것으로 통일신라 후기의 석탑이다. 탑이 서있는 부근은 백주사(栢州寺)터로 알려져 있기도 하나 추정할 만한 자료는 아직 발견되지 않았다. 탑의 구성은 2단의 기단(基壇) 위에 5층의 탑신(塔身)을 세운 형태로 신라석탑의 기본형을 잃지 않고 있다. 탑의 받침대 역할을 하는 기단부는 여러 개의 돌을 짜맞추어 구성하였으며, 탑신부의 몸돌과 지붕돌은 각각 하나의 돌로 이루어졌다. 특히 지붕돌 밑면의 받침이 1층은 5단인데 비해 2층부터는 4단으로 간략화되어, 양식상 만들어진 시대가 통일신라 후기로 내려옴을 알 수 있다. 1955년 해체, 수리할 때 4층 지붕돌 윗면에서 사리장치가 발견되었고 1961년에 다시 수리를 하여 일부 석재를 보완하였다. 광주 전남지방에 남아있는 몇 안 되는 5층석탑 가운데서도 우수한 통일신라 후기의 석탑이다. #예술', '1.0.0',
   'import', 0.38,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=163", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -867,7 +867,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:1248', '광주광산문화원', '광주', '광산구', '문화·예술', '광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 광주광역시 전체면적의 46%에 해당하는 광산구는 광주광역시의 역사와 궤를 같이하고 있을뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 광산문화원은 이러한 지리적 여건과 역사성을 살려 지역문화 창달에 앞장서고 있다. 광산문화원의 대표적인 사업으로는 향토사연구를 비롯하여, 민족애국시인인 용아 박용철 전국백일장, 어등미술대전, 문화학교를 운영하고 있다 * 문화사업 * 광산문화원에서는 각계각층의 지역주민의 참여를 기반으로 문화예술교육을 통한 건전한 여가문화 활성화를 위한 문화학교를 운영 중에 있다. 노래, 재즈, 요가, POP, 문학기행 등의 강좌를 운영하고 있으며, 도자기 체험 등 주말가족프로그램도 운영하고 있다. 또한 평소 문학에 관심이 많은 분들에게 자기개발과 자아성취의 장을 마련하고, 문학에 소질이 있는 숨은 인재를 발굴하여 지역문화발전에 기여하고자 용아 박용철 전국백일장을 개최한다 이외에도 방학기간이나 주말에 가족과 함께하는 전통문화체험(한지공예교실, 도자기현장체험교실)을 함으로써 우리전통문화에 대한 이해와 가치관을 함양시키는 전통예술학교를 운영 중이며, 광산지역의 유래, 전설, 인물 등의 향토자료를 조사하는 어등의 맥 사업도 진행 중이다.', '전남광주통합특별시 광산구 상무대로 265', null, 35.14244553, 126.7951297, '062-941-3377', 'http://gjgwangsan.kccf.or.kr/', 'https://tour.gwangju.go.kr/uploads/tour/info/experience/202202240414513580.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1248', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:1248', '광주광산문화원', '광주', '광산구', '문화·예술', '광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 광주광역시 전체면적의 46%에 해당하는 광산구는 광주광역시의 역사와 궤를 같이하고 있을뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 광산문화원은 이러한 지리적 여건과 역사성을 살려 지역문화 창달에 앞장서고 있다. 광산문화원의 대표적인 사업으로는 향토사연구를 비롯하여, 민족애국시인인 용아 박용철 전국백일장, 어등미술대전, 문화학교를 운영하고 있다 * 문화사업 * 광산문화원에서는 각계각층의 지역주민의 참여를 기반으로 문화예술교육을 통한 건전한 여가문화 활성화를 위한 문화학교를 운영 중에 있다. 노래, 재즈, 요가, POP, 문학기행 등의 강좌를 운영하고 있으며, 도자기 체험 등 주말가족프로그램도 운영하고 있다. 또한 평소 문학에 관심이 많은 분들에게 자기개발과 자아성취의 장을 마련하고, 문학에 소질이 있는 숨은 인재를 발굴하여 지역문화발전에 기여하고자 용아 박용철 전국백일장을 개최한다 이외에도 방학기간이나 주말에 가족과 함께하는 전통문화체험(한지공예교실, 도자기현장체험교실)을 함으로써 우리전통문화에 대한 이해와 가치관을 함양시키는 전통예술학교를 운영 중이며, 광산지역의 유래, 전설, 인물 등의 향토자료를 조사하는 어등의 맥 사업도 진행 중이다.', '전남광주통합특별시 광산구 상무대로 265', null, 35.1424455318, 126.7951296891, '062-941-3377', 'http://gjgwangsan.kccf.or.kr/', 'https://tour.gwangju.go.kr/uploads/tour/info/experience/202202240414513580.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1248', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -905,10 +905,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#역사','#전통','#예술','#체험','#교육','#시즌한정','#실내','#비오는날','#아이동반','#주차가능']::text[],
+  array['#역사','#전통','#예술','#체험','#교육','#시즌한정','#아이동반','#주차가능']::text[],
   '{"nature": 0.25, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
   '[0.25,0.75,0.75,0.0,1.0,0.0,0.0,0.5]'::extensions.vector(8),
-  '광주광산문화원 광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 광주광역시 전체면적의 46%에 해당하는 광산구는 광주광역시의 역사와 궤를 같이하고 있을뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 광산문화원은 이러한 지리적 여건과 역사성을 살려 지역문화 창달에 앞장서고 있다. 광산문화원의 대표적인 사업으로는 향토사연구를 비롯하여, 민족애국시인인 용아 박용철 전국백일장, 어등미술대전, 문화학교를 운영하고 있다 * 문화사업 * 광산문화원에서는 각계각층의 지역주민의 참여를 기반으로 문화예술교육을 통한 건전한 여가문화 활성화를 위한 문화학교를 운영 중에 있다. 노래, 재즈, 요가, POP, 문학기행 등의 강좌를 운영하고 있으며, 도자기 체험 등 주말가족프로그램도 운영하고 있다. 또한 평소 문학에 관심이 많은 분들에게 자기개발과 자아성취의 장을 마련하고, 문학에 소질이 있는 숨은 인재를 발굴하여 지역문화발전에 기여하고자 용아 박용철 전국백일장을 개최한다 이외에도 방학기간이나 주말에 가족과 함께하는 전통문화체험(한지공예교실, 도자기현장체험교실)을 함으로써 우리전통문화에 대한 이해와 가치관을 함양시키는 전통예술학교를 운영 중이며, 광산지역의 유래, 전설, 인물 등의 향토자료를 조사하는 어등의 맥 사업도 진행 중이다. #역사 #전통 #예술 #체험 #교육 #시즌한정 #실내 #비오는날 #아이동반 #주차가능', '1.0.0',
+  '광주광산문화원 광산문화원은 1965년 2월 25일 창립된 역사와 전통을 자랑하는 문화원이다. 광주광역시 전체면적의 46%에 해당하는 광산구는 광주광역시의 역사와 궤를 같이하고 있을뿐만 아니라 천혜의 경관으로 도시와 농촌이 잘 어우러진 아름다운 곳이다. 광산문화원은 이러한 지리적 여건과 역사성을 살려 지역문화 창달에 앞장서고 있다. 광산문화원의 대표적인 사업으로는 향토사연구를 비롯하여, 민족애국시인인 용아 박용철 전국백일장, 어등미술대전, 문화학교를 운영하고 있다 * 문화사업 * 광산문화원에서는 각계각층의 지역주민의 참여를 기반으로 문화예술교육을 통한 건전한 여가문화 활성화를 위한 문화학교를 운영 중에 있다. 노래, 재즈, 요가, POP, 문학기행 등의 강좌를 운영하고 있으며, 도자기 체험 등 주말가족프로그램도 운영하고 있다. 또한 평소 문학에 관심이 많은 분들에게 자기개발과 자아성취의 장을 마련하고, 문학에 소질이 있는 숨은 인재를 발굴하여 지역문화발전에 기여하고자 용아 박용철 전국백일장을 개최한다 이외에도 방학기간이나 주말에 가족과 함께하는 전통문화체험(한지공예교실, 도자기현장체험교실)을 함으로써 우리전통문화에 대한 이해와 가치관을 함양시키는 전통예술학교를 운영 중이며, 광산지역의 유래, 전설, 인물 등의 향토자료를 조사하는 어등의 맥 사업도 진행 중이다. #역사 #전통 #예술 #체험 #교육 #시즌한정 #아이동반 #주차가능', '1.0.0',
   'import', 0.6,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1248", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -1623,7 +1623,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'nature.cs:1286', '운천저수지', '광주', '서구', '자연·경관', '1956년 주변 농경지에 농업용수를 공급하기 위해 축조한 저수지로, 1990년대 중반 이후 일대가 택지로 개발되며 도심 속 공원으로 변모했다. 저수지를 한 바퀴 돌 수 있는 500미터 길이의 산책로와 분수, 실개천, 지압로, 정자 등이 조성돼 있다. 공원 내 산책로는 백석산으로 이어지는데, 경사가 완만해 어린이와 노약자도 쉽게 오를 수 있는 산이다. 저수지 주변으로 카페와 음식점 등이 즐비해 산책을 즐긴 뒤 식사를 하거나 음료를 마시며 여유로운 시간을 보내기에도 좋다. [출처: 광주 트래블 컬렉션]', '전남광주통합특별시 서구 운천로 165(쌍촌동) 일대', null, 35.14716547, 126.8562353, '062-360-7990', 'https://www.seogu.gwangju.kr/menu.es?mid=a70901010000', 'https://tour.gwangju.go.kr/uploads/tour/info/nature/202203100520050750.jpg', 90, false, false, true, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=1286', null, null, null, 'draft')
+values ('gwangju_tour', 'nature.cs:1286', '운천저수지', '광주', '서구', '자연·경관', '1956년 주변 농경지에 농업용수를 공급하기 위해 축조한 저수지로, 1990년대 중반 이후 일대가 택지로 개발되며 도심 속 공원으로 변모했다. 저수지를 한 바퀴 돌 수 있는 500미터 길이의 산책로와 분수, 실개천, 지압로, 정자 등이 조성돼 있다. 공원 내 산책로는 백석산으로 이어지는데, 경사가 완만해 어린이와 노약자도 쉽게 오를 수 있는 산이다. 저수지 주변으로 카페와 음식점 등이 즐비해 산책을 즐긴 뒤 식사를 하거나 음료를 마시며 여유로운 시간을 보내기에도 좋다. [출처: 광주 트래블 컬렉션]', '전남광주통합특별시 서구 운천로 165(쌍촌동) 일대', null, 35.1471654718, 126.8562352777, '062-360-7990', 'https://www.seogu.gwangju.kr/menu.es?mid=a70901010000', 'https://tour.gwangju.go.kr/uploads/tour/info/nature/202203100520050750.jpg', 90, false, false, true, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=1286', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -1731,7 +1731,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'nature.cs:209', '어등산', '광주', '광산구', '자연·경관', '물고기가 올라간다''는 의미의 산 이름과 관련해 잉어전설이 몇 가지 전해진다. 하나는 죽파 오성술 장군의 모친이 장군을 출산하고 그에 대한 보답으로 황룡강에 잡힌 잉어 한 마리를 방생했는데, 갑자기 구름이 일며 용으로 변한 잉어가 산을 타고 승천해 어등산으로 불렀다는 설이다.', '전남광주통합특별시 광산구 산정동 산 85-1', null, 35.1553408, 126.7514993, '062-960-6857', 'https://www.gwangsan.go.kr/culture/contentsView.do?pageId=culture130', 'https://tour.gwangju.go.kr/uploads/tour/info/nature/201611240747070130.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=209', null, null, null, 'draft')
+values ('gwangju_tour', 'nature.cs:209', '어등산', '광주', '광산구', '자연·경관', '''물고기가 올라간다''는 의미의 산 이름과 관련해 잉어전설이 몇 가지 전해진다. 하나는 죽파 오성술 장군의 모친이 장군을 출산하고 그에 대한 보답으로 황룡강에 잡힌 잉어 한 마리를 방생했는데, 갑자기 구름이 일며 용으로 변한 잉어가 산을 타고 승천해 어등산으로 불렀다는 설이다.', '전남광주통합특별시 광산구 산정동 산 85-1', null, 35.1553408, 126.7514993, '062-960-6857', 'https://www.gwangsan.go.kr/culture/contentsView.do?pageId=culture130', 'https://tour.gwangju.go.kr/uploads/tour/info/nature/201611240747070130.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=209', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -1877,11 +1877,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연','#느린여행']::text[],
+  array['#자연','#역사','#느린여행']::text[],
   '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
   '[1.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
-  '백마산 최근까지 군사보호구역이었던 이 산은 일반인이 들어갈 수 없었기 때문에 그렇게 때 타지 않은 산이다. 서창 향토마을 바로 옆에 그냥 지나치기 쉬운 샛길이 있다. 백마산 들어가는 입구다. 조선시대엔 이 산 위에서 김세근 장군이 의병들을 모아 적에 대항하는 훈련을 했다고 한다. 나라 사랑하는 일을, 한 사람을 사모하는 일보다 당연히 값지게 안고 살았던 오래 전 옛날 사람들의 함성이 가득했던 곳이다. [규모 및 시설물] - 총연장거리 2.2km(세도마을 - 정상 - 전평저수지) - 팔각정 1동, 의자20개 #자연 #느린여행', '1.0.0',
-  'import', 0.4,
+  '백마산 최근까지 군사보호구역이었던 이 산은 일반인이 들어갈 수 없었기 때문에 그렇게 때 타지 않은 산이다. 서창 향토마을 바로 옆에 그냥 지나치기 쉬운 샛길이 있다. 백마산 들어가는 입구다. 조선시대엔 이 산 위에서 김세근 장군이 의병들을 모아 적에 대항하는 훈련을 했다고 한다. 나라 사랑하는 일을, 한 사람을 사모하는 일보다 당연히 값지게 안고 살았던 오래 전 옛날 사람들의 함성이 가득했던 곳이다. [규모 및 시설물] - 총연장거리 2.2km(세도마을 - 정상 - 전평저수지) - 팔각정 1동, 의자20개 #자연 #역사 #느린여행', '1.0.0',
+  'import', 0.42,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=204", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'nature.cs:204'
@@ -2109,7 +2109,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1260', '서강사', '광주', '남구', '역사·전통', '서강사는 방림동 현재 숭신공고 밑에 위치해 있으며 고려 태사공 윤신달(삼한공신)을 주벽으로 하고 개국백 문 숙공 윤관, 호조상서 문강공 윤언이, 남원백 벽송 윤위, 함안백 행촌 윤돈, 영평부원군 문현공 윤보 등 6위를 배향한다. 경내에는 강당인 경모제가 있으며 서강사묘정비가 세워져 있다. 건물은 3단의 화강석기단 위에 정평주초를 놓고 원주기둥을 세워정면 3칸 측면 1칸의 골기와 팔작지붕 정면으로 되어있다. 네귀에는 각3개씩 처마를 받치는 활주를 세웠으며 창방위의 주두에는 뺄목을 결구하고 평주와 평주사이에 1개의 변형소로를 끼워 장혀와 납도리를 가구하였다. 내부는 우물천정으로서 2고주 5량집이다. 창호는 좌우 편문으로되어 있고 중앙은 2분합겹문으로 교살창으로 장식하였다. 인방밑에는 머름을 두고 상인방 위에도 머름을 설치하여 안상의 무늬를 넣었다. 처마는 평고대를 끼워 겹처마로 되어있고 2익공식을 따르고 있다. 전면에는 단청이 비교적 잘되어 있고 대문은 평3문으로 되어 있으며 제일은 음력 3월 18일이다.', '전남광주통합특별시 남구 치마봉1길 16-1(방림동)', null, 35.13005462, 126.9219854, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030535537950.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1260', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1260', '서강사', '광주', '남구', '역사·전통', '서강사는 방림동 현재 숭신공고 밑에 위치해 있으며 고려 태사공 윤신달(삼한공신)을 주벽으로 하고 개국백 문 숙공 윤관, 호조상서 문강공 윤언이, 남원백 벽송 윤위, 함안백 행촌 윤돈, 영평부원군 문현공 윤보 등 6위를 배향한다. 경내에는 강당인 경모제가 있으며 서강사묘정비가 세워져 있다. 건물은 3단의 화강석기단 위에 정평주초를 놓고 원주기둥을 세워정면 3칸 측면 1칸의 골기와 팔작지붕 정면으로 되어있다. 네귀에는 각3개씩 처마를 받치는 활주를 세웠으며 창방위의 주두에는 뺄목을 결구하고 평주와 평주사이에 1개의 변형소로를 끼워 장혀와 납도리를 가구하였다. 내부는 우물천정으로서 2고주 5량집이다. 창호는 좌우 편문으로되어 있고 중앙은 2분합겹문으로 교살창으로 장식하였다. 인방밑에는 머름을 두고 상인방 위에도 머름을 설치하여 안상의 무늬를 넣었다. 처마는 평고대를 끼워 겹처마로 되어있고 2익공식을 따르고 있다. 전면에는 단청이 비교적 잘되어 있고 대문은 평3문으로 되어 있으며 제일은 음력 3월 18일이다.', '전남광주통합특별시 남구 치마봉1길 16-1(방림동)', null, 35.1300546245, 126.921985449, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030535537950.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1260', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2163,7 +2163,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1257', '선교기념비', '광주', '남구', '역사·전통', '5·18 민주화운동 당시 시민군 대변인으로 활동했던 윤상원 열사를 기리는 공간이다. 그는 들불야학을 열어 가난한 청년들과 노동자들에게 배움을 나누던 스승이자, 최후까지 도청에 남아 계엄군과 싸우다 서른 살의 젊은 나이로 산화한 광주의 대표적 민주열사다. 생가 내부는 자료전시관으로 사용 중인데, 윤상원 열사뿐 아니라 그와 영혼결혼식을 올렸던 박기순 열사의 고귀한 삶과 정신을 돌아볼 수 있도록 꾸며졌다. 1970년대 후반 들불야학에서 만나 인연을 쌓았던 이들은 민주항쟁과 불의의 사고로 인해 젊은 나이로 생을 마감했다. 이들의 죽음을 안타까워한 가족과 친지들이 영혼결혼식을 올리게 됐고, 이때 5·18을 상징하는 노래가 된 이 헌정됐다고 한다. 노래뿐 아니라 "오늘 우리는 패배할 것이다. 그러나 내일의 역사는 우리를 승리자로 만들 것이다"라고 했던 윤상원 열사의 말은 지금도 민주화운동을 상징하는 인터뷰로 깊은 여운을 남긴다.', '전남광주통합특별시 남구 제중로 60(양림동)', null, 35.21131499, 126.7629558, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030531459360.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1257', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1257', '선교기념비', '광주', '남구', '역사·전통', '5·18 민주화운동 당시 시민군 대변인으로 활동했던 윤상원 열사를 기리는 공간이다. 그는 들불야학을 열어 가난한 청년들과 노동자들에게 배움을 나누던 스승이자, 최후까지 도청에 남아 계엄군과 싸우다 서른 살의 젊은 나이로 산화한 광주의 대표적 민주열사다. 생가 내부는 자료전시관으로 사용 중인데, 윤상원 열사뿐 아니라 그와 영혼결혼식을 올렸던 박기순 열사의 고귀한 삶과 정신을 돌아볼 수 있도록 꾸며졌다. 1970년대 후반 들불야학에서 만나 인연을 쌓았던 이들은 민주항쟁과 불의의 사고로 인해 젊은 나이로 생을 마감했다. 이들의 죽음을 안타까워한 가족과 친지들이 영혼결혼식을 올리게 됐고, 이때 5·18을 상징하는 노래가 된 이 헌정됐다고 한다. 노래뿐 아니라 "오늘 우리는 패배할 것이다. 그러나 내일의 역사는 우리를 승리자로 만들 것이다"라고 했던 윤상원 열사의 말은 지금도 민주화운동을 상징하는 인터뷰로 깊은 여운을 남긴다.', '전남광주통합특별시 남구 제중로 60(양림동)', null, 35.2113149855, 126.7629558198, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030531459360.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1257', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2217,7 +2217,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:1242', '광주비엔날레전시관', '광주', '북구', '문화·예술', '광주비엔날레 전시관은 1994년 창설된 이래 수많은 전시회를 통해 대한민국을 비롯한 세계 미술 문화에 큰 기여를 해오고 있는 곳이다, 비엔날레를 통해 수많은 사람들에게 즐거움과 삶의 의욕을 줄 수 있도록 노력하고 있으며 한국 작가들이 세계로 진출하기 위한 통로 역할을 하고 있다. 특히, 비엔날레 전시회는 일회성 행사로 끝나지 않고 비엔날레의 터전인 광주의 지역적 가치를 높이며 지속 가능한 플랫폼이 되기 위해 다양한 시도를 하고 있다. 코로나 시대를 맞아 온라인 서비스도 진행해 현장 방문이 어려운 시민들에게 전시 서비스를 체험할 수 있도록 제공하고 있다. 광주디자인비엔날레 전시 기간에는 본 전시, 특별전, 국제 학술 행사 등 다양한 행사와 전시 관람, 체험도 가능하다.', '전남광주통합특별시 북구 비엔날레로 115(용봉동)', null, 35.18262037, 126.8902592, '062-608-4114', 'https://www.gwangjubiennale.org/gb/index.do', 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202202240351489950.jpg', 90, true, true, true, true, true, false, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1242', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:1242', '광주비엔날레전시관', '광주', '북구', '문화·예술', '광주비엔날레 전시관은 1994년 창설된 이래 수많은 전시회를 통해 대한민국을 비롯한 세계 미술 문화에 큰 기여를 해오고 있는 곳이다, 비엔날레를 통해 수많은 사람들에게 즐거움과 삶의 의욕을 줄 수 있도록 노력하고 있으며 한국 작가들이 세계로 진출하기 위한 통로 역할을 하고 있다. 특히, 비엔날레 전시회는 일회성 행사로 끝나지 않고 비엔날레의 터전인 광주의 지역적 가치를 높이며 지속 가능한 플랫폼이 되기 위해 다양한 시도를 하고 있다. 코로나 시대를 맞아 온라인 서비스도 진행해 현장 방문이 어려운 시민들에게 전시 서비스를 체험할 수 있도록 제공하고 있다. 광주디자인비엔날레 전시 기간에는 본 전시, 특별전, 국제 학술 행사 등 다양한 행사와 전시 관람, 체험도 가능하다.', '전남광주통합특별시 북구 비엔날레로 115(용봉동)', null, 35.1826203741, 126.890259159, '062-608-4114', 'https://www.gwangjubiennale.org/gb/index.do', 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202202240351489950.jpg', 90, true, true, true, true, true, false, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1242', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2325,7 +2325,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'sports.cs:1246', '광주시청 야외음악당', '광주', '서구', '체험·스포츠', '광주시청 옆 문화광장내에 위치한 야외음악당은 2006년 5월 설립한 이동형 객석 2,000석 규모의 야외음악 공연장이다. 최신 음향장비 및 무대, 조명시설을 갖추고 있으며, 클래식, 국악 등의 음악공연을 비롯한 각종 문화공연 및 전시행사가 열린다.', '전남광주통합특별시 서구 내방로 111(치평동)', null, 35.16001949, 126.8513576, null, null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202202240409335140.jpg', 150, false, false, false, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1246', null, null, null, 'draft')
+values ('gwangju_tour', 'sports.cs:1246', '광주시청 야외음악당', '광주', '서구', '체험·스포츠', '광주시청 옆 문화광장내에 위치한 야외음악당은 2006년 5월 설립한 이동형 객석 2,000석 규모의 야외음악 공연장이다. 최신 음향장비 및 무대, 조명시설을 갖추고 있으며, 클래식, 국악 등의 음악공연을 비롯한 각종 문화공연 및 전시행사가 열린다.', '전남광주통합특별시 서구 내방로 111(치평동)', null, 35.160019493, 126.8513576102, null, null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202202240409335140.jpg', 150, false, false, false, true, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1246', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2379,7 +2379,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'sports.cs:1272', '광주실내수영장', '광주', '서구', '체험·스포츠', '염주종합체육관 시설 내에 있는 수영장으로 주 1회 정기검사와 수시 검사를 통한 수질 개선으로 이용시민에게 양질의 수질을 제공하며 시민의 건강과 삶의 질을 향상시키기 위해 노력하고 있다.', '전남광주통합특별시 서구 금화로 278(풍암동)', null, 35.13665316, 126.8791807, '062-380-6800', 'http://www.gmcc.co.kr/new/bbs/content.php?co_id=0305010101', 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100423411300.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1272', null, null, null, 'draft')
+values ('gwangju_tour', 'sports.cs:1272', '광주실내수영장', '광주', '서구', '체험·스포츠', '염주종합체육관 시설 내에 있는 수영장으로 주 1회 정기검사와 수시 검사를 통한 수질 개선으로 이용시민에게 양질의 수질을 제공하며 시민의 건강과 삶의 질을 향상시키기 위해 노력하고 있다.', '전남광주통합특별시 서구 금화로 278(풍암동)', null, 35.1366531569, 126.879180734, '062-380-6800', 'http://www.gmcc.co.kr/new/bbs/content.php?co_id=0305010101', 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100423411300.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1272', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2433,7 +2433,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'sports.cs:1274', '광주패밀리랜드 눈썰매장', '광주', '북구', '체험·스포츠', '호남 최대 길이의 썰매장, 광주패밀리랜드 눈썰매장 광주패밀리랜드는 호남 지방 최대의 종합 위락공원으로 991년 7월 6일 문을 열었다. 울창한 자연림과 저수지 등 자연조건이 빼어나 주변 전체가 우치공원으로 조성되어 있으며, 36만평의 대지 위에 35기종의 신나는 놀이기종, 동물원, 썰매장, 체육시설을 갖추고 있다. 또한 호남 최대길이를 자랑하는 사계절 썰매장은 봄, 여름, 가을엔 물썰매장으로 겨울엔 눈썰매장으로 더욱더 편하게 이용하시도록 에스컬레이터를 설치하고 있다. 패밀리랜드에는 다양한 놀이시설이 조성되어 있으며 코스에 따라 연인코스, 가족코스, 어린이 코스 등으로 나누어 이용할 수 있다. 우선 연인코스는 청룡열차, 카오스, 바이킹, 나는썰매, 박치기왕, 타가디스코, 나는그네 등으로 연인들이 함께 즐기면 좋을 놀이기구들이다. 가족코스는 패밀리열차, 사막의 폭풍, 타팀머신 등 가족 단위로 아이와 부모가 함께 즐기면 좋은 놀이기구이다. 이외에 어린이범퍼카, 꼬마비행기, 우주탐험대, 꼬마레이서 등 어린이 전용 놀이기구도 구비되어 있다.', '전남광주통합특별시 북구 우치로 677(생용동)', null, 35.22357414, 126.89408, '062-607-8000', 'http://gjfamilyland.com/', 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100431372480.jpg', 150, false, false, true, true, null, true, null, 10000, 12000, 'active', 0.5, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1274', null, null, null, 'draft')
+values ('gwangju_tour', 'sports.cs:1274', '광주패밀리랜드 눈썰매장', '광주', '북구', '체험·스포츠', '호남 최대 길이의 썰매장, 광주패밀리랜드 눈썰매장 광주패밀리랜드는 호남 지방 최대의 종합 위락공원으로 991년 7월 6일 문을 열었다. 울창한 자연림과 저수지 등 자연조건이 빼어나 주변 전체가 우치공원으로 조성되어 있으며, 36만평의 대지 위에 35기종의 신나는 놀이기종, 동물원, 썰매장, 체육시설을 갖추고 있다. 또한 호남 최대길이를 자랑하는 사계절 썰매장은 봄, 여름, 가을엔 물썰매장으로 겨울엔 눈썰매장으로 더욱더 편하게 이용하시도록 에스컬레이터를 설치하고 있다. 패밀리랜드에는 다양한 놀이시설이 조성되어 있으며 코스에 따라 연인코스, 가족코스, 어린이 코스 등으로 나누어 이용할 수 있다. 우선 연인코스는 청룡열차, 카오스, 바이킹, 나는썰매, 박치기왕, 타가디스코, 나는그네 등으로 연인들이 함께 즐기면 좋을 놀이기구들이다. 가족코스는 패밀리열차, 사막의 폭풍, 타팀머신 등 가족 단위로 아이와 부모가 함께 즐기면 좋은 놀이기구이다. 이외에 어린이범퍼카, 꼬마비행기, 우주탐험대, 꼬마레이서 등 어린이 전용 놀이기구도 구비되어 있다.', '전남광주통합특별시 북구 우치로 677(생용동)', null, 35.2235741448, 126.894080016, '062-607-8000', 'http://gjfamilyland.com/', 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100431372480.jpg', 150, false, false, true, true, null, true, null, 10000, 12000, 'active', 0.5, 'https://tour.gwangju.go.kr/home/tour/info/sports.cs?act=view&infoId=1274', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2595,7 +2595,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'park/003.cs:1284', '너릿재공원', '광주', '동구', '공원·정원', '전남 내륙 한가운데에 위치한 화순은 조광조가 그의 이상을 펼치지 못하고 유배되어 죽음에 이른 곳이며 방랑시인 김삿갓은 중국적벽에 못지않게 아름다운 화순적벽의 절경에 반해 그곳에서 죽음을 맞기도 했다. 너릿재공원은 화순과 광주의 경계인 너릿재터널 입구 도로변 바로 옆에 있는 공원으로 휴일이면 광주, 화순 주변의 많은 사람들이 들러 휴식을 취하는 곳이다. 한편 공원에는 6.25전란으로 인해 아까운 젊음을 불사른 순국 선열들의 얼을 기리는 무명용사묘와 순국 경찰묘지가 자리하고 있어 숙연한 자세로 옷깃을 여미게 한다. * 무명용사묘 * 1951년 4월 2일 대구에서 출발하여 4월 5일 이양에 도착 주둔중 6일 새벽1시경 폭풍우속에 적의 기습을 받고 2시간여 혈전속에 공비는 격퇴하였으나 26명이 산화하였다.용사들의 유해는 동년 4월 8일 이양주민의 협조를 얻어 이 곳에 안장하고 음력 2월 1일 위령제를 지낸다. * 순국경찰묘지 * 범바우산 아래에 있다. 화순경찰서 소속경찰 19위가 있으며 1950년 10월 24일 경남 함안에서 화순으로 오는 도중묘치에서 공비들의 습격을 받고 순국 순국경찰들의 묘가 안치된 곳으로 원래 묘치전사16위와 화순각지36위가 있었으나 모두 연고지로 돌아가고 나머지 월남한 경찰 순국자의 유해만 이곳에 안치되어 있다.', '전남광주통합특별시 동구 남문로 48-8(선교동)', null, 35.08037743, 126.9535617, '061-379-3501', null, 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100515052650.jpg', 90, false, false, false, true, null, true, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/park/003.cs?act=view&infoId=1284', null, null, null, 'draft')
+values ('gwangju_tour', 'park/003.cs:1284', '너릿재공원', '광주', '동구', '공원·정원', '전남 내륙 한가운데에 위치한 화순은 조광조가 그의 이상을 펼치지 못하고 유배되어 죽음에 이른 곳이며 방랑시인 김삿갓은 중국적벽에 못지않게 아름다운 화순적벽의 절경에 반해 그곳에서 죽음을 맞기도 했다. 너릿재공원은 화순과 광주의 경계인 너릿재터널 입구 도로변 바로 옆에 있는 공원으로 휴일이면 광주, 화순 주변의 많은 사람들이 들러 휴식을 취하는 곳이다. 한편 공원에는 6.25전란으로 인해 아까운 젊음을 불사른 순국 선열들의 얼을 기리는 무명용사묘와 순국 경찰묘지가 자리하고 있어 숙연한 자세로 옷깃을 여미게 한다. * 무명용사묘 * 1951년 4월 2일 대구에서 출발하여 4월 5일 이양에 도착 주둔중 6일 새벽1시경 폭풍우속에 적의 기습을 받고 2시간여 혈전속에 공비는 격퇴하였으나 26명이 산화하였다.용사들의 유해는 동년 4월 8일 이양주민의 협조를 얻어 이 곳에 안장하고 음력 2월 1일 위령제를 지낸다. * 순국경찰묘지 * 범바우산 아래에 있다. 화순경찰서 소속경찰 19위가 있으며 1950년 10월 24일 경남 함안에서 화순으로 오는 도중묘치에서 공비들의 습격을 받고 순국 순국경찰들의 묘가 안치된 곳으로 원래 묘치전사16위와 화순각지36위가 있었으나 모두 연고지로 돌아가고 나머지 월남한 경찰 순국자의 유해만 이곳에 안치되어 있다.', '전남광주통합특별시 동구 남문로 48-8(선교동)', null, 35.0803774303, 126.9535616807, '061-379-3501', null, 'https://tour.gwangju.go.kr/uploads/tour/info/rest/202203100515052650.jpg', 90, false, false, false, true, null, true, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/park/003.cs?act=view&infoId=1284', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -2691,7 +2691,7 @@ select p.id,
   '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.5}'::jsonb,
   '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.5]'::extensions.vector(8),
   '조선대학교 장미원 5,299㎡ 의 면적에 조성된 장미원에서는 227종·1만8000여 송이의 다양한 색채와 모양의 장미를 만날 수 있다. 장미가 가장 예쁘게 피어나는 5월에는 장미축제가 개최되며, 연중무휴 무료로 개방된다. 장미원은 조선대학교 학생과 교직원은 물론 광주ㆍ전남ㆍ지역 주민들에게 휴식과 재충전을 제공하는 쉼터와 대학과 지역사회를 소통하는 열린 공간으로 사랑을 받고 있다. #정원 #역사 #참여형 #힐링 #공원 #축제', '1.0.0',
-  'import', 0.53,
+  'import', 0.55,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/park/003.cs?act=view&infoId=332", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'park/003.cs:332'
@@ -2957,11 +2957,11 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#자연']::text[],
+  array['#자연','#역사']::text[],
   '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.25, "festival": 0.0}'::jsonb,
   '[1.0,0.0,0.0,0.0,0.0,0.0,0.25,0.0]'::extensions.vector(8),
-  '용진산 용진산은 본량과 임곡을 나누는 경계에 있는 산으로 이름 그대로 들녘에서는 드물게 보는 겹겹으로 포개져 있는 높은 산이다. 그 안에는 동굴과 폭포가 있고 조선의 개국공신 삼봉 정도전 선생이 전국을 두루 돌면서 이산의 빼어난 경치에 빠져서 산사에서 며칠을 머물고 갔다고 하니 그 그윽하고 아름다운 풍광을 가히 짐작할 수가 있다. 그리고 이산은 왜정 때에 전국에서도 이름 있는 금광이 있었던 곳으로 그로 말미암아 신임곡 일대는 작은 도시형태를 이루어 번창한 한 때가 있었다. #자연', '1.0.0',
-  'import', 0.38,
+  '용진산 용진산은 본량과 임곡을 나누는 경계에 있는 산으로 이름 그대로 들녘에서는 드물게 보는 겹겹으로 포개져 있는 높은 산이다. 그 안에는 동굴과 폭포가 있고 조선의 개국공신 삼봉 정도전 선생이 전국을 두루 돌면서 이산의 빼어난 경치에 빠져서 산사에서 며칠을 머물고 갔다고 하니 그 그윽하고 아름다운 풍광을 가히 짐작할 수가 있다. 그리고 이산은 왜정 때에 전국에서도 이름 있는 금광이 있었던 곳으로 그로 말미암아 신임곡 일대는 작은 도시형태를 이루어 번창한 한 때가 있었다. #자연 #역사', '1.0.0',
+  'import', 0.4,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/nature.cs?act=view&infoId=210", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'nature.cs:210'
@@ -3081,7 +3081,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1449', '소심당 조아라기념관', '광주', '남구', '역사·전통', '조아라 선생의 기독교운동ㆍ여성운동과 민주화운동 및 여성복지향상을 통한 사랑ㆍ정의ㆍ평화ㆍ봉사 정신을 계승 선양하기 위한 기념관입니다. 여성운동가 조아라 시대적으로 수난과 고난으로 점철된 험난한 시대를 살아 오신 조아라 선생은 1922년에 창설된 광주YWCA에서 총무, 회장, 명예회장으로서 평생을 헌신 봉사하였다. 가정법률상담소, Y신용협동조합, 농촌사업, 소비자운동 등을 통해 Y프로그램을 활성화시켰고, 1960년대 대의동 Y회관을 건립하였으며, 1980년 5ㆍ18민주화 항쟁당시 총탄으로 파손된 대의동 회관을 떠나 1985년 유동 현 Y회관을 건립하였다. 또한 광주어머니회, 걸스카웃, 광주여성단체협의회 등을 육성 발전시켜 여성들의 계몽과 권익을 위해 선도적 역할을 하였다. 사회운동가 조아라 우리 사회의 가난과 부조리와 고충의 소리를 들을 줄 아는 귀를 가졌으며, 어려움에 처해 있는 사람을 볼 줄 아는 눈을 가졌고, 항상 가난한 자, 억압받는 자, 소외당한 자의 대변자로서 그들과 아픔을 함께 하였다. 호남여숙(야간중학), 성빈여사(육아사업), 계명여사(윤락여성선도 사업-직업보도사업), 별빛학원(야학반)등을 통해 불우한 이웃의 참된 친구가 되고, 시대적 사명을 감당해 온 사회 복지사업의 선구자이다. 신앙인 조아라 선생은 이 고장 초대 교인이었던 조형률 장로의 자녀로서 수피아 여학교를 거쳐 이일학교의 교사를 역임하던 중 백청단 은지환 사건에 연루되어 옥고를 치루면서도 굳건한 신앙으로 민족의 독립을 위해 투신하였다. 또한 이 지역 최초의 여성 장로로서 NCC운동과 교회일치운동에 크게 기여하였다. 기독교여성의 한사람으로서 "어떻게 하면 조금이라도 예수님을 닮을까?" 하는 신앙인의 자세로 한평생을 살아 왔다. 그의 실천적인 기독교 신앙의 힘은 이 땅의 교회들이 가진자의 교회가 되어서는 안되며, 억압받는 자의 편에서 거룩한 예수님의 사랑이 이 땅에 임하도록 해야 한다는 것을 역설하였다. 민주화운동가 조아라 암울한 조국의 일제식민통치하에서 독립과 주권회복을 위해, 독재권력 하에', '전남광주통합특별시 남구 제중로46번길 3-6 (양림동)', null, 35.13906609, 126.9142647, '062-673-8681/062-682-8682~3', 'http://www.ssdjoara.or.kr/wp_main/index.html', 'https://tour.gwangju.go.kr/uploads/tour/info/history/202605210348381680.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1449', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1449', '소심당 조아라기념관', '광주', '남구', '역사·전통', '조아라 선생의 기독교운동ㆍ여성운동과 민주화운동 및 여성복지향상을 통한 사랑ㆍ정의ㆍ평화ㆍ봉사 정신을 계승 선양하기 위한 기념관입니다. 여성운동가 조아라 시대적으로 수난과 고난으로 점철된 험난한 시대를 살아 오신 조아라 선생은 1922년에 창설된 광주YWCA에서 총무, 회장, 명예회장으로서 평생을 헌신 봉사하였다. 가정법률상담소, Y신용협동조합, 농촌사업, 소비자운동 등을 통해 Y프로그램을 활성화시켰고, 1960년대 대의동 Y회관을 건립하였으며, 1980년 5ㆍ18민주화 항쟁당시 총탄으로 파손된 대의동 회관을 떠나 1985년 유동 현 Y회관을 건립하였다. 또한 광주어머니회, 걸스카웃, 광주여성단체협의회 등을 육성 발전시켜 여성들의 계몽과 권익을 위해 선도적 역할을 하였다. 사회운동가 조아라 우리 사회의 가난과 부조리와 고충의 소리를 들을 줄 아는 귀를 가졌으며, 어려움에 처해 있는 사람을 볼 줄 아는 눈을 가졌고, 항상 가난한 자, 억압받는 자, 소외당한 자의 대변자로서 그들과 아픔을 함께 하였다. 호남여숙(야간중학), 성빈여사(육아사업), 계명여사(윤락여성선도 사업-직업보도사업), 별빛학원(야학반)등을 통해 불우한 이웃의 참된 친구가 되고, 시대적 사명을 감당해 온 사회 복지사업의 선구자이다. 신앙인 조아라 선생은 이 고장 초대 교인이었던 조형률 장로의 자녀로서 수피아 여학교를 거쳐 이일학교의 교사를 역임하던 중 백청단 은지환 사건에 연루되어 옥고를 치루면서도 굳건한 신앙으로 민족의 독립을 위해 투신하였다. 또한 이 지역 최초의 여성 장로로서 NCC운동과 교회일치운동에 크게 기여하였다. 기독교여성의 한사람으로서 "어떻게 하면 조금이라도 예수님을 닮을까?" 하는 신앙인의 자세로 한평생을 살아 왔다. 그의 실천적인 기독교 신앙의 힘은 이 땅의 교회들이 가진자의 교회가 되어서는 안되며, 억압받는 자의 편에서 거룩한 예수님의 사랑이 이 땅에 임하도록 해야 한다는 것을 역설하였다. 민주화운동가 조아라 암울한 조국의 일제식민통치하에서 독립과 주권회복을 위해, 독재권력 하에', '전남광주통합특별시 남구 제중로46번길 3-6 (양림동)', null, 35.139066089583466, 126.9142647325807, '062-673-8681/062-682-8682~3', 'http://www.ssdjoara.or.kr/wp_main/index.html', 'https://tour.gwangju.go.kr/uploads/tour/info/history/202605210348381680.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1449', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3177,7 +3177,7 @@ select p.id,
   '{"nature": 1.0, "culture": 0.25, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[1.0,0.25,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
   '약사암 약사암은 증심사의 부속 암자로 새인봉 아래쪽에 자리잡고 있다. 신라시대에 도윤(道允)이 847년(문성왕 9) 당나라에서 귀국한 뒤 창건하였다고 전하는데 당시에는 인왕사(人王寺)라고 했다가, 고려 예종(1105~1122) 때 국사 혜조(慧照)가 중창하면서 절 이름을 약사암으로 바꾸었다. 조선시대인 1856년(철종 7) 3월에 성암(性庵)이 약사전을 중수하였고, 1905년 9월에 선주(善周)가 관청의 도움과 시주로 중건했다. 이후 1970년대부터 주지 석담(石潭)이 법당과 요사채 등을 중건·중수하여 오늘에 이르고 있다. * 약사사의 볼거리와 문화재 * 약사암에 보존되어 있는 유물로 석조여래좌상(보물)과 3층석탑이 있다. 이 두 가지의 유물이 9세기 전반의 작품으로 추정되어 이 절의 역사를 뒷받침해 주고 있다. 현재 약사암에는 대웅전, 운림당, 운림서원, 강원, 일주문 등이 있으나, 모두 1970년 대 후반부터 1980년대 중반의 건물이다. 대웅전에는 독성탱화·칠성탱화·산신탱화·신중탱화 등의 불화가 있는데 독성탱화는 1912년에 그린 것이며 칠성탱화와 산신탱화도 이와 비슷한 시기의 작품으로 추정된다. 신중탱화는 근래의 것이다. [문화재정보] - 지정종목 : 광주광역시 문화재자료 - 지정연도 : 1984년 2월 17일 - 시대 : 신라 - 종류 : 사찰 #역사 #문화유산 #주차가능', '1.0.0',
-  'import', 0.47,
+  'import', 0.5,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=137", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'history.cs:137'
@@ -3189,7 +3189,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'history.cs:1254', '양림동 선교사 묘지', '광주', '남구', '역사·전통', '광주지역 선교사를 기리는 묘역인 양림동 선교사 묘지는 광주에 최초로 기독교를 전파하고 개화의 새 물결과 일제 치하에서 구국 운동의 계기를 마련했던 23인의 선교사가 묻혀 있는 곳이다. 광주광역시 양림동은 전라남도 최초의 선교사로 광주에서 활동하던 배유지 목사와 클레멘트 오웬의 주된 선교지였다. 배유지 목사는 선교활동의 일환으로 수피아여학교를 설립하였고, 글레멘크 오웬은 간호사인 부인과 함께 선교 및 의료봉사 활동에 헌신하였다. 현재 광주광역시에는 배유지 목사를 기념하기 위한 선교기념비와 클레멘트 오웬과 그의 할아버지를 기념하기위해 건립한 오웬 기념각 등의 문화재가 있다. * 선교기념비와 오웬기념각 * 양림동 선교기념비는 미국 남장로교 선교사 배유지 목사가 광주에서는 처음 예배드린 곳을 기념하기 설립한 비이다. 1982년 12월 6일 대한예수교 장로회 전남노회가 세운 것으로 자연석 화강암제에 음각으로 되어 있다. 오웬기념각은 광주기독병원 간호전문대학 안에 있으며 현재 강당으로 사용되고 있다. 배유지(E.Bell) 목사와 함께 전라남도 최초의 선교사로 광주에서 활동하던 선교사 클레멘트 C. 오웬(Clement C.Owen:1867∼1909. 한국명 오원 또는 오기원)과 그의 할아버지 윌리엄(William)을 기념하기 위하여 1914년에 건립한 건물이다.', '전남광주통합특별시 남구 제중로 77(양림동)', null, 35.1404505, 126.9114889, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030522006530.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1254', null, null, null, 'draft')
+values ('gwangju_tour', 'history.cs:1254', '양림동 선교사 묘지', '광주', '남구', '역사·전통', '광주지역 선교사를 기리는 묘역인 양림동 선교사 묘지는 광주에 최초로 기독교를 전파하고 개화의 새 물결과 일제 치하에서 구국 운동의 계기를 마련했던 23인의 선교사가 묻혀 있는 곳이다. 광주광역시 양림동은 전라남도 최초의 선교사로 광주에서 활동하던 배유지 목사와 클레멘트 오웬의 주된 선교지였다. 배유지 목사는 선교활동의 일환으로 수피아여학교를 설립하였고, 글레멘크 오웬은 간호사인 부인과 함께 선교 및 의료봉사 활동에 헌신하였다. 현재 광주광역시에는 배유지 목사를 기념하기 위한 선교기념비와 클레멘트 오웬과 그의 할아버지를 기념하기위해 건립한 오웬 기념각 등의 문화재가 있다. * 선교기념비와 오웬기념각 * 양림동 선교기념비는 미국 남장로교 선교사 배유지 목사가 광주에서는 처음 예배드린 곳을 기념하기 설립한 비이다. 1982년 12월 6일 대한예수교 장로회 전남노회가 세운 것으로 자연석 화강암제에 음각으로 되어 있다. 오웬기념각은 광주기독병원 간호전문대학 안에 있으며 현재 강당으로 사용되고 있다. 배유지(E.Bell) 목사와 함께 전라남도 최초의 선교사로 광주에서 활동하던 선교사 클레멘트 C. 오웬(Clement C.Owen:1867∼1909. 한국명 오원 또는 오기원)과 그의 할아버지 윌리엄(William)을 기념하기 위하여 1914년에 건립한 건물이다.', '전남광주통합특별시 남구 제중로 77(양림동)', null, 35.1404504959, 126.911488894, '062-607-2332', null, 'https://tour.gwangju.go.kr/uploads/tour/info/history/202203030522006530.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=1254', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3339,7 +3339,7 @@ select p.id,
   '{"nature": 0.5, "culture": 1.0, "art": 0.5, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.5,1.0,0.5,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
   '오지호생가 이 곳은 서양화의 대가 오지호가 조선대학교 미술대학 교수로 근무 중이던 1954년부터 1982년 타계할 때까지 살던 집이다. 원래는 100여 년 전의 건축물이었으나 퇴락하자 1986년에 전면적인 보수작업을 했다. 오지호(1905∼1982)는 인상주의의 회화 양식을 받아들여 토착화시킨 화가이다. 화순 동복 출신이며 휘문고보(徽文高普)에서 우리나라 최초의 도일유학(渡日遊學) 유화가인 고의동(高義東)과 함께 있었으며 동경 미술학교에 유학했다. 1948년 광주에 내려와 정착하였고,「광주미술연구회」를 조직하는 한편 조선대학교 미술과 교수를 역임했다. 또「전남도전」의 창립과 더불어 지방 미술의 발전을 주도하며 서구상회화 우위의 개념과 이론으로 광주권 화단의 유화 화풍을 고착시켰고 만년에는 교과서에서 한자를 병용하여 과학적 두뇌를 개발할 것을 강조하는 한자 교육 부활 운동에 앞장서기도 했다. 국전 초대 작가, 심사 위원, 운영 위원을 역임하였고, 예술원 회원을 역임하였다. 1977년 에는 대한민국예술원상을 수상하였으며, 1973년, 국민훈장 모란장(牧丹章)을 받았다. 오지호 가옥의 대문을 들어서면 화실로 사용되었던 채광창이 있는 문간채가 있다. 안채는 초가집인데 정면 4칸, 측면 1칸의 전후퇴집으로 우진각 지붕이다. 평면은 1칸 반의 부엌과 1칸씩의 방3개로 되어 있고, 배면에는 툇마루와 골방이 있다. 부엌에는 살창과 찬장을 복원했으며 판장으로 된 문은 옛날 것을 그대로 달았다. 부연은 대나무로 엮었고, 연목(椽木)은 가늘고 끝을 훑었다. 기단은 막돌허튼층 쌓기의 외벌대 기단 위에 덤벙주초를 놓고 전면과 측면에는 네모기 둥, 뒷면에는 두리기둥을 세웠다. 현재의 기둥은 모서리 기둥만을 남기고 원래의 크기 대로 복원되어 있으며, 문은 외짝의 띠살문이다. 앞마루도 우물 마루를 살리기 위해 부분적으로 보수하였다. 방형기둥 위에는 우미량과 납도리를 결구하였고, 가구는 고주( 高柱)위에 대량을 걸친 뒤 동자주, 종량, 종도리를 차례로 올려놓은 일반적인 구조방식을 적용하고 있다. 화실 #숲 #역사 #전통 #예술 #교육', '1.0.0',
-  'import', 0.53,
+  'import', 0.55,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/history.cs?act=view&infoId=95", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'gwangju_tour' and p.source_place_id = 'history.cs:95'
@@ -3513,7 +3513,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:1452', '다모아어린이공원 ‘홍범도 장군 흉상’', '광주', '광산구', '문화·예술', '고려인들의 정신적 지주인 홍범도 장군의 희생정신과 뜻을 기리기 위한 추모 공간을 마련하기 위해 다모아어린이공원 내 건립된 흉상이다. 2022년 8월 15일, 홍범도 장군 유해 봉환 1주년을 맞이하여 추진한 흉상 제막식을 기점으로 국내외 방문객과 참배객들의 발길이 꾸준히 이어지고 있으며, 2023년 5월 국가보훈처 현충시설로 지정되었다.', '전남광주통합특별시 광산구 산정공원로28번길 13-12', null, 35.170855, 126.807151, '062-960-4137', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202606180536238430.jpg', 90, true, true, true, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1452', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:1452', '다모아어린이공원 ‘홍범도 장군 흉상’', '광주', '광산구', '문화·예술', '고려인들의 정신적 지주인 홍범도 장군의 희생정신과 뜻을 기리기 위한 추모 공간을 마련하기 위해 다모아어린이공원 내 건립된 흉상이다. 2022년 8월 15일, 홍범도 장군 유해 봉환 1주년을 맞이하여 추진한 흉상 제막식을 기점으로 국내외 방문객과 참배객들의 발길이 꾸준히 이어지고 있으며, 2023년 5월 국가보훈처 현충시설로 지정되었다.', '전남광주통합특별시 광산구 산정공원로28번길 13-12', null, 35.170855, 126.807151, '062-960-4137', null, 'https://tour.gwangju.go.kr/uploads/tour/info/culture/202606180536238430.jpg', 90, false, false, true, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1452', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3551,10 +3551,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#예술','#가족체험','#공원','#실내','#비오는날','#아이동반']::text[],
+  array['#예술','#가족체험','#공원','#아이동반']::text[],
   '{"nature": 0.0, "culture": 0.5, "art": 0.25, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.5,0.25,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '다모아어린이공원 ‘홍범도 장군 흉상’ 고려인들의 정신적 지주인 홍범도 장군의 희생정신과 뜻을 기리기 위한 추모 공간을 마련하기 위해 다모아어린이공원 내 건립된 흉상이다. 2022년 8월 15일, 홍범도 장군 유해 봉환 1주년을 맞이하여 추진한 흉상 제막식을 기점으로 국내외 방문객과 참배객들의 발길이 꾸준히 이어지고 있으며, 2023년 5월 국가보훈처 현충시설로 지정되었다. #예술 #가족체험 #공원 #실내 #비오는날 #아이동반', '1.0.0',
+  '다모아어린이공원 ‘홍범도 장군 흉상’ 고려인들의 정신적 지주인 홍범도 장군의 희생정신과 뜻을 기리기 위한 추모 공간을 마련하기 위해 다모아어린이공원 내 건립된 흉상이다. 2022년 8월 15일, 홍범도 장군 유해 봉환 1주년을 맞이하여 추진한 흉상 제막식을 기점으로 국내외 방문객과 참배객들의 발길이 꾸준히 이어지고 있으며, 2023년 5월 국가보훈처 현충시설로 지정되었다. #예술 #가족체험 #공원 #아이동반', '1.0.0',
   'import', 0.42,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=1452", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
@@ -3621,7 +3621,7 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
-values ('gwangju_tour', 'culture.cs:649', '만취정', '광주', '광산구', '문화·예술', '이 정자는 한말의 우국지사인 심원표(1853~1939)가 1913년에 지어 후학을 가르쳤던 곳이다. 정자는 정면 3칸, 측면 1칸에 전후퇴가 있고, 가운데에 온돌방을 배치한 평면에 지붕은 팔작지붕이다. 심원표는 이곳 동호동에서 태어났으며, 만취는 그의 호이다. 젊어서는 기정진, 중년에는 송병준에게 공부하였으며, 기우만, 오준선 등과 교류하였다. 그는 나라가 기울어져 가는 상황에서도 마음을 굳게 지키며, 의병들을 돕다가 일제에 곤욕을 치르기도 하였다. 만취가 ‘추운 겨울에도 푸른빛을 잃지 않는 소나무의 높은 절개를 이르는 말’이라고 기우만은 설명하고 있다. 여기에서 만취를 호로 삼은 심원표의 기개를 엿볼 수 있다.', '전남광주통합특별시 광산구 본량본촌길 29', null, 35.1798716, 126.683978, '062-960-8253', 'https://www.gwangsan.go.kr/pj/pjTour.php?action=view&amp;pageID=culture0103020000&amp;seq=81&amp;code=004', 'https://tour.gwangju.go.kr/uploads/tour/info/history/201805150525355640.jpg', 90, true, true, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=649', null, null, null, 'draft')
+values ('gwangju_tour', 'culture.cs:649', '만취정', '광주', '광산구', '문화·예술', '이 정자는 한말의 우국지사인 심원표(1853~1939)가 1913년에 지어 후학을 가르쳤던 곳이다. 정자는 정면 3칸, 측면 1칸에 전후퇴가 있고, 가운데에 온돌방을 배치한 평면에 지붕은 팔작지붕이다. 심원표는 이곳 동호동에서 태어났으며, 만취는 그의 호이다. 젊어서는 기정진, 중년에는 송병준에게 공부하였으며, 기우만, 오준선 등과 교류하였다. 그는 나라가 기울어져 가는 상황에서도 마음을 굳게 지키며, 의병들을 돕다가 일제에 곤욕을 치르기도 하였다. 만취가 ‘추운 겨울에도 푸른빛을 잃지 않는 소나무의 높은 절개를 이르는 말’이라고 기우만은 설명하고 있다. 여기에서 만취를 호로 삼은 심원표의 기개를 엿볼 수 있다.', '전남광주통합특별시 광산구 본량본촌길 29', null, 35.1798716, 126.683978, '062-960-8253', 'https://www.gwangsan.go.kr/pj/pjTour.php?action=view&amp;pageID=culture0103020000&amp;seq=81&amp;code=004', 'https://tour.gwangju.go.kr/uploads/tour/info/history/201805150525355640.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.7, 'https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=649', null, null, null, 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
   region = excluded.region,
@@ -3659,10 +3659,10 @@ insert into public.place_profiles (
   labeling_method, labeling_confidence, labeling_evidence, reviewed_at
 )
 select p.id,
-  array['#근대문화','#예술','#야경','#실내','#비오는날']::text[],
+  array['#근대문화','#예술','#야경']::text[],
   '{"nature": 0.0, "culture": 0.5, "art": 0.25, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
   '[0.0,0.5,0.25,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
-  '만취정 이 정자는 한말의 우국지사인 심원표(1853~1939)가 1913년에 지어 후학을 가르쳤던 곳이다. 정자는 정면 3칸, 측면 1칸에 전후퇴가 있고, 가운데에 온돌방을 배치한 평면에 지붕은 팔작지붕이다. 심원표는 이곳 동호동에서 태어났으며, 만취는 그의 호이다. 젊어서는 기정진, 중년에는 송병준에게 공부하였으며, 기우만, 오준선 등과 교류하였다. 그는 나라가 기울어져 가는 상황에서도 마음을 굳게 지키며, 의병들을 돕다가 일제에 곤욕을 치르기도 하였다. 만취가 ‘추운 겨울에도 푸른빛을 잃지 않는 소나무의 높은 절개를 이르는 말’이라고 기우만은 설명하고 있다. 여기에서 만취를 호로 삼은 심원표의 기개를 엿볼 수 있다. #근대문화 #예술 #야경 #실내 #비오는날', '1.0.0',
+  '만취정 이 정자는 한말의 우국지사인 심원표(1853~1939)가 1913년에 지어 후학을 가르쳤던 곳이다. 정자는 정면 3칸, 측면 1칸에 전후퇴가 있고, 가운데에 온돌방을 배치한 평면에 지붕은 팔작지붕이다. 심원표는 이곳 동호동에서 태어났으며, 만취는 그의 호이다. 젊어서는 기정진, 중년에는 송병준에게 공부하였으며, 기우만, 오준선 등과 교류하였다. 그는 나라가 기울어져 가는 상황에서도 마음을 굳게 지키며, 의병들을 돕다가 일제에 곤욕을 치르기도 하였다. 만취가 ‘추운 겨울에도 푸른빛을 잃지 않는 소나무의 높은 절개를 이르는 말’이라고 기우만은 설명하고 있다. 여기에서 만취를 호로 삼은 심원표의 기개를 엿볼 수 있다. #근대문화 #예술 #야경', '1.0.0',
   'import', 0.42,
   '[{"source": "gwangju_tour", "source_url": "https://tour.gwangju.go.kr/home/tour/info/culture.cs?act=view&infoId=649", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p

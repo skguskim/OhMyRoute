@@ -111,7 +111,7 @@ LABEL_RULES = {
         "#바다": ("바다", "해변", "해양", "호수", "하천"),
     },
     "culture": {
-        "#역사": ("역사", "유적", "사적", "기념관"),
+        "#역사": ("역사", "유적", "사적", "기념관", "조선"),
         "#문화유산": ("문화재", "문화유산", "세계유산"),
         "#근대문화": ("근대", "일제", "개화"),
         "#민주인권": ("5·18", "5.18", "민주", "인권"),
@@ -120,7 +120,7 @@ LABEL_RULES = {
     },
     "art": {
         "#예술": ("예술", "미술", "작가"),
-        "#전시": ("전시", "갤러리", "박물관", "미술관"),
+        "#전시": ("전시", "갤러리", "박물관", "미술관", "예술공간"),
         "#현대미술": ("현대미술", "비엔날레"),
         "#공연": ("공연", "극장", "콘서트", "음악"),
         "#미디어아트": ("미디어아트", "미디어 아트"),
@@ -345,8 +345,10 @@ def parse_gwangju_detail(url: str, source_place_id: str, category: str) -> tuple
                 break
 
     region, sigungu = normalize_region(address)
-    indoor = category in {"문화·예술", "음식·로컬"}
     searchable = f"{title} {category} {description} {' '.join(table.values())}"
+    # 본문 텍스트 집합인 searchable은 먼저 계산하고 실내 확인
+    indoor_markers = ("미술관", "박물관", "전시관", "공연장", "체험관", "실내")
+    indoor = category in {"문화·예술", "음식·로컬"} and any(token in searchable for token in indoor_markers)
     parking = parse_optional_bool(table.get("주차시설", ""))
     pet = parse_optional_bool(table.get("애견동반", ""))
     wheelchair = True if any(token in searchable for token in ("휠체어", "장애인 전용", "경사로 있음", "엘리베이터 있음")) else ""

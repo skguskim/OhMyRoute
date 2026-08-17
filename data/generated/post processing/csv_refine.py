@@ -52,7 +52,7 @@ def remove_non_overlapping_rows(file_a_path: str | Path, file_b_path: str | Path
 
 if __name__ == "__main__":
     for csv_name in CSV_LIST:
-        file_1 = DATA_DIR / f"e_{PREFIX}_{csv_name}.csv"     # e_ 가 붙은건 이전에 전처리 해둔 csv
+        file_1 = DATA_DIR / "intact csv files" / f"e_{PREFIX}_{csv_name}.csv"     # e_ 가 붙은건 이전에 전처리 해둔 csv
         file_2 = DATA_DIR / f"{PREFIX}_{csv_name}.csv"       # 새로 생성된 csv
         
         if file_1.exists() and file_2.exists():

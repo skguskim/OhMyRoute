@@ -151,13 +151,14 @@ TourAPI 인증키가 아직 없으면 광주관광 공식 페이지에서 공개
 자동 생성되는 해시태그와 점수는 키워드 규칙 기반 초안입니다. `labeling_method=import`, `quality_status=draft`로 기록되며, 두 사람의 검수를 통과한 데이터만 `reviewed` 또는 `verified`로 변경합니다.
 
 
-## 9. 데이터 베이스 구축 관련 사항
+## 9. 데이터 베이스 구축 순서
 
-```powershell
-.\scripts\run_data_pipeline.cmd collect-gwangju --limit 100
-```
+자동 수집으로 받아온 후
 
-로 받아온 데이터를 정제.
+1. csv_refine.py로 중복 제거
+2. intact csv files 내의 벡터값 수정 후 csv(utf-8)로 저장
+3. qoute_change.py로 따옴표 처리
+4. 아래에 따라 json, sql 파일 재생성
 
 sql, json 파일 후처리 후에 생성 시
 ```powershell
@@ -169,5 +170,7 @@ python scripts\data_pipeline.py validate --places data\generated\gwangju_officia
 
 python scripts\data_pipeline.py build-sql --places data\generated\gwangju_official_places.csv --profiles data\generated\gwangju_official_place_profiles.csv --output data\generated\gwangju_official_seed.sql
 ```
-
 각각의 명령어를 터미널에 입력하면 됨.
+
+5. merge_gwangju_tourapi.py로 병합된 csv 파일들 생성
+6. csv_to_places_json.py로 병합된 장소들 json 파일 생성

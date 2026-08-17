@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT_DIR = Path(".").resolve()
 GENERATED_DIR = ROOT_DIR / "OhMyRoute" / "data" / "generated"
 
-# PREFIX = "gwangju_official"
+# tourapi, gwangju_official 중 선택
 PREFIX = "tourapi"
 
 op_info_df = pd.read_csv(GENERATED_DIR / f"{PREFIX}_operating_info_review.csv", encoding='utf-8')

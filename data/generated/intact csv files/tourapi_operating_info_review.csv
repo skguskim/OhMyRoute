@@ -14,6 +14,12 @@ tourapi,127356,너릿재공원,상시 개방,연중무휴,,가능,,,https://tour
 tourapi,2470068,녹색에너지체험관 (광주전남지역본부),10:00~17:00 (점심시간 12:00~13:00),매주 주말 / 법정 공휴일,,가능,,,https://dco.energy.or.kr/green/
 tourapi,2614773,덕산너덜 (무등산권 국가지질공원),상시 개방,연중무휴,,,,,http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=26&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE
 tourapi,1620893,도림사(광주),상시 개방,연중무휴,,불가능,,,https://www.grandculture.net/gwangju/toc/GC60001435
+tourapi,2565865,동리단길 카페거리,매장별 상이,매장별 상이,,매장별 상이,,,https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=56&category=002&searchCondition=&searchKeyword=&pageIndex=1
+tourapi,1620808,두남제,상시 개방,연중무휴,,불가능,,,
+tourapi,3353800,뜻모아센터,09:00~18:00,매주 일요일 /  법정 공휴일,,가능 (5대)<br>요금 (무료),,,
+tourapi,2614783,무등산 정상3봉 (무등산 국가지질공원),상시 개방,연중무휴,,가능,,,http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=32&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE
+tourapi,1074432,무등산 주상절리대,"- 동절기 (11월~3월) 04:00~16:00<br>
+- 하절기 (4월~10월) 04:00~17:00",연중무휴,,가능,,,https://www.donggu.kr/tour/M0000016/tour/view.do
 tourapi,1621168,고싸움놀이전수교육관,,,무료 (체험 활동 비용 별도),,,,http://www.gossaum.com/
 tourapi,130032,광산문화원,,,,,,,http://gjgwangsan.kccf.or.kr
 tourapi,130391,광주 동구문화원,,,프로그램 별 상이,,,,http://gjdonggu.kccf.or.kr
@@ -29,6 +35,8 @@ tourapi,2009775,국립아시아문화전당,,,시설에 따라 상이하므로 �
 tourapi,130807,금호평생교육관,,,무료,,,,http://lib.gen.go.kr/geumho/
 tourapi,1745001,빛고을시민문화관,,,공연에 따라 상이하므로 홈페이지 참조,,,,http://bitculture.gjcf.or.kr
 tourapi,2605338,수피아여자중고등학교,,,,,,,
+tourapi,130639,우제길미술관,,,"3,000원 <br>※ 변동가능성이 있으므로 전화문의 바람",,,,https://wooart.co.kr/board/
+tourapi,2755010,5·18민주화운동 기록관,,,무료<br>※ 특별·기획전시는 유료로 진행될 수 있음,,,,https://www.518archives.go.kr/
 tourapi,3460731,광주여성영화제,,,,,,,http://www.wffig.com/
 tourapi,131450,광주북구청소년수련관,,,,,,,http://www.bukguyouth.net
 tourapi,2739385,광주시패밀리랜드 카라반캠핑장,,,,,,,https://familylandcamping.com/index.html
@@ -52,6 +60,11 @@ tourapi,1349796,강진 백사어촌체험마을,09:00~17:00 (전화문의),연�
 tourapi,2515265,강진 백운동별서정원,상시 개방,연중무휴,,가능,,,https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=174
 tourapi,128952,강진 병영마을 옛 담장,상시 개방,연중무휴,,,,,
 tourapi,129693,강진 삼인리 비자나무,,,,,,,https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=83
+tourapi,1350167,강진 서중어촌체험마을,09:00 ~ 17:00,,,가능,,,http://www.xn--hz2b17k22d0xb19cw7hura767c.kr/
+tourapi,2515789,강진 오감통,09:00~21:00,,,,,,http://ogamtong.com/
+tourapi,128151,강진다원,상시 개방,연중무휴,,가능<br>요금 (무료),,,https://www.gangjin.go.kr/culture/attractions/park?mode=view&idx=175
+tourapi,129692,강진마도진만호성지,상시 개방,연중무휴,,,,,
+tourapi,126645,강진만,상시 개방,연중무휴,,,,,https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=162
 tourapi,1623643,강진군도서관,,,,,,,https://www.gjlib.go.kr/
 tourapi,1778079,강진아트홀,,,공연에 따라 다름,,,,http://arthall.gangjin.go.kr
 tourapi,2612901,고산 윤선도 박물관,,,무료,,,,https://gosan.haenam.go.kr/index.9is
@@ -67,6 +80,11 @@ tourapi,130205,광양시문화예술회관,,,※ 공연 별로 상이함,,,,http
 tourapi,2732668,광양예술창고,,,무료,,,,https://gwangyang.go.kr/tour/gallery.es?mid=a31101020000&bid=0008&act=view&list_no=11119
 tourapi,130559,구례향제줄풍류전수관,,,무료,,,,
 tourapi,129896,국립해양유산연구소,,,무료,,,,https://www.seamuse.go.kr/
+tourapi,705052,귀족호도박물관,,,무료,,,,http://www.hodonamu.com/
+tourapi,3090707,규남박물관,,,무료,,,,http://www.gyunammuseum.org/
+tourapi,1994953,김대중 노벨평화상 기념관,,,무료,,,,http://www.kdjnpmemorial.or.kr
+tourapi,129986,나주문화원,,,무료,,,,https://www.xn--910bn5roljr8bbu0a.kr/
+tourapi,130913,남포미술관,,,"일반 5,000원<br>※ 무료<br>미취학 아동, 장애인",,,,http://nampoart.co.kr/
 tourapi,3012429,남도영화제 시즌2 광양,,,,,,,http://www.ndff.kr/
 tourapi,3506515,담양 다미담주 페스티벌 쓰담쓰담 야시장,,,,,,,https://daeinya.imweb.me/
 tourapi,3547386,한국전력과 함께하는 2025 희망·사랑 나눔 콘서트,,,,,,,
@@ -86,3 +104,8 @@ tourapi,2013935,담양 용마루길,,,,,,,https://www.water.or.kr
 tourapi,2729195,담양금성오토캠핑장,,,,,,,http://parapark.co.kr/camping_reservation2.htm
 tourapi,715953,담양레이나 CC,,,,,,,http://www.reinacc.co.kr/#main
 tourapi,2726659,담양힐링파크,,,,,,,http://xn--jk1bk1k8rgckfrnam9heta617d.kr/
+tourapi,2747474,대덕힐링캠핑장,,,,,,,http://daedeokhealing.com/
+tourapi,2732467,더스타오토캠핑장,,,,,,,http://thestarcamp.com/
+tourapi,2748025,돌풀마루,,,,,,,http://xn--pq1by0hgta924f.kr/
+tourapi,2729340,드림캠핑장,,,,,,,
+tourapi,2729344,들소리캠핑장,,,,,,,https://cafe.naver.com/deulsori

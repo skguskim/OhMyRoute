@@ -813,6 +813,276 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2565865', '동리단길 카페거리', '광주', '동구', '관광지', '핫플레이스로 떠오르고 있는 동명동 카페거리는 1970~90년대를 정점으로 고급 주택과 오래된 한옥들이 혼재된 전남광주통합특별시의 대표적인 부촌이었다. 한때 원도심 침체에 따라 활기를 잃기도 하였지만, 학원이 동명동에 집중되며 부모들을 위한 카페가 생기기 시작했다. 이 카페들이 점차 개성을 가지고 독특한 인테리어와 음료를 추구하면서 다양한 스타일의 카페들이 들어서며 오늘의 로컬 브랜드로 자리 잡은 동명동 카페거리가 만들어졌다. 독특한 분위기와 다양한 스타일, 테마의 카페들이 모여 있어 방문객들은 자신에게 맞는 분위기와 메뉴를 선택할 수 있다. 동리단길은 골목길과 작은 공원이 많이 있어 산책이나 휴식을 즐길 수 있는 좋은 장소이다. 현재는 바닥에 쓰인 글과 이색적인 그림의 벽화도 볼만하고 이색 카페, 예술 작품, 쉼터로 떠오르는 여행 스폿이 되었다. 구도심 골목에 생겨난 카페거리라서 주차가 원활하지 않으나 근처에 국립아시아문화전당 부설주차장이 있다.', '전남광주통합특별시 동구 동명동', null, 35.1492525371, 126.9267289927, '전남광주통합특별시 관광안내소 062-365-8733', 'https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=56&category=002&searchCondition=&searchKeyword=&pageIndex=1', 'http://tong.visitkorea.or.kr/cms/resource/70/3337270_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=56&category=002&searchCondition=&searchKeyword=&pageIndex=1', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#도시.지역문화관광','#골목길, 문화거리','#전통','#예술','#로컬푸드','#카페','#힐링','#산책']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.5, "food": 0.75, "activity": 0.0, "sports": 0.0, "healing": 1.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.5,0.75,0.0,0.0,1.0,0.0]'::extensions.vector(8),
+  '동리단길 카페거리 핫플레이스로 떠오르고 있는 동명동 카페거리는 1970~90년대를 정점으로 고급 주택과 오래된 한옥들이 혼재된 전남광주통합특별시의 대표적인 부촌이었다. 한때 원도심 침체에 따라 활기를 잃기도 하였지만, 학원이 동명동에 집중되며 부모들을 위한 카페가 생기기 시작했다. 이 카페들이 점차 개성을 가지고 독특한 인테리어와 음료를 추구하면서 다양한 스타일의 카페들이 들어서며 오늘의 로컬 브랜드로 자리 잡은 동명동 카페거리가 만들어졌다. 독특한 분위기와 다양한 스타일, 테마의 카페들이 모여 있어 방문객들은 자신에게 맞는 분위기와 메뉴를 선택할 수 있다. 동리단길은 골목길과 작은 공원이 많이 있어 산책이나 휴식을 즐길 수 있는 좋은 장소이다. 현재는 바닥에 쓰인 글과 이색적인 그림의 벽화도 볼만하고 이색 카페, 예술 작품, 쉼터로 떠오르는 여행 스폿이 되었다. 구도심 골목에 생겨난 카페거리라서 주차가 원활하지 않으나 근처에 국립아시아문화전당 부설주차장이 있다. #문화관광 #도시.지역문화관광 #골목길, 문화거리 #전통 #예술 #로컬푸드 #카페 #힐링 #산책', '1.0.0',
+  'import', 0.55,
+  '[{"source": "tourapi", "source_url": "https://tour.gwangju.go.kr/home/tour/info/village/002.cs?act=view&infoId=56&category=002&searchCondition=&searchKeyword=&pageIndex=1", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2565865'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1620808', '두남제', '광주', '광산구', '관광지', '두남제는 행주기씨 문중 재각으로 건축적 배치 및 조형이 가지는 유교 건축의 규범과 품격이 잘 유지되어 있으며, 한옥의 멋을 느낄 수 있는 문화 경관성을 지니고 있다. 건물은 화강석 기단 위에 정평주초를 넣고 평주와 고주를 세운 정면 5칸, 측면 2칸의 한식 기와 팔작지붕이다. 마루는 귀틀에 의한 툇마루로 되어 있으며, 내부에는 중앙에 대청과 좌우에 온돌방을 배치하였고, 천정은 대들보 위에 마루 대공과 종보를 결구하여 종도리를 걸친 5량 집이다. 창호는 좌우 1칸씩은 분합문으로 되어 있고, 중앙 3칸은 4 분합문으로 되어 있으며, 띠살창이다. 상인방 위에는 빗살창으로 된 봉창이 있다. 창호 좌우측에는 머름을 장식하였고, 좌우측 툇마루는 머름을 대고 1단 높인 마루이다. 대문은 맞배지붕의 평 3문이며, 담장은 토석 혼축의 담장이다. 처마는 겹처마로 되어 있다.', '전남광주통합특별시 광산구 광산동 277', null, 35.2437804781, 126.7462953738, '062-960-8225', null, 'http://tong.visitkorea.or.kr/cms/resource/71/3366471_image2_1.jpg', 90, false, false, false, false, null, null, null, null, null, 'active', 0.5, null, '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#역사관광','#역사유적지','#사당','#전통']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '두남제 두남제는 행주기씨 문중 재각으로 건축적 배치 및 조형이 가지는 유교 건축의 규범과 품격이 잘 유지되어 있으며, 한옥의 멋을 느낄 수 있는 문화 경관성을 지니고 있다. 건물은 화강석 기단 위에 정평주초를 넣고 평주와 고주를 세운 정면 5칸, 측면 2칸의 한식 기와 팔작지붕이다. 마루는 귀틀에 의한 툇마루로 되어 있으며, 내부에는 중앙에 대청과 좌우에 온돌방을 배치하였고, 천정은 대들보 위에 마루 대공과 종보를 결구하여 종도리를 걸친 5량 집이다. 창호는 좌우 1칸씩은 분합문으로 되어 있고, 중앙 3칸은 4 분합문으로 되어 있으며, 띠살창이다. 상인방 위에는 빗살창으로 된 봉창이 있다. 창호 좌우측에는 머름을 장식하였고, 좌우측 툇마루는 머름을 대고 1단 높인 마루이다. 대문은 맞배지붕의 평 3문이며, 담장은 토석 혼축의 담장이다. 처마는 겹처마로 되어 있다. #역사관광 #역사유적지 #사당 #전통', '1.0.0',
+  'import', 0.38,
+  '[{"source": "tourapi", "source_url": "", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1620808'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '3353800', '뜻모아센터', '광주', '북구', '관광지', '유한회사 뜻모아센터는 탄소중립공예를 주력으로 하는 공예 체험 업체이다. 재활용 가능한 다양한 재료와 공기정화식물인 스칸디아모스를 활용한 공예 체험 프로그램을 개발해 지역축제에서 다양한 연령층의 관광객을 만나고 있다. 스칸디아모스와 접목한 추억의 못난이 인형, 언제나 싱그러운 스칸디아모스 커피박 화분, 키링 만들기는 유한회사 뜻모아센터의 인기 체험 프로그램이다.', '전남광주통합특별시 북구 서하로245번길 42 (오치동) 3층 302호', null, 35.1892060356, 126.9076407902, '010-7173-0808', null, 'http://tong.visitkorea.or.kr/cms/resource/53/3353753_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, null, '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#체험관광','#기타체험','#기타체험관광','#카페','#체험','#공방체험','#축제','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.5, "activity": 1.0, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.0,0.0,0.0,0.5,1.0,0.0,0.0,0.5]'::extensions.vector(8),
+  '뜻모아센터 유한회사 뜻모아센터는 탄소중립공예를 주력으로 하는 공예 체험 업체이다. 재활용 가능한 다양한 재료와 공기정화식물인 스칸디아모스를 활용한 공예 체험 프로그램을 개발해 지역축제에서 다양한 연령층의 관광객을 만나고 있다. 스칸디아모스와 접목한 추억의 못난이 인형, 언제나 싱그러운 스칸디아모스 커피박 화분, 키링 만들기는 유한회사 뜻모아센터의 인기 체험 프로그램이다. #체험관광 #기타체험 #기타체험관광 #카페 #체험 #공방체험 #축제 #아이동반 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '3353800'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2614783', '무등산 정상3봉 (무등산 국가지질공원)', '광주', '북구', '관광지', '무등산의 최고봉인 천왕봉(1,187m)이 위치한 정상부는 지왕봉과 인왕봉을 포함하는 3개의 봉우리로 이루어져 있으며, 북동~남서 방향의 능선을 형성한다. 정상 일대에 병풍처럼 늘어선 암석지형은 무등산 응회암이 풍화와 침식에 의해 잘 드러난 주상절리대이다. 무등산 응회암은 중생대 백악기 후기(약 8,700~8,500만 년 전)에 마그마가 지표로 분출한 화산암으로서, 화산폭발 시 뜨거운 화성쇄설류에 의해 만들어진 용결응회암이다. 천왕봉에 올라서면 전남광주통합특별시뿐 아니라, 담양, 영암, 나주, 전북 순창 등 호남 일원이 한눈에 들어오며 맑은 날엔 지리산도 조망할 수 있다. 지왕봉에는 꼭대기에 의병장 김덕령 장군이 무술을 연마하고 담력을 길렀다는 뜀바위가 있다.', '전남광주통합특별시 북구 무등로 1550 (금곡동)', null, 35.1442791515, 126.9888819591, '062-613-7853', 'http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=32&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE', 'http://tong.visitkorea.or.kr/cms/resource/78/2614778_image2_1.bmp', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=32&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연관광','#자연경관(산)','#산, 고개, 오름, 봉우리','#산','#무등산','#공원','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.0,0.0,0.75,0.0]'::extensions.vector(8),
+  '무등산 정상3봉 (무등산 국가지질공원) 무등산의 최고봉인 천왕봉(1,187m)이 위치한 정상부는 지왕봉과 인왕봉을 포함하는 3개의 봉우리로 이루어져 있으며, 북동~남서 방향의 능선을 형성한다. 정상 일대에 병풍처럼 늘어선 암석지형은 무등산 응회암이 풍화와 침식에 의해 잘 드러난 주상절리대이다. 무등산 응회암은 중생대 백악기 후기(약 8,700~8,500만 년 전)에 마그마가 지표로 분출한 화산암으로서, 화산폭발 시 뜨거운 화성쇄설류에 의해 만들어진 용결응회암이다. 천왕봉에 올라서면 전남광주통합특별시뿐 아니라, 담양, 영암, 나주, 전북 순창 등 호남 일원이 한눈에 들어오며 맑은 날엔 지리산도 조망할 수 있다. 지왕봉에는 꼭대기에 의병장 김덕령 장군이 무술을 연마하고 담력을 길렀다는 뜀바위가 있다. #자연관광 #자연경관(산) #산, 고개, 오름, 봉우리 #산 #무등산 #공원 #주차가능', '1.0.0',
+  'import', 0.45,
+  '[{"source": "tourapi", "source_url": "http://geopark.gwangju.go.kr/gallery.do?S=S01&M=010301000000&b_code=0000000007&v_type=SK3&b_list=16&mod=view&list_no=32&nPage=1&vlist_no_npage=0&keyField=&keyWord=&orderby=REG_DATE", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2614783'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1074432', '무등산 주상절리대', '광주', '동구', '관광지', '무등산 주상절리대는 용연동 일대 무등산에 있는 육각형 모양의 기둥 바위가 늘어선 것이다. 대한민국의 천연기념물로 지정되어 있다. 주상절리는 용암(석영안산암질)이 지표부근에서 냉각되면서 물리적 풍화에 의해 수축되어 생기는 절리 중에 단면의 형태가 오각형이나 육각형의 기둥모양인 것을 말한다. 무등산 주상절리는 약 7천만 년 전(중생대 백악기) 화산활동의 산물로 형성된 것으로 입석대와 서석대 그리고 규봉에 있으며, 입석대와 서석대에 있는 절리대의 돌기둥 하나의 크기가 지금까지 남한에서 보고된 것 중 가장 커서 주목받고 있다. 입석대, 규봉은 풍화가 많이 진행되어 기둥모양이지만 서석대는 풍화가 덜 진행되어 병풍모양을 하고 있다. 정상을 중심으로 산비탈에 있는 너덜겅은 이러한 돌기둥이 무너져 쌓인 것이다. 서있는 바위나, 너덜겅들은 암석의 생성과 풍화과정을 살펴볼 수 있고 지구의 기후환경변화를 모니터링할 수 있는 희귀한 자연유적이므로 학술적·경관적 가치가 매우 크며 빼어난 지질경관을 이루고 있다. 이러한 지형자원들은 단순히 주상절리대, 너덜지대라는 인식 이외에 무등산 일대에서 살아가는 주민들에게는 또 다른 중요한 의미를 지니고 있다. 무등산의 주상절리대와 너덜지대를 신앙의 대상으로, 때로는 종교적 수행을 하는 장소로 활용하기도 했다.', '전남광주통합특별시 동구 용연동 산 354-1', null, 35.1202403693, 126.9990150009, '062-227-1187', 'https://www.donggu.kr/tour/M0000016/tour/view.do', 'http://tong.visitkorea.or.kr/cms/resource/23/3029123_image2_1.jpg', 90, false, false, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.donggu.kr/tour/M0000016/tour/view.do', '2026-06-30T21:27:26+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연관광','#자연생태','#기암괴석','#자연','#무등산','#역사','#주차가능']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '무등산 주상절리대 무등산 주상절리대는 용연동 일대 무등산에 있는 육각형 모양의 기둥 바위가 늘어선 것이다. 대한민국의 천연기념물로 지정되어 있다. 주상절리는 용암(석영안산암질)이 지표부근에서 냉각되면서 물리적 풍화에 의해 수축되어 생기는 절리 중에 단면의 형태가 오각형이나 육각형의 기둥모양인 것을 말한다. 무등산 주상절리는 약 7천만 년 전(중생대 백악기) 화산활동의 산물로 형성된 것으로 입석대와 서석대 그리고 규봉에 있으며, 입석대와 서석대에 있는 절리대의 돌기둥 하나의 크기가 지금까지 남한에서 보고된 것 중 가장 커서 주목받고 있다. 입석대, 규봉은 풍화가 많이 진행되어 기둥모양이지만 서석대는 풍화가 덜 진행되어 병풍모양을 하고 있다. 정상을 중심으로 산비탈에 있는 너덜겅은 이러한 돌기둥이 무너져 쌓인 것이다. 서있는 바위나, 너덜겅들은 암석의 생성과 풍화과정을 살펴볼 수 있고 지구의 기후환경변화를 모니터링할 수 있는 희귀한 자연유적이므로 학술적·경관적 가치가 매우 크며 빼어난 지질경관을 이루고 있다. 이러한 지형자원들은 단순히 주상절리대, 너덜지대라는 인식 이외에 무등산 일대에서 살아가는 주민들에게는 또 다른 중요한 의미를 지니고 있다. 무등산의 주상절리대와 너덜지대를 신앙의 대상으로, 때로는 종교적 수행을 하는 장소로 활용하기도 했다. #자연관광 #자연생태 #기암괴석 #자연 #무등산 #역사 #주차가능', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "https://www.donggu.kr/tour/M0000016/tour/view.do", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1074432'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
 values ('tourapi', '1621168', '고싸움놀이전수교육관', '광주', '남구', '문화·예술', '고싸움놀이전수교육관은 고싸움놀이 무형문화재 전수교육과 체험을 하며 궁극적으로는 고싸움놀이를 보존하기 위한 곳이다. 매년 국가 무형 유산 공개행사 ‘고싸움놀이축제’를 통하여 고싸움놀이가 지닌 고유한 멋과 즐거움을 일반 시민에게 전수, 보존하는데 힘쓰고 있다. 또한 체험과 교육 등의 다양한 프로그램을 연중 실시하여 우리 전통문화예술에 대한 사회적 향유 기회를 제공하고 있다. (출처 : 고싸움놀이전수교육관 홈페이지)', '전남광주통합특별시 남구 고싸움로 2', null, 35.0697294541, 126.837538861, null, 'http://www.gossaum.com/', 'http://tong.visitkorea.or.kr/cms/resource/87/3367587_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'http://www.gossaum.com/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
@@ -1615,6 +1885,114 @@ select p.id,
   '[{"source": "tourapi", "source_url": "", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2605338'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130639', '우제길미술관', '광주', '동구', '문화·예술', '우제길미술관은 사립미술관으로, 김차순 관장이 2001년 설립 이후 2014년 건축가 승효상의 설계로 새로운 공간을 증축하며 한층 더 현대적인 감각을 갖춘 복합문화공간으로 거듭났다. 한국 현대 추상미술을 대표하는 ‘빛의 화가’ 우제길 화백의 예술세계를 깊이 있게 조명하는 전시뿐만 아니라, 미술관이라는 세련된 건축미가 어우러진 인문학적 감성 공간에서 문화예술 행사, 교육, 워크숍 및 세미나, 결혼식 등 다양한 대관 행사를 개최할 수 있다. 또한, 작가의 창작 작업실이 함께 위치하여 그의 예술적 영감과 창작의 순간을 더욱 가까이에서 느낄 수 있는 특별한 경험을 제공한다. * 빛의 화가 우제길 우제길은 빛의 화가라고 불리는 작가로 현대 미술의 거장이다. 1942년 일본 교토에서 태어나 광주서중학교를 거쳐 1961년 광주사범학교를 졸업하였다. 이후 1987년 광주대학교 산업디자인과를 졸업하였다. 한국과 일본, 미국, 유라시아 국가에서 180여 회 이상의 국제전과 기획전에 참여하였으며, 한국미술대상전 특별상(1976), 문화체육부 공로상(1994), 제1회 광주비엔날레 인기작가상(1995), 옥관 문화훈장(2004) 등을 받았다.', '전남광주통합특별시 동구 의재로 140-6', null, 35.1317742306, 126.9430502112, null, 'https://wooart.co.kr/board/', 'http://tong.visitkorea.or.kr/cms/resource/53/3510753_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://wooart.co.kr/board/', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#미술관/화랑','#예술','#전시','#체험','#교육','#스포츠','#축제','#야경']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 1.0, "food": 0.0, "activity": 0.75, "sports": 0.5, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,1.0,0.0,0.75,0.5,0.0,0.75]'::extensions.vector(8),
+  '우제길미술관 우제길미술관은 사립미술관으로, 김차순 관장이 2001년 설립 이후 2014년 건축가 승효상의 설계로 새로운 공간을 증축하며 한층 더 현대적인 감각을 갖춘 복합문화공간으로 거듭났다. 한국 현대 추상미술을 대표하는 ‘빛의 화가’ 우제길 화백의 예술세계를 깊이 있게 조명하는 전시뿐만 아니라, 미술관이라는 세련된 건축미가 어우러진 인문학적 감성 공간에서 문화예술 행사, 교육, 워크숍 및 세미나, 결혼식 등 다양한 대관 행사를 개최할 수 있다. 또한, 작가의 창작 작업실이 함께 위치하여 그의 예술적 영감과 창작의 순간을 더욱 가까이에서 느낄 수 있는 특별한 경험을 제공한다. * 빛의 화가 우제길 우제길은 빛의 화가라고 불리는 작가로 현대 미술의 거장이다. 1942년 일본 교토에서 태어나 광주서중학교를 거쳐 1961년 광주사범학교를 졸업하였다. 이후 1987년 광주대학교 산업디자인과를 졸업하였다. 한국과 일본, 미국, 유라시아 국가에서 180여 회 이상의 국제전과 기획전에 참여하였으며, 한국미술대상전 특별상(1976), 문화체육부 공로상(1994), 제1회 광주비엔날레 인기작가상(1995), 옥관 문화훈장(2004) 등을 받았다. #문화관광 #전시시설 #미술관/화랑 #예술 #전시 #체험 #교육 #스포츠 #축제 #야경', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "https://wooart.co.kr/board/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130639'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2755010', '5·18민주화운동 기록관', '광주', '동구', '문화·예술', '5·18 민주화운동은 1980년 5월 18일부터 열흘간 전남광주통합특별시에서 촉발된 항쟁, 항거운동으로 대한민국을 지금의 민주주의 국가로 만든 역사적인 운동이다. ‘5·18 민주화운동 기록관’은 5·18 민주화운동 기록유산을 체계적으로 수집하여 영구 보존하고, 5·18의 역사적 의미를 세계인들과 함께 공유하기 위해 1980년 5월 역사적 현장이었던 옛 광주가톨릭센터에 2015년 설립되었다. 광주 시민들의 노력으로 2011년 유네스코 세계기록 유산에 등재된 5·18 민주화운동의 기록들을 직접 관람할 수 있고, 정기해설, 온라인 전시관 등을 이용한 관람도 가능하다. ‘5·18 민주화운동 기록관’은 대한민국 국민 모두의 역사를 간직한 곳이다.', '전남광주통합특별시 동구 금남로 221 (금남로3가)', null, 35.1496023298, 126.9167687536, null, 'https://www.518archives.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/32/3532032_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'https://www.518archives.go.kr/', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#기념관','#역사','#민주인권','#예술','#전시','#교육','#실내','#비오는날']::text[],
+  '{"nature": 0.0, "culture": 1.0, "art": 0.75, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,1.0,0.75,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '5·18민주화운동 기록관 5·18 민주화운동은 1980년 5월 18일부터 열흘간 전남광주통합특별시에서 촉발된 항쟁, 항거운동으로 대한민국을 지금의 민주주의 국가로 만든 역사적인 운동이다. ‘5·18 민주화운동 기록관’은 5·18 민주화운동 기록유산을 체계적으로 수집하여 영구 보존하고, 5·18의 역사적 의미를 세계인들과 함께 공유하기 위해 1980년 5월 역사적 현장이었던 옛 광주가톨릭센터에 2015년 설립되었다. 광주 시민들의 노력으로 2011년 유네스코 세계기록 유산에 등재된 5·18 민주화운동의 기록들을 직접 관람할 수 있고, 정기해설, 온라인 전시관 등을 이용한 관람도 가능하다. ‘5·18 민주화운동 기록관’은 대한민국 국민 모두의 역사를 간직한 곳이다. #문화관광 #전시시설 #기념관 #역사 #민주인권 #예술 #전시 #교육 #실내 #비오는날', '1.0.0',
+  'import', 0.55,
+  '[{"source": "tourapi", "source_url": "https://www.518archives.go.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2755010'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -2865,6 +3243,276 @@ on conflict (place_id) do update set
   reviewed_at = excluded.reviewed_at, updated_at = now();
 
 insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1350167', '강진 서중어촌체험마을', '전남', '강진군', '관광지', '서중어촌체험마을은 청정해역이 내륙으로 들어온 고깔모양의 강진만 중심부, 전남광주통합특별시 강진군 최남단에 위치한 아름다운 어촌마을이다. 마을앞바다의 까막섬(상록수림)이 천연기념물로 지정되어 있으며 원래 서당이 많아서 서재동으로 불리었으나 점차 서중으로 변경되었다. 주요 체험거리로는 통발로 낙지를 잡는 통발낙지체험과 소형 어선을 타고 호남제일의 미향 마량의 앞바다를 둘러보는 승선체험, 해상바지선에서 낚시를 즐길 수 있는 바지선낚시체험과 숙박까지 가능한 해상펜션에서 낚시를 즐길 수 있는 해상펜션체험 그리고 김 양식을 직접 체험해볼 수 있는 김 양식 및 건조체험 등이 있다. 우리나라 최초로 어촌어항복합단지로 조성된 마량항이 마을인근에 위치하고 있다. 강진군 마량면과 완도군 고금면을 잇는 연륙교가 지난 2007년 개통되면서 고금대교와 바다, 섬 그리고 마량향이 어우러지는 새로운 관광명소로 부각되고 있다. 22개의 횟집과 12개소의 해조류가공업체가 위치하여 강진군 지역경제의 원동력이 되고 있다.', '전남광주통합특별시 강진군 마량면 까막섬로 75-7', null, 34.4536620901, 126.8076232442, '061-433-8525', 'http://www.xn--hz2b17k22d0xb19cw7hura767c.kr/', null, 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'http://www.xn--hz2b17k22d0xb19cw7hura767c.kr/', '2026-06-30T21:26:27+00:00'::timestamptz, null, null, 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#체험관광','#농.산.어촌 체험','#체험어장','#바다','#체험','#느린여행','#아이동반','#주차가능']::text[],
+  '{"nature": 0.5, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.75, "festival": 0.0}'::jsonb,
+  '[0.5,0.0,0.0,0.0,0.75,0.0,0.75,0.0]'::extensions.vector(8),
+  '강진 서중어촌체험마을 서중어촌체험마을은 청정해역이 내륙으로 들어온 고깔모양의 강진만 중심부, 전남광주통합특별시 강진군 최남단에 위치한 아름다운 어촌마을이다. 마을앞바다의 까막섬(상록수림)이 천연기념물로 지정되어 있으며 원래 서당이 많아서 서재동으로 불리었으나 점차 서중으로 변경되었다. 주요 체험거리로는 통발로 낙지를 잡는 통발낙지체험과 소형 어선을 타고 호남제일의 미향 마량의 앞바다를 둘러보는 승선체험, 해상바지선에서 낚시를 즐길 수 있는 바지선낚시체험과 숙박까지 가능한 해상펜션에서 낚시를 즐길 수 있는 해상펜션체험 그리고 김 양식을 직접 체험해볼 수 있는 김 양식 및 건조체험 등이 있다. 우리나라 최초로 어촌어항복합단지로 조성된 마량항이 마을인근에 위치하고 있다. 강진군 마량면과 완도군 고금면을 잇는 연륙교가 지난 2007년 개통되면서 고금대교와 바다, 섬 그리고 마량향이 어우러지는 새로운 관광명소로 부각되고 있다. 22개의 횟집과 12개소의 해조류가공업체가 위치하여 강진군 지역경제의 원동력이 되고 있다. #체험관광 #농.산.어촌 체험 #체험어장 #바다 #체험 #느린여행 #아이동반 #주차가능', '1.0.0',
+  'import', 0.42,
+  '[{"source": "tourapi", "source_url": "http://www.xn--hz2b17k22d0xb19cw7hura767c.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1350167'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2515789', '강진 오감통', '전남', '강진군', '관광지', '강진 오감통은 음악창작소, 먹거리 장터, 한정식 체험관 등으로 이루어진 복합문화공간이다. 화려한 공연, 눈과 입이 즐거운 산해진미, 특별한 재미가 넘치는 체험거리, 친환경 로컬푸드 등을 즐길 수 있다. 전남음악창작소는 지역 뮤지션들의 창작활동을 지원하고 더불어 지역의 대중음악 소비자층을 확대하기 위해 지역 뮤지션과 지역 주민들을 위한 진정한 열린 복합문화공간으로서의 역할을 다하고 있다.', '전남광주통합특별시 강진군 강진읍 오감길 2 2동', null, 34.6391324006, 126.773588414, '음악창작소 061-433-3636', 'http://ogamtong.com/', 'http://tong.visitkorea.or.kr/cms/resource/70/3381570_image2_1.JPG', 90, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'http://ogamtong.com/', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#기타문화관광지','#기타문화시설','#공연','#공방','#로컬푸드','#전통음식','#체험','#마켓','#아이동반']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.75, "food": 0.75, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.0,0.0,0.75,0.75,0.5,0.0,0.0,0.75]'::extensions.vector(8),
+  '강진 오감통 강진 오감통은 음악창작소, 먹거리 장터, 한정식 체험관 등으로 이루어진 복합문화공간이다. 화려한 공연, 눈과 입이 즐거운 산해진미, 특별한 재미가 넘치는 체험거리, 친환경 로컬푸드 등을 즐길 수 있다. 전남음악창작소는 지역 뮤지션들의 창작활동을 지원하고 더불어 지역의 대중음악 소비자층을 확대하기 위해 지역 뮤지션과 지역 주민들을 위한 진정한 열린 복합문화공간으로서의 역할을 다하고 있다. #문화관광 #기타문화관광지 #기타문화시설 #공연 #공방 #로컬푸드 #전통음식 #체험 #마켓 #아이동반', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "http://ogamtong.com/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2515789'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '128151', '강진다원', '전남', '강진군', '관광지', '강진다원은 한국 제다 업계의 선두주자인 ‘태평양다원’에서 운영하는 차밭으로 면적이 33.3㏊에 이른다. 부드러운 곡선과 푸르름이 돋보이는 이 차밭은 월출산의 솟아오른 바위들과 절묘한 조화를 이룬다. 월출산은 큰 바위가 병풍처럼 둘러쳐져 산세가 뛰어나며 예로부터 산 주변의 여러 사찰을 중심으로 차나무가 재배되었다. 일찍이 다산 정약용은 월출산에서 나오는 차가 천하에서 두 번째로 좋은 차라고 극찬한 곳이기도 하다. 월출산 기슭은 해마다 5월 초가 되면 눈이 시리도록 푸른색으로 채색된다. 5월의 강진 다원은 취미로 다도를 즐기는 이들뿐 아니라 일반 나들이객들에게도 관광 명소로 떠오르기 시작했다. 방문객들은 단지 관광이나 사진촬영에 그치는 것이 아니라, 그윽한 차 향기에 취하며 녹찻잎을 따보는 이색체험을 할 수도 있다. 초록 녹차밭도 멋지지만 다원의 겨울의 전경 또한 녹차밭을 감상하는 새로운 포인트이다.', '전남광주통합특별시 강진군 성전면 백운로 93-25', null, 34.7409031836, 126.7061613195, '061-432-5500', 'https://www.gangjin.go.kr/culture/attractions/park?mode=view&idx=175', 'http://tong.visitkorea.or.kr/cms/resource/07/3558407_image2_1.jpg', 90, false, false, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.gangjin.go.kr/culture/attractions/park?mode=view&idx=175', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#체험관광','#산업관광','#기타산업관광지','#전통','#체험','#아이동반','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 0.5, "art": 0.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,0.5,0.0,0.0,0.5,0.0,0.0,0.0]'::extensions.vector(8),
+  '강진다원 강진다원은 한국 제다 업계의 선두주자인 ‘태평양다원’에서 운영하는 차밭으로 면적이 33.3㏊에 이른다. 부드러운 곡선과 푸르름이 돋보이는 이 차밭은 월출산의 솟아오른 바위들과 절묘한 조화를 이룬다. 월출산은 큰 바위가 병풍처럼 둘러쳐져 산세가 뛰어나며 예로부터 산 주변의 여러 사찰을 중심으로 차나무가 재배되었다. 일찍이 다산 정약용은 월출산에서 나오는 차가 천하에서 두 번째로 좋은 차라고 극찬한 곳이기도 하다. 월출산 기슭은 해마다 5월 초가 되면 눈이 시리도록 푸른색으로 채색된다. 5월의 강진 다원은 취미로 다도를 즐기는 이들뿐 아니라 일반 나들이객들에게도 관광 명소로 떠오르기 시작했다. 방문객들은 단지 관광이나 사진촬영에 그치는 것이 아니라, 그윽한 차 향기에 취하며 녹찻잎을 따보는 이색체험을 할 수도 있다. 초록 녹차밭도 멋지지만 다원의 겨울의 전경 또한 녹차밭을 감상하는 새로운 포인트이다. #체험관광 #산업관광 #기타산업관광지 #전통 #체험 #아이동반 #주차가능', '1.0.0',
+  'import', 0.4,
+  '[{"source": "tourapi", "source_url": "https://www.gangjin.go.kr/culture/attractions/park?mode=view&idx=175", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '128151'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '129692', '강진마도진만호성지', '전남', '강진군', '관광지', '증보문헌비고에 의하면 마도진 만호성은 石城으로 둘레가 890자(尺), 높이가 12 자라고 기록되어 있으나 현재는 서북벽의 일부만이 남아 있다. 성벽의 총 연장 길이는 730m 정도이고, 방형 및 장방형의 대형 석재로 기단부를 구축하고 상부로 올라갈수록 30×20㎝ 정도의 작은 석재를 이용하여 내탁법(內託法)에 의해 쌓아 올렸으며, 현존 서북벽은 길이 220m, 높이 2.3∼4.7m, 상부폭 1m, 하부폭 2.5m이다. 마도진이 있는 마량은 우리나라 서남해에 위치하여 강진, 장흥, 해남, 영암으로 이어지며 제주도와 연결되는 요충지이다. 마도진(馬島鎭) 만호성지(萬戶城址)는 마량에 들어서는 도로변(23번 지방 도로 옆)에 위치하고 있다. 속칭 「말머리(馬頭)」라 불리는 마량의 배산(背山)을 뒤로하고 원마(元馬) 마을의 서북쪽에 장방형의 형태로 남아있는 마도진성(馬島鎭城)은 군항(軍港)으로써 천혜의 조건을 갖추고 있다. 해상의 전면으로는 고금도·까막섬·노리묵 등이 이·삼중으로 외호(外護) 하고 있으며 육지 쪽으로는 말머리산의 능선을 휘감으며 자리 잡고 있어 외부로부터 은폐·엄폐되어 있다. 마도진성(馬島鎭城)은 남쪽은 낮고 북쪽이 높은 구릉상에 축조하였는데 현재는 서북벽의 일부만 남아 있다. 유구를 통한 성벽(城壁)의 총 연장 길이는 730m 정도이며, 방형 및 작은 석재를 이용하여 내탁법(內托法)에 의해 쌓아 올렸다. 현존 서북벽은 길이 220m, 높이 2.3∼4.7m, 상부(上部) 폭(幅) 1m, 하부(下部) 폭(幅) 2.5m 정도이다. 그 외 동·서·남·벽은 마량지서 등의 담장으로 이용되고 있는데 현재는 기단부 만이 부분적으로 확인된다. 기타 부속시설로는 북문지(北門址)의 기단석만이 확인된다. 문지(門址)는 폭 4.3m, 높이 1.6m로 근래 도로 확장사업 계획에 따라 곧 파괴될 위험에 처해있다. 한편 서북벽 근처에는 행만호(行萬戶) 이종호(李鍾浩)의 선정비가 1기가 남아 있는데 규모는 높이 130㎝, 폭 50㎝, 두께 15㎝이다. * 규모 - 28필지 4,23', '전남광주통합특별시 강진군 마량면 마량리 988-5번지 일대', null, 34.4533428163, 126.8157780917, '061-430-3363', null, 'http://tong.visitkorea.or.kr/cms/resource/71/3537771_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, null, '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#역사관광','#역사유적지','#성ㆍ산성ㆍ성곽','#느린여행']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
+  '강진마도진만호성지 증보문헌비고에 의하면 마도진 만호성은 石城으로 둘레가 890자(尺), 높이가 12 자라고 기록되어 있으나 현재는 서북벽의 일부만이 남아 있다. 성벽의 총 연장 길이는 730m 정도이고, 방형 및 장방형의 대형 석재로 기단부를 구축하고 상부로 올라갈수록 30×20㎝ 정도의 작은 석재를 이용하여 내탁법(內託法)에 의해 쌓아 올렸으며, 현존 서북벽은 길이 220m, 높이 2.3∼4.7m, 상부폭 1m, 하부폭 2.5m이다. 마도진이 있는 마량은 우리나라 서남해에 위치하여 강진, 장흥, 해남, 영암으로 이어지며 제주도와 연결되는 요충지이다. 마도진(馬島鎭) 만호성지(萬戶城址)는 마량에 들어서는 도로변(23번 지방 도로 옆)에 위치하고 있다. 속칭 「말머리(馬頭)」라 불리는 마량의 배산(背山)을 뒤로하고 원마(元馬) 마을의 서북쪽에 장방형의 형태로 남아있는 마도진성(馬島鎭城)은 군항(軍港)으로써 천혜의 조건을 갖추고 있다. 해상의 전면으로는 고금도·까막섬·노리묵 등이 이·삼중으로 외호(外護) 하고 있으며 육지 쪽으로는 말머리산의 능선을 휘감으며 자리 잡고 있어 외부로부터 은폐·엄폐되어 있다. 마도진성(馬島鎭城)은 남쪽은 낮고 북쪽이 높은 구릉상에 축조하였는데 현재는 서북벽의 일부만 남아 있다. 유구를 통한 성벽(城壁)의 총 연장 길이는 730m 정도이며, 방형 및 작은 석재를 이용하여 내탁법(內托法)에 의해 쌓아 올렸다. 현존 서북벽은 길이 220m, 높이 2.3∼4.7m, 상부(上部) 폭(幅) 1m, 하부(下部) 폭(幅) 2.5m 정도이다. 그 외 동·서·남·벽은 마량지서 등의 담장으로 이용되고 있는데 현재는 기단부 만이 부분적으로 확인된다. 기타 부속시설로는 북문지(北門址)의 기단석만이 확인된다. 문지(門址)는 폭 4.3m, 높이 1.6m로 근래 도로 확장사업 계획에 따라 곧 파괴될 위험에 처해있다. 한편 서북벽 근처에는 행만호(行萬戶) 이종호(李鍾浩)의 선정비가 1기가 남아 있는데 규모는 높이 130㎝, 폭 50㎝, 두께 15㎝이다. * 규모 - 28필지 4,23 #역사관광 #역사유적지 #성ㆍ산성ㆍ성곽 #느린여행', '1.0.0',
+  'import', 0.38,
+  '[{"source": "tourapi", "source_url": "", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '129692'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '126645', '강진만', '전남', '강진군', '관광지', '강진만에는 강진군의 내륙 깊숙이 들어서 탐진을 비롯하여 장계천, 강진천, 도암천 등 여러 하천들이 흘러든다. 이로 인하여 주위의 해역보다 염도가 낮아 영양염도가 2.4도, 평균수온이 17.8℃로서 해조류 및 어패류의 서식에 적합하다. 강진만은 1978년 청정수역으로 지정되었으며, 대합, 꼬막, 굴, 갯장어, 새우, 낙지, 숭어, 농어 등의 산지이다. 습지 위에 설치되어 있는 나무데크를 걸으며 20만 평의 갈대 군락지와 천연기념물 201호인 큰고니 등 약 1,131종의 해양생물이 서식하는 남해안 생태의 최대 보고인 강진만생태공원은 꼭 방문해야 하는 곳이다. 강진읍을 지나 고금도가 건너다 보이는 마량항까지 강진만 동쪽 가장자리를 따라 내려가는 23번 국도를 이용하면 바닷가를 따라 늘어선 바다갈대들의 풍경을 감상할 수 있다. 동남쪽에 위치한 마량항은 수심이 깊고 바다 전면에 위치 한 고금도가 방파제 역할을 하며 해상 교통의 요지로 발전하고 있다. 강진읍에서 시작해 다산로-해안관광로를 따라 해안가를 따라 사초해변공원과 사내호를 둘러볼 수 있다.', '전남광주통합특별시 강진군 신전면 벌정리', null, 34.595223382, 126.770150892, '061-430-5386', 'https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=162', 'http://tong.visitkorea.or.kr/cms/resource/79/3538079_image2_1.jpg', 90, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=162', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#자연관광','#자연경관(하천‧해양)','#항구/포구','#자연','#전망','#공원']::text[],
+  '{"nature": 1.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[1.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0]'::extensions.vector(8),
+  '강진만 강진만에는 강진군의 내륙 깊숙이 들어서 탐진을 비롯하여 장계천, 강진천, 도암천 등 여러 하천들이 흘러든다. 이로 인하여 주위의 해역보다 염도가 낮아 영양염도가 2.4도, 평균수온이 17.8℃로서 해조류 및 어패류의 서식에 적합하다. 강진만은 1978년 청정수역으로 지정되었으며, 대합, 꼬막, 굴, 갯장어, 새우, 낙지, 숭어, 농어 등의 산지이다. 습지 위에 설치되어 있는 나무데크를 걸으며 20만 평의 갈대 군락지와 천연기념물 201호인 큰고니 등 약 1,131종의 해양생물이 서식하는 남해안 생태의 최대 보고인 강진만생태공원은 꼭 방문해야 하는 곳이다. 강진읍을 지나 고금도가 건너다 보이는 마량항까지 강진만 동쪽 가장자리를 따라 내려가는 23번 국도를 이용하면 바닷가를 따라 늘어선 바다갈대들의 풍경을 감상할 수 있다. 동남쪽에 위치한 마량항은 수심이 깊고 바다 전면에 위치 한 고금도가 방파제 역할을 하며 해상 교통의 요지로 발전하고 있다. 강진읍에서 시작해 다산로-해안관광로를 따라 해안가를 따라 사초해변공원과 사내호를 둘러볼 수 있다. #자연관광 #자연경관(하천‧해양) #항구/포구 #자연 #전망 #공원', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.gangjin.go.kr/culture/attractions/region?mode=view&idx=162", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '126645'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
 values ('tourapi', '1623643', '강진군도서관', '전남', '강진군', '문화·예술', '이 도서관은 다양한 이용자층의 요구를 충족할 수 있도록 다양한 시설과 서비스를 갖추고 있는 곳으로, 그 역사와 기능에서 중요한 위치를 차지하고 있다. 종합자료실과 아동자료실은 학문적 연구와 어린이들의 독서 습관 형성을 위한 다양한 자료를 제공한다. 디지털자료실은 최신 기술을 활용하여 전자책, 디지털 아카이브 및 멀티미디어 콘텐츠에 쉽게 접근할 수 있도록 설계되었다. 시청각실은 영상 및 오디오 자료를 활용한 교육과 문화 활동을 지원하며, 문화교실은 지역 주민들이 참여할 수 있는 다양한 강좌와 프로그램을 통해 평생교육의 기회를 제공한다. 청소년과 일반인을 위한 열람실은 독립적인 학습 공간을 제공하며, 특히 청소년 열람실은 청소년들이 학습과 독서를 통해 자기 계발을 할 수 있는 환경을 조성한다. 또한 24시간 열린 방은 바쁜 현대인들이 시간에 구애받지 않고 도서관을 이용할 수 있도록 지원하는 혁신적인 공간이다. 이러한 시설은 이용자들에게 단순히 책을 읽는 장소 이상의 가치를 제공하며, 학습과 문화 교류의 중심지 역할을 하고 있다. 이 도서관은 전국 국립도서관 중 두 번째로 설립된 유서 깊은 곳으로, 역사적 의미와 함께 지역 사회에 지속적으로 기여하고 있다. 도서관은 시대의 변화에 발맞추어 시설과 서비스를 개선하며 이용자들에게 질 높은 자료와 프로그램을 제공하고, 지식과 문화의 중심으로 자리매김하고 있다. 더 나아가, 모든 세대가 어우러질 수 있는 포괄적 공간으로서의 역할을 충실히 수행하고 있다.', '전남광주통합특별시 강진군 강진읍 남문길 10', null, 34.640490518, 126.7697553845, null, 'https://www.gjlib.go.kr/', 'http://tong.visitkorea.or.kr/cms/resource/58/3589458_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.gjlib.go.kr/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
 on conflict (source, source_place_id) do update set
   name = excluded.name,
@@ -3667,6 +4315,276 @@ select p.id,
   '[{"source": "tourapi", "source_url": "https://www.seamuse.go.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '129896'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '705052', '귀족호도박물관', '전남', '장흥군', '문화·예술', '억불산 가는 길에 자리잡고 있는 귀족호도박물관은 조선시대부터 장흥군에서만 자생하는 손운동 건강용 지압호도(두)를 다양한 품종으로 육종하고, 명품을 관리하며 그 자료를 보존하고자 설립하였다. 지상 1층은 기획전시실, 2층은 관리 및 자료실이며 부대시설로는 귀족호도테마공원, 육종 및 배양실, 자연쉼터, 판매장 등이 있다. 박물관 외 별도 생약초 체험랜드가 조성되어 있는데 중요시설로는 생약초 인체모형 동산, 생약초 분재 기와관, 생약초 향수관, 생약초 자원 식물관, 생약초 분재공원, 생약초 테마관광포장 등을 함께 관람할 수 있다.', '전남광주통합특별시 장흥군 장흥읍 남부관광로 56-90', null, 34.6750057964, 126.919096969, null, 'http://www.hodonamu.com/', 'http://tong.visitkorea.or.kr/cms/resource/74/693174_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'http://www.hodonamu.com/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#박물관','#자연','#예술','#전시','#체험','#공원','#실내','#비오는날']::text[],
+  '{"nature": 0.5, "culture": 0.75, "art": 1.0, "food": 0.0, "activity": 0.5, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,0.75,1.0,0.0,0.5,0.0,0.5,0.0]'::extensions.vector(8),
+  '귀족호도박물관 억불산 가는 길에 자리잡고 있는 귀족호도박물관은 조선시대부터 장흥군에서만 자생하는 손운동 건강용 지압호도(두)를 다양한 품종으로 육종하고, 명품을 관리하며 그 자료를 보존하고자 설립하였다. 지상 1층은 기획전시실, 2층은 관리 및 자료실이며 부대시설로는 귀족호도테마공원, 육종 및 배양실, 자연쉼터, 판매장 등이 있다. 박물관 외 별도 생약초 체험랜드가 조성되어 있는데 중요시설로는 생약초 인체모형 동산, 생약초 분재 기와관, 생약초 향수관, 생약초 자원 식물관, 생약초 분재공원, 생약초 테마관광포장 등을 함께 관람할 수 있다. #문화관광 #전시시설 #박물관 #자연 #예술 #전시 #체험 #공원 #실내 #비오는날', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "http://www.hodonamu.com/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '705052'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '3090707', '규남박물관', '전남', '화순군', '문화·예술', '규남 박물관은 화순군 백아로에 자리하고 있으며 전남광주통합특별시 유형문화재인 『하백원의 만국전도와 동국지도』를 비롯하여 서화, 간찰, 전적, 인장 등 940여 점의 유물을 소장하고 있는 곳이다. 규남 하백원 선생은 여암 신경준, 존재 위백규, 이재 황윤식과 함께 조선 후기 호남의 4대 실학자 중 한 분이다. 전남광주통합특별시 화순군 이서면 야사리에서 태어나 벼슬을 하던 몇 년을 제외하고는 일생의 대부분을 고향에서 자승차, 자명종, 계영배, 방적기 등 다양한 발명품을 만들고 만국지도, 동국지도를 그리는 등 실용 학문을 탐구하며 지냈다. 이곳에는 규남 선생님과 그의 선 후대 인물, 친지들의 편지 등 여러 유물을 만나볼 수 있다. 겨울에는 찾는 이들이 많지 않아 개관하지 않으며 하백원의 실학에 대해 알고 찾아오는 사람도 있지만 한옥 건축물이 예쁘고 박물관이라는 점에서 궁금증을 갖고 들어오는 사람들도 있다. 이곳에는 상설 전시관과 특별 전시관이 있으며 규남 선생의 영정이 모셔진 사당인 영당에서는 매년 4월 규남제를 봉행하고 있다. 화순을 여행하며 들러볼 만한 곳이다.', '전남광주통합특별시 화순군 이서면 백아로 3109', null, 35.1101984314, 127.0799247775, null, 'http://www.gyunammuseum.org/', 'http://tong.visitkorea.or.kr/cms/resource/92/3090692_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'http://www.gyunammuseum.org/', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#박물관','#문화유산','#전통','#예술','#전시','#실내','#비오는날','#주차가능']::text[],
+  '{"nature": 0.0, "culture": 1.0, "art": 1.0, "food": 0.0, "activity": 0.0, "sports": 0.0, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0]'::extensions.vector(8),
+  '규남박물관 규남 박물관은 화순군 백아로에 자리하고 있으며 전남광주통합특별시 유형문화재인 『하백원의 만국전도와 동국지도』를 비롯하여 서화, 간찰, 전적, 인장 등 940여 점의 유물을 소장하고 있는 곳이다. 규남 하백원 선생은 여암 신경준, 존재 위백규, 이재 황윤식과 함께 조선 후기 호남의 4대 실학자 중 한 분이다. 전남광주통합특별시 화순군 이서면 야사리에서 태어나 벼슬을 하던 몇 년을 제외하고는 일생의 대부분을 고향에서 자승차, 자명종, 계영배, 방적기 등 다양한 발명품을 만들고 만국지도, 동국지도를 그리는 등 실용 학문을 탐구하며 지냈다. 이곳에는 규남 선생님과 그의 선 후대 인물, 친지들의 편지 등 여러 유물을 만나볼 수 있다. 겨울에는 찾는 이들이 많지 않아 개관하지 않으며 하백원의 실학에 대해 알고 찾아오는 사람도 있지만 한옥 건축물이 예쁘고 박물관이라는 점에서 궁금증을 갖고 들어오는 사람들도 있다. 이곳에는 상설 전시관과 특별 전시관이 있으며 규남 선생의 영정이 모셔진 사당인 영당에서는 매년 4월 규남제를 봉행하고 있다. 화순을 여행하며 들러볼 만한 곳이다. #문화관광 #전시시설 #박물관 #문화유산 #전통 #예술 #전시 #실내 #비오는날 #주차가능', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "http://www.gyunammuseum.org/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '3090707'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '1994953', '김대중 노벨평화상 기념관', '전남', '목포시', '문화·예술', '김대중 노벨평화상 기념관은 민주주의, 인권, 평화를 지키기 위해 평생을 바친 한국인 최초 노벨평화상 수상자 김대중 정신을 공유할 수 있는 기념관이다. 김대중 대통령은 민주주의와 인권 신장을 향한 40여 년에 걸친 노력과 6·15 남북공동선언을 이끌어내며 한반도 긴장 완화 등 국제 평화에 기여한 공로를 인정받아 2000년 12월 10일 노벨평화상을 수상하였다. 네 개의 전시실로 이루어진 본 기념관은 국민의 정부 5년 동안 국가 발전을 위한 외교 안보, 경제, 문화 등 각 분야별 국가 발전 전략과 이를 위한 시책들을 전시하고 있다. 또한 노벨상의 탄생 배경, 선정 이유, 선출 방법 등을 알아보고 다양한 분야의 수상자들의 에피소드를 전시하여 자라나는 아이들에게 노벨상 수상의 꿈과 포부를 심어주고자 한다. 삼학도 공원에 위치하고 있어 목포 어린이바다과학관, 난영공원까지 둘러볼 수 있다.', '전남광주통합특별시 목포시 삼학로92번길 68', null, 34.7828349612, 126.3922741039, null, 'http://www.kdjnpmemorial.or.kr', 'http://tong.visitkorea.or.kr/cms/resource/73/3534373_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'http://www.kdjnpmemorial.or.kr', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#기념관','#바다','#역사','#민주인권','#예술','#전시','#가족체험','#공원']::text[],
+  '{"nature": 0.5, "culture": 1.0, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[0.5,1.0,0.75,0.0,0.75,0.0,0.5,0.0]'::extensions.vector(8),
+  '김대중 노벨평화상 기념관 김대중 노벨평화상 기념관은 민주주의, 인권, 평화를 지키기 위해 평생을 바친 한국인 최초 노벨평화상 수상자 김대중 정신을 공유할 수 있는 기념관이다. 김대중 대통령은 민주주의와 인권 신장을 향한 40여 년에 걸친 노력과 6·15 남북공동선언을 이끌어내며 한반도 긴장 완화 등 국제 평화에 기여한 공로를 인정받아 2000년 12월 10일 노벨평화상을 수상하였다. 네 개의 전시실로 이루어진 본 기념관은 국민의 정부 5년 동안 국가 발전을 위한 외교 안보, 경제, 문화 등 각 분야별 국가 발전 전략과 이를 위한 시책들을 전시하고 있다. 또한 노벨상의 탄생 배경, 선정 이유, 선출 방법 등을 알아보고 다양한 분야의 수상자들의 에피소드를 전시하여 자라나는 아이들에게 노벨상 수상의 꿈과 포부를 심어주고자 한다. 삼학도 공원에 위치하고 있어 목포 어린이바다과학관, 난영공원까지 둘러볼 수 있다. #문화관광 #전시시설 #기념관 #바다 #역사 #민주인권 #예술 #전시 #가족체험 #공원', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "http://www.kdjnpmemorial.or.kr", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '1994953'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '129986', '나주문화원', '전남', '나주시', '문화·예술', '문화원은 지방 문화원 진흥법에 의해 시.군.구 지방자치단체별로 설립된 공익법인 문화단체이다. 나주문화원은 지역 고유문화의 보급과 보존을 위해 세시풍속놀이, 나주삼색유산놀이 등 사라질 뻔한 전통을 발굴하여 전승하고 있으며, 지역의 어린이들을 위한 지역 문화행사도 개최한다. 나주 지역 문화에 관한 자료 발굴, 수집 및 보존하며, 경상남도 진주문화원, 경상북도 문경문화원과 결연하여 지역 전통문화를 교류하고 있다. 지역 문화에 대한 사회교육 활동과 환경 보존 등 지역사회 발전을 위한 문화활동에도 힘쓰고 있다. 그 외에도 다양한 문화학교를 운영하여 나주시민의 문화적 소양을 높이고 있다. 나주문화원은 나주시청과 바로 인접하여 나주시 향토문화회관 안에 있다.', '전남광주통합특별시 나주시 시청길 22 (송월동)', null, 35.0159556319, 126.711576325, null, 'https://www.xn--910bn5roljr8bbu0a.kr/', 'http://tong.visitkorea.or.kr/cms/resource/88/3590188_image2_1.jpg', 90, true, true, true, true, null, null, null, null, null, 'active', 0.5, 'https://www.xn--910bn5roljr8bbu0a.kr/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#교육시설','#한국문화원','#역사','#전통','#예술','#교육','#가족체험','#축제','#실내']::text[],
+  '{"nature": 0.0, "culture": 0.75, "art": 0.75, "food": 0.0, "activity": 0.75, "sports": 0.0, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.0,0.75,0.75,0.0,0.75,0.0,0.0,0.5]'::extensions.vector(8),
+  '나주문화원 문화원은 지방 문화원 진흥법에 의해 시.군.구 지방자치단체별로 설립된 공익법인 문화단체이다. 나주문화원은 지역 고유문화의 보급과 보존을 위해 세시풍속놀이, 나주삼색유산놀이 등 사라질 뻔한 전통을 발굴하여 전승하고 있으며, 지역의 어린이들을 위한 지역 문화행사도 개최한다. 나주 지역 문화에 관한 자료 발굴, 수집 및 보존하며, 경상남도 진주문화원, 경상북도 문경문화원과 결연하여 지역 전통문화를 교류하고 있다. 지역 문화에 대한 사회교육 활동과 환경 보존 등 지역사회 발전을 위한 문화활동에도 힘쓰고 있다. 그 외에도 다양한 문화학교를 운영하여 나주시민의 문화적 소양을 높이고 있다. 나주문화원은 나주시청과 바로 인접하여 나주시 향토문화회관 안에 있다. #문화관광 #교육시설 #한국문화원 #역사 #전통 #예술 #교육 #가족체험 #축제 #실내', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "https://www.xn--910bn5roljr8bbu0a.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '129986'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '130913', '남포미술관', '전남', '고흥군', '문화·예술', '남포미술관은 학교법인 팔영학원 영남중학교의 폐교된 학교건물을 리모델링하여 2005년 2월 23일 개관한 사립미술관이다. 4개의 전시장을 비롯하여 공연장, 창작교육실을 갖추고 매년 다양한 장르의 기획전시와 교육프로그램, 미술관 음악회를 활발하게 운영하고 있으며, 3천 여 평 규모의 미술관 정원은 300여 종의 야생화를 비롯한 수목과 수생 식물들이 자라고 있어 사계절 내내 관람객들에게 다양한 볼거리를 제공하고 있다. 팔영산 자락 아래 수려한 자연경관 속에 자리한 아름다운 미술관으로 널리 알려진 남포미술관은 지역주민 뿐만 아니라 전국 단위 관광객들의 발길이 끊이지 않는 고흥의 명소가 되고 있다.', '전남광주통합특별시 고흥군 영남면 팔영로 1081', null, 34.6037034299, 127.4572293239, null, 'http://nampoart.co.kr/', 'http://tong.visitkorea.or.kr/cms/resource/24/3552724_image2_1.jpg', 90, true, true, false, true, null, null, null, null, null, 'active', 0.5, 'http://nampoart.co.kr/', '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type1', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#문화관광','#전시시설','#미술관/화랑','#자연','#숲','#예술','#전시','#시장','#교육','#참여형']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 1.0, "food": 0.5, "activity": 0.75, "sports": 0.0, "healing": 0.5, "festival": 0.75}'::jsonb,
+  '[0.75,0.0,1.0,0.5,0.75,0.0,0.5,0.75]'::extensions.vector(8),
+  '남포미술관 남포미술관은 학교법인 팔영학원 영남중학교의 폐교된 학교건물을 리모델링하여 2005년 2월 23일 개관한 사립미술관이다. 4개의 전시장을 비롯하여 공연장, 창작교육실을 갖추고 매년 다양한 장르의 기획전시와 교육프로그램, 미술관 음악회를 활발하게 운영하고 있으며, 3천 여 평 규모의 미술관 정원은 300여 종의 야생화를 비롯한 수목과 수생 식물들이 자라고 있어 사계절 내내 관람객들에게 다양한 볼거리를 제공하고 있다. 팔영산 자락 아래 수려한 자연경관 속에 자리한 아름다운 미술관으로 널리 알려진 남포미술관은 지역주민 뿐만 아니라 전국 단위 관광객들의 발길이 끊이지 않는 고흥의 명소가 되고 있다. #문화관광 #전시시설 #미술관/화랑 #자연 #숲 #예술 #전시 #시장 #교육 #참여형', '1.0.0',
+  'import', 0.6,
+  '[{"source": "tourapi", "source_url": "http://nampoart.co.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '130913'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
@@ -4693,6 +5611,276 @@ select p.id,
   '[{"source": "tourapi", "source_url": "http://xn--jk1bk1k8rgckfrnam9heta617d.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
 from public.places p
 where p.source = 'tourapi' and p.source_place_id = '2726659'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2747474', '대덕힐링캠핑장', '전남', '영광군', '체험·스포츠', '초창기 대덕산 농원캠핑장이었으나 대덕힐링캠핑장으로 이름이 변경되어 운영 중이다. 주요 시설로 일반 야영장 3면과 글램핑시설 11면이 있다. 이곳은 산을 깎아 만든 부지에 층층이 위치하여 캠핑장 내 이동이 다소 불편하지만, 전망이 좋다는 장점이 있다. 영광 바다와 대교를 볼 수 있고 계절별 경치를 즐길 수 있다. 등산로가 바로 옆에 있고, 아침 산책하기 좋은 산책로도 있다.', '전남광주통합특별시 영광군 법성면 대덕길2길 105', null, 35.3499357301, 126.4505884209, null, 'http://daedeokhealing.com/', 'http://tong.visitkorea.or.kr/cms/resource/51/2748151_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'http://daedeokhealing.com/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#숙박','#캠핑','#일반야영장','#산','#전망','#체험','#스포츠','#등산','#힐링','#산책']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.75, "festival": 0.5}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.75,0.5]'::extensions.vector(8),
+  '대덕힐링캠핑장 초창기 대덕산 농원캠핑장이었으나 대덕힐링캠핑장으로 이름이 변경되어 운영 중이다. 주요 시설로 일반 야영장 3면과 글램핑시설 11면이 있다. 이곳은 산을 깎아 만든 부지에 층층이 위치하여 캠핑장 내 이동이 다소 불편하지만, 전망이 좋다는 장점이 있다. 영광 바다와 대교를 볼 수 있고 계절별 경치를 즐길 수 있다. 등산로가 바로 옆에 있고, 아침 산책하기 좋은 산책로도 있다. #숙박 #캠핑 #일반야영장 #산 #전망 #체험 #스포츠 #등산 #힐링 #산책', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "http://daedeokhealing.com/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2747474'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2732467', '더스타오토캠핑장', '전남', '여수시', '체험·스포츠', '여수시 돌산읍에 위치한 더스타 오토캠핑장은 여수만이 내려다보이는 전망을 감상할 수 있는 캠핑장으로, 낮에는 여수만의 푸른 바다를 보며 바쁜 일상 속 쉼을 얻어갈 수 있고, 밤에는 아름다운 밤바다와 호수에 정박 중인 선박의 불빛을 보며 감성적인 밤을 즐길 수 있다. 또한 주변의 낚시 포인트에서는 깨끗한 여수바다의 물고기가 황금어장을 이룬다. 이곳은 2,020평 규모에 일반야영장 9면, 오토캠핑장 19면, 카라반 2대로 이루어졌으며 모든 사이트는 데크로 구성되어 있다. 깨끗하고 쾌적한 각종 편의시설이 완비되어 있어 캠핑을 편안히 즐길 수 있다.', '전남광주통합특별시 여수시 돌산읍 상하동길 268', null, 34.7186544685, 127.7809842316, null, 'http://thestarcamp.com/', null, 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, 'http://thestarcamp.com/', '2026-06-30T18:44:28+00:00'::timestamptz, null, null, 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#숙박','#캠핑','#오토캠핑장','#전망','#바다','#체험','#스포츠','#야간','#야경']::text[],
+  '{"nature": 0.75, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.75}'::jsonb,
+  '[0.75,0.0,0.0,0.0,0.75,0.75,0.0,0.75]'::extensions.vector(8),
+  '더스타오토캠핑장 여수시 돌산읍에 위치한 더스타 오토캠핑장은 여수만이 내려다보이는 전망을 감상할 수 있는 캠핑장으로, 낮에는 여수만의 푸른 바다를 보며 바쁜 일상 속 쉼을 얻어갈 수 있고, 밤에는 아름다운 밤바다와 호수에 정박 중인 선박의 불빛을 보며 감성적인 밤을 즐길 수 있다. 또한 주변의 낚시 포인트에서는 깨끗한 여수바다의 물고기가 황금어장을 이룬다. 이곳은 2,020평 규모에 일반야영장 9면, 오토캠핑장 19면, 카라반 2대로 이루어졌으며 모든 사이트는 데크로 구성되어 있다. 깨끗하고 쾌적한 각종 편의시설이 완비되어 있어 캠핑을 편안히 즐길 수 있다. #숙박 #캠핑 #오토캠핑장 #전망 #바다 #체험 #스포츠 #야간 #야경', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "http://thestarcamp.com/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2732467'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2748025', '돌풀마루', '전남', '구례군', '체험·스포츠', '지리산 자락에 있는 돌풀마루는 캠핑과 글램핑, 펜션을 모두 즐길 수 있는 곳으로 돌담으로 둘러싸여 있다. 지리산 자락에 있어 초입부터 끝자락까지 계곡으로 이어져 있어 계곡에선 물놀이를 즐겨도 되고, 고동, 피리, 산메기 등을 보며 생태체험을 할 수 있다. 이곳은 사시사철 멋진 풍경을 자랑한다.각 동별 데크에 바비큐를 할 수 있도록 특별 제작한 가마솥 그릴이 마련되어 있고 전통 BBQ SET을 판매하고 있다. 또한, 자체 텃밭에서 재배한 무농약 농산물로 조리한 건강한 아침 식사를 판매하고 있다.', '전남광주통합특별시 구례군 산동면 산수유꽃길로 117', null, 35.3286195113, 127.4777618694, null, 'http://xn--pq1by0hgta924f.kr/', 'http://tong.visitkorea.or.kr/cms/resource/96/2747596_image2_1.jpg', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'http://xn--pq1by0hgta924f.kr/', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#숙박','#캠핑','#일반야영장','#자연','#전망','#전통','#특산물','#체험','#레저','#스포츠']::text[],
+  '{"nature": 0.75, "culture": 0.5, "art": 0.0, "food": 0.5, "activity": 0.75, "sports": 0.75, "healing": 0.0, "festival": 0.0}'::jsonb,
+  '[0.75,0.5,0.0,0.5,0.75,0.75,0.0,0.0]'::extensions.vector(8),
+  '돌풀마루 지리산 자락에 있는 돌풀마루는 캠핑과 글램핑, 펜션을 모두 즐길 수 있는 곳으로 돌담으로 둘러싸여 있다. 지리산 자락에 있어 초입부터 끝자락까지 계곡으로 이어져 있어 계곡에선 물놀이를 즐겨도 되고, 고동, 피리, 산메기 등을 보며 생태체험을 할 수 있다. 이곳은 사시사철 멋진 풍경을 자랑한다.각 동별 데크에 바비큐를 할 수 있도록 특별 제작한 가마솥 그릴이 마련되어 있고 전통 BBQ SET을 판매하고 있다. 또한, 자체 텃밭에서 재배한 무농약 농산물로 조리한 건강한 아침 식사를 판매하고 있다. #숙박 #캠핑 #일반야영장 #자연 #전망 #전통 #특산물 #체험 #레저 #스포츠', '1.0.0',
+  'import', 0.53,
+  '[{"source": "tourapi", "source_url": "http://xn--pq1by0hgta924f.kr/", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2748025'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2729340', '드림캠핑장', '전남', '보성군', '체험·스포츠', '보성드림캠핑장은 전남광주통합특별시 보성군에 자리하고 있다. 야영장, 카라반, 펜션과 민박을 동시에 갖춘 복합형 캠핑장이다. 캠핑장 뒤로는 아름다운 명산 오봉산의 울창한 산림이 있고 앞으로 시원한 바다 득량만이 조망되는 뛰어난 풍광으로 산과 바다를 모두 즐길 수 있는 곳이다. 산을 깎아 만든 곳으로 약 9,300㎡ 면적에 일반야영장 14면, 카라반 3대, 펜션 3동으로 구성되어 있다. 사이트는 데크와 파쇄석 두 가지 종류다. 산과 바다를 모두 느낄 수 있는 만큼 울창한 산림에서 새소리, 솔바람소리, 풀벌레소리 등 자연의 숨소리를 들으며 조용히 캠핑을 즐길 수 있고 황홀한 일출풍경을 보며 바다전경을 볼 수도 있다. 주변에 공룡박물관, 율포해수욕장 등 관광지도 많아서 보성관광의 베이스캠프로도 이용할 수 있다.', '전남광주통합특별시 보성군 득량면 공룡로 751', null, 34.7030766173, 127.1883587419, null, null, 'http://tong.visitkorea.or.kr/cms/resource/89/2729889_image2_1.jpg', 150, false, false, false, null, null, null, null, null, null, 'active', 0.5, null, '2026-06-30T21:26:27+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#숙박','#캠핑','#일반야영장','#자연','#전망','#박물관','#전시','#체험','#스포츠','#조용한']::text[],
+  '{"nature": 1.0, "culture": 0.5, "art": 0.5, "food": 0.0, "activity": 0.75, "sports": 0.75, "healing": 0.5, "festival": 0.0}'::jsonb,
+  '[1.0,0.5,0.5,0.0,0.75,0.75,0.5,0.0]'::extensions.vector(8),
+  '드림캠핑장 보성드림캠핑장은 전남광주통합특별시 보성군에 자리하고 있다. 야영장, 카라반, 펜션과 민박을 동시에 갖춘 복합형 캠핑장이다. 캠핑장 뒤로는 아름다운 명산 오봉산의 울창한 산림이 있고 앞으로 시원한 바다 득량만이 조망되는 뛰어난 풍광으로 산과 바다를 모두 즐길 수 있는 곳이다. 산을 깎아 만든 곳으로 약 9,300㎡ 면적에 일반야영장 14면, 카라반 3대, 펜션 3동으로 구성되어 있다. 사이트는 데크와 파쇄석 두 가지 종류다. 산과 바다를 모두 느낄 수 있는 만큼 울창한 산림에서 새소리, 솔바람소리, 풀벌레소리 등 자연의 숨소리를 들으며 조용히 캠핑을 즐길 수 있고 황홀한 일출풍경을 보며 바다전경을 볼 수도 있다. 주변에 공룡박물관, 율포해수욕장 등 관광지도 많아서 보성관광의 베이스캠프로도 이용할 수 있다. #숙박 #캠핑 #일반야영장 #자연 #전망 #박물관 #전시 #체험 #스포츠 #조용한', '1.0.0',
+  'import', 0.57,
+  '[{"source": "tourapi", "source_url": "", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2729340'
+on conflict (place_id) do update set
+  hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
+  preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,
+  taxonomy_version = excluded.taxonomy_version, labeling_method = excluded.labeling_method,
+  labeling_confidence = excluded.labeling_confidence, labeling_evidence = excluded.labeling_evidence,
+  reviewed_at = excluded.reviewed_at, updated_at = now();
+
+insert into public.places (source, source_place_id, name, region, sigungu, category, description, road_address, lot_address, latitude, longitude, phone, website_url, image_url, duration_minutes, indoor, rain_ok, family_friendly, parking_available, wheelchair_accessible, pet_friendly, requires_reservation, price_min, price_max, status, public_transport_score, source_url, source_updated_at, last_verified_at, license, quality_status)
+values ('tourapi', '2729344', '들소리캠핑장', '전남', '영암군', '체험·스포츠', '영암들소리키즈글램핑은 영산강 쪽 나주평야 끝자락에 있다. 영암보다는 영산포가 더 가까운 거리다. 어린이들을 위한 다양한 시설과 프로그램을 구비하고 있는 키즈 글램핑시설로 주변에서는 단연 최고의 인기 캠핑장이다. 실내 어린이 놀이터와 에어바운스, 레일 썰매장을 비롯해 자전거, 슬라이드수영장, 풍선워터힐, 워킹말타기 등의 시설이 있고 금붕어잡기, 닭과 토끼 모이주기, 메론수확, 카트전동차 타기 등 아이들이 좋아하는 체험프로그램도 계절별로 다양하게 운영하고 있다. 캠핑장이 있는 지역은 나주평야를 중심으로 영산강 유역에서 불리던 농요, 즉 ‘들소리’의 시원이 되는 곳이다.', '전남광주통합특별시 영암군 신북면 들소리로 384-14', null, 34.9285205024, 126.6789452471, null, 'https://cafe.naver.com/deulsori', 'http://tong.visitkorea.or.kr/cms/resource/72/2729872_image2_1.JPG', 150, false, false, true, null, null, null, null, null, null, 'active', 0.5, 'https://cafe.naver.com/deulsori', '2026-06-30T18:44:28+00:00'::timestamptz, null, 'Type3', 'draft')
+on conflict (source, source_place_id) do update set
+  name = excluded.name,
+  region = excluded.region,
+  sigungu = excluded.sigungu,
+  category = excluded.category,
+  description = excluded.description,
+  road_address = excluded.road_address,
+  lot_address = excluded.lot_address,
+  latitude = excluded.latitude,
+  longitude = excluded.longitude,
+  phone = excluded.phone,
+  website_url = excluded.website_url,
+  image_url = excluded.image_url,
+  duration_minutes = excluded.duration_minutes,
+  indoor = excluded.indoor,
+  rain_ok = excluded.rain_ok,
+  family_friendly = excluded.family_friendly,
+  parking_available = excluded.parking_available,
+  wheelchair_accessible = excluded.wheelchair_accessible,
+  pet_friendly = excluded.pet_friendly,
+  requires_reservation = excluded.requires_reservation,
+  price_min = excluded.price_min,
+  price_max = excluded.price_max,
+  status = excluded.status,
+  public_transport_score = excluded.public_transport_score,
+  source_url = excluded.source_url,
+  source_updated_at = excluded.source_updated_at,
+  last_verified_at = excluded.last_verified_at,
+  license = excluded.license,
+  quality_status = excluded.quality_status,
+  updated_at = now();
+
+insert into public.place_profiles (
+  place_id, hashtags, tag_scores, preference_vector, semantic_text, taxonomy_version,
+  labeling_method, labeling_confidence, labeling_evidence, reviewed_at
+)
+select p.id,
+  array['#숙박','#캠핑','#일반야영장','#체험','#가족체험','#스포츠','#자전거','#시즌한정','#아이동반']::text[],
+  '{"nature": 0.0, "culture": 0.0, "art": 0.0, "food": 0.0, "activity": 1.0, "sports": 0.75, "healing": 0.0, "festival": 0.5}'::jsonb,
+  '[0.0,0.0,0.0,0.0,1.0,0.75,0.0,0.5]'::extensions.vector(8),
+  '들소리캠핑장 영암들소리키즈글램핑은 영산강 쪽 나주평야 끝자락에 있다. 영암보다는 영산포가 더 가까운 거리다. 어린이들을 위한 다양한 시설과 프로그램을 구비하고 있는 키즈 글램핑시설로 주변에서는 단연 최고의 인기 캠핑장이다. 실내 어린이 놀이터와 에어바운스, 레일 썰매장을 비롯해 자전거, 슬라이드수영장, 풍선워터힐, 워킹말타기 등의 시설이 있고 금붕어잡기, 닭과 토끼 모이주기, 메론수확, 카트전동차 타기 등 아이들이 좋아하는 체험프로그램도 계절별로 다양하게 운영하고 있다. 캠핑장이 있는 지역은 나주평야를 중심으로 영산강 유역에서 불리던 농요, 즉 ‘들소리’의 시원이 되는 곳이다. #숙박 #캠핑 #일반야영장 #체험 #가족체험 #스포츠 #자전거 #시즌한정 #아이동반', '1.0.0',
+  'import', 0.55,
+  '[{"source": "tourapi", "source_url": "https://cafe.naver.com/deulsori", "note": "규칙 기반 라벨 초안. 사람 교차검수 필요"}]'::jsonb, null
+from public.places p
+where p.source = 'tourapi' and p.source_place_id = '2729344'
 on conflict (place_id) do update set
   hashtags = excluded.hashtags, tag_scores = excluded.tag_scores,
   preference_vector = excluded.preference_vector, semantic_text = excluded.semantic_text,

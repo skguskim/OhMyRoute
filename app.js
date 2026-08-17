@@ -194,7 +194,10 @@ const state = {
   mapResizeBound: false,
   previewIndex: 0,
   previewPlaying: false,
-  previewTimer: null,
+  previewFrameIndex: 1,
+  previewPhase: "opening",
+  previewFrameTimer: null,
+  previewHoldTimer: null,
   stampedIds: [],
   stampLocation: null,
   stampLocationMode: "GPS",
@@ -1967,6 +1970,12 @@ function durationLabel() {
   return "반나절";
 }
 
+const PREVIEW_TOTAL_FRAMES = 245;
+const PREVIEW_FRAME_MS = Math.round(1000 / 30);
+const PREVIEW_HOLD_MS = 1400;
+const PREVIEW_CYCLE_MS = (PREVIEW_TOTAL_FRAMES - 1) * 2 * PREVIEW_FRAME_MS + PREVIEW_HOLD_MS;
+const PREVIEW_PLACEHOLDER_IMAGE = "assets/ohmyroute-logo.png";
+
 function previewSlides() {
   return state.route.map((place) => ({
     title: place.name,
@@ -1975,20 +1984,48 @@ function previewSlides() {
   }));
 }
 
+function previewFramePath(frame) {
+  return `video/frame_${String(frame).padStart(4, "0")}.webp`;
+}
+
+function setPreviewCharFrame(frame) {
+  state.previewFrameIndex = frame;
+  $("#previewCharFrame").src = previewFramePath(frame);
+}
+
+function setPreviewPhoto(imageUrl) {
+  const scene = $("#previewScene");
+  const bg = $("#previewPhotoBg");
+  if (!imageUrl) {
+    scene.classList.add("image-missing");
+    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
+    return;
+  }
+  const probe = new Image();
+  probe.referrerPolicy = "no-referrer";
+  probe.onload = () => {
+    scene.classList.remove("image-missing");
+    bg.style.backgroundImage = `url("${imageUrl}")`;
+  };
+  probe.onerror = () => {
+    scene.classList.add("image-missing");
+    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
+  };
+  probe.src = imageUrl;
+}
+
 function renderPreview() {
   const slides = previewSlides();
   if (!slides.length) return;
   state.previewIndex %= slides.length;
   const slide = slides[state.previewIndex];
   const scene = $("#previewScene");
-  const image = $("#previewImage");
   const button = $("#previewPlayButton");
   const progress = $("#previewProgress");
 
   scene.classList.toggle("is-playing", state.previewPlaying);
-  scene.classList.toggle("image-missing", !slide.imageUrl);
-  image.src = slide.imageUrl;
-  image.alt = `${slide.title} 여행 프리뷰`;
+  setPreviewPhoto(slide.imageUrl);
+  setPreviewCharFrame(state.previewFrameIndex);
   $("#previewTitle").textContent = slide.title;
   $("#previewDescription").textContent = slide.description;
   button.textContent = state.previewPlaying ? "Ⅱ" : "▶";
@@ -1999,29 +2036,86 @@ function renderPreview() {
 
   progress.classList.remove("running");
   void progress.offsetWidth;
-  if (state.previewPlaying) progress.classList.add("running");
+  if (state.previewPlaying) {
+    progress.style.animationDuration = `${PREVIEW_CYCLE_MS}ms`;
+    progress.classList.add("running");
+  }
+}
+
+function clearPreviewTimers() {
+  if (state.previewFrameTimer) {
+    window.clearInterval(state.previewFrameTimer);
+    state.previewFrameTimer = null;
+  }
+  if (state.previewHoldTimer) {
+    window.clearTimeout(state.previewHoldTimer);
+    state.previewHoldTimer = null;
+  }
+}
+
+function beginPreviewHold() {
+  state.previewPhase = "holding";
+  state.previewHoldTimer = window.setTimeout(() => {
+    state.previewHoldTimer = null;
+    state.previewPhase = "closing";
+    runPreviewFrameTimer();
+  }, PREVIEW_HOLD_MS);
+}
+
+function advancePreviewFrame() {
+  if (state.previewPhase === "opening") {
+    if (state.previewFrameIndex >= PREVIEW_TOTAL_FRAMES) {
+      window.clearInterval(state.previewFrameTimer);
+      state.previewFrameTimer = null;
+      beginPreviewHold();
+      return;
+    }
+    setPreviewCharFrame(state.previewFrameIndex + 1);
+    return;
+  }
+  if (state.previewPhase === "closing") {
+    if (state.previewFrameIndex <= 1) {
+      window.clearInterval(state.previewFrameTimer);
+      state.previewFrameTimer = null;
+      const slides = previewSlides();
+      state.previewIndex = (state.previewIndex + 1) % slides.length;
+      state.previewFrameIndex = 1;
+      state.previewPhase = "opening";
+      renderPreview();
+      if (state.previewPlaying) runPreviewFrameTimer();
+      return;
+    }
+    setPreviewCharFrame(state.previewFrameIndex - 1);
+  }
+}
+
+function runPreviewFrameTimer() {
+  if (state.previewFrameTimer) window.clearInterval(state.previewFrameTimer);
+  state.previewFrameTimer = window.setInterval(advancePreviewFrame, PREVIEW_FRAME_MS);
 }
 
 function stopPreview({ reset = false } = {}) {
-  if (state.previewTimer) {
-    window.clearInterval(state.previewTimer);
-    state.previewTimer = null;
-  }
+  clearPreviewTimers();
   state.previewPlaying = false;
-  if (reset) state.previewIndex = 0;
+  if (reset) {
+    state.previewIndex = 0;
+    state.previewFrameIndex = 1;
+    state.previewPhase = "opening";
+  }
   if (state.route.length) renderPreview();
 }
 
 function startPreview() {
   const slides = previewSlides();
   if (!slides.length) return;
-  if (state.previewTimer) window.clearInterval(state.previewTimer);
+  clearPreviewTimers();
   state.previewPlaying = true;
   renderPreview();
-  state.previewTimer = window.setInterval(() => {
-    state.previewIndex = (state.previewIndex + 1) % slides.length;
-    renderPreview();
-  }, 3500);
+  if (state.previewPhase === "holding") {
+    beginPreviewHold();
+  } else {
+    runPreviewFrameTimer();
+  }
 }
 
 function togglePreview() {
@@ -2864,6 +2958,7 @@ function renderResult() {
   renderAlternatives();
   renderTips();
   stopPreview({ reset: true });
+  startPreview();
   renderStamps();
   renderReviewReward();
   updateSaveButton();
@@ -3312,12 +3407,6 @@ function bindEvents() {
   $("#saveButton").addEventListener("click", saveCurrentRoute);
   $("#printButton").addEventListener("click", () => window.print());
   $("#previewPlayButton").addEventListener("click", togglePreview);
-  $("#previewImage").addEventListener("load", () => {
-    $("#previewScene").classList.remove("image-missing");
-  });
-  $("#previewImage").addEventListener("error", () => {
-    $("#previewScene").classList.add("image-missing");
-  });
   $("#stampLocationSelect").addEventListener("change", (event) => {
     selectStampLocation(event.target.value);
   });

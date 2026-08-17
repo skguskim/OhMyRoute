@@ -1056,7 +1056,7 @@ input[type="range"]::-moz-range-thumb {
 .preview-scene {
   position: relative;
   min-height: 235px;
-  background: linear-gradient(#bdd1c3 0 50%, #829b7d 50% 100%);
+  background: #0c1210;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 18px;
   overflow: hidden;
@@ -1071,7 +1071,7 @@ input[type="range"]::-moz-range-thumb {
   background: linear-gradient(transparent 45%, rgba(19, 36, 25, 0.53));
 }
 
-.preview-image,
+.door-stage,
 .preview-shade {
   position: absolute;
   inset: 0;
@@ -1079,61 +1079,38 @@ input[type="range"]::-moz-range-thumb {
   height: 100%;
 }
 
-.preview-image {
+.door-stage {
   z-index: 1;
-  object-fit: cover;
-  opacity: 0.92;
-  transform: scale(1.01);
-  transition: opacity 0.45s ease, transform 3.5s linear;
+  overflow: hidden;
+  background: #05070a;
 }
 
-.preview-scene.is-playing .preview-image {
-  transform: scale(1.08);
+.door-photo-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
-.preview-scene.image-missing .preview-image {
-  opacity: 0;
+.preview-scene.image-missing .door-photo-bg {
+  background-size: 92px auto;
+  background-color: #dbe7f5;
+}
+
+.door-char-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .preview-shade {
   z-index: 2;
   background: linear-gradient(180deg, rgba(14, 24, 17, 0.35), transparent 42%, rgba(11, 22, 14, 0.88));
   pointer-events: none;
-}
-
-.sun {
-  position: absolute;
-  top: 28px;
-  right: 43px;
-  width: 43px;
-  height: 43px;
-  background: #f5dba2;
-  border-radius: 50%;
-  box-shadow: 0 0 0 15px rgba(245, 219, 162, 0.13);
-}
-
-.mountain {
-  position: absolute;
-  bottom: 52px;
-  width: 260px;
-  height: 160px;
-  background: #607961;
-  clip-path: polygon(0 100%, 42% 8%, 100% 100%);
-}
-
-.mountain-one { left: -15px; }
-.mountain-two { right: -40px; bottom: 44px; background: #526b56; transform: scale(0.9); }
-
-.preview-route-line {
-  position: absolute;
-  z-index: 2;
-  right: 75px;
-  bottom: 48px;
-  width: 180px;
-  height: 72px;
-  border-top: 3px dashed rgba(255, 255, 255, 0.72);
-  border-radius: 50%;
-  transform: rotate(-12deg);
 }
 
 .play-button {
@@ -5064,11 +5041,6 @@ body:has(#resultView.active) .app-footer {
 .preview-shade,
 .preview-scene::after {
   background: linear-gradient(90deg, rgba(25, 31, 40, .94), rgba(25, 31, 40, .62) 48%, rgba(25, 31, 40, .14));
-}
-
-.preview-image {
-  opacity: .76;
-  mix-blend-mode: luminosity;
 }
 
 .preview-badge {

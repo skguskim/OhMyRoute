@@ -1810,6 +1810,97 @@ input[type="range"]::-moz-range-thumb {
   line-height: 1;
 }
 
+.stamp-seal.champions-field-stamp {
+  padding: 5px 3px 4px;
+  gap: 2px;
+  place-content: center;
+  background: #fff;
+  border-style: solid;
+  overflow: hidden;
+}
+
+.stamp-seal.champions-field-stamp.unlocked {
+  background: #fff;
+  border: 3px double #e6002d;
+  border-radius: 16px;
+  transform: none;
+}
+
+.champions-field-stamp-art {
+  position: relative;
+  width: 68px;
+  max-width: 100%;
+  height: 47px;
+  margin: 0 !important;
+  display: block;
+  overflow: hidden;
+}
+
+.champions-field-stamp-image {
+  position: absolute;
+  z-index: 2;
+  top: 52%;
+  left: 50%;
+  width: 62px;
+  max-width: none;
+  height: 62px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.34;
+  filter: grayscale(1);
+  mix-blend-mode: multiply;
+  transform: translate(-50%, -50%);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.champions-field-stamp-fallback {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  margin: 0 !important;
+  display: grid !important;
+  place-content: center;
+  color: #071725;
+  background: #fff;
+}
+
+.champions-field-stamp-fallback b {
+  max-width: none;
+  font-family: inherit;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.champions-field-stamp-fallback small {
+  margin-top: 2px;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.stamp-seal.champions-field-stamp:hover .champions-field-stamp-image,
+.stamp-seal.champions-field-stamp.in-range .champions-field-stamp-image,
+.stamp-seal.champions-field-stamp.unlocked .champions-field-stamp-image {
+  opacity: 1;
+  filter: none;
+}
+
+.stamp-seal .champions-field-stamp-state {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.champions-field-stamp.in-range .champions-field-stamp-state,
+.stamp-seal.champions-field-stamp.unlocked .champions-field-stamp-state {
+  color: #e6002d;
+}
+
 .stamp-place-name {
   margin: 7px 0 0;
   overflow: hidden;
@@ -6234,5 +6325,202 @@ body:has(#formView.active) .app-main {
 
 #formView .form-grid .field.full {
   grid-column: 1 / -1 !important;
+}
+
+/* Local AI Hub traditional-pattern stamps. */
+.stamp-seal.traditional-pattern-stamp {
+  padding: 4px 4px 3px;
+  gap: 1px;
+  place-content: center;
+  background: #fff;
+  border-style: solid;
+  overflow: hidden;
+}
+
+.traditional-pattern-stamp-art {
+  position: relative;
+  width: 64px;
+  max-width: 100%;
+  height: 55px;
+  margin: 0 !important;
+  display: block !important;
+  overflow: hidden;
+  background: #f5f1e8;
+  border-radius: 50% 46% 52% 48%;
+}
+
+.traditional-pattern-stamp-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0.32;
+  filter: grayscale(1) contrast(0.9);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.traditional-pattern-stamp-ring {
+  position: absolute;
+  inset: 2px;
+  margin: 0 !important;
+  display: block !important;
+  border: 2px double rgba(107, 114, 128, 0.66);
+  border-radius: 50% 46% 52% 48%;
+  pointer-events: none;
+}
+
+.stamp-seal .traditional-pattern-stamp-state {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.traditional-pattern-stamp:hover .traditional-pattern-stamp-image,
+.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-image,
+.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-image {
+  opacity: 1;
+  filter: saturate(0.86) contrast(1.08);
+}
+
+.stamp-seal.traditional-pattern-stamp:hover .traditional-pattern-stamp-ring,
+.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-ring,
+.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-ring {
+  border-color: var(--blue);
+}
+
+.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-state,
+.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-state {
+  color: var(--blue);
+}
+
+.stamp-seal.traditional-pattern-stamp.unlocked {
+  background: #fff;
+  border: 4px double var(--blue);
+}
+
+/* Restaurant stamps use a verified logo when supplied, otherwise a local name wordmark. */
+.stamp-seal.restaurant-brand-stamp {
+  padding: 4px 4px 3px;
+  gap: 1px;
+  place-content: center;
+  background: #fff;
+  border-style: solid;
+  overflow: hidden;
+}
+
+.restaurant-brand-stamp-art {
+  position: relative;
+  width: 66px;
+  max-width: 100%;
+  height: 53px;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden;
+  color: hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
+  background: #fff;
+  border-radius: 50% 46% 52% 48%;
+  opacity: 0.36;
+  filter: grayscale(1);
+  transform: rotate(-1.5deg);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.restaurant-brand-stamp-wordmark {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  min-height: 35px;
+  margin: 0 !important;
+  padding: 5px 3px 4px;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.restaurant-brand-stamp-wordmark small {
+  margin: 0 0 2px;
+  color: inherit;
+  font-size: 5px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.11em;
+}
+
+.restaurant-brand-stamp-wordmark b {
+  max-width: 52px;
+  color: inherit;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1.05;
+  text-align: center;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.restaurant-brand-stamp-wordmark.condensed b {
+  font-size: 8px;
+}
+
+.restaurant-brand-stamp-wordmark.extra-condensed b {
+  font-size: 7px;
+}
+
+.restaurant-brand-stamp-image {
+  position: absolute;
+  z-index: 2;
+  inset: 5px;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  display: block;
+  object-fit: contain;
+  background: #fff;
+}
+
+.restaurant-brand-stamp-ring {
+  position: absolute;
+  z-index: 3;
+  inset: 2px;
+  margin: 0 !important;
+  display: block !important;
+  border: 2px double currentColor;
+  border-radius: 50% 46% 52% 48%;
+  pointer-events: none;
+}
+
+.stamp-seal .restaurant-brand-stamp-state {
+  position: relative;
+  z-index: 4;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.restaurant-brand-stamp:hover .restaurant-brand-stamp-art,
+.stamp-seal.restaurant-brand-stamp.in-range .restaurant-brand-stamp-art,
+.stamp-seal.restaurant-brand-stamp.unlocked .restaurant-brand-stamp-art {
+  opacity: 1;
+  filter: none;
+}
+
+.stamp-seal.restaurant-brand-stamp.in-range .restaurant-brand-stamp-state,
+.stamp-seal.restaurant-brand-stamp.unlocked .restaurant-brand-stamp-state {
+  color: hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
+}
+
+.stamp-seal.restaurant-brand-stamp.unlocked {
+  background: #fff;
+  border: 4px double hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
 }
 

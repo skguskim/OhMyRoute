@@ -28,6 +28,7 @@ const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
+const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
 
 const ORIGINS = {
   songjeong_station: {
@@ -205,6 +206,9 @@ const state = {
   stampLocation: null,
   stampLocationMode: "GPS",
   stampToastTimer: null,
+  stampPatterns: new Map(),
+  stampPatternCategories: new Map(),
+  restaurantStampLogos: new Map(),
   reviews: [],
   rewards: [],
   baseballAttendance: false,
@@ -2387,6 +2391,98 @@ function stampIcon(place) {
   return "✦";
 }
 
+function usesChampionsFieldStamp(place) {
+  const searchableText = `${place.name || ""} ${(place.hashtags || []).join(" ")}`;
+  return /챔피언스\s*필드/i.test(searchableText);
+}
+
+function championsFieldStampContent(isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="champions-field-stamp-art" aria-hidden="true">
+      <span class="champions-field-stamp-fallback"><b>⚾</b><small>GWANGJU</small></span>
+      <img
+        class="champions-field-stamp-image"
+        src="${CHAMPIONS_FIELD_STAMP_ASSET}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+    </span>
+    <span class="champions-field-stamp-state">${stateLabel}</span>
+  `;
+}
+
+function traditionalPatternForPlace(place) {
+  return state.stampPatterns.get(placeStampId(place))
+    || state.stampPatternCategories.get(place.category)
+    || null;
+}
+
+function usesRestaurantBrandStamp(place) {
+  return place.databaseType === "restaurant"
+    || place.databaseType === "stadium_food"
+    || Boolean(place.stadiumFood);
+}
+
+function restaurantStampLogoForPlace(place) {
+  return state.restaurantStampLogos.get(placeStampId(place))
+    || state.restaurantStampLogos.get(place.name)
+    || null;
+}
+
+function restaurantStampHue(place) {
+  const palette = [2, 24, 42, 148, 188, 218, 264, 326];
+  const hash = [...String(placeStampId(place))]
+    .reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 7);
+  return palette[hash % palette.length];
+}
+
+function restaurantBrandStampContent(place, logo, isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  const brandName = place.brandName || place.name;
+  const lengthClass = brandName.length >= 14 ? "extra-condensed" : brandName.length >= 9 ? "condensed" : "";
+  return `
+    <span class="restaurant-brand-stamp-art ${logo ? "has-logo" : ""}" aria-hidden="true">
+      <span class="restaurant-brand-stamp-wordmark ${lengthClass}">
+        <small>GWANGJU LOCAL</small>
+        <b>${escapeHtml(brandName)}</b>
+      </span>
+      ${logo ? `
+        <img
+          class="restaurant-brand-stamp-image"
+          src="${escapeHtml(logo.asset)}"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable="false"
+        >
+      ` : ""}
+      <span class="restaurant-brand-stamp-ring"></span>
+    </span>
+    <span class="restaurant-brand-stamp-state">${stateLabel}</span>
+  `;
+}
+
+function traditionalPatternStampContent(pattern, isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="traditional-pattern-stamp-art" aria-hidden="true">
+      <img
+        class="traditional-pattern-stamp-image"
+        src="${escapeHtml(pattern.asset)}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+      <span class="traditional-pattern-stamp-ring"></span>
+    </span>
+    <span class="traditional-pattern-stamp-state">${stateLabel}</span>
+  `;
+}
+
 function formatStampDistance(distanceMeters) {
   if (distanceMeters === null) return "위치 확인 전";
   if (distanceMeters <= 100) return "100m 이내 · 도장 찍기 가능";
@@ -2441,10 +2537,33 @@ function renderStamps() {
       ? Math.round(haversineKm(state.stampLocation, place) * 1000)
       : null;
     const isInRange = distanceMeters !== null && distanceMeters <= 100;
-    const sealClass = isStamped ? "unlocked" : isInRange ? "in-range" : "";
-    const sealContent = isStamped
-      ? `<span>광주·전남</span><b>${escapeHtml(place.name)}</b><span>완료</span>`
-      : `<span class="stamp-icon">${stampIcon(place)}</span><span>${isInRange ? "도장 찍기" : "방문"}</span>`;
+    const isChampionsField = usesChampionsFieldStamp(place);
+    const isRestaurant = !isChampionsField && usesRestaurantBrandStamp(place);
+    const restaurantLogo = isRestaurant ? restaurantStampLogoForPlace(place) : null;
+    const traditionalPattern = isChampionsField || isRestaurant ? null : traditionalPatternForPlace(place);
+    const sealClass = [
+      isStamped ? "unlocked" : isInRange ? "in-range" : "",
+      isChampionsField ? "champions-field-stamp" : "",
+      isRestaurant ? "restaurant-brand-stamp" : "",
+      traditionalPattern ? "traditional-pattern-stamp" : "",
+    ].filter(Boolean).join(" ");
+    const sealContent = isChampionsField
+      ? championsFieldStampContent(isStamped, isInRange)
+      : isRestaurant
+        ? restaurantBrandStampContent(place, restaurantLogo, isStamped, isInRange)
+      : traditionalPattern
+        ? traditionalPatternStampContent(traditionalPattern, isStamped, isInRange)
+      : isStamped
+        ? `<span>광주·전남</span><b>${escapeHtml(place.name)}</b><span>완료</span>`
+        : `<span class="stamp-icon">${stampIcon(place)}</span><span>${isInRange ? "도장 찍기" : "방문"}</span>`;
+    const patternTitle = traditionalPattern
+      ? `${traditionalPattern.patternType}${traditionalPattern.patternSymbol ? ` · ${traditionalPattern.patternSymbol}` : ""}`
+      : "";
+    const stampTitle = patternTitle
+      ? `AI Hub 전통 문양 · ${patternTitle}`
+      : isRestaurant
+        ? `${restaurantLogo ? "음식점 공식 로고" : "음식점 이름 기반 스탬프"} · ${place.name}`
+        : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";
     const distanceText = isStamped ? "✓ 스탬프 획득" : formatStampDistance(distanceMeters);
     return `
@@ -2454,6 +2573,8 @@ function renderStamps() {
           class="stamp-seal ${sealClass}"
           data-stamp-id="${escapeHtml(id)}"
           aria-label="${escapeHtml(place.name)} ${isStamped ? "스탬프 획득 완료" : "스탬프 찍기"}"
+          ${isRestaurant ? `style="--restaurant-stamp-hue: ${restaurantStampHue(place)}"` : ""}
+          ${stampTitle ? `title="${escapeHtml(stampTitle)}"` : ""}
           ${isStamped ? "disabled" : ""}
         >${sealContent}</button>
         <p class="stamp-place-name" title="${escapeHtml(place.name)}">${escapeHtml(place.name)}</p>
@@ -3783,6 +3904,37 @@ async function loadBaseballGames() {
   }
 }
 
+async function loadStampPatterns() {
+  try {
+    const response = await fetch("./data/local-stamps/stamp-patterns.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`전통 문양 스탬프 데이터 오류: ${response.status}`);
+    const payload = await response.json();
+    return {
+      places: payload?.places && typeof payload.places === "object" ? payload.places : {},
+      categories: payload?.categories && typeof payload.categories === "object" ? payload.categories : {},
+    };
+  } catch (error) {
+    console.info("로컬 전통 문양 스탬프를 사용하지 않습니다.", error);
+    return { places: {}, categories: {} };
+  }
+}
+
+async function loadRestaurantStampLogos() {
+  try {
+    const response = await fetch("./data/local-stamps/restaurant-logos.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`음식점 로고 스탬프 데이터 오류: ${response.status}`);
+    const payload = await response.json();
+    const logos = payload?.logos && typeof payload.logos === "object" ? payload.logos : {};
+    return Object.fromEntries(Object.entries(logos).flatMap(([key, value]) => {
+      const logo = typeof value === "string" ? { asset: value } : value;
+      return logo?.asset ? [[key, logo]] : [];
+    }));
+  } catch (error) {
+    console.info("공식 음식점 로고 파일이 없어 이름 기반 스탬프를 사용합니다.", error);
+    return {};
+  }
+}
+
 async function loadPlaces() {
   const stadiumFoodRequest = fetch("./data/stadium_foods.json")
     .then(async (response) => {
@@ -3802,12 +3954,14 @@ async function loadPlaces() {
       console.warn(error);
       return { rows: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult] = await Promise.all([
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult, restaurantLogoResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
     openingHoursRequest,
     loadBaseballGames(),
+    loadStampPatterns(),
+    loadRestaurantStampLogos(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3832,6 +3986,9 @@ async function loadPlaces() {
   });
   state.baseballGamesLoadFailed = baseballGamesResult.failed;
   state.baseballGamesSource = baseballGamesResult.source;
+  state.stampPatterns = new Map(Object.entries(stampPatternResult.places));
+  state.stampPatternCategories = new Map(Object.entries(stampPatternResult.categories));
+  state.restaurantStampLogos = new Map(Object.entries(restaurantLogoResult));
   renderSavedRoutes();
   updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;

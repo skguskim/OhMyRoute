@@ -37,6 +37,7 @@ async function runScenario(date, expected) {
       ?.querySelector(".slider-level")
       ?.textContent.trim(),
     status: document.querySelector("#baseballScheduleStatus")?.textContent.trim(),
+    statusHidden: document.querySelector("#baseballScheduleStatus")?.hidden,
     endTime: document.querySelector("#endTime")?.value,
   }));
   if (expected.dayType === "평일") {
@@ -66,11 +67,18 @@ async function runScenario(date, expected) {
     }));
     return {
       description: document.querySelector("#resultDescription")?.textContent.trim(),
+      dayTheme: document.querySelector("#dayTheme")?.textContent.trim(),
       stops,
       lastStop: stops.at(-1),
       tips: [...document.querySelectorAll("#routeTips li")].map((item) => item.textContent.trim()),
     };
   });
+  if (result.tips.some((tip) => /시간에 맞춰 음식점을 동선에 포함했습니다/.test(tip))) {
+    throw new Error(`${date}: redundant meal-time summary is still visible`);
+  }
+  if (/\d{1,2}:\d{2}\s*(점심|저녁)|야구장 먹거리.*포함/.test(result.dayTheme)) {
+    throw new Error(`${date}: redundant meal labels are still visible in the day theme`);
+  }
   if (expected.dayType === "평일") {
     await page.screenshot({ path: "outputs/ui_baseball_route_weekday.png", fullPage: false });
   }
@@ -80,8 +88,7 @@ async function runScenario(date, expected) {
   const scenario = { date, formState, stadiumFoodStop, gameStop, ...result, browserErrors };
 
   if (formState.sportsLevel !== "매우 선호") throw new Error(`${date}: sports level did not reach very preferred`);
-  if (!formState.status.includes(expected.dayType)) throw new Error(`${date}: weekday/weekend label mismatch`);
-  if (!formState.status.includes(expected.gameStart)) throw new Error(`${date}: game start missing from form status`);
+  if (formState.status !== "" || !formState.statusHidden) throw new Error(`${date}: redundant baseball selection summary is visible`);
   if (formState.endTime !== expected.gameEnd) throw new Error(`${date}: end time was not fixed to game end`);
   if (!stadiumFoodStop?.time.includes(expected.foodStart)) throw new Error(`${date}: stadium food purchase time mismatch`);
   if (!stadiumFoodStop.mealChips.some((chip) => chip.includes("저녁 · 야구장 먹거리"))) throw new Error(`${date}: stadium dinner label missing`);
@@ -91,7 +98,7 @@ async function runScenario(date, expected) {
   if (!gameStop?.time.includes(expected.gameStart)) throw new Error(`${date}: game start time mismatch`);
   if (!gameStop.game.includes(expected.gameEnd)) throw new Error(`${date}: expected game end is missing`);
   if (result.lastStop?.name !== "광주-기아 챔피언스필드 야구 직관") throw new Error(`${date}: baseball game is not the final stop`);
-  if (!result.description.includes("구장 먹거리 DB에서 저녁을 골라")) throw new Error(`${date}: stadium dinner route description missing`);
+  if (result.description.includes("구장 먹거리 DB에서 저녁을 골라")) throw new Error(`${date}: redundant stadium dinner route description is visible`);
   if (browserErrors.length) throw new Error(`${date}: browser errors: ${browserErrors.join(" | ")}`);
 
   await page.close();
@@ -111,9 +118,9 @@ async function runMultiDayScenario() {
     weather.value = "sunny";
     weather.dispatchEvent(new Event("change", { bubbles: true }));
   });
-  await page.fill("#travelDate", "2026-08-17");
+  await page.fill("#travelDate", "2026-08-25");
   await page.dispatchEvent("#travelDate", "change");
-  await page.fill("#endDate", "2026-08-19");
+  await page.fill("#endDate", "2026-08-27");
   await page.dispatchEvent("#endDate", "change");
   await page.evaluate(() => {
     const slider = document.querySelector('#preferenceSliders input[data-index="5"]');
@@ -157,7 +164,7 @@ async function runMultiDayScenario() {
     status: document.querySelector("#baseballScheduleStatus")?.textContent.trim(),
   }));
   if (activeSelection.selected.join(",") !== "0,2") throw new Error("selected dates were not restored for route creation");
-  if (activeSelection.endTime !== "22:00") throw new Error(`final game end was not applied: ${activeSelection.endTime}`);
+  if (activeSelection.endTime !== "22:30") throw new Error(`final game end was not applied: ${activeSelection.endTime}`);
   await page.locator("#baseballAttendancePanel").screenshot({ path: "outputs/ui_baseball_multi_day_option.png" });
 
   await page.click("#recommendButton");
@@ -182,17 +189,17 @@ async function runMultiDayScenario() {
 }
 
 try {
-  const weekday = await runScenario("2026-08-17", {
+  const weekday = await runScenario("2026-08-25", {
     dayType: "평일",
-    foodStart: "17:45",
-    gameStart: "18:30",
-    gameEnd: "22:00",
+    foodStart: "18:15",
+    gameStart: "19:00",
+    gameEnd: "22:30",
   });
-  const weekend = await runScenario("2026-08-22", {
+  const weekend = await runScenario("2026-08-29", {
     dayType: "주말",
-    foodStart: "17:15",
-    gameStart: "18:00",
-    gameEnd: "21:30",
+    foodStart: "18:15",
+    gameStart: "19:00",
+    gameEnd: "22:30",
   });
   const multiDay = await runMultiDayScenario();
   console.log(JSON.stringify({ weekday, weekend, multiDay }, null, 2));

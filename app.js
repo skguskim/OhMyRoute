@@ -717,6 +717,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     state.baseballAttendance = false;
     if (dayField) dayField.hidden = true;
     clearBaseballDaySelection();
+    status.hidden = false;
     status.classList.remove("warning");
     status.textContent = "직관 포함을 켜면 여행 기간에서 경기 날짜를 여러 개 고를 수 있습니다.";
     return;
@@ -740,19 +741,14 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
   }
   status.classList.toggle("warning", baseballDayIndexes.length === 0 || state.baseballGamesLoadFailed);
   if (state.baseballGamesLoadFailed) {
+    status.hidden = false;
     status.textContent = "경기 DB를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.";
   } else if (!baseballDayIndexes.length) {
+    status.hidden = false;
     status.textContent = "선택한 여행 기간에는 관람 가능한 광주 KIA 홈경기가 없습니다. 경기 없는 날·종료·취소·연기 경기는 선택할 수 없습니다.";
   } else {
-    status.textContent = baseballDayIndexes
-      .map((dayIndex) => {
-        const gameDate = tripDates[dayIndex];
-        const schedule = baseballScheduleForDate(gameDate);
-        const game = schedule.game;
-        const timeChangeLabel = game.time_change_reason ? " · 폭염 대응 시간 변경 반영" : "";
-        return `${formatBaseballDayOption(gameDate, dayIndex)} · ${game.away_team_name} vs KIA · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기${timeChangeLabel}`;
-      })
-      .join(" / ");
+    status.textContent = "";
+    status.hidden = true;
   }
 }
 
@@ -854,7 +850,7 @@ function syncTravelWindow({ reportValidity = false } = {}) {
   state.dayWindows = travelDayWindows(draftConditions);
   const tripLabel = calendarDays > 1 ? `${calendarDays - 1}박 ${calendarDays}일` : "당일";
   if (status) {
-    status.textContent = `${tripLabel} · 실제 일정 가능 ${formatDuration(activeMinutes)} · ${startTimeInput.value} 시작 → ${endTimeInput.value} 종료`;
+    status.textContent = tripLabel;
   }
   return true;
 }
@@ -2879,13 +2875,12 @@ function josa(word, josaType) {
 function dayTheme(day) {
   const axes = topAxes(2);
   if (!day.length) return "조건에 맞는 장소를 찾지 못했습니다.";
-  const mealLabels = day.filter((place) => place.mealSlot).map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`);
   const themeCopy = axes.length >= 2
     ? `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로`
     : axes.length === 1
       ? `${axes[0].label} 취향을 중심으로`
       : "여행 조건에 맞춰";
-  return `${themeCopy} ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
+  return `${themeCopy} ${day[0].region}에서 이어지는 일정`;
 }
 
 function renderDayTabs() {
@@ -3033,9 +3028,6 @@ function renderTips() {
       ? `추천은 ${preferredAxes.map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`
       : "취향을 따로 선택하지 않아 이동수단·날씨·동행·체류시간 등 여행 조건을 중심으로 추천했습니다.",
   ];
-  if (mealStops.length) {
-    tips.unshift(`${mealStops.map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`).join(" · ")} 시간에 맞춰 음식점을 동선에 포함했습니다.`);
-  }
   if (conditions.baseballAttendance) {
     const gameStops = state.routeDays.flatMap((day, dayIndex) =>
       day.filter((place) => place.isBaseballGame).map((place) => ({ place, dayIndex })),
@@ -3125,7 +3117,7 @@ function renderResult() {
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
   $("#resultTitle").textContent = title;
   $("#resultDescription").textContent = conditions.baseballAttendance
-    ? `${travelWindowCopy}, 구장 먹거리 DB에서 저녁을 골라 경기 전에 구매하고 직관하며 먹도록 구성한 동선입니다.`
+    ? `${travelWindowCopy}.`
     : state.travelPrompt
       ? `${travelWindowCopy}, 슬라이더 취향과 한 줄 요청 및 출발지 복귀시간을 함께 반영한 동선입니다.`
       : conditions.sportsBaseballHighlyPreferred

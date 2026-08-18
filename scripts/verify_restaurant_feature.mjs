@@ -66,7 +66,7 @@ result.thresholdCheck = thresholdResult;
 
 console.log(JSON.stringify(result, null, 2));
 if (result.meals.length !== 2) throw new Error(`Expected lunch and dinner, got ${result.meals.length}`);
-if (!result.scheduleStatus.includes("실제 일정 가능 10시간")) throw new Error("The arrival/departure window was not applied");
+if (result.scheduleStatus !== "당일") throw new Error(`The concise trip duration label is missing: ${result.scheduleStatus}`);
 if (!result.returnLink.includes("출발지 복귀 길찾기")) throw new Error("The final return route is missing");
 if (result.sportsPreferenceLevel !== "매우 선호") throw new Error("Sports preference is not in the very-preferred range");
 if (!result.meals.every((meal) => /⚾ .+ 선수 추천$/.test(meal.playerRecommendation))) {

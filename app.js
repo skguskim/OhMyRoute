@@ -259,7 +259,6 @@ const state = {
   stampLocation: null,
   stampLocationMode: "GPS",
   stampToastTimer: null,
-  stampPatternCategories: new Map(),
   reviews: [],
   rewards: [],
   baseballAttendance: false,
@@ -2466,12 +2465,10 @@ function stampThemeForPlace(place) {
   return { key, ...STAMP_THEMES[key] };
 }
 
-function themePatternForPlace(place, themeKey) {
-  const localPattern = state.stampPatternCategories.get(place.category);
-  if (localPattern?.asset) return { ...localPattern, source: "aihub-local" };
+function themePatternForTheme(themeKey) {
   const patternAsset = STAMP_THEMES[themeKey]?.patternAsset;
   return patternAsset
-    ? { asset: patternAsset, patternType: "반복형 배경", source: "repository-fallback" }
+    ? { asset: patternAsset, patternType: "반복형 배경" }
     : null;
 }
 
@@ -2558,7 +2555,7 @@ function renderStamps() {
     const isInRange = distanceMeters !== null && distanceMeters <= 100;
     const isChampionsField = usesChampionsFieldStamp(place);
     const theme = isChampionsField ? null : stampThemeForPlace(place);
-    const themePattern = theme ? themePatternForPlace(place, theme.key) : null;
+    const themePattern = theme ? themePatternForTheme(theme.key) : null;
     const sealClass = [
       isStamped ? "unlocked" : isInRange ? "in-range" : "",
       isChampionsField ? "champions-field-stamp" : "",
@@ -2568,7 +2565,7 @@ function renderStamps() {
       ? championsFieldStampContent(isStamped, isInRange)
       : themeStampContent(theme, themePattern, isStamped, isInRange);
     const patternTitle = themePattern
-      ? ` · ${themePattern.source === "aihub-local" ? "AI Hub 전통 문양" : "AI Hub 문양 유형 기반 재제작"} ${themePattern.patternType || "배경"}`
+      ? ` · AI Hub 문양 유형 기반 재제작 ${themePattern.patternType || "배경"}`
       : "";
     const stampTitle = theme ? `${theme.label} 테마 스탬프${patternTitle}` : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";
@@ -3907,21 +3904,6 @@ async function loadBaseballGames() {
   }
 }
 
-async function loadStampPatterns() {
-  try {
-    const response = await fetch("./data/local-stamps/stamp-patterns.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`전통 문양 스탬프 데이터 오류: ${response.status}`);
-    const payload = await response.json();
-    return {
-      places: payload?.places && typeof payload.places === "object" ? payload.places : {},
-      categories: payload?.categories && typeof payload.categories === "object" ? payload.categories : {},
-    };
-  } catch (error) {
-    console.info("로컬 전통 문양 스탬프를 사용하지 않습니다.", error);
-    return { places: {}, categories: {} };
-  }
-}
-
 async function loadPlaces() {
   const stadiumFoodRequest = fetch("./data/stadium_foods.json")
     .then(async (response) => {
@@ -3941,13 +3923,12 @@ async function loadPlaces() {
       console.warn(error);
       return { rows: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult] = await Promise.all([
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
     openingHoursRequest,
     loadBaseballGames(),
-    loadStampPatterns(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3972,7 +3953,6 @@ async function loadPlaces() {
   });
   state.baseballGamesLoadFailed = baseballGamesResult.failed;
   state.baseballGamesSource = baseballGamesResult.source;
-  state.stampPatternCategories = new Map(Object.entries(stampPatternResult.categories));
   renderSavedRoutes();
   updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;

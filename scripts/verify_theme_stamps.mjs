@@ -9,7 +9,11 @@ const browser = await chromium.launch({
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } });
   const browserErrors = [];
+  let localPatternRequestCount = 0;
   page.on("pageerror", (error) => browserErrors.push(error.message));
+  page.on("request", (request) => {
+    if (request.url().includes("/data/local-stamps/stamp-patterns.json")) localPatternRequestCount += 1;
+  });
   await page.addInitScript(() => localStorage.removeItem("omaeroute_stamped_place_ids"));
   await page.goto(`${baseUrl}/?demo=route`, { waitUntil: "networkidle" });
   await page.click("#startButton");
@@ -43,6 +47,14 @@ try {
       firstFoodTitle: foodButtons[0]?.title || "",
       themeTitlesValid: themeButtons.every((button) => button.title.includes("테마 스탬프")),
       patternCount: themeButtons.filter((button) => button.querySelector(".theme-stamp-pattern")).length,
+      patternAssets: [...new Set(themeButtons.map((button) =>
+        button.querySelector(".theme-stamp-pattern")?.getAttribute("src")))],
+      patternImagesLoaded: themeButtons.every((button) => {
+        const image = button.querySelector(".theme-stamp-pattern");
+        return Boolean(image?.complete && image.naturalWidth > 0);
+      }),
+      patternTitlesValid: themeButtons.every((button) =>
+        button.title.includes("AI Hub 문양 유형 기반 재제작")),
     };
   });
 
@@ -57,6 +69,15 @@ try {
   if (!before.templateImagesLoaded) throw new Error("테마 스탬프 SVG 중 로드되지 않은 파일이 있습니다.");
   if (!before.firstFoodTitle.includes("광주 미식 테마 스탬프") || !before.themeTitlesValid) {
     throw new Error(`테마 스탬프 안내가 올바르지 않습니다: ${before.firstFoodTitle}`);
+  }
+  if (before.patternCount !== before.themeCount
+    || !before.patternImagesLoaded
+    || !before.patternTitlesValid
+    || !before.patternAssets.every((asset) => asset?.startsWith("./assets/stamps/patterns/"))) {
+    throw new Error(`모든 환경용 공용 문양 SVG가 적용되지 않았습니다: ${JSON.stringify(before)}`);
+  }
+  if (localPatternRequestCount) {
+    throw new Error(`앱이 로컬 AI Hub 문양 데이터를 요청했습니다: ${localPatternRequestCount}회`);
   }
 
   await page.selectOption("#stampLocationSelect", before.firstFoodId);
@@ -84,40 +105,7 @@ try {
   if (browserErrors.length) throw new Error(`브라우저 오류: ${browserErrors.join(" | ")}`);
 
   await page.locator("#stampGrid").screenshot({ path: "outputs/ui_theme_stamps.png" });
-
-  const fallbackPage = await browser.newPage({ viewport: { width: 1440, height: 1050 } });
-  const fallbackErrors = [];
-  fallbackPage.on("pageerror", (error) => fallbackErrors.push(error.message));
-  await fallbackPage.route("**/data/local-stamps/stamp-patterns.json", (route) =>
-    route.fulfill({ status: 404, contentType: "application/json", body: "{}" }));
-  await fallbackPage.goto(`${baseUrl}/?demo=route`, { waitUntil: "networkidle" });
-  await fallbackPage.click("#startButton");
-  await fallbackPage.waitForSelector("#resultView.active", { timeout: 20000 });
-  await fallbackPage.waitForSelector(".theme-stamp-pattern", { timeout: 10000 });
-  await fallbackPage.waitForFunction(() => [...document.querySelectorAll(".theme-stamp-pattern")]
-    .every((image) => image.complete && image.naturalWidth > 0));
-
-  const fallback = await fallbackPage.evaluate(() => {
-    const themeButtons = [...document.querySelectorAll(".stamp-seal.theme-stamp")];
-    const patterns = themeButtons.map((button) => button.querySelector(".theme-stamp-pattern"));
-    return {
-      themeCount: themeButtons.length,
-      patternCount: patterns.filter(Boolean).length,
-      patternAssets: [...new Set(patterns.map((image) => image?.getAttribute("src")))],
-      allRepositoryAssets: patterns.every((image) => image?.getAttribute("src")?.startsWith("./assets/stamps/patterns/")),
-      allLoaded: patterns.every((image) => image?.complete && image.naturalWidth > 0),
-      titlesDescribeFallback: themeButtons.every((button) => button.title.includes("AI Hub 문양 유형 기반 재제작")),
-    };
-  });
-  if (fallback.patternCount !== fallback.themeCount || !fallback.allRepositoryAssets || !fallback.allLoaded) {
-    throw new Error(`로컬 데이터 없는 환경의 배경 SVG 폴백이 잘못됐습니다: ${JSON.stringify(fallback)}`);
-  }
-  if (!fallback.titlesDescribeFallback || fallbackErrors.length) {
-    throw new Error(`폴백 출처 안내 또는 브라우저 오류가 있습니다: ${fallbackErrors.join(" | ")}`);
-  }
-  await fallbackPage.locator("#stampGrid").screenshot({ path: "outputs/ui_theme_stamps_fallback.png" });
-
-  console.log(JSON.stringify({ baseUrl, before, after, fallback }, null, 2));
+  console.log(JSON.stringify({ baseUrl, before, after, localPatternRequestCount }, null, 2));
 } finally {
   await browser.close();
 }

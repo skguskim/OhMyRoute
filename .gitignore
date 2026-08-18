@@ -4,6 +4,8 @@ outputs/
 Thumbs.db
 .env
 data/raw/
+data/local-stamps/
+assets/local-stamps/
 __pycache__/
 *.pyc
 *.zip

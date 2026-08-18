@@ -24,6 +24,28 @@ const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
+const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
+
+const STAMP_THEMES = Object.freeze({
+  food: { label: "광주 미식", asset: "./assets/stamps/themes/food.svg" },
+  heritage: { label: "역사·전통", asset: "./assets/stamps/themes/heritage.svg" },
+  culture: { label: "문화·예술", asset: "./assets/stamps/themes/culture.svg" },
+  nature: { label: "자연·경관", asset: "./assets/stamps/themes/nature.svg" },
+  garden: { label: "공원·정원", asset: "./assets/stamps/themes/garden.svg" },
+  activity: { label: "체험·스포츠", asset: "./assets/stamps/themes/activity.svg" },
+  walk: { label: "도보·산책", asset: "./assets/stamps/themes/walk.svg" },
+  local: { label: "광주 로컬", asset: "./assets/stamps/themes/culture.svg" },
+});
+
+const STAMP_THEME_BY_CATEGORY = Object.freeze({
+  "음식·로컬": "food",
+  "역사·전통": "heritage",
+  "문화·예술": "culture",
+  "자연·경관": "nature",
+  "공원·정원": "garden",
+  "체험·스포츠": "activity",
+  "도보·산책": "walk",
+});
 
 const ORIGINS = {
   songjeong_station: {
@@ -169,7 +191,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [0, 0, 0, 0, 0, 0, 0, 0],
+  preference: [50, 50, 50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -202,6 +224,7 @@ const state = {
   stampLocation: null,
   stampLocationMode: "GPS",
   stampToastTimer: null,
+  stampPatternCategories: new Map(),
   reviews: [],
   rewards: [],
   baseballAttendance: false,
@@ -410,6 +433,12 @@ function parseClockMinutes(value) {
 function formatClockMinutes(value) {
   const normalized = ((Math.round(value) % (24 * 60)) + 24 * 60) % (24 * 60);
   return `${String(Math.floor(normalized / 60)).padStart(2, "0")}:${String(normalized % 60).padStart(2, "0")}`;
+}
+
+const ITINERARY_TIME_STEP_MINUTES = 5;
+
+function roundUpToStep(minutes, step = ITINERARY_TIME_STEP_MINUTES) {
+  return Math.ceil(minutes / step) * step;
 }
 
 function setTimeFieldValue(hiddenInput, value) {
@@ -1111,13 +1140,25 @@ function updateRangeVisual(input) {
     getPreferenceLevel(Number(input.value));
 }
 
+const AXIS_COLORS = {
+  sports: { light: "#f4f9ff", dark: "#3182f6" },
+  nature: { light: "#f4f9ff", dark: "#3182f6" },
+  culture: { light: "#f4f9ff", dark: "#3182f6" },
+  art: { light: "#f4f9ff", dark: "#3182f6" },
+  food: { light: "#f4f9ff", dark: "#3182f6" },
+  activity: { light: "#f4f9ff", dark: "#3182f6" },
+  healing: { light: "#f4f9ff", dark: "#3182f6" },
+  festival: { light: "#f4f9ff", dark: "#3182f6" }
+};
+
 function renderSliders() {
   $("#preferenceSliders").innerHTML = DISPLAY_AXIS_KEYS.map(
     (axisKey) => {
       const index = AXIS_INDEX_BY_KEY[axisKey];
       const axis = AXES[index];
+      const colors = AXIS_COLORS[axisKey] || { light: "#e8f5e9", dark: "#2e7d32" };
       return `
-      <label class="slider-row">
+      <label class="slider-row" style="--slider-light: ${colors.light}; --slider-dark: ${colors.dark};">
         <span class="slider-meta">
           <span class="slider-name"><i>${axis.emoji}</i>${axis.label}</span>
           <span class="slider-level">${getPreferenceLevel(state.preference[index])}</span>
@@ -1126,7 +1167,7 @@ function renderSliders() {
           type="range"
           min="0"
           max="100"
-          step="1"
+          step="10"
           value="${state.preference[index]}"
           data-index="${index}"
           aria-label="${axis.label} 선호도"
@@ -1446,15 +1487,17 @@ function routeCandidateValue(place, current) {
   return place.score + namedBonus + requiredBonus - haversineKm(current, place) * distancePenalty;
 }
 
-function scheduleLeg(current, clockMinutes, place, targetMinutes = null) {
+function scheduleLeg(current, clockMinutes, place, targetMinutes = null, { snap = true } = {}) {
   const distance = haversineKm(current, place);
   const travelMinutes = estimateTravelMinutes(distance);
   const arrivalMinutes = clockMinutes + travelMinutes;
   const waitMinutes = targetMinutes === null ? 0 : Math.max(0, targetMinutes - arrivalMinutes);
-  const startMinutes = arrivalMinutes + waitMinutes;
-  const endMinutes = place.overrideEndMinutes != null
-    ? Math.max(startMinutes, place.overrideEndMinutes)
-    : startMinutes + place.durationMinutes;
+  const rawStartMinutes = arrivalMinutes + waitMinutes;
+  const rawEndMinutes = place.overrideEndMinutes != null
+    ? Math.max(rawStartMinutes, place.overrideEndMinutes)
+    : rawStartMinutes + place.durationMinutes;
+  const startMinutes = snap ? roundUpToStep(rawStartMinutes) : rawStartMinutes;
+  const endMinutes = snap ? roundUpToStep(rawEndMinutes) : rawEndMinutes;
   return { distance, travelMinutes, arrivalMinutes, waitMinutes, startMinutes, endMinutes };
 }
 
@@ -1610,7 +1653,7 @@ function validateFixedSchedule(startPlace, startMinutes, fixedStops) {
   let current = startPlace;
   let clockMinutes = startMinutes;
   for (const place of fixedStops) {
-    const leg = scheduleLeg(current, clockMinutes, place, place.fixedStartMinutes);
+    const leg = scheduleLeg(current, clockMinutes, place, place.fixedStartMinutes, { snap: false });
     if (leg.startMinutes > place.fixedStartMinutes) {
       return {
         ok: false,
@@ -1930,6 +1973,7 @@ function buildRouteSchedule(day, dayIndex = 0) {
       clockMinutes,
       place,
       place.fixedStartMinutes ?? place.mealTargetMinutes ?? null,
+      { snap: place.fixedStartMinutes == null },
     );
     const scheduled = { place, ...leg };
     current = place;
@@ -1986,6 +2030,22 @@ function previewSlides() {
 
 function previewFramePath(frame) {
   return `video/frame_${String(frame).padStart(4, "0")}.webp`;
+}
+
+let previewFramesReadyPromise = null;
+function preloadPreviewFrames() {
+  if (previewFramesReadyPromise) return previewFramesReadyPromise;
+  const loaded = [];
+  for (let frame = 1; frame <= PREVIEW_TOTAL_FRAMES; frame++) {
+    const img = new Image();
+    loaded.push(new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = resolve;
+    }));
+    img.src = previewFramePath(frame);
+  }
+  previewFramesReadyPromise = Promise.all(loaded);
+  return previewFramesReadyPromise;
 }
 
 function setPreviewCharFrame(frame) {
@@ -2321,13 +2381,73 @@ async function copyRewardCode() {
   }
 }
 
-function stampIcon(place) {
-  const category = `${place.category} ${place.hashtags.join(" ")}`;
-  if (/음식|시장|맛집|카페|로컬/.test(category)) return "🍚";
-  if (/스포츠|체험|액티비티|야구/.test(category)) return "🏆";
-  if (/자연|경관|산|숲|공원|정원/.test(category)) return "🌿";
-  if (/전시|문화|예술|박물관/.test(category)) return "🏛";
-  return "✦";
+function usesChampionsFieldStamp(place) {
+  const searchableText = `${place.name || ""} ${(place.hashtags || []).join(" ")}`;
+  return /챔피언스\s*필드/i.test(searchableText);
+}
+
+function championsFieldStampContent(isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="champions-field-stamp-art" aria-hidden="true">
+      <span class="champions-field-stamp-fallback"><b>⚾</b><small>GWANGJU</small></span>
+      <img
+        class="champions-field-stamp-image"
+        src="${CHAMPIONS_FIELD_STAMP_ASSET}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+    </span>
+    <span class="champions-field-stamp-state">${stateLabel}</span>
+  `;
+}
+
+function usesFoodThemeStamp(place) {
+  return place.databaseType === "restaurant"
+    || place.databaseType === "stadium_food"
+    || Boolean(place.stadiumFood)
+    || place.category === "음식·로컬";
+}
+
+function stampThemeForPlace(place) {
+  const key = usesFoodThemeStamp(place)
+    ? "food"
+    : STAMP_THEME_BY_CATEGORY[place.category] || "local";
+  return { key, ...STAMP_THEMES[key] };
+}
+
+function themePatternForPlace(place, themeKey) {
+  if (themeKey === "food") return null;
+  return state.stampPatternCategories.get(place.category) || null;
+}
+
+function themeStampContent(theme, pattern, isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="theme-stamp-art" aria-hidden="true">
+      ${pattern ? `
+        <img
+          class="theme-stamp-pattern"
+          src="${escapeHtml(pattern.asset)}"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable="false"
+        >
+      ` : ""}
+      <img
+        class="theme-stamp-template"
+        src="${escapeHtml(theme.asset)}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+    </span>
+    <span class="theme-stamp-state">${stateLabel}</span>
+  `;
 }
 
 function formatStampDistance(distanceMeters) {
@@ -2384,10 +2504,21 @@ function renderStamps() {
       ? Math.round(haversineKm(state.stampLocation, place) * 1000)
       : null;
     const isInRange = distanceMeters !== null && distanceMeters <= 100;
-    const sealClass = isStamped ? "unlocked" : isInRange ? "in-range" : "";
-    const sealContent = isStamped
-      ? `<span>광주·전남</span><b>${escapeHtml(place.name)}</b><span>완료</span>`
-      : `<span class="stamp-icon">${stampIcon(place)}</span><span>${isInRange ? "도장 찍기" : "방문"}</span>`;
+    const isChampionsField = usesChampionsFieldStamp(place);
+    const theme = isChampionsField ? null : stampThemeForPlace(place);
+    const themePattern = theme ? themePatternForPlace(place, theme.key) : null;
+    const sealClass = [
+      isStamped ? "unlocked" : isInRange ? "in-range" : "",
+      isChampionsField ? "champions-field-stamp" : "",
+      theme ? `theme-stamp stamp-theme-${theme.key}` : "",
+    ].filter(Boolean).join(" ");
+    const sealContent = isChampionsField
+      ? championsFieldStampContent(isStamped, isInRange)
+      : themeStampContent(theme, themePattern, isStamped, isInRange);
+    const patternTitle = themePattern
+      ? ` · AI Hub 전통 문양 ${themePattern.patternType || "배경"}`
+      : "";
+    const stampTitle = theme ? `${theme.label} 테마 스탬프${patternTitle}` : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";
     const distanceText = isStamped ? "✓ 스탬프 획득" : formatStampDistance(distanceMeters);
     return `
@@ -2396,7 +2527,9 @@ function renderStamps() {
           type="button"
           class="stamp-seal ${sealClass}"
           data-stamp-id="${escapeHtml(id)}"
+          ${theme ? `data-stamp-theme="${escapeHtml(theme.key)}"` : ""}
           aria-label="${escapeHtml(place.name)} ${isStamped ? "스탬프 획득 완료" : "스탬프 찍기"}"
+          ${stampTitle ? `title="${escapeHtml(stampTitle)}"` : ""}
           ${isStamped ? "disabled" : ""}
         >${sealContent}</button>
         <p class="stamp-place-name" title="${escapeHtml(place.name)}">${escapeHtml(place.name)}</p>
@@ -2763,7 +2896,7 @@ function renderItinerary() {
       <i class="timeline-node"></i>
       <div class="stop-card" tabindex="0">
         <div class="stop-meta">
-          <span class="stop-time">◷ 약 ${formatClockMinutes(schedule.at(-1).endMinutes + returnTravelMinutes(lastPlace, conditions.origin))}</span>
+          <span class="stop-time">◷ 약 ${formatClockMinutes(roundUpToStep(schedule.at(-1).endMinutes + returnTravelMinutes(lastPlace, conditions.origin)))}</span>
           <span class="type-chip">도착지</span>
         </div>
         <h3>📍 ${escapeHtml(conditions.origin.name)}</h3>
@@ -2958,7 +3091,10 @@ function renderResult() {
   renderAlternatives();
   renderTips();
   stopPreview({ reset: true });
-  startPreview();
+  const routeAtPreloadTime = state.route;
+  preloadPreviewFrames().then(() => {
+    if (state.route === routeAtPreloadTime) startPreview();
+  });
   renderStamps();
   renderReviewReward();
   updateSaveButton();
@@ -3066,26 +3202,6 @@ function routeSignature(route = state.route) {
     ? `baseball-days-${selectedBaseballDayIndexes().join("-")}`
     : "baseball-off";
   return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}:${baseballKey}`;
-}
-
-function preferenceByKey(preference = state.preference) {
-  return Object.fromEntries(AXES.map((axis, index) => [axis.key, Number(preference[index]) || 0]));
-}
-
-function normalizeSavedPreference(saved) {
-  if (saved?.preferenceByKey && typeof saved.preferenceByKey === "object") {
-    return AXES.map((axis) => Number(saved.preferenceByKey[axis.key]) || 0);
-  }
-  if (Array.isArray(saved?.preference) && Array.isArray(saved.preferenceOrder)) {
-    const keyedPreference = Object.fromEntries(
-      saved.preferenceOrder.map((axisKey, index) => [axisKey, saved.preference[index]]),
-    );
-    return AXES.map((axis) => Number(keyedPreference[axis.key]) || 0);
-  }
-  if (Array.isArray(saved?.preference)) {
-    return AXES.map((_, index) => Number(saved.preference[index]) || 0);
-  }
-  return Array(AXES.length).fill(0);
 }
 
 function preferenceByKey(preference = state.preference) {
@@ -3685,6 +3801,21 @@ async function loadBaseballGames() {
   }
 }
 
+async function loadStampPatterns() {
+  try {
+    const response = await fetch("./data/local-stamps/stamp-patterns.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`전통 문양 스탬프 데이터 오류: ${response.status}`);
+    const payload = await response.json();
+    return {
+      places: payload?.places && typeof payload.places === "object" ? payload.places : {},
+      categories: payload?.categories && typeof payload.categories === "object" ? payload.categories : {},
+    };
+  } catch (error) {
+    console.info("로컬 전통 문양 스탬프를 사용하지 않습니다.", error);
+    return { places: {}, categories: {} };
+  }
+}
+
 async function loadPlaces() {
   const stadiumFoodRequest = fetch("./data/stadium_foods.json")
     .then(async (response) => {
@@ -3704,12 +3835,13 @@ async function loadPlaces() {
       console.warn(error);
       return { rows: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult] = await Promise.all([
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
     openingHoursRequest,
     loadBaseballGames(),
+    loadStampPatterns(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3734,6 +3866,7 @@ async function loadPlaces() {
   });
   state.baseballGamesLoadFailed = baseballGamesResult.failed;
   state.baseballGamesSource = baseballGamesResult.source;
+  state.stampPatternCategories = new Map(Object.entries(stampPatternResult.categories));
   renderSavedRoutes();
   updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;
@@ -3756,6 +3889,7 @@ async function init() {
   loadStampIds();
   loadReviewRewards();
   bindEvents();
+  preloadPreviewFrames();
   renderWeatherFieldStatus();
   try {
     await loadPlaces();

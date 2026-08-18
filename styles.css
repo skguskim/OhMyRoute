@@ -707,8 +707,8 @@ button {
 
 .slider-level {
   padding: 3px 7px;
-  color: var(--green);
-  background: rgba(74, 101, 78, 0.07);
+  color: var(--slider-dark, var(--green));
+  background: var(--slider-light, rgba(74, 101, 78, 0.07));
   border-radius: 999px;
   font-size: 9px;
   font-weight: 800;
@@ -716,29 +716,33 @@ button {
 
 input[type="range"] {
   width: 100%;
-  height: 4px;
+  height: 28px;
   appearance: none;
-  background: linear-gradient(to right, var(--green) var(--range-progress), var(--line) var(--range-progress));
-  border-radius: 999px;
+  background: 
+    repeating-linear-gradient(to right, transparent, transparent calc(10% - 2px), #fff calc(10% - 2px), #fff 10%),
+    linear-gradient(to right, transparent 0%, transparent var(--range-progress), var(--line) var(--range-progress), var(--line) 100%),
+    linear-gradient(to right, var(--slider-light, var(--green)) 0%, var(--slider-dark, var(--green)) 100%);
+  border-radius: 8px;
   outline: none;
+  cursor: pointer;
+  overflow: hidden;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  width: 17px;
-  height: 17px;
+  width: 1px;
+  height: 28px;
   appearance: none;
-  background: white;
-  border: 4px solid var(--green);
-  border-radius: 50%;
-  box-shadow: 0 2px 7px rgba(74, 101, 78, 0.28);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 10px;
-  height: 10px;
-  background: white;
-  border: 4px solid var(--green);
-  border-radius: 50%;
+  width: 1px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .generate-button {
@@ -1787,6 +1791,225 @@ input[type="range"]::-moz-range-thumb {
   line-height: 1;
 }
 
+.stamp-seal.champions-field-stamp {
+  padding: 5px 3px 4px;
+  gap: 2px;
+  place-content: center;
+  background: #fff;
+  border-style: solid;
+  overflow: hidden;
+}
+
+.stamp-seal.champions-field-stamp.unlocked {
+  background: #fff;
+  border: 3px double #e6002d;
+  border-radius: 16px;
+  transform: none;
+}
+
+.champions-field-stamp-art {
+  position: relative;
+  width: 68px;
+  max-width: 100%;
+  height: 47px;
+  margin: 0 !important;
+  display: block;
+  overflow: hidden;
+}
+
+.champions-field-stamp-image {
+  position: absolute;
+  z-index: 2;
+  top: 52%;
+  left: 50%;
+  width: 62px;
+  max-width: none;
+  height: 62px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.34;
+  filter: grayscale(1);
+  mix-blend-mode: multiply;
+  transform: translate(-50%, -50%);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.champions-field-stamp-fallback {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  margin: 0 !important;
+  display: grid !important;
+  place-content: center;
+  color: #071725;
+  background: #fff;
+}
+
+.champions-field-stamp-fallback b {
+  max-width: none;
+  font-family: inherit;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.champions-field-stamp-fallback small {
+  margin-top: 2px;
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.stamp-seal.champions-field-stamp:hover .champions-field-stamp-image,
+.stamp-seal.champions-field-stamp.in-range .champions-field-stamp-image,
+.stamp-seal.champions-field-stamp.unlocked .champions-field-stamp-image {
+  opacity: 1;
+  filter: none;
+}
+
+.stamp-seal .champions-field-stamp-state {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.champions-field-stamp.in-range .champions-field-stamp-state,
+.stamp-seal.champions-field-stamp.unlocked .champions-field-stamp-state {
+  color: #e6002d;
+}
+
+/* Fixed theme stamps keep every category visually consistent. */
+.stamp-seal.theme-stamp {
+  --stamp-theme-color: #43505f;
+  --stamp-theme-soft: #eef1f4;
+  padding: 4px 4px 3px;
+  gap: 1px;
+  place-content: center;
+  color: var(--stamp-theme-color);
+  background: #fff;
+  border: 2px solid color-mix(in srgb, var(--stamp-theme-color) 24%, white);
+  overflow: hidden;
+}
+
+.stamp-seal.stamp-theme-food {
+  --stamp-theme-color: #bd5229;
+  --stamp-theme-soft: #fff0e7;
+}
+
+.stamp-seal.stamp-theme-heritage {
+  --stamp-theme-color: #97443a;
+  --stamp-theme-soft: #fbeeea;
+}
+
+.stamp-seal.stamp-theme-culture {
+  --stamp-theme-color: #654da0;
+  --stamp-theme-soft: #f1edfb;
+}
+
+.stamp-seal.stamp-theme-nature {
+  --stamp-theme-color: #377452;
+  --stamp-theme-soft: #eaf5ee;
+}
+
+.stamp-seal.stamp-theme-garden {
+  --stamp-theme-color: #a1426e;
+  --stamp-theme-soft: #faedf3;
+}
+
+.stamp-seal.stamp-theme-activity {
+  --stamp-theme-color: #2863a0;
+  --stamp-theme-soft: #eaf2fb;
+}
+
+.stamp-seal.stamp-theme-walk {
+  --stamp-theme-color: #267687;
+  --stamp-theme-soft: #e8f4f5;
+}
+
+.theme-stamp-art {
+  position: relative;
+  width: 66px;
+  max-width: 100%;
+  height: 55px;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden;
+  color: var(--stamp-theme-color);
+  background: var(--stamp-theme-soft);
+  border-radius: 50% 46% 52% 48%;
+  opacity: 0.58;
+  filter: grayscale(0.72) saturate(0.45);
+  transform: rotate(-1.5deg);
+  transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
+}
+
+.theme-stamp-pattern {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  display: block !important;
+  object-fit: cover;
+  opacity: 0.12;
+  filter: grayscale(1) contrast(1.15);
+  mix-blend-mode: multiply;
+}
+
+.theme-stamp-template {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  display: block !important;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.stamp-seal .theme-stamp-state {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.theme-stamp:hover:not(:disabled),
+.stamp-seal.theme-stamp.in-range {
+  color: var(--stamp-theme-color);
+  background: var(--stamp-theme-soft);
+  border-color: var(--stamp-theme-color);
+}
+
+.stamp-seal.theme-stamp:hover .theme-stamp-art,
+.stamp-seal.theme-stamp.in-range .theme-stamp-art,
+.stamp-seal.theme-stamp.unlocked .theme-stamp-art {
+  opacity: 1;
+  filter: none;
+}
+
+.stamp-seal.theme-stamp.in-range .theme-stamp-state,
+.stamp-seal.theme-stamp.unlocked .theme-stamp-state {
+  color: var(--stamp-theme-color);
+}
+
+.stamp-seal.theme-stamp.unlocked {
+  color: var(--stamp-theme-color);
+  background: #fff;
+  border: 4px double var(--stamp-theme-color);
+  transform: rotate(-2deg);
+}
+
 .stamp-place-name {
   margin: 7px 0 0;
   overflow: hidden;
@@ -2774,15 +2997,15 @@ body:has(#formView.active) .app-main {
 
 #formView .slider-level {
   padding: 4px 8px;
-  color: #3182f6;
-  background: #e8f3ff;
+  color: var(--slider-dark, #3182f6);
+  background: var(--slider-light, #e8f3ff);
   border-radius: 8px;
   font-size: 10px;
   font-weight: 700;
 }
 
 #formView input[type="range"] {
-  height: 5px;
+  height: 28px;
 }
 
 #formView .generate-button {
@@ -4411,17 +4634,19 @@ code {
 }
 
 .slider-level {
-  color: var(--green-dark);
-  background: var(--green-soft);
+  color: var(--slider-dark, var(--green-dark));
+  background: var(--slider-light, var(--green-soft));
 }
 
 input[type="range"] {
-  background: linear-gradient(to right, var(--blue) var(--range-progress), var(--line) var(--range-progress));
-  accent-color: var(--blue);
+  background: 
+    repeating-linear-gradient(to right, transparent, transparent calc(10% - 2px), #fff calc(10% - 2px), #fff 10%),
+    linear-gradient(to right, var(--slider-light, var(--blue)) 0%, var(--slider-dark, var(--blue)) var(--range-progress), var(--line) var(--range-progress), var(--line) 100%);
+  accent-color: var(--slider-dark, var(--blue));
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  border-color: var(--blue);
+  border-color: transparent;
 }
 
 .prompt-card {
@@ -6185,4 +6410,3 @@ body:has(#formView.active) .app-main {
 #formView .form-grid .field.full {
   grid-column: 1 / -1 !important;
 }
-

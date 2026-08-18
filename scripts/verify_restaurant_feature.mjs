@@ -16,8 +16,11 @@ await page.evaluate(() => {
   sportsSlider.value = "90";
   sportsSlider.dispatchEvent(new Event("input", { bubbles: true }));
 });
-await page.fill("#endTime", "20:00");
-await page.dispatchEvent("#endTime", "change");
+await page.evaluate(() => {
+  const endTime = document.querySelector("#endTime");
+  endTime.value = "20:00";
+  endTime.dispatchEvent(new Event("change", { bubbles: true }));
+});
 await page.click("#recommendButton");
 await page.waitForSelector("#resultView.active", { timeout: 15000 });
 
@@ -72,7 +75,7 @@ if (result.sportsPreferenceLevel !== "매우 선호") throw new Error("Sports pr
 if (!result.meals.every((meal) => /⚾ .+ 선수 추천$/.test(meal.playerRecommendation))) {
   throw new Error("A baseball-fan meal is missing the active-player recommendation label");
 }
-if (!result.meals.every((meal) => /추천 이유 · .+ 선수 추천 · 이전 지점/.test(meal.reason))) {
+if (!result.meals.every((meal) => /추천 이유 · .+ 선수 추천$/.test(meal.reason))) {
   throw new Error("Player recommendation reasons still include generic category labels");
 }
 if (result.meals.some((meal) => meal.reason.includes("시간 맞춤") || meal.reason.includes("스포츠·야구") || meal.reason.includes("음식·로컬"))) {

@@ -6159,11 +6159,28 @@ body:has(#formView.active) .app-main {
   border-bottom-left-radius: 4px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
+.docent-msg.pending {
+  color: #6b7684;
+  font-style: italic;
+}
 .user-msg {
   background: #3182f6;
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 4px;
+}
+.ai-docent-status {
+  margin: 0;
+  padding: 7px 14px;
+  border-top: 1px solid #e5e8eb;
+  background: #f9fafb;
+  color: #6b7684;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.ai-docent-status.error {
+  color: #b42318;
+  background: #fff5f4;
 }
 .ai-docent-input {
   display: flex;
@@ -6194,6 +6211,11 @@ body:has(#formView.active) .app-main {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.ai-docent-input input:disabled,
+.ai-docent-input button:disabled {
+  cursor: wait;
+  opacity: 0.55;
 }
 
 

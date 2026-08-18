@@ -3580,13 +3580,33 @@ function bindEvents() {
   const docentChat = $("#aiDocentChat");
   const docentInput = $("#aiDocentInput");
   const docentSend = $("#aiDocentSendButton");
+  const docentStatus = $("#aiDocentStatus");
+  const docentHistory = [];
+  let docentBusy = false;
+  let docentRouteKey = "";
 
   function addDocentMessage(text, isUser = false) {
     const msg = document.createElement("div");
     msg.className = isUser ? "ai-msg user-msg" : "ai-msg docent-msg";
+    msg.dataset.role = isUser ? "user" : "assistant";
     msg.textContent = text;
     docentChat.appendChild(msg);
     docentChat.scrollTop = docentChat.scrollHeight;
+    return msg;
+  }
+
+  function setDocentStatus(text, { error = false } = {}) {
+    if (!docentStatus) return;
+    docentStatus.textContent = text;
+    docentStatus.classList.toggle("error", error);
+  }
+
+  function setDocentBusy(active) {
+    docentBusy = active;
+    docentInput.disabled = active;
+    docentSend.disabled = active;
+    docentSend.setAttribute("aria-busy", String(active));
+    if (!active) docentInput.focus();
   }
 
   function findNearestPlace() {
@@ -3615,10 +3635,120 @@ function bindEvents() {
     return nearest;
   }
 
+  function docentPlaceSummary(place, schedule = {}) {
+    return {
+      name: place.name,
+      region: place.region,
+      category: place.category,
+      description: place.description,
+      hashtags: (place.hashtags || []).slice(0, 8),
+      recommendation_reasons: (place.reasons || []).slice(0, 3),
+      road_address: place.roadAddress || null,
+      website_url: place.websiteUrl || null,
+      indoor: Boolean(place.indoor),
+      rain_ok: Boolean(place.rainOk),
+      scheduled_start: Number.isFinite(schedule.startMinutes) ? formatClockMinutes(schedule.startMinutes) : null,
+      scheduled_end: Number.isFinite(schedule.endMinutes) ? formatClockMinutes(schedule.endMinutes) : null,
+    };
+  }
+
+  function buildDocentContext() {
+    const conditions = currentConditions();
+    const nearest = findNearestPlace();
+    return {
+      service: "오매루트",
+      region: "광주광역시",
+      origin: conditions.origin?.name || null,
+      travel_period: { start: conditions.travelDate, end: conditions.endDate },
+      transport: conditions.transport,
+      companion: conditions.companion,
+      weather: state.weatherForecast?.status === "ready"
+        ? {
+            condition: state.weatherForecast.condition,
+            summary: state.weatherForecast.summary,
+          }
+        : null,
+      nearest_place: nearest ? docentPlaceSummary(nearest) : null,
+      route_days: state.routeDays.map((day, dayIndex) => ({
+        day: dayIndex + 1,
+        date: state.dayWindows[dayIndex]?.date || null,
+        places: buildRouteSchedule(day, dayIndex)
+          .map((stop) => docentPlaceSummary(stop.place, stop)),
+      })),
+    };
+  }
+
+  function docentErrorMessage(code) {
+    if (code === "AI_KEY_MISSING") {
+      return "AI 도슨트 연결 설정이 필요합니다. 서버의 .env에 선택한 AI 제공자의 API 키를 추가한 뒤 서버를 다시 시작해 주세요.";
+    }
+    if (code === "AI_PROVIDER_INVALID") {
+      return "AI 도슨트 제공자 설정을 확인해 주세요. AI_PROVIDER는 gemini 또는 openai를 사용할 수 있습니다.";
+    }
+    if (code === "AI_RATE_LIMITED") {
+      return "AI 도슨트 요청이 잠시 몰렸습니다. 잠깐 기다렸다가 다시 질문해 주세요.";
+    }
+    if (code === "AI_TIMEOUT") {
+      return "AI 도슨트 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.";
+    }
+    return "AI 도슨트에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+  }
+
+  async function askDocent() {
+    const text = docentInput.value.trim();
+    if (!text || docentBusy) return;
+    addDocentMessage(text, true);
+    docentInput.value = "";
+    const pendingMessage = addDocentMessage("일정과 장소 정보를 살펴보고 있어요…");
+    pendingMessage.classList.add("pending");
+    setDocentBusy(true);
+    setDocentStatus("AI 도슨트가 답변을 생성하고 있습니다.");
+
+    try {
+      const response = await fetch("/api/docent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          context: buildDocentContext(),
+          history: docentHistory.slice(-6),
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const error = new Error(payload.error?.message || `AI 도슨트 오류: ${response.status}`);
+        error.code = payload.error?.code || "AI_REQUEST_FAILED";
+        throw error;
+      }
+      if (!payload.answer) throw new Error("AI 도슨트의 답변이 비어 있습니다.");
+      pendingMessage.textContent = payload.answer;
+      pendingMessage.classList.remove("pending");
+      docentHistory.push(
+        { role: "user", content: text },
+        { role: "assistant", content: payload.answer },
+      );
+      setDocentStatus(`${payload.provider || "AI"} · ${payload.model || "기본 모델"} · 현재 일정 데이터 기반 답변`);
+    } catch (error) {
+      pendingMessage.textContent = docentErrorMessage(error.code);
+      pendingMessage.classList.remove("pending");
+      setDocentStatus("AI 도슨트 연결을 확인해 주세요.", { error: true });
+      console.warn("AI 도슨트 요청 실패", error);
+    } finally {
+      setDocentBusy(false);
+    }
+  }
+
   if (docentBtn && docentPanel) {
     docentBtn.addEventListener("click", () => {
       docentPanel.hidden = false;
       docentBtn.hidden = true;
+      const nextRouteKey = routeSignature();
+      if (docentRouteKey !== nextRouteKey) {
+        docentChat.innerHTML = "";
+        docentHistory.length = 0;
+        docentRouteKey = nextRouteKey;
+        setDocentStatus("현재 여행 일정과 장소 데이터를 바탕으로 답변합니다.");
+      }
       if (docentChat.children.length === 0) {
         const nearest = findNearestPlace();
         if (nearest) {
@@ -3632,17 +3762,12 @@ function bindEvents() {
       docentPanel.hidden = true;
       docentBtn.hidden = false;
     });
-    docentSend.addEventListener("click", () => {
-      const text = docentInput.value.trim();
-      if (!text) return;
-      addDocentMessage(text, true);
-      docentInput.value = "";
-      setTimeout(() => {
-        addDocentMessage("죄송합니다. 현재 AI 답변 기능은 데모 버전입니다. 장소에 직접 방문하셔서 다양한 매력을 느껴보세요!");
-      }, 600);
-    });
+    docentSend.addEventListener("click", askDocent);
     docentInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") docentSend.click();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        askDocent();
+      }
     });
   }
 }

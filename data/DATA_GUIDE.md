@@ -156,7 +156,7 @@ TourAPI 인증키가 아직 없으면 광주관광 공식 페이지에서 공개
 자동 수집으로 받아온 후
 
 1. csv_refine.py로 중복 제거
-2. intact csv files 내의 벡터값 수정 후 csv(utf-8)로 저장
+2. intact csv files 내의 파일 참고하여 벡터값 수정 후 csv(utf-8)로 저장
 3. qoute_change.py로 따옴표 처리
 4. 아래에 따라 json, sql 파일 재생성
 

@@ -517,21 +517,51 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+# 키워드별 규칙 데이터 (새로운 키워드 추가 시 딕셔너리만 수정)
+MATCH_RULES = {
+    "산": {
+        "must_include_any": ["등산", "봉우리"]  # 문장에 이 중 하나는 필수 포함
+    },
+    "등산": {
+        "ignore_words": ["무등산"]  # 해당 단어를 제거한 후에도 "등산"이 남아있어야 함
+    },
+    "밤": {
+        "ignore_words": ["밤나무"]
+    },
+    "꽃": {
+        "ignore_words": ["눈꽃", "꽃게"]
+    },
+    "스포츠": {
+        "blacklist": ["민주"]  # 해당 단어가 포함되어 있으면 무조건 제외
+    }
+}
+
 def is_valid_match(keyword: str, text: str) -> bool:
     if keyword not in text:
         return False
-    if keyword == "산":
-        # "산" 글자가 포함되어 있고, 동시에 "등산"이나 "봉우리"가 있는 경우에만 유효성 인정
-        return ("산" in text) and ("등산" in text or "봉우리" in text)
-    if keyword == "등산":
-        cleaned_text = re.sub(r'무등산', '', text)
-        return keyword in cleaned_text
-    if keyword == "밤":
-        cleaned_text = re.sub(r'밤나무', '', text)
-        return keyword in cleaned_text
-    if keyword == "꽃":
-        cleaned_text = re.sub(r'눈꽃|꽃게', '', text)
-        return keyword in cleaned_text
+
+    rule = MATCH_RULES.get(keyword)
+    if not rule:
+        return True
+
+    # 1. 블랙리스트 단어 포함 여부 검사
+    if any(bad_word in text for bad_word in rule.get("blacklist", [])):
+        return False
+
+    # 2. 필수 동시 등장 단어 검사
+    must_any = rule.get("must_include_any")
+    if must_any and not any(req in text for req in must_any):
+        return False
+
+    # 3. 오탐 단어 제거 후 키워드 잔여 여부 검사
+    ignore_words = rule.get("ignore_words")
+    if ignore_words:
+        cleaned_text = text
+        for word in ignore_words:
+            cleaned_text = cleaned_text.replace(word, "")
+        if keyword not in cleaned_text:
+            return False
+
     return True
 
 def score_profile(place: dict[str, Any], classification_map: dict[str, str] | None = None) -> dict[str, Any]:

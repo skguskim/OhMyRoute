@@ -1,8 +1,8 @@
 import csv
 import pandas as pd
 from pathlib import Path
-ROOT_DIR = Path(".").resolve()
-GENERATED_DIR = ROOT_DIR / "OhMyRoute" / "data" / "generated"
+BASE_DIR = Path(__file__).resolve().parents[3]
+GENERATED_DIR = BASE_DIR / "data" / "generated"
 
 # tourapi, gwangju_official, merged 중 선택
 PREFIX = "gwangju_official"

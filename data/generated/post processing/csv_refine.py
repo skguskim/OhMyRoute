@@ -1,10 +1,10 @@
 import pandas as pd
 from pathlib import Path
 
-ROOT_DIR = Path(".").resolve()
-DATA_DIR = ROOT_DIR / "OhMyRoute" / "data" / "generated"
+BASE_DIR = Path(__file__).resolve().parents[3]
+DATA_DIR = BASE_DIR / "data" / "generated"
 # tourapi, gwangju_official 중 선택
-PREFIX = "tourapi"
+PREFIX = "gwangju_official"
 
 CSV_LIST = ["places", "place_profiles", "operating_info_review"]
 
@@ -54,6 +54,8 @@ if __name__ == "__main__":
     for csv_name in CSV_LIST:
         file_1 = DATA_DIR / "intact csv files" / f"e_{PREFIX}_{csv_name}.csv"     # e_ 가 붙은건 이전에 전처리 해둔 csv
         file_2 = DATA_DIR / f"{PREFIX}_{csv_name}.csv"       # 새로 생성된 csv
+        print(f"[file_1 탐색 위치] {file_1.resolve()} -> 존재 여부: {file_1.exists()}")
+        print(f"[file_2 탐색 위치] {file_2.resolve()} -> 존재 여부: {file_2.exists()}")
         
         if file_1.exists() and file_2.exists():
             remove_non_overlapping_rows(file_1, file_2, file_2)

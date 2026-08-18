@@ -112,7 +112,7 @@ LABEL_RULES = {
         "#호수.강": ("호수", "하천"),
     },
     "culture": {
-        "#역사": ("역사", "유적", "사적", "기념관", "조선"),
+        "#역사": ("역사", "유적", "사적", "기념관", "조선", "신라", "고려인"),
         "#문화유산": ("문화재", "문화유산", "세계유산"),
         "#근대문화": ("근대", "일제", "개화"),
         "#민주인권": ("5·18", "5.18", "민주", "인권"),
@@ -133,7 +133,7 @@ LABEL_RULES = {
         "#맛집": ("맛집", "음식점", "식당"),
         "#카페": ("카페", "커피", "디저트"),
         "#전통음식": ("한정식", "떡갈비", "김치", "전통음식"),
-        "#특산물": ("특산", "기념품", "농산물"),
+        "#특산물": ("특산", "기념품", "농산물", "품종"),
     },
     "activity": {
         "#체험": ("체험", "참여", "만들기"),
@@ -141,7 +141,7 @@ LABEL_RULES = {
         "#공방체험": ("공방", "도예", "공예"),
         "#가족체험": ("어린이", "가족", "아이"),
         "#레저": ("레저", "놀이", "테마파크"),
-        "#참여형": ("프로그램", "워크숍", "축제"),
+        "#참여형": ("프로그램", "워크숍"),
     },
     "sports": {
         "#야구": ("야구", "챔피언스필드", "KIA"),
@@ -161,7 +161,7 @@ LABEL_RULES = {
         "#느린여행": ("골목", "마을", "느린"),
     },
     "festival": {
-        "#축제": ("축제", "페스티벌", "행사"),
+        "#행사/축제": ("축제", "페스티벌", "행사"),
         "#야간": ("야간", "밤", "저녁"),
         "#야경": ("야경", "조명", "빛"),
         "#공연": ("공연", "버스킹", "콘서트"),
@@ -354,6 +354,9 @@ def parse_gwangju_detail(url: str, source_place_id: str, category: str) -> tuple
     pet = parse_optional_bool(table.get("애견동반", ""))
     wheelchair = True if any(token in searchable for token in ("휠체어", "장애인 전용", "경사로 있음", "엘리베이터 있음")) else ""
     family = any(token in searchable for token in ("어린이", "가족", "유모차", "수유실", "놀이시설"))
+    # 신규 추가: 영혼결혼식 등 예외 키워드가 본문에 있으면 강제 취소
+    if any(black in searchable for black in ("영혼결혼식", "선교기념비")):
+        family = False
     reservation = parse_optional_bool(table.get("예약", "") or table.get("예약안내", ""))
     price_min, price_max = parse_price_bounds(table.get("이용요금", "") or table.get("요금", ""))
     transport_text = table.get("대중교통", "") + " " + table.get("버스정류장", "")
@@ -480,6 +483,9 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
     indoor = content_type in {"14", "38", "39"}
     searchable = " ".join(clean_text(item.get(key)) for key in ("title", "overview", "lclsSystm1", "lclsSystm2", "lclsSystm3"))
     family = any(token in searchable for token in ("어린이", "가족", "아이", "체험"))
+    # 신규 추가: 영혼결혼식 등 예외 키워드가 본문에 있으면 강제 취소
+    if any(black in searchable for black in ("영혼결혼식", "선교기념비")):
+        family = False
     return {
         "source": "tourapi",
         "source_place_id": clean_text(item.get("contentid")),
@@ -521,53 +527,118 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
 # 키워드별 규칙 데이터 (새로운 키워드 추가 시 딕셔너리만 수정)
 MATCH_RULES = {
     "산": {
-        "must_include_any": ["등산", "봉우리"]  # 문장에 이 중 하나는 필수 포함
+        "must_include_any": ["등산", "봉우리"]
     },
     "등산": {
-        "ignore_words": ["무등산"]  # 해당 단어를 제거한 후에도 "등산"이 남아있어야 함
+        "ignore_words": ["무등산"]
     },
     "밤": {
-        "ignore_words": ["밤나무"]
+        "ignore_words": ["밤나무", "밤기차"]  # 박용철생가 - 밤기차
     },
     "꽃": {
         "ignore_words": ["눈꽃", "꽃게"]
     },
     "스포츠": {
-        "blacklist": ["민주"]  # 해당 단어가 포함되어 있으면 무조건 제외
-    }
+        "blacklist": [
+            "묘지", "518", "자유공원", "광주공연마루", 
+            "야외음악당", "빛고을시민문화관", "우제길미술관"
+        ]
+    },
+    "시장": {
+        "ignore_words": ["박광태 시장", "시장상"]  # 419혁명기념관
+    },
+    "빛": {
+        "ignore_words": ["빛나네", "빛나는", "되어 빛", "빛고을", "빛낸", "별빛학원", "빛의 화가", "빛주제"], 
+    },
+    "놀이": {
+        "ignore_words": ["봄꽃놀이", "꽃놀이", "벚꽃놀이", "민속놀이", "사물놀이", "뱃놀이", "놀이터"]
+    },
+    "조명": {
+        "ignore_words": ["조명시설", "조명하는"], 
+    },
+    "기간": {
+        "ignore_words": ["항쟁 기간"]
+    },
+    "야간": {
+        "ignore_words": ["야간중학", "야간학교"]
+    },
+    "대나무": {
+        "ignore_words": ["대나무로 엮"]
+    },
+    "경기": {
+        "ignore_words": ["경기도"]
+    },
+    "전통": {
+        "blacklist": ["국립 5·18 민주묘지", "빛고을산들길"]
+    },
+    "저녁": {
+        "blacklist": ["택시를 중심"]
+    },
+    "축제": {
+        "blacklist": ["금남로"]
+    },
+    "참여": {
+        "ignore_words": ["의병에 참여", "전에 참여", "회에 참여"],
+    },
+    "체육": {
+        "ignore_words": ["체육관 부지", "문화체육부", "구동체육관"]
+    },
+    "교육": {
+        "ignore_words": ["교육지원청", "교육 대관", "교육청"],
+    },
+    "체험": {
+        "blacklist": ["우제길미술관", "도림사", "광주시청 야외음악당"]
+    },
+    "응원": {
+        "ignore_words": ["시작을 응원"],
+        "blacklist": ["갈두마을", "땅끝마을"]
+    },
+    "숲": {
+        "blacklist": ["윤선도"]
+    },
 }
 
 def is_valid_match(keyword: str, text: str) -> bool:
+    """
+    텍스트 내에서 특정 예외 단어 형태를 무시하거나, 블랙리스트를 필터링하여 키워드를 검증합니다.
+    """
+    # 0. 조기 종료: 원본 텍스트에 키워드가 없으면 즉시 매칭 실패 처리
     if keyword not in text:
         return False
 
-    rule = MATCH_RULES.get(keyword)
-    if not rule:
-        return True
+    rules = MATCH_RULES.get(keyword, {})
 
-    # 1. 블랙리스트 단어 포함 여부 검사
-    if any(bad_word in text for bad_word in rule.get("blacklist", [])):
+    # 1. Blacklist 검사 (전면 매칭 취소)
+    if "blacklist" in rules:
+        for bad_word in rules["blacklist"]:
+            if bad_word in text:
+                return False
+
+    # 2. Ignore 검사 (특정 형태의 단어만 무시)
+    masked_text = text
+    if "ignore_words" in rules:
+        for ignore_word in rules["ignore_words"]:
+            # 빈 문자열 대신 공백으로 치환하여 단어 병합 방지
+            masked_text = masked_text.replace(ignore_word, " ")
+
+    # 3. 키워드 존재 여부 확인
+    if keyword not in masked_text:
         return False
 
-    # 2. 필수 동시 등장 단어 검사
-    must_any = rule.get("must_include_any")
-    if must_any and not any(req in text for req in must_any):
-        return False
-
-    # 3. 오탐 단어 제거 후 키워드 잔여 여부 검사
-    ignore_words = rule.get("ignore_words")
-    if ignore_words:
-        cleaned_text = text
-        for word in ignore_words:
-            cleaned_text = cleaned_text.replace(word, "")
-        if keyword not in cleaned_text:
+    # 4. 필수 포함 조건 검사
+    if "must_include_any" in rules:
+        if not any(req in masked_text for req in rules["must_include_any"]):
             return False
 
     return True
 
 def score_profile(place: dict[str, Any], classification_map: dict[str, str] | None = None) -> dict[str, Any]:
-    title_category = f"{place.get('name', '')} {place.get('category', '')}".lower()
-    full_text = f"{title_category} {place.get('description', '')}".lower()
+    # 검색용 텍스트 분리 선언 (추가된 부분)
+    name = place.get('name', '').lower()
+    category = place.get('category', '').lower()
+    title_category = f"{name} {category}"
+    body_text = place.get('description', '').lower()
+    full_text = f"{title_category} {body_text}"
     hashtags: list[str] = []
 
     if classification_map:
@@ -588,6 +659,10 @@ def score_profile(place: dict[str, Any], classification_map: dict[str, str] | No
         for tag, keywords in LABEL_RULES[dimension].items():
             for keyword in keywords:
                 kw_lower = keyword.lower()
+                # 특정 태그(#예술, #체험)가 카테고리에만 포함되어 매칭된 경우 본문(body_text)에서 다시 확인
+                if tag in ("#예술", "#체험") and kw_lower in category and kw_lower not in name:
+                    if kw_lower not in body_text:
+                        continue  # 본문에 없으면 오탐지로 간주하고 무시
                 if is_valid_match(kw_lower, title_category):
                     strong_hits += 1
                     if tag not in hit_tags:
@@ -607,7 +682,10 @@ def score_profile(place: dict[str, Any], classification_map: dict[str, str] | No
         else:
             score = 0.5
         scores[dimension] = score
-        hashtags.extend(hit_tags[:2])
+        # 차원 간 중복 태그가 삽입되는 것을 방지
+        for t in hit_tags[:2]:
+            if t not in hashtags:
+                hashtags.append(t)
 
     if str(place.get("indoor", "")).lower() == "true":
         hashtags.extend(("#실내", "#비오는날"))

@@ -1,3 +1,13 @@
+import {
+  buildWeatherForecast,
+  latestKmaBase,
+  latLonToKmaGrid,
+  normalizeKmaServiceKey,
+  precipitationTypeLabel,
+  previousKmaBase,
+  weatherSuitabilityScore,
+} from "./weather.mjs";
+
 const AXES = [
   { key: "nature", label: "자연·풍경", emoji: "🌿" },
   { key: "culture", label: "문화·역사", emoji: "🏛" },
@@ -8,15 +18,43 @@ const AXES = [
   { key: "healing", label: "휴식·산책", emoji: "🌳" },
   { key: "festival", label: "축제·야간", emoji: "✨" },
 ];
-const SPORTS_AXIS_INDEX = AXES.findIndex((axis) => axis.key === "sports");
+const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity", "healing", "festival"];
+const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
+const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
+const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
+
+const STAMP_THEMES = Object.freeze({
+  food: { label: "광주 미식", asset: "./assets/stamps/themes/food.svg" },
+  heritage: { label: "역사·전통", asset: "./assets/stamps/themes/heritage.svg" },
+  culture: { label: "문화·예술", asset: "./assets/stamps/themes/culture.svg" },
+  nature: { label: "자연·경관", asset: "./assets/stamps/themes/nature.svg" },
+  garden: { label: "공원·정원", asset: "./assets/stamps/themes/garden.svg" },
+  activity: { label: "체험·스포츠", asset: "./assets/stamps/themes/activity.svg" },
+  walk: { label: "도보·산책", asset: "./assets/stamps/themes/walk.svg" },
+  local: { label: "광주 로컬", asset: "./assets/stamps/themes/culture.svg" },
+});
+
+const STAMP_THEME_BY_CATEGORY = Object.freeze({
+  "음식·로컬": "food",
+  "역사·전통": "heritage",
+  "문화·예술": "culture",
+  "자연·경관": "nature",
+  "공원·정원": "garden",
+  "체험·스포츠": "activity",
+  "도보·산책": "walk",
+});
 
 const ORIGINS = {
-  gwangju_station: { name: "광주역", latitude: 35.1653, longitude: 126.9096 },
+  songjeong_station: {
+    name: "광주송정역",
+    latitude: 35.1377,
+    longitude: 126.7914,
+  },
   bus_terminal: {
-    name: "광주종합버스터미널",
+    name: "광주종합버스터미널(유스퀘어)",
     latitude: 35.1598,
     longitude: 126.8803,
   },
@@ -25,15 +63,11 @@ const ORIGINS = {
     latitude: 35.1682,
     longitude: 126.8891,
   },
-  songjeong_station: {
-    name: "광주송정역",
-    latitude: 35.1377,
-    longitude: 126.7914,
-  },
+  gwangju_station: { name: "광주역", latitude: 35.1653, longitude: 126.9096 },
 };
 
 const DAY_START_MINUTES = 10 * 60;
-const DEFAULT_DAILY_END_MINUTES = 20 * 60;
+const DEFAULT_DAILY_END_MINUTES = 24 * 60;
 const MAX_TRIP_DAYS = 3;
 const MIN_TRAVEL_WINDOW_MINUTES = 120;
 const MEAL_DURATION_MINUTES = 60;
@@ -70,16 +104,15 @@ const CHAMPIONS_FIELD_GAME = {
   requiresReservation: true,
   score: 2,
   displayScore: 1,
-  reasons: ["스포츠·야구 매우 선호", "야구 직관 선택", "여행 마지막 일정"],
+  reasons: ["스포츠·야구 매우 선호", "야구 직관 선택", "선택한 직관일 마지막 일정"],
   recommendedPlayers: [],
   activeRecommendedPlayers: [],
   isBaseballGame: true,
-  endsTrip: true,
+  endsTrip: false,
 };
 const WEATHER_LABELS = { sunny: "맑음", cloudy: "구름많음", rainy: "비·눈" };
 const WEATHER_ICONS = { sunny: "☀️", cloudy: "☁️", rainy: "🌧️" };
 const KMA_FORECAST_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
-const KMA_BASE_HOURS = [2, 5, 8, 11, 14, 17, 20, 23];
 
 const LOADING_PHRASES = [
   "출발지 기준 기상청 예보를 확인하고 있습니다.",
@@ -145,14 +178,20 @@ const state = {
   places: [],
   stadiumFoods: [],
   stadiumFoodLoadFailed: false,
+  openingHoursByPlace: new Map(),
+  openingHoursLoadFailed: false,
+  baseballGamesByDate: new Map(),
+  baseballGamesLoadFailed: false,
+  baseballGamesSource: "local",
   results: [],
   route: [],
   routeDays: [],
   dayWindows: [],
+  replannedDays: new Map(),
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [72, 56, 66, 54, 48, 35, 76, 43],
+  preference: [50, 50, 50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -168,6 +207,7 @@ const state = {
   weatherAbortController: null,
   weatherCache: new Map(),
   mealWarnings: [],
+  scheduleWarnings: [],
   loading: false,
   kakaoMap: null,
   kakaoPolyline: null,
@@ -176,15 +216,22 @@ const state = {
   mapResizeBound: false,
   previewIndex: 0,
   previewPlaying: false,
-  previewTimer: null,
+  previewFrameIndex: 1,
+  previewPhase: "opening",
+  previewFrameTimer: null,
+  previewHoldTimer: null,
   stampedIds: [],
   stampLocation: null,
   stampLocationMode: "GPS",
   stampToastTimer: null,
+  stampPatternCategories: new Map(),
   reviews: [],
   rewards: [],
   baseballAttendance: false,
+  baseballDayIndexes: [],
+  baseballDaySelectionTouched: false,
   baseballPreviousEnd: null,
+  baseballAdjustedFinalEnd: false,
 };
 
 let kakaoSdkPromise = null;
@@ -342,6 +389,10 @@ function currentVector() {
   return state.preference.map((value, index) => clamp(value / 100 + (boost[index] || 0), 0, 1));
 }
 
+function hasPreferenceSignals(vector = currentVector()) {
+  return vector.some((value) => value > 0);
+}
+
 function currentConditions() {
   const selectedCompanion = $("#companion").value;
   const weatherMode = $("#weather").value;
@@ -350,6 +401,7 @@ function currentConditions() {
     : "sunny";
   const selectedWeather = weatherMode === "auto" ? automaticWeather : weatherMode;
   const sportsBaseballHighlyPreferred = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
+  const baseballDayIndexes = selectedBaseballDayIndexes();
   return {
     originKey: $("#origin").value,
     origin: ORIGINS[$("#origin").value],
@@ -365,7 +417,8 @@ function currentConditions() {
     promptRainy: state.promptAnalysis.rainy,
     promptFamily: state.promptAnalysis.family,
     sportsBaseballHighlyPreferred,
-    baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance,
+    baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance && baseballDayIndexes.length > 0,
+    baseballDayIndexes,
     transport: state.transport,
     duration: state.duration,
   };
@@ -382,6 +435,72 @@ function formatClockMinutes(value) {
   return `${String(Math.floor(normalized / 60)).padStart(2, "0")}:${String(normalized % 60).padStart(2, "0")}`;
 }
 
+const ITINERARY_TIME_STEP_MINUTES = 5;
+
+function roundUpToStep(minutes, step = ITINERARY_TIME_STEP_MINUTES) {
+  return Math.ceil(minutes / step) * step;
+}
+
+function setTimeFieldValue(hiddenInput, value) {
+  if (!hiddenInput) return;
+  hiddenInput.value = value;
+  const minutes = parseClockMinutes(value);
+  const wrap = hiddenInput.closest(".time-field-wrap");
+  const hourInput = wrap?.querySelector('[data-role="hour"]');
+  const minuteInput = wrap?.querySelector('[data-role="minute"]');
+  if (hourInput) hourInput.value = String(Math.floor(minutes / 60)).padStart(2, "0");
+  if (minuteInput) minuteInput.value = String(minutes % 60).padStart(2, "0");
+}
+
+function bindTimeSegments(hiddenInput, minuteStep = 1) {
+  if (!hiddenInput) return;
+  const wrap = hiddenInput.closest(".time-field-wrap");
+  const hourInput = wrap?.querySelector('[data-role="hour"]');
+  const minuteInput = wrap?.querySelector('[data-role="minute"]');
+  if (!hourInput || !minuteInput) return;
+
+  const commit = () => {
+    const hour = clamp(Number(hourInput.value) || 0, 0, 23);
+    const minute = clamp(Number(minuteInput.value) || 0, 0, 59);
+    hourInput.value = String(hour).padStart(2, "0");
+    minuteInput.value = String(minute).padStart(2, "0");
+    const combined = `${hourInput.value}:${minuteInput.value}`;
+    if (hiddenInput.value !== combined) {
+      hiddenInput.value = combined;
+      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  };
+
+  const adjustSegment = (input, delta, max) => {
+    const current = Number(input.value) || 0;
+    input.value = String((((current + delta) % max) + max) % max).padStart(2, "0");
+    commit();
+  };
+
+  [
+    { input: hourInput, max: 24, step: 1 },
+    { input: minuteInput, max: 60, step: minuteStep },
+  ].forEach(({ input, max, step }) => {
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/\D/g, "").slice(0, 2);
+    });
+    input.addEventListener("blur", commit);
+    input.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      adjustSegment(input, event.deltaY < 0 ? step : -step, max);
+    }, { passive: false });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        adjustSegment(input, step, max);
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        adjustSegment(input, -step, max);
+      }
+    });
+  });
+}
+
 function dateOrdinal(value) {
   const [year, month, day] = String(value || "").split("-").map(Number);
   if (![year, month, day].every(Number.isFinite)) return Number.NaN;
@@ -389,15 +508,21 @@ function dateOrdinal(value) {
 }
 
 function baseballScheduleForDate(dateValue) {
+  const game = baseballGameForDate(dateValue, { selectableOnly: true });
+  if (!game) return null;
   const ordinal = dateOrdinal(dateValue);
   const dayOfWeek = Number.isFinite(ordinal)
     ? new Date(ordinal * 86400000).getUTCDay()
     : 1;
   const weekend = dayOfWeek === 0 || dayOfWeek === 6;
-  const gameStartMinutes = weekend ? 18 * 60 : 18 * 60 + 30;
+  const timeMatch = String(game.scheduled_start_at || "").match(/T(\d{2}):(\d{2})/);
+  const gameStartMinutes = timeMatch
+    ? Number(timeMatch[1]) * 60 + Number(timeMatch[2])
+    : parseClockMinutes(game.start_time || "19:00");
   const gameEndMinutes = gameStartMinutes + BASEBALL_GAME_DURATION_MINUTES;
   return {
     date: dateValue,
+    game,
     weekend,
     dayTypeLabel: weekend ? "주말" : "평일",
     gameStartMinutes,
@@ -406,41 +531,237 @@ function baseballScheduleForDate(dateValue) {
   };
 }
 
+function baseballGamesForDate(dateValue) {
+  return state.baseballGamesByDate.get(String(dateValue)) || [];
+}
+
+function baseballGameForDate(dateValue, { selectableOnly = false } = {}) {
+  const games = baseballGamesForDate(dateValue);
+  if (selectableOnly) {
+    return games.find((game) => ["scheduled", "in_progress"].includes(game.status)) || null;
+  }
+  return games.find((game) => ["scheduled", "in_progress"].includes(game.status))
+    || games.find((game) => game.status === "cancelled")
+    || games[0]
+    || null;
+}
+
+function baseballGameOptionStatus(dateValue) {
+  const games = baseballGamesForDate(dateValue);
+  const selectableGame = baseballGameForDate(dateValue, { selectableOnly: true });
+  if (selectableGame) {
+    const schedule = baseballScheduleForDate(dateValue);
+    return {
+      selectable: true,
+      game: selectableGame,
+      label: `${selectableGame.away_team_name} vs KIA · ${formatClockMinutes(schedule.gameStartMinutes)}`,
+    };
+  }
+  const cancelled = games.find((game) => game.status === "cancelled");
+  if (cancelled) return { selectable: false, game: cancelled, label: `${cancelled.away_team_name}전 취소` };
+  const postponed = games.find((game) => game.status === "postponed");
+  if (postponed) return { selectable: false, game: postponed, label: `${postponed.away_team_name}전 연기` };
+  const completed = games.find((game) => game.status === "completed");
+  if (completed) return { selectable: false, game: completed, label: `${completed.away_team_name}전 종료` };
+  return { selectable: false, game: null, label: "광주 홈경기 없음" };
+}
+
+function openingHoursForPlace(place) {
+  return state.openingHoursByPlace.get(String(place?.id)) || [];
+}
+
+function openingHoursForDate(place, dateValue) {
+  const ordinal = dateOrdinal(dateValue);
+  if (!Number.isFinite(ordinal)) return null;
+  const dayOfWeek = new Date(ordinal * 86400000).getUTCDay();
+  return openingHoursForPlace(place)
+    .filter((hours) => Number(hours.day_of_week) === dayOfWeek)
+    .filter((hours) => !hours.valid_from || dateValue >= hours.valid_from)
+    .filter((hours) => !hours.valid_until || dateValue <= hours.valid_until)
+    .sort((a, b) => String(b.valid_from || "").localeCompare(String(a.valid_from || "")))[0] || null;
+}
+
+function placeIsOpenOnDate(place, dateValue) {
+  const hours = openingHoursForDate(place, dateValue);
+  return !hours || hours.is_closed !== true;
+}
+
+function formatTripDate(dateValue) {
+  const ordinal = dateOrdinal(dateValue);
+  const [, month, day] = String(dateValue).split("-").map(Number);
+  const weekday = Number.isFinite(ordinal)
+    ? ["일", "월", "화", "수", "목", "금", "토"][new Date(ordinal * 86400000).getUTCDay()]
+    : "";
+  return `${month}월 ${day}일${weekday ? `(${weekday})` : ""}`;
+}
+
+function addClosedNamedPlaceWarnings(dateValue, dayIndex) {
+  state.promptAnalysis.namedPlaceIds.forEach((placeId) => {
+    const place = state.places.find((candidate) => String(candidate.id) === String(placeId));
+    if (!place || placeIsOpenOnDate(place, dateValue)) return;
+    const hours = openingHoursForDate(place, dateValue);
+    const reason = hours?.notes || "휴무일";
+    const warning = `Day ${dayIndex + 1} · ${formatTripDate(dateValue)} ${place.name}은 ${reason}라 일정에서 제외했습니다.`;
+    if (!state.scheduleWarnings.includes(warning)) state.scheduleWarnings.push(warning);
+  });
+}
+
+function baseballTripDates() {
+  const startDate = $("#travelDate")?.value;
+  const endDate = $("#endDate")?.value || startDate;
+  const startOrdinal = dateOrdinal(startDate);
+  const endOrdinal = dateOrdinal(endDate);
+  if (!Number.isFinite(startOrdinal) || !Number.isFinite(endOrdinal) || endOrdinal < startOrdinal) {
+    return startDate ? [startDate] : [];
+  }
+  const dayCount = Math.min(endOrdinal - startOrdinal + 1, MAX_TRIP_DAYS);
+  return Array.from({ length: dayCount }, (_, index) => shiftDateValue(startDate, index));
+}
+
+function selectedBaseballDayIndexes({ ensureSelection = state.baseballAttendance } = {}) {
+  const dates = baseballTripDates();
+  if (!dates.length) {
+    state.baseballDayIndexes = [];
+    return [];
+  }
+  const checkedIndexes = $$('#baseballDayOptions input[type="checkbox"]:checked')
+    .map((input) => Number(input.value))
+    .filter(Number.isInteger);
+  const requested = checkedIndexes.length ? checkedIndexes : state.baseballDayIndexes;
+  const normalized = [...new Set((Array.isArray(requested) ? requested : [])
+    .map(Number)
+    .filter((index) => Number.isInteger(index)
+      && index >= 0
+      && index < dates.length
+      && Boolean(baseballGameForDate(dates[index], { selectableOnly: true }))))]
+    .sort((a, b) => a - b);
+  if (ensureSelection && !normalized.length) {
+    const fallbackIndex = dates
+      .map((dateValue, index) => baseballGameForDate(dateValue, { selectableOnly: true }) ? index : -1)
+      .filter((index) => index >= 0)
+      .at(-1);
+    if (Number.isInteger(fallbackIndex)) normalized.push(fallbackIndex);
+  }
+  state.baseballDayIndexes = normalized;
+  return normalized;
+}
+
+function formatBaseballDayOption(dateValue, index) {
+  const [year, month, day] = String(dateValue).split("-").map(Number);
+  const ordinal = dateOrdinal(dateValue);
+  const weekday = Number.isFinite(ordinal)
+    ? ["일", "월", "화", "수", "목", "금", "토"][new Date(ordinal * 86400000).getUTCDay()]
+    : "";
+  return `Day ${index + 1} · ${year}년 ${month}월 ${day}일 (${weekday})`;
+}
+
+function populateBaseballDayOptions() {
+  const options = $("#baseballDayOptions");
+  if (!options) return baseballTripDates();
+  const dates = baseballTripDates();
+  const selectableIndexes = dates
+    .map((dateValue, index) => baseballGameForDate(dateValue, { selectableOnly: true }) ? index : -1)
+    .filter((index) => index >= 0);
+  if (!state.baseballDaySelectionTouched && !state.baseballDayIndexes.length && selectableIndexes.length) {
+    state.baseballDayIndexes = [selectableIndexes.at(-1)];
+  }
+  const selectedIndexes = selectedBaseballDayIndexes({ ensureSelection: true });
+  options.innerHTML = dates
+    .map((dateValue, index) => {
+      const optionStatus = baseballGameOptionStatus(dateValue);
+      return `
+        <label class="baseball-day-option ${optionStatus.selectable ? "" : "unavailable"}">
+          <input type="checkbox" value="${index}"
+            ${selectedIndexes.includes(index) ? "checked" : ""}
+            ${optionStatus.selectable ? "" : "disabled"} />
+          <span>
+            <b>${escapeHtml(formatBaseballDayOption(dateValue, index))}</b>
+            <small>${escapeHtml(optionStatus.label)}</small>
+          </span>
+        </label>
+      `;
+    })
+    .join("");
+  return dates;
+}
+
+function clearBaseballDaySelection() {
+  state.baseballDayIndexes = [];
+  state.baseballDaySelectionTouched = false;
+  const options = $("#baseballDayOptions");
+  if (options) options.innerHTML = "";
+}
+
+function restoreBaseballTravelEnd() {
+  if (!state.baseballPreviousEnd) return;
+  $("#endDate").value = state.baseballPreviousEnd.endDate;
+  setTimeFieldValue($("#endTime"), state.baseballPreviousEnd.endTime);
+  state.baseballAdjustedFinalEnd = false;
+}
+
 function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
   const panel = $("#baseballAttendancePanel");
   const checkbox = $("#baseballAttendance");
   const status = $("#baseballScheduleStatus");
+  const dayField = $("#baseballDayField");
   if (!panel || !checkbox || !status) return;
 
   const eligible = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
   panel.hidden = !eligible;
   if (!eligible) {
     if (state.baseballAttendance && state.baseballPreviousEnd) {
-      $("#endDate").value = state.baseballPreviousEnd.endDate;
-      $("#endTime").value = state.baseballPreviousEnd.endTime;
+      restoreBaseballTravelEnd();
     }
     checkbox.checked = false;
     state.baseballAttendance = false;
+    clearBaseballDaySelection();
     state.baseballPreviousEnd = null;
+    state.baseballAdjustedFinalEnd = false;
     syncTravelWindow();
     return;
   }
 
-  const gameDate = $("#endDate").value || $("#travelDate").value;
-  const schedule = baseballScheduleForDate(gameDate);
   if (!checkbox.checked) {
     state.baseballAttendance = false;
-    status.textContent = `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 · 직관을 선택하면 구장 먹거리와 경기 시간을 고정합니다.`;
+    if (dayField) dayField.hidden = true;
+    clearBaseballDaySelection();
+    status.classList.remove("warning");
+    status.textContent = "직관 포함을 켜면 여행 기간에서 경기 날짜를 여러 개 고를 수 있습니다.";
     return;
   }
 
   state.baseballAttendance = true;
+  const tripDates = populateBaseballDayOptions();
+  const baseballDayIndexes = selectedBaseballDayIndexes({ ensureSelection: true });
+  if (dayField) dayField.hidden = tripDates.length === 0;
   if (adjustTravelWindow) {
-    $("#endDate").value = gameDate;
-    $("#endTime").value = formatClockMinutes(schedule.gameEndMinutes);
+    if (state.baseballAdjustedFinalEnd) restoreBaseballTravelEnd();
+    const finalDayIndex = tripDates.length - 1;
+    if (baseballDayIndexes.includes(finalDayIndex)) {
+      const finalDaySchedule = baseballScheduleForDate(tripDates[finalDayIndex]);
+      if (finalDaySchedule) {
+        setTimeFieldValue($("#endTime"), formatClockMinutes(finalDaySchedule.gameEndMinutes));
+        state.baseballAdjustedFinalEnd = true;
+      }
+    }
     syncTravelWindow();
   }
-  status.textContent = `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 구장 먹거리 · ${formatClockMinutes(schedule.gameEndMinutes)} 종료`;
+  status.classList.toggle("warning", baseballDayIndexes.length === 0 || state.baseballGamesLoadFailed);
+  if (state.baseballGamesLoadFailed) {
+    status.textContent = "경기 DB를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.";
+  } else if (!baseballDayIndexes.length) {
+    status.textContent = "선택한 여행 기간에는 관람 가능한 광주 KIA 홈경기가 없습니다. 경기 없는 날·종료·취소·연기 경기는 선택할 수 없습니다.";
+  } else {
+    status.textContent = baseballDayIndexes
+      .map((dayIndex) => {
+        const gameDate = tripDates[dayIndex];
+        const schedule = baseballScheduleForDate(gameDate);
+        const game = schedule.game;
+        const timeChangeLabel = game.time_change_reason ? " · 폭염 대응 시간 변경 반영" : "";
+        return `${formatBaseballDayOption(gameDate, dayIndex)} · ${game.away_team_name} vs KIA · ${formatClockMinutes(schedule.stadiumFoodStartMinutes)} 먹거리 · ${formatClockMinutes(schedule.gameStartMinutes)} 경기${timeChangeLabel}`;
+      })
+      .join(" / ");
+  }
 }
 
 function setBaseballAttendance(active) {
@@ -453,11 +774,11 @@ function setBaseballAttendance(active) {
     };
   }
   checkbox.checked = active;
-  if (!active && state.baseballPreviousEnd) {
-    $("#endDate").value = state.baseballPreviousEnd.endDate;
-    $("#endTime").value = state.baseballPreviousEnd.endTime;
+  if (!active) {
+    if (state.baseballPreviousEnd) restoreBaseballTravelEnd();
     state.baseballPreviousEnd = null;
     state.baseballAttendance = false;
+    clearBaseballDaySelection();
     syncTravelWindow();
     updateBaseballAttendanceControl();
     return;
@@ -567,91 +888,19 @@ function shiftDateValue(value, days) {
   return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2, "0")}-${String(shifted.getUTCDate()).padStart(2, "0")}`;
 }
 
-function koreaDateParts(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(date);
-  return Object.fromEntries(parts.map((part) => [part.type, part.value]));
-}
-
-function latestKmaBase(date = new Date()) {
-  const buffered = new Date(date.getTime() - 15 * 60 * 1000);
-  const parts = koreaDateParts(buffered);
-  const hour = Number(parts.hour);
-  let baseHour = [...KMA_BASE_HOURS].reverse().find((candidate) => candidate <= hour);
-  let baseDate = `${parts.year}-${parts.month}-${parts.day}`;
-  if (baseHour === undefined) {
-    baseHour = 23;
-    baseDate = shiftDateValue(baseDate, -1);
-  }
+function weatherSourceConfig() {
+  const config = window.OMAEROUTE_CONFIG || {};
+  const proxyUrl = config.kmaWeatherProxyUrl === false
+    ? ""
+    : String(config.kmaWeatherProxyUrl || "/api/weather").trim();
   return {
-    baseDate: baseDate.replaceAll("-", ""),
-    baseTime: `${String(baseHour).padStart(2, "0")}00`,
+    proxyUrl,
+    serviceKey: normalizeKmaServiceKey(config.kmaServiceKey),
   };
 }
 
-function previousKmaBase({ baseDate, baseTime }) {
-  const baseHour = Number(baseTime.slice(0, 2));
-  const index = KMA_BASE_HOURS.indexOf(baseHour);
-  if (index > 0) {
-    return { baseDate, baseTime: `${String(KMA_BASE_HOURS[index - 1]).padStart(2, "0")}00` };
-  }
-  const dateValue = `${baseDate.slice(0, 4)}-${baseDate.slice(4, 6)}-${baseDate.slice(6, 8)}`;
-  return { baseDate: shiftDateValue(dateValue, -1).replaceAll("-", ""), baseTime: "2300" };
-}
-
-function latLonToKmaGrid(latitude, longitude) {
-  const earthRadius = 6371.00877;
-  const gridSpacing = 5.0;
-  const firstStandardParallel = 30.0;
-  const secondStandardParallel = 60.0;
-  const originLongitude = 126.0;
-  const originLatitude = 38.0;
-  const originX = 43;
-  const originY = 136;
-  const degreesToRadians = Math.PI / 180;
-  const re = earthRadius / gridSpacing;
-  const slat1 = firstStandardParallel * degreesToRadians;
-  const slat2 = secondStandardParallel * degreesToRadians;
-  const olon = originLongitude * degreesToRadians;
-  const olat = originLatitude * degreesToRadians;
-  let sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
-  sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn);
-  let sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
-  sf = (Math.cos(slat1) * sf ** sn) / sn;
-  let ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
-  ro = (re * sf) / ro ** sn;
-  let ra = Math.tan(Math.PI * 0.25 + latitude * degreesToRadians * 0.5);
-  ra = (re * sf) / ra ** sn;
-  let theta = longitude * degreesToRadians - olon;
-  if (theta > Math.PI) theta -= 2 * Math.PI;
-  if (theta < -Math.PI) theta += 2 * Math.PI;
-  theta *= sn;
-  return {
-    nx: Math.floor(ra * Math.sin(theta) + originX + 0.5),
-    ny: Math.floor(ro - ra * Math.cos(theta) + originY + 0.5),
-  };
-}
-
-function normalizeKmaServiceKey(value) {
-  const key = String(value || "").trim();
-  if (!key.includes("%")) return key;
-  try {
-    return decodeURIComponent(key);
-  } catch {
-    return key;
-  }
-}
-
-async function requestKmaForecast(serviceKey, grid, base, signal) {
+async function requestKmaForecast(source, grid, base, signal) {
   const params = new URLSearchParams({
-    serviceKey,
     pageNo: "1",
     numOfRows: "2000",
     dataType: "JSON",
@@ -660,87 +909,56 @@ async function requestKmaForecast(serviceKey, grid, base, signal) {
     nx: String(grid.nx),
     ny: String(grid.ny),
   });
-  const response = await fetch(`${KMA_FORECAST_URL}?${params}`, { signal });
-  if (!response.ok) throw new Error(`기상청 API HTTP ${response.status}`);
-  const payload = await response.json();
+  let requestUrl;
+  if (source.proxyUrl) {
+    const url = new URL(source.proxyUrl, window.location.href);
+    url.search = params.toString();
+    requestUrl = url.toString();
+  } else {
+    params.set("serviceKey", source.serviceKey);
+    requestUrl = `${KMA_FORECAST_URL}?${params}`;
+  }
+  const response = await fetch(requestUrl, { signal });
+  let payload;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new Error(`기상청 API가 JSON이 아닌 응답을 반환했습니다. (HTTP ${response.status})`);
+  }
+  if (!response.ok) {
+    const portalError = payload?.OpenAPI_ServiceResponse?.cmmMsgHeader;
+    const error = new Error(
+      payload?.error?.message
+      || portalError?.returnAuthMsg
+      || portalError?.errMsg
+      || `기상청 API HTTP ${response.status}`,
+    );
+    error.code = payload?.error?.code
+      || (portalError?.returnReasonCode ? `KMA_${portalError.returnReasonCode}` : `HTTP_${response.status}`);
+    throw error;
+  }
   const header = payload?.response?.header;
   if (String(header?.resultCode) !== "00") {
-    throw new Error(header?.resultMsg || "기상청 예보 응답 오류");
+    const error = new Error(header?.resultMsg || "기상청 예보 응답 오류");
+    error.code = `KMA_${header?.resultCode || "UNKNOWN"}`;
+    throw error;
   }
   const items = payload?.response?.body?.items?.item;
   if (!Array.isArray(items) || !items.length) throw new Error("기상청 예보 데이터가 없습니다.");
   return items;
 }
 
-function forecastCondition(values) {
-  const precipitationType = Number(values.PTY || 0);
-  const precipitationProbability = Number(values.POP || 0);
-  if (precipitationType > 0 || precipitationProbability >= 60) return "rainy";
-  if ([3, 4].includes(Number(values.SKY))) return "cloudy";
-  return "sunny";
-}
-
-function selectForecastSlot(items, dateValue, targetMinutes, label) {
-  const forecastDate = dateValue.replaceAll("-", "");
-  const dayItems = items.filter((item) => String(item.fcstDate) === forecastDate);
-  const times = [...new Set(dayItems.map((item) => String(item.fcstTime).padStart(4, "0")))];
-  const selectedTime = times
-    .map((time) => ({
-      time,
-      minutes: Number(time.slice(0, 2)) * 60 + Number(time.slice(2, 4)),
-    }))
-    .sort((a, b) => Math.abs(a.minutes - targetMinutes) - Math.abs(b.minutes - targetMinutes))[0];
-  if (!selectedTime || Math.abs(selectedTime.minutes - targetMinutes) > 180) return null;
-  const values = Object.fromEntries(
-    dayItems
-      .filter((item) => String(item.fcstTime).padStart(4, "0") === selectedTime.time)
-      .map((item) => [item.category, item.fcstValue]),
-  );
-  const condition = forecastCondition(values);
-  return {
-    label,
-    time: selectedTime.time,
-    condition,
-    sky: Number(values.SKY || 0),
-    precipitationType: Number(values.PTY || 0),
-    precipitationProbability: Number(values.POP || 0),
-    precipitation: values.PCP || "강수없음",
-    temperature: Number(values.TMP),
-    humidity: Number(values.REH),
-    windSpeed: Number(values.WSD),
-  };
-}
-
 function forecastDates(conditions) {
   return travelDayWindows(conditions).map((window) => window.date);
 }
 
-function buildWeatherForecast(items, conditions, grid, base) {
-  const days = forecastDates(conditions).map((date, index) => ({
-    date,
-    dayIndex: index,
-    slots: [
-      selectForecastSlot(items, date, 12 * 60, "12시 점심"),
-      selectForecastSlot(items, date, 18 * 60, "18시 저녁"),
-    ].filter(Boolean),
-  }));
-  const slots = days.flatMap((day) => day.slots);
-  if (!slots.length) throw new Error("선택한 날짜가 기상청 단기예보 범위 밖입니다.");
-  const condition = slots.some((slot) => slot.condition === "rainy")
-    ? "rainy"
-    : slots.some((slot) => slot.condition === "cloudy")
-      ? "cloudy"
-      : "sunny";
-  return {
-    status: "ready",
-    condition,
-    originKey: conditions.originKey,
-    originName: conditions.origin.name,
-    grid,
-    base,
-    days,
-    fetchedAt: new Date().toISOString(),
-  };
+function weatherSlotSummary(slot) {
+  const temperature = Number.isFinite(slot.temperature)
+    ? `${Math.round(slot.temperature)}℃`
+    : WEATHER_LABELS[slot.condition];
+  const precipitation = slot.precipitationTypeLabel
+    || precipitationTypeLabel(slot.precipitationType);
+  return `${slot.label} ${WEATHER_ICONS[slot.condition]} ${temperature} · 강수확률 ${slot.precipitationProbability}% · 강수형태 ${precipitation}`;
 }
 
 function renderWeatherFieldStatus() {
@@ -759,8 +977,9 @@ function renderWeatherFieldStatus() {
   }
   if (forecast?.status === "ready") {
     const slots = forecast.days[0]?.slots || [];
-    element.textContent = `${forecast.originName} 기준 · ${slots.map((slot) => `${slot.label} ${WEATHER_ICONS[slot.condition]} ${Number.isFinite(slot.temperature) ? `${Math.round(slot.temperature)}℃` : WEATHER_LABELS[slot.condition]}`).join(" · ")}`;
-    element.classList.add("ready");
+    const coverage = forecast.coverage === "partial" ? " · 일부 시각은 단기예보 범위 밖" : "";
+    element.textContent = `${forecast.originName} 기준 · ${slots.map(weatherSlotSummary).join(" · ")}${coverage}`;
+    element.classList.add(forecast.coverage === "partial" ? "warning" : "ready");
     return;
   }
   if (forecast?.status === "manual") {
@@ -768,11 +987,11 @@ function renderWeatherFieldStatus() {
     return;
   }
   if (forecast?.status === "needs_key") {
-    element.textContent = "config.js에 기상청 서비스키를 넣으면 출발지 기준으로 자동 반영됩니다.";
+    element.textContent = ".env의 KMA_API_SERVICE_KEY를 설정하고 로컬 서버를 다시 시작해주세요.";
     element.classList.add("warning");
     return;
   }
-  if (forecast?.status === "error") {
+  if (["out_of_range", "error"].includes(forecast?.status)) {
     element.textContent = `${forecast.message} 날씨를 제외한 조건으로 추천합니다.`;
     element.classList.add("warning");
     return;
@@ -796,9 +1015,9 @@ function renderWeatherBriefing() {
     element.innerHTML = `
       <strong>기상청 단기예보 · ${escapeHtml(forecast.originName)} 출발 기준</strong>
       <div class="weather-slot-list">
-        ${slots.map((slot) => `<span class="weather-slot">${WEATHER_ICONS[slot.condition]} ${escapeHtml(slot.label)} · ${Number.isFinite(slot.temperature) ? `${Math.round(slot.temperature)}℃` : WEATHER_LABELS[slot.condition]} · 강수 ${slot.precipitationProbability}%</span>`).join("")}
+        ${slots.map((slot) => `<span class="weather-slot">${escapeHtml(weatherSlotSummary(slot))}</span>`).join("")}
       </div>
-      <small>${escapeHtml(day.date)} · 출발장소가 포함된 기상청 5km 격자 ${forecast.grid.nx}/${forecast.grid.ny} 기준</small>
+      <small>${escapeHtml(day.date)} · 출발장소가 포함된 기상청 5km 격자 ${forecast.grid.nx}/${forecast.grid.ny} 기준${forecast.coverage === "partial" ? " · 일부 요청 시각은 단기예보 범위 밖이라 조회 가능한 값만 반영" : ""}</small>
     `;
     return;
   }
@@ -809,7 +1028,8 @@ function renderWeatherBriefing() {
   const message = forecast.status === "needs_key"
     ? "기상청 서비스키가 없어 날씨를 제외한 조건으로 추천했습니다."
     : `${forecast.message || "기상청 예보를 불러오지 못했습니다."} 날씨를 제외한 조건으로 추천했습니다.`;
-  element.innerHTML = `<strong>기상청 자동 연동 대기</strong><small>${escapeHtml(message)}</small>`;
+  const title = forecast.status === "out_of_range" ? "단기예보 범위 밖 날짜" : "기상청 자동 연동 대기";
+  element.innerHTML = `<strong>${title}</strong><small>${escapeHtml(message)}</small>`;
 }
 
 async function refreshWeatherForecast({ force = false } = {}) {
@@ -821,9 +1041,8 @@ async function refreshWeatherForecast({ force = false } = {}) {
     return state.weatherForecast;
   }
 
-  const config = window.OMAEROUTE_CONFIG || {};
-  const serviceKey = normalizeKmaServiceKey(config.kmaServiceKey);
-  if (!serviceKey) {
+  const source = weatherSourceConfig();
+  if (!source.proxyUrl && !source.serviceKey) {
     state.weatherForecast = { status: "needs_key", condition: "sunny" };
     renderWeatherFieldStatus();
     return state.weatherForecast;
@@ -848,23 +1067,36 @@ async function refreshWeatherForecast({ force = false } = {}) {
   try {
     for (const candidateBase of [base, previousKmaBase(base)]) {
       try {
-        const items = await requestKmaForecast(serviceKey, grid, candidateBase, controller.signal);
-        const forecast = buildWeatherForecast(items, conditions, grid, candidateBase);
+        const items = await requestKmaForecast(source, grid, candidateBase, controller.signal);
+        const forecast = buildWeatherForecast(items, {
+          dates: forecastDates(conditions),
+          originKey: conditions.originKey,
+          originName: conditions.origin.name,
+          grid,
+          base: candidateBase,
+        });
         state.weatherCache.set(cacheKey, forecast);
         state.weatherForecast = forecast;
         renderWeatherFieldStatus();
         return forecast;
       } catch (error) {
         if (error.name === "AbortError") throw error;
+        if (["KMA_KEY_MISSING", "KMA_20", "KMA_30", "KMA_31"].includes(error.code)) throw error;
         lastError = error;
       }
     }
     throw lastError || new Error("기상청 예보를 불러오지 못했습니다.");
   } catch (error) {
     if (error.name === "AbortError" && state.weatherAbortController !== controller) return state.weatherForecast;
+    const status = error.code === "KMA_KEY_MISSING"
+      ? "needs_key"
+      : error.code === "FORECAST_OUT_OF_RANGE"
+        ? "out_of_range"
+        : "error";
     state.weatherForecast = {
-      status: "error",
+      status,
       condition: "sunny",
+      code: error.code || "KMA_REQUEST_FAILED",
       message: error.name === "AbortError" ? "기상청 요청 시간이 초과되었습니다." : error.message,
     };
     renderWeatherFieldStatus();
@@ -880,8 +1112,9 @@ function invalidateWeatherForecast({ reload = true } = {}) {
   state.weatherAbortController = null;
   state.weatherForecast = null;
   renderWeatherFieldStatus();
-  const hasKey = Boolean(normalizeKmaServiceKey(window.OMAEROUTE_CONFIG?.kmaServiceKey));
-  if (reload && $("#weather").value === "auto" && hasKey) void refreshWeatherForecast();
+  const source = weatherSourceConfig();
+  const canRequestWeather = Boolean(source.proxyUrl || source.serviceKey);
+  if (reload && $("#weather").value === "auto" && canRequestWeather) void refreshWeatherForecast();
 }
 
 function getPreferenceLevel(value) {
@@ -892,8 +1125,11 @@ function getPreferenceLevel(value) {
 }
 
 function topAxes(limit = 2) {
-  return currentVector()
+  const vector = currentVector();
+  if (!hasPreferenceSignals(vector)) return [];
+  return vector
     .map((value, index) => ({ value: Math.round(value * 100), ...AXES[index] }))
+    .filter((axis) => axis.value > 0)
     .sort((a, b) => b.value - a.value)
     .slice(0, limit);
 }
@@ -904,10 +1140,25 @@ function updateRangeVisual(input) {
     getPreferenceLevel(Number(input.value));
 }
 
+const AXIS_COLORS = {
+  sports: { light: "#f4f9ff", dark: "#3182f6" },
+  nature: { light: "#f4f9ff", dark: "#3182f6" },
+  culture: { light: "#f4f9ff", dark: "#3182f6" },
+  art: { light: "#f4f9ff", dark: "#3182f6" },
+  food: { light: "#f4f9ff", dark: "#3182f6" },
+  activity: { light: "#f4f9ff", dark: "#3182f6" },
+  healing: { light: "#f4f9ff", dark: "#3182f6" },
+  festival: { light: "#f4f9ff", dark: "#3182f6" }
+};
+
 function renderSliders() {
-  $("#preferenceSliders").innerHTML = AXES.map(
-    (axis, index) => `
-      <label class="slider-row">
+  $("#preferenceSliders").innerHTML = DISPLAY_AXIS_KEYS.map(
+    (axisKey) => {
+      const index = AXIS_INDEX_BY_KEY[axisKey];
+      const axis = AXES[index];
+      const colors = AXIS_COLORS[axisKey] || { light: "#e8f5e9", dark: "#2e7d32" };
+      return `
+      <label class="slider-row" style="--slider-light: ${colors.light}; --slider-dark: ${colors.dark};">
         <span class="slider-meta">
           <span class="slider-name"><i>${axis.emoji}</i>${axis.label}</span>
           <span class="slider-level">${getPreferenceLevel(state.preference[index])}</span>
@@ -916,13 +1167,14 @@ function renderSliders() {
           type="range"
           min="0"
           max="100"
-          step="1"
+          step="10"
           value="${state.preference[index]}"
           data-index="${index}"
           aria-label="${axis.label} 선호도"
         />
       </label>
-    `,
+    `;
+    },
   ).join("");
 
   $$('#preferenceSliders input[type="range"]').forEach((input) => {
@@ -938,9 +1190,10 @@ function renderSliders() {
 }
 
 function renderAxisPreview() {
-  $("#axisPreview").innerHTML = topAxes(5)
-    .map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`)
-    .join("");
+  const axes = topAxes(5);
+  $("#axisPreview").innerHTML = axes.length
+    ? axes.map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`).join("")
+    : '<span class="axis-preview-empty">취향을 선택하면 주요 선호가 표시됩니다.</span>';
 }
 
 function promptHasSignals(analysis = state.promptAnalysis) {
@@ -1049,7 +1302,7 @@ function contextScore(place, conditions) {
       : conditions.transport === "walk"
         ? clamp(1 - distance / 6.5, 0, 1)
         : clamp(1 - distance / 120, 0.45, 1);
-  const weatherFit = conditions.weather === "rainy" ? Number(place.rainOk) : 0.92;
+  const weatherFit = weatherSuitabilityScore(place, conditions.weather);
   const companionFit =
     conditions.companion === "family" ? Number(place.familyFriendly) : 0.9;
   const durationFit = clamp(1 - place.durationMinutes / (conditions.duration * 1.5), 0.3, 1);
@@ -1125,18 +1378,25 @@ function matchReasons(place, vector, conditions) {
       : place.recommendedPlayers || [];
     return [players.length ? `${players.join("·")} 선수 추천` : "KIA 선수 추천"];
   }
-  const preferenceReasons = place.vector
-    .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2)
-    .map((item) => item.label);
+  const preferenceReasons = hasPreferenceSignals(vector)
+    ? place.vector
+      .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map((item) => item.label)
+    : [];
   const contextReasons = [];
-  if (conditions.weather === "rainy" && place.rainOk) contextReasons.push("비 오는 날 가능");
+  if (conditions.weather === "rainy" && place.rainOk) {
+    contextReasons.push(place.indoor ? "비 예보·실내 우선" : "비 오는 날 이용 가능");
+  }
   if (conditions.companion === "family" && place.familyFriendly) {
     contextReasons.push("가족 동행 적합");
   }
   if (conditions.transport === "public" && place.publicTransportScore >= 0.75) {
     contextReasons.push("대중교통 편리");
+  }
+  if (!hasPreferenceSignals(vector) && !contextReasons.length) {
+    contextReasons.push("여행 조건과 동선 적합");
   }
   return [...promptReasonsForPlace(place, conditions), ...preferenceReasons, ...contextReasons]
     .filter((item, index, items) => items.indexOf(item) === index)
@@ -1145,6 +1405,7 @@ function matchReasons(place, vector, conditions) {
 
 function rankPlacesLocal() {
   const vector = currentVector();
+  const usePreferenceScore = hasPreferenceSignals(vector);
   const conditions = currentConditions();
   let candidates = state.places.filter((place) => placePassesFilters(place, conditions));
   state.promptAnalysis.relaxed = false;
@@ -1173,11 +1434,16 @@ function rankPlacesLocal() {
       const situationalScore = contextScore(place, conditions);
       const promptScore = promptFitScore(place, conditions);
       const baseScore = usePromptScore
-        ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
-        : preferenceScore * 0.78 + situationalScore * 0.22;
+        ? usePreferenceScore
+          ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
+          : situationalScore * 0.45 + promptScore * 0.55
+        : usePreferenceScore
+          ? preferenceScore * 0.78 + situationalScore * 0.22
+          : situationalScore;
       const sportsPreferenceBoost = conditions.sportsBaseballHighlyPreferred && place.playerRecommended
         ? place.activePlayerRecommended ? 1.5 : 1.15
         : 0;
+      const rainIndoorBoost = conditions.weather === "rainy" && place.indoor ? 0.14 : 0;
       return {
         ...place,
         preferenceScore,
@@ -1185,61 +1451,12 @@ function rankPlacesLocal() {
         promptScore,
         displayScore: baseScore,
         sportsPreferenceBoost,
-        score: baseScore + sportsPreferenceBoost,
+        rainIndoorBoost,
+        score: baseScore + sportsPreferenceBoost + rainIndoorBoost,
         reasons: matchReasons(place, vector, conditions),
       };
     })
     .sort((a, b) => b.score - a.score);
-}
-
-function parseVector(value) {
-  if (Array.isArray(value)) return value.map(Number);
-  if (typeof value === "string") {
-    return value.replaceAll("[", "").replaceAll("]", "").split(",").map(Number);
-  }
-  return currentVector();
-}
-
-async function rankPlacesSupabase() {
-  const config = window.OMAEROUTE_CONFIG || {};
-  const conditions = currentConditions();
-  const response = await fetch(`${config.supabaseUrl}/rest/v1/rpc/recommend_places`, {
-    method: "POST",
-    headers: {
-      apikey: config.anonKey,
-      Authorization: `Bearer ${config.anonKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query_vector: `[${currentVector().join(",")}]`,
-      match_count: 30,
-      filter_rain_ok: conditions.weather === "rainy",
-      filter_family_friendly: conditions.companion === "family",
-      min_public_transport_score: conditions.transport === "public" ? 0.48 : 0,
-    }),
-  });
-  if (!response.ok) throw new Error(`Supabase RPC 오류: ${response.status}`);
-
-  return (await response.json()).map((row) => {
-    const place = {
-      id: Number(row.place_id),
-      name: row.place_name,
-      region: row.region,
-      category: row.category,
-      description: row.description,
-      hashtags: row.hashtags || [],
-      vector: parseVector(row.preference_vector),
-      latitude: row.latitude,
-      longitude: row.longitude,
-      durationMinutes: row.duration_minutes,
-      indoor: row.indoor,
-      rainOk: row.rain_ok,
-      familyFriendly: row.family_friendly,
-      publicTransportScore: row.public_transport_score,
-      score: Number(row.similarity),
-    };
-    return { ...place, reasons: matchReasons(place, currentVector(), conditions) };
-  });
 }
 
 function estimateTravelMinutes(distanceKm) {
@@ -1270,13 +1487,20 @@ function routeCandidateValue(place, current) {
   return place.score + namedBonus + requiredBonus - haversineKm(current, place) * distancePenalty;
 }
 
-function scheduleLeg(current, clockMinutes, place, targetMinutes = null) {
+function scheduleLeg(current, clockMinutes, place, targetMinutes = null, { snap = true } = {}) {
   const distance = haversineKm(current, place);
   const travelMinutes = estimateTravelMinutes(distance);
   const arrivalMinutes = clockMinutes + travelMinutes;
-  const waitMinutes = targetMinutes === null ? 0 : Math.max(0, targetMinutes - arrivalMinutes);
-  const startMinutes = arrivalMinutes + waitMinutes;
-  const endMinutes = startMinutes + place.durationMinutes;
+  // 장소 도착 시 오픈 시간(opensAt) 이전이라면 해당 시각까지 대기 시간(waitMinutes)을 추가하도록 변경
+  const opensAtMinutes = place.opensAt ? parseClockMinutes(place.opensAt) : 0;
+  const effectiveTargetMinutes = targetMinutes !== null ? Math.max(targetMinutes, opensAtMinutes) : opensAtMinutes;
+  const waitMinutes = Math.max(0, effectiveTargetMinutes - arrivalMinutes);
+  const rawStartMinutes = arrivalMinutes + waitMinutes;
+  const rawEndMinutes = place.overrideEndMinutes != null
+    ? Math.max(rawStartMinutes, place.overrideEndMinutes)
+    : rawStartMinutes + place.durationMinutes;
+  const startMinutes = snap ? roundUpToStep(rawStartMinutes) : rawStartMinutes;
+  const endMinutes = snap ? roundUpToStep(rawEndMinutes) : rawEndMinutes;
   return { distance, travelMinutes, arrivalMinutes, waitMinutes, startMinutes, endMinutes };
 }
 
@@ -1287,7 +1511,17 @@ function returnTravelMinutes(place, destination) {
 
 function chooseBestCandidate(results, current, usedIds, predicate = () => true) {
   return results
-    .filter((place) => !usedIds.has(place.id) && hasUsableCoordinates(place) && predicate(place))
+    .filter((place) => {
+      if (usedIds.has(place.id) || !hasUsableCoordinates(place) || !predicate(place)) return false;
+      
+      // 추가된 부분: 영업 종료 시간(closesAt) 초과 여부 확인
+      if (place.closesAt) {
+        const closesAtMinutes = parseClockMinutes(place.closesAt);
+        const leg = scheduleLeg(current, clockMinutes, place);
+        if (leg.endMinutes > closesAtMinutes) return false;
+      }
+      return true;
+    })
     .sort((a, b) => routeCandidateValue(b, current) - routeCandidateValue(a, current))[0] || null;
 }
 
@@ -1304,10 +1538,13 @@ function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayE
       const timingPenalty = Math.abs(leg.startMinutes - slot.targetMinutes) / 180;
       return { place, leg, value: routeCandidateValue(place, current) - timingPenalty };
     })
-    .filter(({ place, leg }) =>
-      leg.startMinutes <= slot.windowEnd
-      && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes,
-    )
+    .filter(({ place, leg }) => {
+      // 추가된 부분: 영업 종료 시간 조건
+      const closesAtMinutes = place.closesAt ? parseClockMinutes(place.closesAt) : Infinity;
+      return leg.startMinutes <= slot.windowEnd
+        && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes
+        && leg.endMinutes <= closesAtMinutes; 
+    })
     .sort((a, b) => b.value - a.value)[0] || null;
 }
 
@@ -1327,7 +1564,11 @@ function chooseFillerBeforeMeal(results, current, clockMinutes, usedIds, slot, d
       );
       return { place, leg, meal, value: routeCandidateValue(place, current) };
     })
-    .filter(({ leg, meal }) => meal && leg.endMinutes <= slot.windowEnd)
+    .filter(({ place, leg, meal }) => {
+      // 추가된 부분: 영업 종료 시간 조건
+      const closesAtMinutes = place.closesAt ? parseClockMinutes(place.closesAt) : Infinity;
+      return meal && leg.endMinutes <= slot.windowEnd && leg.endMinutes <= closesAtMinutes;
+    })
     .sort((a, b) => b.value - a.value)[0] || null;
 }
 
@@ -1399,8 +1640,9 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
   }
 
   while (day.length < maxStops) {
-    let next = chooseBestCandidate(results, current, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(results, current, usedIds);
+    // 인자에 clockMinutes 추가
+    let next = chooseBestCandidate(results, current, clockMinutes, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(results, current, clockMinutes, usedIds);
     if (!next) break;
     const leg = scheduleLeg(current, clockMinutes, next);
     if (leg.endMinutes + returnTravelMinutes(next, returnDestination) > dayEndMinutes) break;
@@ -1410,6 +1652,171 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
     clockMinutes = leg.endMinutes;
   }
   return day;
+}
+
+function preferenceScoreOf(place) {
+  return place.displayScore ?? place.score ?? 0;
+}
+
+function subsetsOf(list) {
+  return list.reduce((acc, item) => acc.concat(acc.map((set) => [...set, item])), [[]]);
+}
+
+function permutationsOf(list) {
+  if (list.length <= 1) return [list];
+  return list.flatMap((item, index) => {
+    const rest = [...list.slice(0, index), ...list.slice(index + 1)];
+    return permutationsOf(rest).map((perm) => [item, ...perm]);
+  });
+}
+
+function validateFixedSchedule(startPlace, startMinutes, fixedStops) {
+  let current = startPlace;
+  let clockMinutes = startMinutes;
+  for (const place of fixedStops) {
+    const leg = scheduleLeg(current, clockMinutes, place, place.fixedStartMinutes, { snap: false });
+    if (leg.startMinutes > place.fixedStartMinutes) {
+      return {
+        ok: false,
+        place,
+        lateMinutes: Math.ceil(leg.startMinutes - place.fixedStartMinutes),
+      };
+    }
+    current = place;
+    clockMinutes = leg.endMinutes;
+  }
+  return { ok: true };
+}
+
+function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
+  const day = state.routeDays[dayIndex];
+  if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
+  const window = state.dayWindows[dayIndex];
+  const availableResults = state.results.filter((place) => placeIsOpenOnDate(place, window.date));
+  const isFinalDay = dayIndex === state.routeDays.length - 1;
+  const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
+  const keptStops = [...day.slice(0, stopIndex), anchorPlace];
+  const fixedRemainder = day.slice(stopIndex + 1).filter((place) => place.fixedStartMinutes != null);
+  const nextFixedStop = fixedRemainder[0] || null;
+  const returnDestination = nextFixedStop || (isFinalDay ? currentConditions().origin : null);
+  const dayEndMinutes = nextFixedStop
+    ? Math.min(window.endMinutes, nextFixedStop.fixedStartMinutes)
+    : window.endMinutes;
+  const fixedScheduleCheck = validateFixedSchedule(anchorPlace, newDepartureMinutes, fixedRemainder);
+  if (!fixedScheduleCheck.ok) {
+    return {
+      ok: false,
+      message: `${fixedScheduleCheck.place.name} 고정 일정에 약 ${fixedScheduleCheck.lateMinutes}분 늦습니다. 더 이른 출발 시각을 선택해주세요.`,
+    };
+  }
+  const maxStops = window.endMinutes - window.startMinutes >= 480 ? 4 : 3;
+  const otherDaysIds = state.routeDays.flatMap((otherDay, index) => (index === dayIndex ? [] : otherDay));
+  const usedIds = new Set([...otherDaysIds, ...keptStops, ...fixedRemainder].map((place) => place.id));
+  const consumedMealKeys = new Set(keptStops.filter((place) => place.mealSlot).map((place) => place.mealSlot));
+  const pendingMealSlots = mealSlotsForDay(window.startMinutes, window.endMinutes - window.startMinutes)
+    .filter((slot) => !consumedMealKeys.has(slot.key));
+
+  let current = keptStops[keptStops.length - 1];
+  let clockMinutes = newDepartureMinutes;
+  const rebuilt = [];
+
+  for (let slotIndex = 0; slotIndex < pendingMealSlots.length; slotIndex += 1) {
+    const slot = pendingMealSlots[slotIndex];
+    const remainingSlotsAfter = pendingMealSlots.length - slotIndex;
+    if (keptStops.length + rebuilt.length < maxStops - remainingSlotsAfter) {
+      const filler = chooseFillerBeforeMeal(
+        availableResults,
+        current,
+        clockMinutes,
+        usedIds,
+        slot,
+        dayEndMinutes,
+        returnDestination,
+      );
+      if (filler) {
+        rebuilt.push(filler.place);
+        usedIds.add(filler.place.id);
+        current = filler.place;
+        clockMinutes = filler.leg.endMinutes;
+      }
+    }
+
+    const meal = chooseMealCandidate(availableResults, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination);
+    if (!meal) {
+      state.mealWarnings.push(`Day ${dayIndex + 1} ${slot.label} 후보를 찾지 못했습니다.`);
+      continue;
+    }
+    const mealPlace = annotateMealPlace(meal.place, slot);
+    rebuilt.push(mealPlace);
+    usedIds.add(meal.place.id);
+    current = mealPlace;
+    clockMinutes = meal.leg.endMinutes;
+  }
+
+  // 남은 칸 수만큼 순위 기준으로 우선 채택한다 (이 시점에는 체류시간을 고려하지 않음).
+  const fillerCandidates = [];
+  let pickCurrent = current;
+  let pickClock = clockMinutes; // 추가된 부분: 탐색 시각 관리를 위한 변수 추가
+  while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
+    // 추가된 부분: 인자에 pickClock 추가
+    let next = chooseBestCandidate(availableResults, pickCurrent, pickClock, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(availableResults, pickCurrent, pickClock, usedIds);
+    if (!next) break;
+    fillerCandidates.push(next);
+    usedIds.add(next.id);
+    
+    // 추가된 부분: 다음 장소 탐색을 위해 탐색 시각 업데이트
+    const leg = scheduleLeg(pickCurrent, pickClock, next);
+    pickCurrent = next;
+    pickClock = leg.endMinutes;
+  }
+
+  // 후보 풀(최대 몇 개뿐)의 모든 부분집합 × 방문 순서를 전수 계산해서,
+  // "포함된 곳 전부가 원래 duration의 절반 이상을 확보"하는 조합 중 선호도 점수 합이 가장 높은 조합을 찾는다.
+  const returnMinutesFor = (lastPlace) =>
+    returnTravelMinutes(lastPlace ?? current, returnDestination);
+  let bestPlan = { places: [], legs: [], score: 0, totalTravel: 0 };
+  subsetsOf(fillerCandidates).forEach((subset) => {
+    if (!subset.length) return;
+    permutationsOf(subset).forEach((order) => {
+      let walker = current;
+      const legs = order.map((place) => {
+        const travelMinutes = estimateTravelMinutes(haversineKm(walker, place));
+        walker = place;
+        return travelMinutes;
+      });
+      const totalTravel = legs.reduce((sum, minutes) => sum + minutes, 0);
+      const totalNominal = order.reduce((sum, place) => sum + place.durationMinutes, 0);
+      const available = dayEndMinutes - clockMinutes - totalTravel - returnMinutesFor(order.at(-1));
+      const feasible = totalNominal > 0 && available >= totalNominal * 0.5;
+      if (!feasible) return;
+      const score = order.reduce((sum, place) => sum + preferenceScoreOf(place), 0);
+      const better = score > bestPlan.score
+        || (score === bestPlan.score && order.length > bestPlan.places.length)
+        || (score === bestPlan.score && order.length === bestPlan.places.length && totalTravel < bestPlan.totalTravel);
+      if (better) bestPlan = { places: order, legs, score, totalTravel };
+    });
+  });
+
+  const totalNominalDuration = bestPlan.places.reduce((sum, place) => sum + place.durationMinutes, 0);
+  const availableForVisits = dayEndMinutes - clockMinutes
+    - bestPlan.totalTravel
+    - returnMinutesFor(bestPlan.places.at(-1));
+  const scaleFactor = totalNominalDuration > 0 ? Math.min(1, availableForVisits / totalNominalDuration) : 1;
+
+  bestPlan.places.forEach((place) => {
+    const compressedDuration = Math.max(place.durationMinutes / 2, Math.round(place.durationMinutes * scaleFactor));
+    const compressedPlace = { ...place, durationMinutes: compressedDuration };
+    const leg = scheduleLeg(current, clockMinutes, compressedPlace);
+    rebuilt.push(compressedPlace);
+    current = compressedPlace;
+    clockMinutes = leg.endMinutes;
+  });
+
+  state.routeDays[dayIndex] = [...keptStops, ...rebuilt, ...fixedRemainder];
+  state.route = state.routeDays.flat();
+  state.replannedDays.set(dayIndex, stopIndex);
+  return { ok: true };
 }
 
 function stadiumDinnerSuitability(place) {
@@ -1422,10 +1829,11 @@ function stadiumDinnerSuitability(place) {
   return 0.65;
 }
 
-function selectStadiumFood(results, schedule) {
+function selectStadiumFood(results, schedule, usedIds = new Set()) {
   const selected = state.stadiumFoods
     .filter((place) =>
       place.stadiumFood
+      && !usedIds.has(place.id)
       && place.venueId === "gwangju-kia-champions-field"
       && place.routeEligible !== false
       && place.availabilityStatus !== "closed"
@@ -1456,12 +1864,16 @@ function selectStadiumFood(results, schedule) {
   };
 }
 
-function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window) {
+function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDay) {
   const schedule = baseballScheduleForDate(window.date);
+  if (!schedule) {
+    state.scheduleWarnings.push(`Day ${dayIndex + 1} · ${formatTripDate(window.date)} 관람 가능한 광주 홈경기가 없어 일반 여행 일정으로 구성했습니다.`);
+    return buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDay);
+  }
   const day = [];
   let current = conditions.origin;
   let clockMinutes = window.startMinutes;
-  const stadiumFood = selectStadiumFood(results, schedule);
+  const stadiumFood = selectStadiumFood(results, schedule, usedIds);
   const pregameEndMinutes = schedule.stadiumFoodStartMinutes;
   const lunchSlot = MEAL_SLOTS.find((slot) =>
     slot.key === "lunch"
@@ -1538,11 +1950,17 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window) {
     expectedEndMinutes: schedule.gameEndMinutes,
     gameDate: window.date,
     gameDayType: schedule.dayTypeLabel,
+    sourceGameId: schedule.game.source_game_id,
+    opponent: schedule.game.away_team_name,
+    gameStatus: schedule.game.status,
+    gameTimeChangeReason: schedule.game.time_change_reason,
+    endsTrip: isFinalDay,
     reasons: [
-      `${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 경기 시작`,
+      `${schedule.game.away_team_name}전 · ${schedule.dayTypeLabel} ${formatClockMinutes(schedule.gameStartMinutes)} 시작`,
+      ...(schedule.game.time_change_reason ? ["폭염 대응 변경 시간 반영"] : []),
       "3시간~3시간 30분 관람",
-      "여행 마지막 일정",
-    ],
+      `Day ${dayIndex + 1} 마지막 일정`,
+    ].slice(0, 3),
   });
   return day;
 }
@@ -1552,18 +1970,24 @@ function createRoute(results) {
   const windows = travelDayWindows(conditions);
   const usedIds = new Set();
   state.mealWarnings = [];
+  state.scheduleWarnings = [];
   const builtDays = windows
-    .map((window, dayIndex) => ({
-      window,
-      day: conditions.baseballAttendance && dayIndex === windows.length - 1
-        ? buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window)
-        : buildRouteDay(results, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
-    }))
+    .map((window, dayIndex) => {
+      addClosedNamedPlaceWarnings(window.date, dayIndex);
+      const availableResults = results.filter((place) => placeIsOpenOnDate(place, window.date));
+      return {
+        window,
+        day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
+          ? buildBaseballRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
+          : buildRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
+      };
+    })
     .filter(({ day }) => day.length);
   state.dayWindows = builtDays.map(({ window }) => window);
   state.routeDays = builtDays.map(({ day }) => day);
   state.route = state.routeDays.flat();
   state.selectedDay = 0;
+  state.replannedDays = new Map();
 }
 
 function buildRouteSchedule(day, dayIndex = 0) {
@@ -1576,6 +2000,7 @@ function buildRouteSchedule(day, dayIndex = 0) {
       clockMinutes,
       place,
       place.fixedStartMinutes ?? place.mealTargetMinutes ?? null,
+      { snap: place.fixedStartMinutes == null },
     );
     const scheduled = { place, ...leg };
     current = place;
@@ -1616,6 +2041,12 @@ function durationLabel() {
   return "반나절";
 }
 
+const PREVIEW_TOTAL_FRAMES = 245;
+const PREVIEW_FRAME_MS = Math.round(1000 / 30);
+const PREVIEW_HOLD_MS = 1400;
+const PREVIEW_CYCLE_MS = (PREVIEW_TOTAL_FRAMES - 1) * 2 * PREVIEW_FRAME_MS + PREVIEW_HOLD_MS;
+const PREVIEW_PLACEHOLDER_IMAGE = "assets/ohmyroute-logo.png";
+
 function previewSlides() {
   return state.route.map((place) => ({
     title: place.name,
@@ -1624,20 +2055,64 @@ function previewSlides() {
   }));
 }
 
+function previewFramePath(frame) {
+  return `video/frame_${String(frame).padStart(4, "0")}.webp`;
+}
+
+let previewFramesReadyPromise = null;
+function preloadPreviewFrames() {
+  if (previewFramesReadyPromise) return previewFramesReadyPromise;
+  const loaded = [];
+  for (let frame = 1; frame <= PREVIEW_TOTAL_FRAMES; frame++) {
+    const img = new Image();
+    loaded.push(new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = resolve;
+    }));
+    img.src = previewFramePath(frame);
+  }
+  previewFramesReadyPromise = Promise.all(loaded);
+  return previewFramesReadyPromise;
+}
+
+function setPreviewCharFrame(frame) {
+  state.previewFrameIndex = frame;
+  $("#previewCharFrame").src = previewFramePath(frame);
+}
+
+function setPreviewPhoto(imageUrl) {
+  const scene = $("#previewScene");
+  const bg = $("#previewPhotoBg");
+  if (!imageUrl) {
+    scene.classList.add("image-missing");
+    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
+    return;
+  }
+  const probe = new Image();
+  probe.referrerPolicy = "no-referrer";
+  probe.onload = () => {
+    scene.classList.remove("image-missing");
+    bg.style.backgroundImage = `url("${imageUrl}")`;
+  };
+  probe.onerror = () => {
+    scene.classList.add("image-missing");
+    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
+  };
+  probe.src = imageUrl;
+}
+
 function renderPreview() {
   const slides = previewSlides();
   if (!slides.length) return;
   state.previewIndex %= slides.length;
   const slide = slides[state.previewIndex];
   const scene = $("#previewScene");
-  const image = $("#previewImage");
   const button = $("#previewPlayButton");
   const progress = $("#previewProgress");
 
   scene.classList.toggle("is-playing", state.previewPlaying);
-  scene.classList.toggle("image-missing", !slide.imageUrl);
-  image.src = slide.imageUrl;
-  image.alt = `${slide.title} 여행 프리뷰`;
+  setPreviewPhoto(slide.imageUrl);
+  setPreviewCharFrame(state.previewFrameIndex);
   $("#previewTitle").textContent = slide.title;
   $("#previewDescription").textContent = slide.description;
   button.textContent = state.previewPlaying ? "Ⅱ" : "▶";
@@ -1648,29 +2123,86 @@ function renderPreview() {
 
   progress.classList.remove("running");
   void progress.offsetWidth;
-  if (state.previewPlaying) progress.classList.add("running");
+  if (state.previewPlaying) {
+    progress.style.animationDuration = `${PREVIEW_CYCLE_MS}ms`;
+    progress.classList.add("running");
+  }
+}
+
+function clearPreviewTimers() {
+  if (state.previewFrameTimer) {
+    window.clearInterval(state.previewFrameTimer);
+    state.previewFrameTimer = null;
+  }
+  if (state.previewHoldTimer) {
+    window.clearTimeout(state.previewHoldTimer);
+    state.previewHoldTimer = null;
+  }
+}
+
+function beginPreviewHold() {
+  state.previewPhase = "holding";
+  state.previewHoldTimer = window.setTimeout(() => {
+    state.previewHoldTimer = null;
+    state.previewPhase = "closing";
+    runPreviewFrameTimer();
+  }, PREVIEW_HOLD_MS);
+}
+
+function advancePreviewFrame() {
+  if (state.previewPhase === "opening") {
+    if (state.previewFrameIndex >= PREVIEW_TOTAL_FRAMES) {
+      window.clearInterval(state.previewFrameTimer);
+      state.previewFrameTimer = null;
+      beginPreviewHold();
+      return;
+    }
+    setPreviewCharFrame(state.previewFrameIndex + 1);
+    return;
+  }
+  if (state.previewPhase === "closing") {
+    if (state.previewFrameIndex <= 1) {
+      window.clearInterval(state.previewFrameTimer);
+      state.previewFrameTimer = null;
+      const slides = previewSlides();
+      state.previewIndex = (state.previewIndex + 1) % slides.length;
+      state.previewFrameIndex = 1;
+      state.previewPhase = "opening";
+      renderPreview();
+      if (state.previewPlaying) runPreviewFrameTimer();
+      return;
+    }
+    setPreviewCharFrame(state.previewFrameIndex - 1);
+  }
+}
+
+function runPreviewFrameTimer() {
+  if (state.previewFrameTimer) window.clearInterval(state.previewFrameTimer);
+  state.previewFrameTimer = window.setInterval(advancePreviewFrame, PREVIEW_FRAME_MS);
 }
 
 function stopPreview({ reset = false } = {}) {
-  if (state.previewTimer) {
-    window.clearInterval(state.previewTimer);
-    state.previewTimer = null;
-  }
+  clearPreviewTimers();
   state.previewPlaying = false;
-  if (reset) state.previewIndex = 0;
+  if (reset) {
+    state.previewIndex = 0;
+    state.previewFrameIndex = 1;
+    state.previewPhase = "opening";
+  }
   if (state.route.length) renderPreview();
 }
 
 function startPreview() {
   const slides = previewSlides();
   if (!slides.length) return;
-  if (state.previewTimer) window.clearInterval(state.previewTimer);
+  clearPreviewTimers();
   state.previewPlaying = true;
   renderPreview();
-  state.previewTimer = window.setInterval(() => {
-    state.previewIndex = (state.previewIndex + 1) % slides.length;
-    renderPreview();
-  }, 3500);
+  if (state.previewPhase === "holding") {
+    beginPreviewHold();
+  } else {
+    runPreviewFrameTimer();
+  }
 }
 
 function togglePreview() {
@@ -1876,13 +2408,73 @@ async function copyRewardCode() {
   }
 }
 
-function stampIcon(place) {
-  const category = `${place.category} ${place.hashtags.join(" ")}`;
-  if (/음식|시장|맛집|카페|로컬/.test(category)) return "🍚";
-  if (/스포츠|체험|액티비티|야구/.test(category)) return "🏆";
-  if (/자연|경관|산|숲|공원|정원/.test(category)) return "🌿";
-  if (/전시|문화|예술|박물관/.test(category)) return "🏛";
-  return "✦";
+function usesChampionsFieldStamp(place) {
+  const searchableText = `${place.name || ""} ${(place.hashtags || []).join(" ")}`;
+  return /챔피언스\s*필드/i.test(searchableText);
+}
+
+function championsFieldStampContent(isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="champions-field-stamp-art" aria-hidden="true">
+      <span class="champions-field-stamp-fallback"><b>⚾</b><small>GWANGJU</small></span>
+      <img
+        class="champions-field-stamp-image"
+        src="${CHAMPIONS_FIELD_STAMP_ASSET}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+    </span>
+    <span class="champions-field-stamp-state">${stateLabel}</span>
+  `;
+}
+
+function usesFoodThemeStamp(place) {
+  return place.databaseType === "restaurant"
+    || place.databaseType === "stadium_food"
+    || Boolean(place.stadiumFood)
+    || place.category === "음식·로컬";
+}
+
+function stampThemeForPlace(place) {
+  const key = usesFoodThemeStamp(place)
+    ? "food"
+    : STAMP_THEME_BY_CATEGORY[place.category] || "local";
+  return { key, ...STAMP_THEMES[key] };
+}
+
+function themePatternForPlace(place, themeKey) {
+  if (themeKey === "food") return null;
+  return state.stampPatternCategories.get(place.category) || null;
+}
+
+function themeStampContent(theme, pattern, isStamped, isInRange) {
+  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  return `
+    <span class="theme-stamp-art" aria-hidden="true">
+      ${pattern ? `
+        <img
+          class="theme-stamp-pattern"
+          src="${escapeHtml(pattern.asset)}"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable="false"
+        >
+      ` : ""}
+      <img
+        class="theme-stamp-template"
+        src="${escapeHtml(theme.asset)}"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable="false"
+      >
+    </span>
+    <span class="theme-stamp-state">${stateLabel}</span>
+  `;
 }
 
 function formatStampDistance(distanceMeters) {
@@ -1939,10 +2531,21 @@ function renderStamps() {
       ? Math.round(haversineKm(state.stampLocation, place) * 1000)
       : null;
     const isInRange = distanceMeters !== null && distanceMeters <= 100;
-    const sealClass = isStamped ? "unlocked" : isInRange ? "in-range" : "";
-    const sealContent = isStamped
-      ? `<span>광주·전남</span><b>${escapeHtml(place.name)}</b><span>완료</span>`
-      : `<span class="stamp-icon">${stampIcon(place)}</span><span>${isInRange ? "도장 찍기" : "방문"}</span>`;
+    const isChampionsField = usesChampionsFieldStamp(place);
+    const theme = isChampionsField ? null : stampThemeForPlace(place);
+    const themePattern = theme ? themePatternForPlace(place, theme.key) : null;
+    const sealClass = [
+      isStamped ? "unlocked" : isInRange ? "in-range" : "",
+      isChampionsField ? "champions-field-stamp" : "",
+      theme ? `theme-stamp stamp-theme-${theme.key}` : "",
+    ].filter(Boolean).join(" ");
+    const sealContent = isChampionsField
+      ? championsFieldStampContent(isStamped, isInRange)
+      : themeStampContent(theme, themePattern, isStamped, isInRange);
+    const patternTitle = themePattern
+      ? ` · AI Hub 전통 문양 ${themePattern.patternType || "배경"}`
+      : "";
+    const stampTitle = theme ? `${theme.label} 테마 스탬프${patternTitle}` : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";
     const distanceText = isStamped ? "✓ 스탬프 획득" : formatStampDistance(distanceMeters);
     return `
@@ -1951,7 +2554,9 @@ function renderStamps() {
           type="button"
           class="stamp-seal ${sealClass}"
           data-stamp-id="${escapeHtml(id)}"
+          ${theme ? `data-stamp-theme="${escapeHtml(theme.key)}"` : ""}
           aria-label="${escapeHtml(place.name)} ${isStamped ? "스탬프 획득 완료" : "스탬프 찍기"}"
+          ${stampTitle ? `title="${escapeHtml(stampTitle)}"` : ""}
           ${isStamped ? "disabled" : ""}
         >${sealContent}</button>
         <p class="stamp-place-name" title="${escapeHtml(place.name)}">${escapeHtml(place.name)}</p>
@@ -2244,11 +2849,25 @@ function kakaoMapLink(place, nextPlace) {
   return `https://map.kakao.com/link/from/${placeName},${place.latitude},${place.longitude}/to/${nextName},${nextPlace.latitude},${nextPlace.longitude}`;
 }
 
+function josa(word, josaType) {
+  if (!word) return "";
+  const lastChar = word.charCodeAt(word.length - 1);
+  const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+  if (josaType === "와/과") return word + (hasJongseong ? "과" : "와");
+  if (josaType === "을/를") return word + (hasJongseong ? "을" : "를");
+  return word;
+}
+
 function dayTheme(day) {
   const axes = topAxes(2);
   if (!day.length) return "조건에 맞는 장소를 찾지 못했습니다.";
   const mealLabels = day.filter((place) => place.mealSlot).map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`);
-  return `${axes[0].label}와 ${axes[1].label} 취향을 중심으로 ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
+  const themeCopy = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 중심으로`
+      : "여행 조건에 맞춰";
+  return `${themeCopy} ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
 }
 
 function renderDayTabs() {
@@ -2266,10 +2885,59 @@ function renderItinerary() {
   const day = state.routeDays[state.selectedDay] || [];
   const schedule = buildRouteSchedule(day, state.selectedDay);
   const isFinalDay = state.selectedDay === state.routeDays.length - 1;
+  const replanAnchorIndex = state.replannedDays.get(state.selectedDay);
   renderDayTabs();
   $("#dayTheme").textContent = dayTheme(day);
-  $("#itineraryTimeline").innerHTML = schedule.map((stop, index) => {
-    const { place, travelMinutes, waitMinutes, startMinutes } = stop;
+  $("#replanStopSelect").innerHTML = schedule
+    .map((stop, index) => `<option value="${index}">${index + 1}. ${escapeHtml(stop.place.name)}</option>`)
+    .join("");
+  if (schedule.length) {
+    const lastIndex = schedule.length - 1;
+    $("#replanStopSelect").value = String(lastIndex);
+    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(schedule[lastIndex].endMinutes));
+  }
+  $("#replanStatus").hidden = true;
+  const originStartCard = state.selectedDay === 0 ? `
+    <article class="itinerary-stop origin-stop">
+      <i class="timeline-node"></i>
+      <div class="stop-card" tabindex="0">
+        <div class="stop-meta">
+          <span class="stop-time">◷ ${formatClockMinutes(state.dayWindows[0]?.startMinutes ?? parseClockMinutes(conditions.startTime))}</span>
+          <span class="type-chip">출발지</span>
+        </div>
+        <h3>📍 ${escapeHtml(conditions.origin.name)}</h3>
+        <p>선택하신 출발지에서 첫 일정을 시작합니다.</p>
+        ${schedule.length ? `
+          <div class="stop-details">
+            <div class="stop-detail-actions">
+              <a class="kakao-directions-link" href="${kakaoMapLink(conditions.origin, schedule[0].place)}" target="_blank" rel="noopener noreferrer">첫 장소 길찾기 ↗</a>
+            </div>
+          </div>
+        ` : ""}
+      </div>
+    </article>
+  ` : "";
+  const lastPlace = day.at(-1);
+  const returnCard = isFinalDay && lastPlace && !lastPlace.endsTrip && schedule.length ? `
+    <article class="itinerary-stop origin-stop">
+      <i class="timeline-node"></i>
+      <div class="stop-card" tabindex="0">
+        <div class="stop-meta">
+          <span class="stop-time">◷ 약 ${formatClockMinutes(roundUpToStep(schedule.at(-1).endMinutes + returnTravelMinutes(lastPlace, conditions.origin)))}</span>
+          <span class="type-chip">도착지</span>
+        </div>
+        <h3>📍 ${escapeHtml(conditions.origin.name)}</h3>
+        <p>${escapeHtml(lastPlace.name)}에서 출발지로 복귀하며 여행이 마무리됩니다.</p>
+        <div class="stop-details">
+          <div class="stop-detail-actions">
+            <a class="kakao-directions-link" href="${kakaoMapLink(lastPlace, conditions.origin)}" target="_blank" rel="noopener noreferrer">복귀 길찾기 ↗</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  ` : "";
+  $("#itineraryTimeline").innerHTML = originStartCard + schedule.map((stop, index) => {
+    const { place, travelMinutes, waitMinutes, startMinutes, endMinutes } = stop;
     const nextPlace = day[index + 1];
     const stadiumMenu = place.stadiumFood
       ? place.menuItems?.find((menu) => menu.signature) || place.menuItems?.[0]
@@ -2287,14 +2955,16 @@ function renderItinerary() {
         <div class="stop-card" tabindex="0">
           <div class="stop-meta">
             <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)}</span>
+            ${replanAnchorIndex != null && index >= replanAnchorIndex ? `<span class="stop-time departure-time">→ 출발 약 ${formatClockMinutes(endMinutes)}</span>` : ""}
             ${place.isBaseballGame ? '<span class="meal-time-chip">⚾ 야구 직관</span>' : ""}
             ${place.mealSlot ? `<span class="meal-time-chip">🍚 ${escapeHtml(place.mealLabel)} 추천</span>` : ""}
             <span class="type-chip">${escapeHtml(place.category)}</span>
             ${place.hashtags.slice(0, 2).map((tag) => `<span class="hashtag-chip">${escapeHtml(tag)}</span>`).join("")}
           </div>
           <h3>${escapeHtml(place.name)}</h3>
-          <p>${escapeHtml(place.description)}</p>
-          <div class="stop-details">
+          <div class="reason-callout">💡 추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")}</div>
+          <p class="expandable-desc">${escapeHtml(place.description)}</p>
+          <div class="stop-details expandable-desc">
             ${place.isBaseballGame ? `
               <div class="baseball-game-callout">⚾ ${escapeHtml(place.gameDayType)} ${formatClockMinutes(place.fixedStartMinutes)} 경기 시작 · 약 3시간~3시간 30분 관람 · ${formatClockMinutes(place.expectedEndMinutes)} 종료</div>
             ` : ""}
@@ -2304,7 +2974,7 @@ function renderItinerary() {
             ${conditions.sportsBaseballHighlyPreferred && place.activeRecommendedPlayers?.length ? `
               <div class="player-recommendation">⚾ ${escapeHtml(place.activeRecommendedPlayers.join("·"))} 선수 추천</div>
             ` : ""}
-            <div class="reason-callout">추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")} · 이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
+            <div class="reason-callout detail-reason">이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
             <div class="stop-detail-actions">
               <a class="kakao-directions-link" href="${mapLink}" target="_blank" rel="noopener noreferrer">${nextPlace ? "다음 장소 길찾기" : isFinalReturn ? "출발지 복귀 길찾기" : "카카오맵에서 보기"} ↗</a>
             </div>
@@ -2312,7 +2982,7 @@ function renderItinerary() {
         </div>
       </article>
     `;
-  }).join("");
+  }).join("") + returnCard;
   renderWeatherBriefing();
 }
 
@@ -2333,6 +3003,7 @@ function renderAlternatives() {
 function renderTips() {
   const conditions = currentConditions();
   const mealStops = state.route.filter((place) => place.mealSlot);
+  const preferredAxes = topAxes(2);
   const tips = [
     `${conditions.origin.name}에서 첫 장소까지 ${state.transport === "public" ? "대중교통 환승 시간을 포함해" : "실제 교통 상황을 확인하며"} 출발하세요.`,
     conditions.weather === "rainy"
@@ -2340,20 +3011,26 @@ function renderTips() {
         ? "비 대응 장소를 우선했고, 함께 요청한 조건을 만족시키기 위해 일부 후보는 유연하게 포함했습니다. 우산과 운영 여부를 확인하세요."
         : "비 오는 날 이용 가능한 장소만 포함했습니다. 실외 이동 구간에는 우산을 준비하세요."
       : "실외 장소가 포함되어 있으니 출발 전 운영시간과 기상 상황을 한 번 더 확인하세요.",
-    `추천은 ${topAxes(2).map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`,
+    preferredAxes.length
+      ? `추천은 ${preferredAxes.map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`
+      : "취향을 따로 선택하지 않아 이동수단·날씨·동행·체류시간 등 여행 조건을 중심으로 추천했습니다.",
   ];
   if (mealStops.length) {
     tips.unshift(`${mealStops.map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`).join(" · ")} 시간에 맞춰 음식점을 동선에 포함했습니다.`);
   }
   if (conditions.baseballAttendance) {
-    const gameStop = state.route.find((place) => place.isBaseballGame);
-    const stadiumFood = state.route.find((place) => place.stadiumFood);
-    if (gameStop) {
-      tips.unshift(`${gameStop.gameDayType} ${formatClockMinutes(gameStop.fixedStartMinutes)} 챔피언스필드 경기를 마지막 일정으로 고정했고 ${formatClockMinutes(gameStop.expectedEndMinutes)} 종료로 계산했습니다.`);
+    const gameStops = state.routeDays.flatMap((day, dayIndex) =>
+      day.filter((place) => place.isBaseballGame).map((place) => ({ place, dayIndex })),
+    );
+    const stadiumFoods = state.route.filter((place) => place.stadiumFood);
+    if (gameStops.length) {
+      const gameSummary = gameStops
+        .map(({ place, dayIndex }) => `Day ${dayIndex + 1} ${place.gameDate} ${formatClockMinutes(place.fixedStartMinutes)}~${formatClockMinutes(place.expectedEndMinutes)}`)
+        .join(" · ");
+      tips.unshift(`${gameSummary} 챔피언스필드 경기를 각 날짜의 마지막 일정으로 고정했습니다.`);
     }
-    if (stadiumFood) {
-      const dinnerMenu = stadiumFood.menuItems?.find((menu) => menu.signature) || stadiumFood.menuItems?.[0];
-      tips.unshift(`${formatClockMinutes(stadiumFood.fixedStartMinutes)} ${stadiumFood.name}에서 ${dinnerMenu?.name || "저녁 메뉴"} 구매 후, 경기 시작부터 관람석에서 먹는 일정입니다. 경기 당일 영업·재고·가격을 다시 확인하세요.`);
+    if (stadiumFoods.length) {
+      tips.unshift(`직관일마다 경기 전에 구장 먹거리를 구매해 관람석에서 먹도록 구성했습니다. 경기 당일 영업·재고·가격을 다시 확인하세요.`);
     }
   }
   if (conditions.sportsBaseballHighlyPreferred) {
@@ -2364,6 +3041,9 @@ function renderTips() {
   }
   if (state.mealWarnings.length) {
     tips.push(`${state.mealWarnings.join(" ")} 현재 필터에서 이용 가능한 음식점 데이터가 더 필요합니다.`);
+  }
+  if (state.scheduleWarnings.length) {
+    tips.unshift(...state.scheduleWarnings);
   }
   if (conditions.weatherMode === "auto" && state.weatherForecast?.status !== "ready") {
     tips.push("기상청 예보를 적용하지 못해 날씨 조건은 제외했습니다. 입력 화면의 상태 안내를 확인하세요.");
@@ -2415,7 +3095,11 @@ function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
   const metrics = routeMetrics();
-  const title = `${axes[0].label}와 ${axes[1].label}을 잇는 ${durationLabel()} 여행`;
+  const title = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 담은 ${durationLabel()} 여행`
+      : `여행 조건에 맞춘 ${durationLabel()} 여행`;
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
   $("#resultTitle").textContent = title;
   $("#resultDescription").textContent = conditions.baseballAttendance
@@ -2424,7 +3108,9 @@ function renderResult() {
       ? `${travelWindowCopy}, 슬라이더 취향과 한 줄 요청 및 출발지 복귀시간을 함께 반영한 동선입니다.`
       : conditions.sportsBaseballHighlyPreferred
         ? `${travelWindowCopy}, 스포츠·야구 취향과 KIA 선수 추천 맛집 및 복귀시간을 우선 반영한 동선입니다.`
-        : `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`;
+        : axes.length
+          ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
+          : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
   renderPromptResultSummary();
   $("#mapSummary").textContent = `${conditions.origin.name} 왕복 · ${metrics.distance.toFixed(1)}km`;
   renderMap();
@@ -2432,6 +3118,10 @@ function renderResult() {
   renderAlternatives();
   renderTips();
   stopPreview({ reset: true });
+  const routeAtPreloadTime = state.route;
+  preloadPreviewFrames().then(() => {
+    if (state.route === routeAtPreloadTime) startPreview();
+  });
   renderStamps();
   renderReviewReward();
   updateSaveButton();
@@ -2441,6 +3131,8 @@ function showView(viewName, { pushState = true } = {}) {
   const wantsResult = viewName === "result" && state.route.length > 0;
   $("#formView").classList.toggle("active", !wantsResult);
   $("#resultView").classList.toggle("active", wantsResult);
+  const docentWrapper = $("#aiDocentWrapper");
+  if (docentWrapper) docentWrapper.hidden = !wantsResult;
   $$(".mobile-nav button").forEach((button) => {
     button.classList.toggle(
       "active",
@@ -2493,14 +3185,8 @@ async function generateRoute() {
 
   try {
     const startedAt = performance.now();
-    const config = window.OMAEROUTE_CONFIG || {};
     await refreshWeatherForecast();
-    try {
-      state.results = config.useSupabase ? await rankPlacesSupabase() : rankPlacesLocal();
-    } catch (error) {
-      console.warn("Supabase 추천 실패, 로컬 데이터로 전환합니다.", error);
-      state.results = rankPlacesLocal();
-    }
+    state.results = rankPlacesLocal();
     createRoute(state.results);
     renderResult();
     await wait(Math.max(1050 - (performance.now() - startedAt), 250));
@@ -2539,7 +3225,30 @@ function setupTravelWindow() {
 }
 
 function routeSignature(route = state.route) {
-  return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}`;
+  const baseballKey = state.baseballAttendance
+    ? `baseball-days-${selectedBaseballDayIndexes().join("-")}`
+    : "baseball-off";
+  return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}:${baseballKey}`;
+}
+
+function preferenceByKey(preference = state.preference) {
+  return Object.fromEntries(AXES.map((axis, index) => [axis.key, Number(preference[index]) || 0]));
+}
+
+function normalizeSavedPreference(saved) {
+  if (saved?.preferenceByKey && typeof saved.preferenceByKey === "object") {
+    return AXES.map((axis) => Number(saved.preferenceByKey[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference) && Array.isArray(saved.preferenceOrder)) {
+    const keyedPreference = Object.fromEntries(
+      saved.preferenceOrder.map((axisKey, index) => [axisKey, saved.preference[index]]),
+    );
+    return AXES.map((axis) => Number(keyedPreference[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference)) {
+    return AXES.map((_, index) => Number(saved.preference[index]) || 0);
+  }
+  return Array(AXES.length).fill(0);
 }
 
 function saveCurrentRoute() {
@@ -2566,6 +3275,10 @@ function saveCurrentRoute() {
         endsTrip: Boolean(place.endsTrip),
         gameDate: place.gameDate || null,
         gameDayType: place.gameDayType || null,
+        sourceGameId: place.sourceGameId || null,
+        opponent: place.opponent || null,
+        gameStatus: place.gameStatus || null,
+        gameTimeChangeReason: place.gameTimeChangeReason || null,
       }))),
       originKey: currentConditions().originKey,
       travelDate: $("#travelDate").value,
@@ -2575,10 +3288,14 @@ function saveCurrentRoute() {
       duration: state.duration,
       transport: state.transport,
       preference: [...state.preference],
+      preferenceOrder: AXES.map((axis) => axis.key),
+      preferenceByKey: preferenceByKey(),
       prompt: state.travelPrompt,
       companion: $("#companion").value,
       weather: $("#weather").value,
       baseballAttendance: state.baseballAttendance,
+      baseballDayIndexes: [...state.baseballDayIndexes],
+      baseballDayIndex: state.baseballDayIndexes[0] ?? null,
       weatherForecast: state.weatherForecast?.status === "ready" ? state.weatherForecast : null,
       createdAt: new Date().toISOString(),
     });
@@ -2642,13 +3359,30 @@ function restoreSavedRoute(id) {
   const restoredStartTime = saved.startTime || "10:00";
   const legacyEnd = legacyEndDateTime(restoredTravelDate, restoredStartTime, saved.duration);
   $("#travelDate").value = restoredTravelDate;
-  $("#startTime").value = restoredStartTime;
+  setTimeFieldValue($("#startTime"), restoredStartTime);
   $("#endDate").value = saved.endDate || legacyEnd.endDate;
-  $("#endTime").value = saved.endTime || legacyEnd.endTime;
+  setTimeFieldValue($("#endTime"), saved.endTime || legacyEnd.endTime);
   syncTravelWindow();
   state.transport = saved.transport;
-  state.preference = [...saved.preference];
+  state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
+  const savedBaseballDayIndexes = Array.isArray(saved.baseballDayIndexes)
+    ? saved.baseballDayIndexes.map(Number).filter(Number.isInteger)
+    : [];
+  const savedBaseballDayIndex = Number(saved.baseballDayIndex);
+  const legacyBaseballDayIndexes = Array.isArray(saved.routeDays)
+    ? saved.routeDays
+      .map((day, index) => day.some((stop) => stop.isBaseballGame) ? index : -1)
+      .filter((index) => index >= 0)
+    : [];
+  state.baseballDayIndexes = savedBaseballDayIndexes.length
+    ? savedBaseballDayIndexes
+    : Number.isInteger(savedBaseballDayIndex)
+      ? [savedBaseballDayIndex]
+      : legacyBaseballDayIndexes;
+  state.baseballDaySelectionTouched = state.baseballAttendance && state.baseballDayIndexes.length > 0;
+  state.baseballPreviousEnd = null;
+  state.baseballAdjustedFinalEnd = false;
   $("#baseballAttendance").checked = state.baseballAttendance;
   $("#travelPrompt").value = saved.prompt || "";
   if (saved.companion) $("#companion").value = saved.companion;
@@ -2681,6 +3415,10 @@ function restoreSavedRoute(id) {
       endsTrip: Boolean(savedStop.endsTrip || basePlace.endsTrip),
       gameDate: savedStop.gameDate || basePlace.gameDate,
       gameDayType: savedStop.gameDayType || basePlace.gameDayType,
+      sourceGameId: savedStop.sourceGameId || basePlace.sourceGameId,
+      opponent: savedStop.opponent || basePlace.opponent,
+      gameStatus: savedStop.gameStatus || basePlace.gameStatus,
+      gameTimeChangeReason: savedStop.gameTimeChangeReason || basePlace.gameTimeChangeReason,
     };
     if (!savedStop.mealSlot) return place;
     if (savedStop.mealSlot === "stadium_food") {
@@ -2715,6 +3453,7 @@ function restoreSavedRoute(id) {
     state.dayWindows = state.dayWindows.slice(0, state.routeDays.length);
   }
   state.mealWarnings = [];
+  state.scheduleWarnings = [];
   state.selectedDay = 0;
   renderResult();
   closeDrawer();
@@ -2767,10 +3506,18 @@ function bindEvents() {
   });
 
   $("#origin").addEventListener("change", () => invalidateWeatherForecast({ reload: false }));
+  bindTimeSegments($("#startTime"), 1);
+  bindTimeSegments($("#endTime"), 1);
+  bindTimeSegments($("#replanTimeInput"), 1);
   [$("#travelDate"), $("#startTime"), $("#endDate"), $("#endTime")].forEach((input) => {
     input.addEventListener("change", () => {
       if (input === $("#travelDate") && (!$("#endDate").value || $("#endDate").value < input.value)) {
         $("#endDate").value = input.value;
+      }
+      if (state.baseballAttendance && state.baseballPreviousEnd) {
+        if (input === $("#travelDate")) state.baseballPreviousEnd.endDate = $("#endDate").value;
+        if (input === $("#endDate")) state.baseballPreviousEnd.endDate = input.value;
+        if (input === $("#endTime")) state.baseballPreviousEnd.endTime = input.value;
       }
       syncTravelWindow();
       if (state.baseballAttendance) {
@@ -2784,6 +3531,14 @@ function bindEvents() {
   $("#baseballAttendance").addEventListener("change", (event) => {
     setBaseballAttendance(event.currentTarget.checked);
     invalidateWeatherForecast({ reload: false });
+  });
+  $("#baseballDayOptions").addEventListener("change", () => {
+    const selectedIndexes = $$('#baseballDayOptions input[type="checkbox"]:checked')
+      .map((input) => Number(input.value))
+      .filter(Number.isInteger);
+    state.baseballDayIndexes = selectedIndexes;
+    state.baseballDaySelectionTouched = true;
+    updateBaseballAttendanceControl({ adjustTravelWindow: state.baseballAttendance });
   });
   $("#weather").addEventListener("change", () => {
     if ($("#weather").value === "auto") invalidateWeatherForecast({ reload: false });
@@ -2815,12 +3570,6 @@ function bindEvents() {
   $("#saveButton").addEventListener("click", saveCurrentRoute);
   $("#printButton").addEventListener("click", () => window.print());
   $("#previewPlayButton").addEventListener("click", togglePreview);
-  $("#previewImage").addEventListener("load", () => {
-    $("#previewScene").classList.remove("image-missing");
-  });
-  $("#previewImage").addEventListener("error", () => {
-    $("#previewScene").classList.add("image-missing");
-  });
   $("#stampLocationSelect").addEventListener("change", (event) => {
     selectStampLocation(event.target.value);
   });
@@ -2849,6 +3598,29 @@ function bindEvents() {
       event.preventDefault();
       event.target.classList.toggle("expanded");
     }
+  });
+  $("#replanButton").addEventListener("click", () => {
+    const stopIndex = Number($("#replanStopSelect").value);
+    const timeValue = $("#replanTimeInput").value;
+    const statusEl = $("#replanStatus");
+    if (!Number.isInteger(stopIndex) || !timeValue) {
+      statusEl.textContent = "장소와 새 출발 시각을 모두 선택해주세요.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
+    const replanResult = replanDayFromStop(state.selectedDay, stopIndex, parseClockMinutes(timeValue));
+    if (!replanResult?.ok) {
+      statusEl.textContent = replanResult?.message || "일정을 다시 계산하지 못했습니다.";
+      statusEl.classList.add("warning");
+      statusEl.hidden = false;
+      return;
+    }
+    renderResult();
+    const refreshedStatus = $("#replanStatus");
+    refreshedStatus.textContent = "남은 일정을 다시 계산했습니다.";
+    refreshedStatus.classList.remove("warning");
+    refreshedStatus.hidden = false;
   });
 
   $("#menuButton").addEventListener("click", openDrawer);
@@ -2897,6 +3669,178 @@ function bindEvents() {
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && state.previewPlaying) stopPreview();
   });
+
+  // AI 도슨트 버튼 및 패널 로직
+  const docentBtn = $("#aiDocentButton");
+  const docentPanel = $("#aiDocentPanel");
+  const docentClose = $("#aiDocentCloseButton");
+  const docentRefresh = $("#aiDocentRefreshButton");
+  const docentChat = $("#aiDocentChat");
+  const docentInput = $("#aiDocentInput");
+  const docentSend = $("#aiDocentSendButton");
+
+  function addDocentMessage(text, isUser = false) {
+    const msg = document.createElement("div");
+    msg.className = isUser ? "ai-msg user-msg" : "ai-msg docent-msg";
+    msg.textContent = text;
+    docentChat.appendChild(msg);
+    docentChat.scrollTop = docentChat.scrollHeight;
+  }
+
+  function findNearestPlace() {
+    if (!state.route || state.route.length === 0) return null;
+    let currentLoc = state.stampLocation;
+    if (!currentLoc && state.kakaoMap) {
+      const center = state.kakaoMap.getCenter();
+      currentLoc = { latitude: center.getLat(), longitude: center.getLng() };
+    }
+    if (!currentLoc && currentConditions().origin) {
+      currentLoc = currentConditions().origin;
+    }
+
+    if (!currentLoc) return state.route[0];
+
+    let nearest = state.route[0];
+    let minDist = haversineKm(currentLoc, nearest);
+    
+    for (let i = 1; i < state.route.length; i++) {
+      const dist = haversineKm(currentLoc, state.route[i]);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = state.route[i];
+      }
+    }
+    return nearest;
+  }
+
+  if (docentBtn && docentPanel) {
+    let docentChatHistory = [];
+
+    function initDocentChat() {
+      docentChat.innerHTML = "";
+      const nearest = findNearestPlace();
+      let initialMessage = "";
+      if (nearest) {
+        initialMessage = `지금 계신 곳과 가장 가까운 여행지는 [${nearest.name}]입니다!\n\n${nearest.description}\n\n이곳에 대해 더 궁금한 점이 있으신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n현재 사용자는 ${nearest.name} 근처에 있습니다. 장소 설명: ${nearest.description}` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      } else {
+        initialMessage = `안녕하세요! 오매루트 AI 도슨트입니다. 어떤 장소가 궁금하신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n안녕하세요.` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      }
+      addDocentMessage(initialMessage);
+    }
+
+    docentBtn.addEventListener("click", () => {
+      docentPanel.hidden = false;
+      docentBtn.hidden = true;
+      if (docentChat.children.length === 0) {
+        initDocentChat();
+      }
+    });
+
+    if (docentRefresh) {
+      docentRefresh.addEventListener("click", () => {
+        initDocentChat();
+      });
+    }
+    docentClose.addEventListener("click", () => {
+      docentPanel.hidden = true;
+      docentBtn.hidden = false;
+    });
+    docentSend.addEventListener("click", async () => {
+      const text = docentInput.value.trim();
+      if (!text) return;
+      addDocentMessage(text, true);
+      docentInput.value = "";
+
+      const config = window.OMAEROUTE_CONFIG || {};
+      const apiKey = config.geminiApiKey?.trim();
+      
+      if (!apiKey) {
+        addDocentMessage("Gemini API 키가 설정되지 않았습니다. config.js를 확인해주세요.");
+        return;
+      }
+
+      const typingMsg = document.createElement("div");
+      typingMsg.className = "ai-msg docent-msg typing";
+      typingMsg.textContent = "AI가 답변을 작성 중입니다...";
+      docentChat.appendChild(typingMsg);
+      docentChat.scrollTop = docentChat.scrollHeight;
+
+      docentChatHistory.push({ role: "user", parts: [{ text }] });
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: docentChatHistory
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.text();
+          console.error("Gemini API Error:", response.status, errData);
+          throw new Error(`API Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let replyText = "답변을 생성할 수 없습니다.";
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
+          replyText = data.candidates[0].content.parts[0].text;
+        }
+        
+        docentChat.removeChild(typingMsg);
+        addDocentMessage(replyText);
+        docentChatHistory.push({ role: "model", parts: [{ text: replyText }] });
+
+      } catch (error) {
+        console.error("AI Docent Error:", error);
+        if (docentChat.contains(typingMsg)) {
+          docentChat.removeChild(typingMsg);
+        }
+        addDocentMessage("오류가 발생했습니다. 잠시 후 다시 시도해주세요. (콘솔 로그를 확인해주세요)");
+        docentChatHistory.pop(); // Remove the user message to try again
+      }
+    });
+    docentInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") docentSend.click();
+    });
+  }
+}
+
+async function loadBaseballGames() {
+  try {
+    const response = await fetch("./data/baseball_games.json");
+    if (!response.ok) throw new Error(`야구 경기 데이터 오류: ${response.status}`);
+    return { rows: await response.json(), failed: false, source: "local" };
+  } catch (error) {
+    console.warn(error);
+    return { rows: [], failed: true, source: "failed" };
+  }
+}
+
+async function loadStampPatterns() {
+  try {
+    const response = await fetch("./data/local-stamps/stamp-patterns.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`전통 문양 스탬프 데이터 오류: ${response.status}`);
+    const payload = await response.json();
+    return {
+      places: payload?.places && typeof payload.places === "object" ? payload.places : {},
+      categories: payload?.categories && typeof payload.categories === "object" ? payload.categories : {},
+    };
+  } catch (error) {
+    console.info("로컬 전통 문양 스탬프를 사용하지 않습니다.", error);
+    return { places: {}, categories: {} };
+  }
 }
 
 async function loadPlaces() {
@@ -2909,10 +3853,22 @@ async function loadPlaces() {
       console.warn(error);
       return { foods: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult] = await Promise.all([
+  const openingHoursRequest = fetch("./data/place_opening_hours.json")
+    .then(async (response) => {
+      if (!response.ok) throw new Error(`운영시간 데이터 오류: ${response.status}`);
+      return { rows: await response.json(), failed: false };
+    })
+    .catch((error) => {
+      console.warn(error);
+      return { rows: [], failed: true };
+    });
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
+    openingHoursRequest,
+    loadBaseballGames(),
+    loadStampPatterns(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -2920,12 +3876,30 @@ async function loadPlaces() {
   state.places = [...places, ...restaurants];
   state.stadiumFoods = Array.isArray(stadiumFoodResult.foods) ? stadiumFoodResult.foods : [];
   state.stadiumFoodLoadFailed = stadiumFoodResult.failed;
+  state.openingHoursByPlace = new Map();
+  (Array.isArray(openingHoursResult.rows) ? openingHoursResult.rows : []).forEach((hours) => {
+    const placeKey = `${hours.source}:${hours.source_place_id}`;
+    const rows = state.openingHoursByPlace.get(placeKey) || [];
+    rows.push(hours);
+    state.openingHoursByPlace.set(placeKey, rows);
+  });
+  state.openingHoursLoadFailed = openingHoursResult.failed;
+  state.baseballGamesByDate = new Map();
+  (Array.isArray(baseballGamesResult.rows) ? baseballGamesResult.rows : []).forEach((game) => {
+    const rows = state.baseballGamesByDate.get(game.game_date) || [];
+    rows.push(game);
+    rows.sort((a, b) => String(a.scheduled_start_at).localeCompare(String(b.scheduled_start_at)));
+    state.baseballGamesByDate.set(game.game_date, rows);
+  });
+  state.baseballGamesLoadFailed = baseballGamesResult.failed;
+  state.baseballGamesSource = baseballGamesResult.source;
+  state.stampPatternCategories = new Map(Object.entries(stampPatternResult.categories));
   renderSavedRoutes();
-  const config = window.OMAEROUTE_CONFIG || {};
+  updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;
-  $("#dataStatus").textContent = config.useSupabase
-    ? "Supabase pgvector 연결"
-    : `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}`;
+  const openingHoursPlaceCount = state.openingHoursByPlace.size;
+  const baseballGameCount = [...state.baseballGamesByDate.values()].flat().length;
+  $("#dataStatus").textContent = `관광지 ${places.length}곳 · 음식점 ${restaurants.length}곳 · 운영정보 ${openingHoursPlaceCount}곳 · KIA 광주 홈경기 ${baseballGameCount}건 · 구장 먹거리 ${state.stadiumFoods.length}곳 · 선수 추천 ${playerRestaurantCount}곳${state.stadiumFoodLoadFailed ? " · 구장 DB 확인 필요" : ""}${state.openingHoursLoadFailed ? " · 운영시간 DB 확인 필요" : ""}${state.baseballGamesLoadFailed ? " · 경기 DB 확인 필요" : ""}`;
 }
 
 async function init() {
@@ -2942,6 +3916,7 @@ async function init() {
   loadStampIds();
   loadReviewRewards();
   bindEvents();
+  preloadPreviewFrames();
   renderWeatherFieldStatus();
   try {
     await loadPlaces();

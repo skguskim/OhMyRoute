@@ -913,13 +913,25 @@ function updateRangeVisual(input) {
     getPreferenceLevel(Number(input.value));
 }
 
+const AXIS_COLORS = {
+  sports: { light: "#e3f2fd", dark: "#1976d2" },
+  nature: { light: "#e8f5e9", dark: "#2e7d32" },
+  culture: { light: "#f3e5f5", dark: "#7b1fa2" },
+  art: { light: "#fce4ec", dark: "#c2185b" },
+  food: { light: "#fff3e0", dark: "#f57c00" },
+  activity: { light: "#ffebee", dark: "#d32f2f" },
+  healing: { light: "#e0f2f1", dark: "#00796b" },
+  festival: { light: "#fff8e1", dark: "#fbc02d" }
+};
+
 function renderSliders() {
   $("#preferenceSliders").innerHTML = DISPLAY_AXIS_KEYS.map(
     (axisKey) => {
       const index = AXIS_INDEX_BY_KEY[axisKey];
       const axis = AXES[index];
+      const colors = AXIS_COLORS[axisKey] || { light: "#e8f5e9", dark: "#2e7d32" };
       return `
-      <label class="slider-row">
+      <label class="slider-row" style="--slider-light: ${colors.light}; --slider-dark: ${colors.dark};">
         <span class="slider-meta">
           <span class="slider-name"><i>${axis.emoji}</i>${axis.label}</span>
           <span class="slider-level">${getPreferenceLevel(state.preference[index])}</span>
@@ -928,7 +940,7 @@ function renderSliders() {
           type="range"
           min="0"
           max="100"
-          step="1"
+          step="10"
           value="${state.preference[index]}"
           data-index="${index}"
           aria-label="${axis.label} 선호도"

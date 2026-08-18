@@ -707,8 +707,8 @@ button {
 
 .slider-level {
   padding: 3px 7px;
-  color: var(--slider-dark, var(--green));
-  background: var(--slider-light, rgba(74, 101, 78, 0.07));
+  color: var(--green);
+  background: rgba(74, 101, 78, 0.07);
   border-radius: 999px;
   font-size: 9px;
   font-weight: 800;
@@ -716,32 +716,29 @@ button {
 
 input[type="range"] {
   width: 100%;
-  height: 28px;
+  height: 4px;
   appearance: none;
-  background: 
-    repeating-linear-gradient(to right, transparent, transparent calc(10% - 2px), #fff calc(10% - 2px), #fff 10%),
-    linear-gradient(to right, var(--slider-light, var(--green)) 0%, var(--slider-dark, var(--green)) var(--range-progress), var(--line) var(--range-progress), var(--line) 100%);
-  border-radius: 8px;
+  background: linear-gradient(to right, var(--green) var(--range-progress), var(--line) var(--range-progress));
+  border-radius: 999px;
   outline: none;
-  cursor: pointer;
-  overflow: hidden;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  width: 1px;
-  height: 28px;
+  width: 17px;
+  height: 17px;
   appearance: none;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  background: white;
+  border: 4px solid var(--green);
+  border-radius: 50%;
+  box-shadow: 0 2px 7px rgba(74, 101, 78, 0.28);
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 1px;
-  height: 28px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 4px solid var(--green);
+  border-radius: 50%;
 }
 
 .generate-button {
@@ -2754,15 +2751,15 @@ body:has(#formView.active) .app-main {
 
 #formView .slider-level {
   padding: 4px 8px;
-  color: var(--slider-dark, #3182f6);
-  background: var(--slider-light, #e8f3ff);
+  color: #3182f6;
+  background: #e8f3ff;
   border-radius: 8px;
   font-size: 10px;
   font-weight: 700;
 }
 
 #formView input[type="range"] {
-  height: 28px;
+  height: 5px;
 }
 
 #formView .generate-button {
@@ -4323,19 +4320,17 @@ code {
 }
 
 .slider-level {
-  color: var(--slider-dark, var(--green-dark));
-  background: var(--slider-light, var(--green-soft));
+  color: var(--green-dark);
+  background: var(--green-soft);
 }
 
 input[type="range"] {
-  background: 
-    repeating-linear-gradient(to right, transparent, transparent calc(10% - 2px), #fff calc(10% - 2px), #fff 10%),
-    linear-gradient(to right, var(--slider-light, var(--blue)) 0%, var(--slider-dark, var(--blue)) var(--range-progress), var(--line) var(--range-progress), var(--line) 100%);
-  accent-color: var(--slider-dark, var(--blue));
+  background: linear-gradient(to right, var(--blue) var(--range-progress), var(--line) var(--range-progress));
+  accent-color: var(--blue);
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  border-color: transparent;
+  border-color: var(--blue);
 }
 
 .prompt-card {

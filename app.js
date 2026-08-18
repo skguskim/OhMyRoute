@@ -3088,6 +3088,26 @@ function normalizeSavedPreference(saved) {
   return Array(AXES.length).fill(0);
 }
 
+function preferenceByKey(preference = state.preference) {
+  return Object.fromEntries(AXES.map((axis, index) => [axis.key, Number(preference[index]) || 0]));
+}
+
+function normalizeSavedPreference(saved) {
+  if (saved?.preferenceByKey && typeof saved.preferenceByKey === "object") {
+    return AXES.map((axis) => Number(saved.preferenceByKey[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference) && Array.isArray(saved.preferenceOrder)) {
+    const keyedPreference = Object.fromEntries(
+      saved.preferenceOrder.map((axisKey, index) => [axisKey, saved.preference[index]]),
+    );
+    return AXES.map((axis) => Number(keyedPreference[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference)) {
+    return AXES.map((_, index) => Number(saved.preference[index]) || 0);
+  }
+  return Array(AXES.length).fill(0);
+}
+
 function saveCurrentRoute() {
   if (!state.route.length) return;
   const signature = routeSignature();
@@ -3511,6 +3531,7 @@ function bindEvents() {
   const docentBtn = $("#aiDocentButton");
   const docentPanel = $("#aiDocentPanel");
   const docentClose = $("#aiDocentCloseButton");
+  const docentRefresh = $("#aiDocentRefreshButton");
   const docentChat = $("#aiDocentChat");
   const docentInput = $("#aiDocentInput");
   const docentSend = $("#aiDocentSendButton");
@@ -3550,30 +3571,102 @@ function bindEvents() {
   }
 
   if (docentBtn && docentPanel) {
+    let docentChatHistory = [];
+
+    function initDocentChat() {
+      docentChat.innerHTML = "";
+      const nearest = findNearestPlace();
+      let initialMessage = "";
+      if (nearest) {
+        initialMessage = `지금 계신 곳과 가장 가까운 여행지는 [${nearest.name}]입니다!\n\n${nearest.description}\n\n이곳에 대해 더 궁금한 점이 있으신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n현재 사용자는 ${nearest.name} 근처에 있습니다. 장소 설명: ${nearest.description}` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      } else {
+        initialMessage = `안녕하세요! 오매루트 AI 도슨트입니다. 어떤 장소가 궁금하신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n안녕하세요.` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      }
+      addDocentMessage(initialMessage);
+    }
+
     docentBtn.addEventListener("click", () => {
       docentPanel.hidden = false;
       docentBtn.hidden = true;
       if (docentChat.children.length === 0) {
-        const nearest = findNearestPlace();
-        if (nearest) {
-          addDocentMessage(`지금 계신 곳과 가장 가까운 여행지는 [${nearest.name}]입니다!\n\n${nearest.description}\n\n이곳에 대해 더 궁금한 점이 있으신가요?`);
-        } else {
-          addDocentMessage(`안녕하세요! 오매루트 AI 도슨트입니다. 어떤 장소가 궁금하신가요?`);
-        }
+        initDocentChat();
       }
     });
+
+    if (docentRefresh) {
+      docentRefresh.addEventListener("click", () => {
+        initDocentChat();
+      });
+    }
     docentClose.addEventListener("click", () => {
       docentPanel.hidden = true;
       docentBtn.hidden = false;
     });
-    docentSend.addEventListener("click", () => {
+    docentSend.addEventListener("click", async () => {
       const text = docentInput.value.trim();
       if (!text) return;
       addDocentMessage(text, true);
       docentInput.value = "";
-      setTimeout(() => {
-        addDocentMessage("죄송합니다. 현재 AI 답변 기능은 데모 버전입니다. 장소에 직접 방문하셔서 다양한 매력을 느껴보세요!");
-      }, 600);
+
+      const config = window.OMAEROUTE_CONFIG || {};
+      const apiKey = config.geminiApiKey?.trim();
+      
+      if (!apiKey) {
+        addDocentMessage("Gemini API 키가 설정되지 않았습니다. config.js를 확인해주세요.");
+        return;
+      }
+
+      const typingMsg = document.createElement("div");
+      typingMsg.className = "ai-msg docent-msg typing";
+      typingMsg.textContent = "AI가 답변을 작성 중입니다...";
+      docentChat.appendChild(typingMsg);
+      docentChat.scrollTop = docentChat.scrollHeight;
+
+      docentChatHistory.push({ role: "user", parts: [{ text }] });
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: docentChatHistory
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.text();
+          console.error("Gemini API Error:", response.status, errData);
+          throw new Error(`API Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let replyText = "답변을 생성할 수 없습니다.";
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
+          replyText = data.candidates[0].content.parts[0].text;
+        }
+        
+        docentChat.removeChild(typingMsg);
+        addDocentMessage(replyText);
+        docentChatHistory.push({ role: "model", parts: [{ text: replyText }] });
+
+      } catch (error) {
+        console.error("AI Docent Error:", error);
+        if (docentChat.contains(typingMsg)) {
+          docentChat.removeChild(typingMsg);
+        }
+        addDocentMessage("오류가 발생했습니다. 잠시 후 다시 시도해주세요. (콘솔 로그를 확인해주세요)");
+        docentChatHistory.pop(); // Remove the user message to try again
+      }
     });
     docentInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") docentSend.click();

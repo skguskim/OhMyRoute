@@ -5,4 +5,6 @@ window.OMAEROUTE_CONFIG = {
   kmaWeatherProxyUrl: "/api/weather",
   // 정적 호스팅에서만 쓰는 레거시 직접 호출 옵션입니다. 키 노출 위험 때문에 비워두세요.
   kmaServiceKey: "",
+  // Gemini API Key for AI Docent
+  geminiApiKey: "",
 };

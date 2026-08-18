@@ -1,4 +1,5 @@
 export const KMA_BASE_HOURS = [2, 5, 8, 11, 14, 17, 20, 23];
+export const KMA_MID_BASE_HOURS = [6, 18];
 
 const PRECIPITATION_TYPE_LABELS = {
   0: "강수없음",
@@ -63,6 +64,31 @@ export function previousKmaBase({ baseDate, baseTime }) {
   }
   const dateValue = `${baseDate.slice(0, 4)}-${baseDate.slice(4, 6)}-${baseDate.slice(6, 8)}`;
   return { baseDate: shiftDateValue(dateValue, -1).replaceAll("-", ""), baseTime: "2300" };
+}
+
+export function latestKmaMidBase(date = new Date()) {
+  const buffered = new Date(date.getTime() - 20 * 60 * 1000);
+  const parts = koreaDateParts(buffered);
+  const hour = Number(parts.hour);
+  let baseHour = [...KMA_MID_BASE_HOURS].reverse().find((candidate) => candidate <= hour);
+  let baseDate = `${parts.year}-${parts.month}-${parts.day}`;
+  if (baseHour === undefined) {
+    baseHour = 18;
+    baseDate = shiftDateValue(baseDate, -1);
+  }
+  return {
+    tmFc: `${baseDate.replaceAll("-", "")}${String(baseHour).padStart(2, "0")}00`,
+  };
+}
+
+export function previousKmaMidBase({ tmFc }) {
+  const dateValue = `${tmFc.slice(0, 4)}-${tmFc.slice(4, 6)}-${tmFc.slice(6, 8)}`;
+  const hour = Number(tmFc.slice(8, 10));
+  return {
+    tmFc: hour === 18
+      ? `${dateValue.replaceAll("-", "")}0600`
+      : `${shiftDateValue(dateValue, -1).replaceAll("-", "")}1800`,
+  };
 }
 
 export function latLonToKmaGrid(latitude, longitude) {
@@ -149,6 +175,100 @@ export function selectForecastSlot(items, dateValue, targetTime, label) {
   };
 }
 
+function dateDistance(fromDate, toDate) {
+  const toUtc = (value) => {
+    const normalized = String(value).replaceAll("-", "");
+    return Date.UTC(
+      Number(normalized.slice(0, 4)),
+      Number(normalized.slice(4, 6)) - 1,
+      Number(normalized.slice(6, 8)),
+    );
+  };
+  return Math.round((toUtc(toDate) - toUtc(fromDate)) / (24 * 60 * 60 * 1000));
+}
+
+function midCondition(weatherText, precipitationProbability) {
+  const text = String(weatherText || "");
+  if (/비|눈|소나기/.test(text) || Number(precipitationProbability || 0) >= 60) return "rainy";
+  if (/흐림|구름/.test(text)) return "cloudy";
+  return "sunny";
+}
+
+function midPrecipitationLabel(weatherText) {
+  const text = String(weatherText || "");
+  if (/비.*눈|눈.*비/.test(text)) return "비/눈";
+  if (/소나기/.test(text)) return "소나기";
+  if (/눈/.test(text)) return "눈";
+  if (/비/.test(text)) return "비";
+  return "강수없음";
+}
+
+function midSlot(item, dayOffset, period, label) {
+  const suffix = dayOffset <= 7 ? `${dayOffset}${period}` : String(dayOffset);
+  const weatherText = item?.[`wf${suffix}`];
+  const precipitationProbability = Number(item?.[`rnSt${suffix}`]);
+  if (!weatherText && !Number.isFinite(precipitationProbability)) return null;
+  return {
+    source: "mid",
+    label,
+    period: period.toLowerCase() || "day",
+    condition: midCondition(weatherText, precipitationProbability),
+    weatherText: String(weatherText || "날씨 정보 없음"),
+    precipitationTypeLabel: midPrecipitationLabel(weatherText),
+    precipitationProbability: Number.isFinite(precipitationProbability) ? precipitationProbability : 0,
+    temperature: null,
+  };
+}
+
+function conditionForSlots(slots) {
+  return slots.some((slot) => slot.condition === "rainy")
+    ? "rainy"
+    : slots.some((slot) => slot.condition === "cloudy")
+      ? "cloudy"
+      : "sunny";
+}
+
+export function buildMidWeatherForecast(landItems, temperatureItems, {
+  dates,
+  originKey,
+  originName,
+  base,
+  fetchedAt = new Date().toISOString(),
+}) {
+  const land = Array.isArray(landItems) ? landItems[0] : landItems;
+  const temperature = Array.isArray(temperatureItems) ? temperatureItems[0] : temperatureItems;
+  const baseDate = base.tmFc.slice(0, 8);
+  const days = dates.map((date, dayIndex) => {
+    const dayOffset = dateDistance(baseDate, date);
+    if (dayOffset < 3 || dayOffset > 10) {
+      return { date, dayIndex, source: "mid", condition: "sunny", slots: [] };
+    }
+    const slots = dayOffset <= 7
+      ? [midSlot(land, dayOffset, "Am", "오전"), midSlot(land, dayOffset, "Pm", "오후")].filter(Boolean)
+      : [midSlot(land, dayOffset, "", "하루")].filter(Boolean);
+    const minTemperature = Number(temperature?.[`taMin${dayOffset}`]);
+    const maxTemperature = Number(temperature?.[`taMax${dayOffset}`]);
+    return {
+      date,
+      dayIndex,
+      source: "mid",
+      condition: conditionForSlots(slots),
+      slots,
+      minTemperature: Number.isFinite(minTemperature) ? minTemperature : null,
+      maxTemperature: Number.isFinite(maxTemperature) ? maxTemperature : null,
+    };
+  });
+  return {
+    status: "ready",
+    source: "mid",
+    originKey,
+    originName,
+    base,
+    days,
+    fetchedAt,
+  };
+}
+
 export function buildWeatherForecast(items, {
   dates,
   originKey,
@@ -156,18 +276,25 @@ export function buildWeatherForecast(items, {
   grid,
   base,
   fetchedAt = new Date().toISOString(),
+  allowEmpty = false,
 }) {
   const requestedSlots = [
     { time: "1200", label: "12시" },
     { time: "1800", label: "18시" },
   ];
-  const days = dates.map((date, dayIndex) => ({
-    date,
-    dayIndex,
-    slots: requestedSlots
+  const days = dates.map((date, dayIndex) => {
+    const daySlots = requestedSlots
       .map(({ time, label }) => selectForecastSlot(items, date, time, label))
-      .filter(Boolean),
-  }));
+      .filter(Boolean)
+      .map((slot) => ({ ...slot, source: "short" }));
+    return {
+      date,
+      dayIndex,
+      source: "short",
+      condition: conditionForSlots(daySlots),
+      slots: daySlots,
+    };
+  });
   const slots = days.flatMap((day) => day.slots);
   const availableDates = [...new Set(items.map((item) => String(item.fcstDate)))]
     .sort()
@@ -175,7 +302,7 @@ export function buildWeatherForecast(items, {
   const availableRange = availableDates.length
     ? { from: availableDates[0], to: availableDates.at(-1) }
     : null;
-  if (!slots.length) {
+  if (!slots.length && !allowEmpty) {
     const rangeText = availableRange
       ? `현재 조회 가능한 기간은 ${availableRange.from}~${availableRange.to}입니다.`
       : "현재 조회 가능한 단기예보가 없습니다.";
@@ -195,6 +322,7 @@ export function buildWeatherForecast(items, {
       : "sunny";
   return {
     status: "ready",
+    source: "short",
     condition,
     coverage: missingSlots.length ? "partial" : "full",
     missingSlots,
@@ -203,6 +331,54 @@ export function buildWeatherForecast(items, {
     originName,
     grid,
     base,
+    days,
+    fetchedAt,
+  };
+}
+
+export function mergeWeatherForecasts(shortForecast, midForecast, {
+  dates,
+  originKey,
+  originName,
+  grid,
+  fetchedAt = new Date().toISOString(),
+}) {
+  const days = dates.map((date, dayIndex) => {
+    const shortDay = shortForecast?.days?.find((day) => day.date === date && day.slots.length);
+    const midDay = midForecast?.days?.find((day) => day.date === date && day.slots.length);
+    return shortDay
+      ? { ...shortDay, dayIndex }
+      : midDay
+        ? { ...midDay, dayIndex }
+        : { date, dayIndex, source: "unavailable", condition: "sunny", slots: [] };
+  });
+  const availableDays = days.filter((day) => day.slots.length);
+  if (!availableDays.length) {
+    throw new WeatherForecastError(
+      "FORECAST_OUT_OF_RANGE",
+      "선택한 날짜는 기상청 단기·중기예보 범위 밖입니다.",
+      { dates },
+    );
+  }
+  const sources = [...new Set(availableDays.map((day) => day.source))];
+  const condition = availableDays.some((day) => day.condition === "rainy")
+    ? "rainy"
+    : availableDays.some((day) => day.condition === "cloudy")
+      ? "cloudy"
+      : "sunny";
+  const missingDates = days.filter((day) => !day.slots.length).map((day) => day.date);
+  return {
+    status: "ready",
+    source: sources.length > 1 ? "mixed" : sources[0],
+    sources,
+    condition,
+    coverage: missingDates.length ? "partial" : "full",
+    missingDates,
+    originKey,
+    originName,
+    grid,
+    base: shortForecast?.base || null,
+    midBase: midForecast?.base || null,
     days,
     fetchedAt,
   };

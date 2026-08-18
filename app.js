@@ -1,10 +1,14 @@
 import {
+  buildMidWeatherForecast,
   buildWeatherForecast,
   latestKmaBase,
+  latestKmaMidBase,
   latLonToKmaGrid,
+  mergeWeatherForecasts,
   normalizeKmaServiceKey,
   precipitationTypeLabel,
   previousKmaBase,
+  previousKmaMidBase,
   weatherSuitabilityScore,
 } from "./weather.mjs";
 
@@ -91,6 +95,8 @@ const CHAMPIONS_FIELD_GAME = {
 const WEATHER_LABELS = { sunny: "맑음", cloudy: "구름많음", rainy: "비·눈" };
 const WEATHER_ICONS = { sunny: "☀️", cloudy: "☁️", rainy: "🌧️" };
 const KMA_FORECAST_URL = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";
+const KMA_MID_LAND_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst";
+const KMA_MID_TEMPERATURE_URL = "https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa";
 
 const LOADING_PHRASES = [
   "출발지 기준 기상청 예보를 확인하고 있습니다.",
@@ -499,6 +505,20 @@ function baseballScheduleForDate(dateValue) {
   };
 }
 
+function conditionsForRouteDate(conditions, date) {
+  if (conditions.weatherMode !== "auto") return conditions;
+  const forecastDay = state.weatherForecast?.status === "ready"
+    ? state.weatherForecast.days.find((day) => day.date === date && day.slots.length)
+    : null;
+  const selectedWeather = forecastDay?.condition || "sunny";
+  return {
+    ...conditions,
+    selectedWeather,
+    weather: conditions.promptRainy ? "rainy" : selectedWeather,
+    weatherForecastSource: forecastDay?.source || "unavailable",
+  };
+}
+
 function baseballGamesForDate(dateValue) {
   return state.baseballGamesByDate.get(String(dateValue)) || [];
 }
@@ -861,32 +881,20 @@ function weatherSourceConfig() {
   const proxyUrl = config.kmaWeatherProxyUrl === false
     ? ""
     : String(config.kmaWeatherProxyUrl || "/api/weather").trim();
+  const proxyBase = proxyUrl.replace(/\/$/, "");
   return {
     proxyUrl,
+    midLandProxyUrl: config.kmaMidLandProxyUrl === false
+      ? ""
+      : String(config.kmaMidLandProxyUrl || (proxyBase ? `${proxyBase}/mid-land` : "")).trim(),
+    midTemperatureProxyUrl: config.kmaMidTemperatureProxyUrl === false
+      ? ""
+      : String(config.kmaMidTemperatureProxyUrl || (proxyBase ? `${proxyBase}/mid-temperature` : "")).trim(),
     serviceKey: normalizeKmaServiceKey(config.kmaServiceKey),
   };
 }
 
-async function requestKmaForecast(source, grid, base, signal) {
-  const params = new URLSearchParams({
-    pageNo: "1",
-    numOfRows: "2000",
-    dataType: "JSON",
-    base_date: base.baseDate,
-    base_time: base.baseTime,
-    nx: String(grid.nx),
-    ny: String(grid.ny),
-  });
-  let requestUrl;
-  if (source.proxyUrl) {
-    const url = new URL(source.proxyUrl, window.location.href);
-    url.search = params.toString();
-    requestUrl = url.toString();
-  } else {
-    params.set("serviceKey", source.serviceKey);
-    requestUrl = `${KMA_FORECAST_URL}?${params}`;
-  }
-  const response = await fetch(requestUrl, { signal });
+async function parseKmaResponse(response, emptyMessage) {
   let payload;
   try {
     payload = await response.json();
@@ -911,9 +919,84 @@ async function requestKmaForecast(source, grid, base, signal) {
     error.code = `KMA_${header?.resultCode || "UNKNOWN"}`;
     throw error;
   }
-  const items = payload?.response?.body?.items?.item;
-  if (!Array.isArray(items) || !items.length) throw new Error("기상청 예보 데이터가 없습니다.");
+  const rawItems = payload?.response?.body?.items?.item;
+  const items = Array.isArray(rawItems) ? rawItems : rawItems ? [rawItems] : [];
+  if (!items.length) throw new Error(emptyMessage);
   return items;
+}
+
+async function requestKmaForecast(source, grid, base, signal) {
+  const params = new URLSearchParams({
+    pageNo: "1",
+    numOfRows: "2000",
+    dataType: "JSON",
+    base_date: base.baseDate,
+    base_time: base.baseTime,
+    nx: String(grid.nx),
+    ny: String(grid.ny),
+  });
+  let requestUrl;
+  if (source.proxyUrl) {
+    const url = new URL(source.proxyUrl, window.location.href);
+    url.search = params.toString();
+    requestUrl = url.toString();
+  } else {
+    params.set("serviceKey", source.serviceKey);
+    requestUrl = `${KMA_FORECAST_URL}?${params}`;
+  }
+  const response = await fetch(requestUrl, { signal });
+  return parseKmaResponse(response, "기상청 단기예보 데이터가 없습니다.");
+}
+
+async function requestKmaMidEndpoint(source, { proxyUrl, directUrl, regionId, base, signal }) {
+  const params = new URLSearchParams({
+    pageNo: "1",
+    numOfRows: "10",
+    dataType: "JSON",
+  });
+  let requestUrl;
+  if (proxyUrl) {
+    const url = new URL(proxyUrl, window.location.href);
+    params.set("tm_fc", base.tmFc);
+    url.search = params.toString();
+    requestUrl = url.toString();
+  } else {
+    params.set("serviceKey", source.serviceKey);
+    params.set("regId", regionId);
+    params.set("tmFc", base.tmFc);
+    requestUrl = `${directUrl}?${params}`;
+  }
+  const response = await fetch(requestUrl, { signal });
+  return parseKmaResponse(response, "기상청 중기예보 데이터가 없습니다.");
+}
+
+async function requestKmaMidForecast(source, base, signal) {
+  const landPromise = requestKmaMidEndpoint(source, {
+    proxyUrl: source.midLandProxyUrl,
+    directUrl: KMA_MID_LAND_URL,
+    regionId: "11F20000",
+    base,
+    signal,
+  });
+  const temperaturePromise = requestKmaMidEndpoint(source, {
+    proxyUrl: source.midTemperatureProxyUrl,
+    directUrl: KMA_MID_TEMPERATURE_URL,
+    regionId: "11F20501",
+    base,
+    signal,
+  });
+  const [landResult, temperatureResult] = await Promise.allSettled([landPromise, temperaturePromise]);
+  if (landResult.status === "rejected") throw landResult.reason;
+  if (temperatureResult.status === "rejected") {
+    if (["KMA_KEY_MISSING", "KMA_20", "KMA_30", "KMA_31"].includes(temperatureResult.reason?.code)) {
+      throw temperatureResult.reason;
+    }
+    console.warn("중기기온예보를 불러오지 못해 육상예보만 반영합니다.", temperatureResult.reason);
+  }
+  return {
+    landItems: landResult.value,
+    temperatureItems: temperatureResult.status === "fulfilled" ? temperatureResult.value : [],
+  };
 }
 
 function forecastDates(conditions) {
@@ -921,6 +1004,9 @@ function forecastDates(conditions) {
 }
 
 function weatherSlotSummary(slot) {
+  if (slot.source === "mid") {
+    return `${slot.label} ${WEATHER_ICONS[slot.condition]} ${slot.weatherText} · 강수확률 ${slot.precipitationProbability}%`;
+  }
   const temperature = Number.isFinite(slot.temperature)
     ? `${Math.round(slot.temperature)}℃`
     : WEATHER_LABELS[slot.condition];
@@ -944,9 +1030,14 @@ function renderWeatherFieldStatus() {
     return;
   }
   if (forecast?.status === "ready") {
-    const slots = forecast.days[0]?.slots || [];
-    const coverage = forecast.coverage === "partial" ? " · 일부 시각은 단기예보 범위 밖" : "";
-    element.textContent = `${forecast.originName} 기준 · ${slots.map(weatherSlotSummary).join(" · ")}${coverage}`;
+    const day = forecast.days.find((item) => item.slots.length) || forecast.days[0];
+    const slots = day?.slots || [];
+    const temperatureRange = day?.source === "mid"
+      && Number.isFinite(day.minTemperature)
+      && Number.isFinite(day.maxTemperature)
+      ? ` · 최저 ${Math.round(day.minTemperature)}℃ · 최고 ${Math.round(day.maxTemperature)}℃`
+      : "";
+    element.textContent = `${forecast.originName} 기준 · ${slots.map(weatherSlotSummary).join(" · ")}${temperatureRange}`;
     element.classList.add(forecast.coverage === "partial" ? "warning" : "ready");
     return;
   }
@@ -978,14 +1069,25 @@ function renderWeatherBriefing() {
   element.hidden = false;
   if (forecast.status === "ready") {
     const selectedDate = state.dayWindows[state.selectedDay]?.date;
-    const day = forecast.days.find((item) => item.date === selectedDate) || forecast.days[0];
+    const day = forecast.days.find((item) => item.date === selectedDate);
     const slots = day?.slots || [];
+    if (!day || !slots.length) {
+      element.innerHTML = `<strong>선택한 날짜의 기상청 예보 없음</strong><small>현재 제공되는 단기·중기예보 범위를 벗어나 날씨는 일정 추천에서 제외했습니다.</small>`;
+      return;
+    }
+    const isMidForecast = day.source === "mid";
+    const temperatureRange = isMidForecast
+      && Number.isFinite(day.minTemperature)
+      && Number.isFinite(day.maxTemperature)
+      ? `<span class="weather-slot">최저 ${Math.round(day.minTemperature)}℃ · 최고 ${Math.round(day.maxTemperature)}℃</span>`
+      : "";
     element.innerHTML = `
-      <strong>기상청 단기예보 · ${escapeHtml(forecast.originName)} 출발 기준</strong>
+      <strong>${isMidForecast ? "기상청 중기예보 · 광주·전남 권역" : `기상청 단기예보 · ${escapeHtml(forecast.originName)} 출발 기준`}</strong>
       <div class="weather-slot-list">
         ${slots.map((slot) => `<span class="weather-slot">${escapeHtml(weatherSlotSummary(slot))}</span>`).join("")}
+        ${temperatureRange}
       </div>
-      <small>${escapeHtml(day.date)} · 출발장소가 포함된 기상청 5km 격자 ${forecast.grid.nx}/${forecast.grid.ny} 기준${forecast.coverage === "partial" ? " · 일부 요청 시각은 단기예보 범위 밖이라 조회 가능한 값만 반영" : ""}</small>
+      <small>${isMidForecast ? "광주·전남 권역 기준 · 기상청 중기예보 반영" : "출발지 기준 · 기상청 5km 예보 반영"}</small>
     `;
     return;
   }
@@ -996,7 +1098,7 @@ function renderWeatherBriefing() {
   const message = forecast.status === "needs_key"
     ? "기상청 서비스키가 없어 날씨를 제외한 조건으로 추천했습니다."
     : `${forecast.message || "기상청 예보를 불러오지 못했습니다."} 날씨를 제외한 조건으로 추천했습니다.`;
-  const title = forecast.status === "out_of_range" ? "단기예보 범위 밖 날짜" : "기상청 자동 연동 대기";
+  const title = forecast.status === "out_of_range" ? "기상청 예보 범위 밖 날짜" : "기상청 자동 연동 대기";
   element.innerHTML = `<strong>${title}</strong><small>${escapeHtml(message)}</small>`;
 }
 
@@ -1018,7 +1120,9 @@ async function refreshWeatherForecast({ force = false } = {}) {
 
   const grid = latLonToKmaGrid(conditions.origin.latitude, conditions.origin.longitude);
   const base = latestKmaBase();
-  const cacheKey = `${conditions.originKey}:${conditions.travelDate}:${conditions.startTime}:${conditions.endDate}:${conditions.endTime}:${base.baseDate}:${base.baseTime}`;
+  const midBase = latestKmaMidBase();
+  const dates = forecastDates(conditions);
+  const cacheKey = `${conditions.originKey}:${conditions.travelDate}:${conditions.startTime}:${conditions.endDate}:${conditions.endTime}:${base.baseDate}:${base.baseTime}:${midBase.tmFc}`;
   if (!force && state.weatherCache.has(cacheKey)) {
     state.weatherForecast = state.weatherCache.get(cacheKey);
     renderWeatherFieldStatus();
@@ -1027,33 +1131,74 @@ async function refreshWeatherForecast({ force = false } = {}) {
 
   state.weatherAbortController?.abort();
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 10000);
+  const timeout = window.setTimeout(() => controller.abort(), 25000);
   state.weatherAbortController = controller;
   state.weatherForecast = { status: "loading", condition: "sunny" };
   renderWeatherFieldStatus();
-  let lastError;
+  let shortForecast = null;
+  let midForecast = null;
+  let shortError = null;
+  let midError = null;
   try {
     for (const candidateBase of [base, previousKmaBase(base)]) {
       try {
         const items = await requestKmaForecast(source, grid, candidateBase, controller.signal);
-        const forecast = buildWeatherForecast(items, {
-          dates: forecastDates(conditions),
+        shortForecast = buildWeatherForecast(items, {
+          dates,
           originKey: conditions.originKey,
           originName: conditions.origin.name,
           grid,
           base: candidateBase,
+          allowEmpty: true,
         });
-        state.weatherCache.set(cacheKey, forecast);
-        state.weatherForecast = forecast;
-        renderWeatherFieldStatus();
-        return forecast;
+        break;
       } catch (error) {
         if (error.name === "AbortError") throw error;
         if (["KMA_KEY_MISSING", "KMA_20", "KMA_30", "KMA_31"].includes(error.code)) throw error;
-        lastError = error;
+        shortError = error;
       }
     }
-    throw lastError || new Error("기상청 예보를 불러오지 못했습니다.");
+
+    const datesMissingFromShort = dates.filter((date) =>
+      !shortForecast?.days?.some((day) => day.date === date && day.slots.length),
+    );
+    if (datesMissingFromShort.length) {
+      for (const candidateBase of [midBase, previousKmaMidBase(midBase)]) {
+        try {
+          const result = await requestKmaMidForecast(source, candidateBase, controller.signal);
+          const candidateForecast = buildMidWeatherForecast(result.landItems, result.temperatureItems, {
+            dates: datesMissingFromShort,
+            originKey: conditions.originKey,
+            originName: conditions.origin.name,
+            base: candidateBase,
+          });
+          if (candidateForecast.days.some((day) => day.slots.length)) {
+            midForecast = candidateForecast;
+            break;
+          }
+        } catch (error) {
+          if (error.name === "AbortError") throw error;
+          if (["KMA_KEY_MISSING", "KMA_20", "KMA_30", "KMA_31"].includes(error.code)) throw error;
+          midError = error;
+        }
+      }
+    }
+
+    let forecast;
+    try {
+      forecast = mergeWeatherForecasts(shortForecast, midForecast, {
+        dates,
+        originKey: conditions.originKey,
+        originName: conditions.origin.name,
+        grid,
+      });
+    } catch (error) {
+      throw midError || shortError || error;
+    }
+    state.weatherCache.set(cacheKey, forecast);
+    state.weatherForecast = forecast;
+    renderWeatherFieldStatus();
+    return forecast;
   } catch (error) {
     if (error.name === "AbortError" && state.weatherAbortController !== controller) return state.weatherForecast;
     const status = error.code === "KMA_KEY_MISSING"
@@ -1359,10 +1504,10 @@ function matchReasons(place, vector, conditions) {
     .slice(0, 3);
 }
 
-function rankPlacesLocal() {
+function rankPlacesLocal(conditionsOverride = null) {
   const vector = currentVector();
   const usePreferenceScore = hasPreferenceSignals(vector);
-  const conditions = currentConditions();
+  const conditions = conditionsOverride || currentConditions();
   let candidates = state.places.filter((place) => placePassesFilters(place, conditions));
   state.promptAnalysis.relaxed = false;
   if (state.travelPrompt && candidates.length < 3) {
@@ -1625,7 +1770,9 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const day = state.routeDays[dayIndex];
   if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
-  const availableResults = state.results.filter((place) => placeIsOpenOnDate(place, window.date));
+  const dayConditions = conditionsForRouteDate(currentConditions(), window.date);
+  const availableResults = rankPlacesLocal(dayConditions)
+    .filter((place) => placeIsOpenOnDate(place, window.date));
   const isFinalDay = dayIndex === state.routeDays.length - 1;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
@@ -1901,12 +2048,16 @@ function createRoute(results) {
   const builtDays = windows
     .map((window, dayIndex) => {
       addClosedNamedPlaceWarnings(window.date, dayIndex);
-      const availableResults = results.filter((place) => placeIsOpenOnDate(place, window.date));
+      const dayConditions = conditionsForRouteDate(conditions, window.date);
+      const rankedResults = conditions.weatherMode === "auto"
+        ? rankPlacesLocal(dayConditions)
+        : results;
+      const availableResults = rankedResults.filter((place) => placeIsOpenOnDate(place, window.date));
       return {
         window,
         day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
-          ? buildBaseballRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
-          : buildRouteDay(availableResults, conditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
+          ? buildBaseballRouteDay(availableResults, dayConditions, usedIds, dayIndex, window, dayIndex === windows.length - 1)
+          : buildRouteDay(availableResults, dayConditions, usedIds, dayIndex, window, dayIndex === windows.length - 1),
       };
     })
     .filter(({ day }) => day.length);
@@ -2795,7 +2946,11 @@ function renderTips() {
     tips.push("기상청 예보를 적용하지 못해 날씨 조건은 제외했습니다. 입력 화면의 상태 안내를 확인하세요.");
   }
   const forecastTemperatures = state.weatherForecast?.status === "ready"
-    ? state.weatherForecast.days.flatMap((day) => day.slots).map((slot) => slot.temperature).filter(Number.isFinite)
+    ? state.weatherForecast.days.flatMap((day) => [
+        ...day.slots.map((slot) => slot.temperature),
+        day.minTemperature,
+        day.maxTemperature,
+      ]).filter(Number.isFinite)
     : [];
   if (forecastTemperatures.some((temperature) => temperature >= 30)) {
     tips.push("식사 시간 기온이 30℃ 이상으로 예상됩니다. 실내 휴식과 수분 보충 시간을 확보하세요.");

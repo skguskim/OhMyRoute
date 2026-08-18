@@ -22,6 +22,8 @@ const koreaDateValue = (daysFromToday) => new Intl.DateTimeFormat("en-CA", {
   day: "2-digit",
 }).format(new Date(Date.now() + daysFromToday * 24 * 60 * 60 * 1000));
 const forecastDate = koreaDateValue(1);
+const mixedShortDate = koreaDateValue(3);
+const mixedMidDate = koreaDateValue(4);
 const outOfRangeDate = koreaDateValue(30);
 
 function weatherItems(date = forecastDate.replaceAll("-", "")) {
@@ -50,6 +52,43 @@ function payload(items = weatherItems()) {
   };
 }
 
+function midLandItem() {
+  const item = { regId: "11F20000" };
+  for (let day = 3; day <= 7; day += 1) {
+    item[`wf${day}Am`] = "구름많음";
+    item[`wf${day}Pm`] = "흐리고 비";
+    item[`rnSt${day}Am`] = 30;
+    item[`rnSt${day}Pm`] = 70;
+  }
+  for (let day = 8; day <= 10; day += 1) {
+    item[`wf${day}`] = "흐리고 비";
+    item[`rnSt${day}`] = 70;
+  }
+  return item;
+}
+
+function midTemperatureItem() {
+  const item = { regId: "11F20501" };
+  for (let day = 3; day <= 10; day += 1) {
+    item[`taMin${day}`] = 23;
+    item[`taMax${day}`] = 31;
+  }
+  return item;
+}
+
+async function mockMidForecast(page) {
+  await page.route("**/api/weather/mid-land?**", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify(payload([midLandItem()])),
+  }));
+  await page.route("**/api/weather/mid-temperature?**", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify(payload([midTemperatureItem()])),
+  }));
+}
+
 async function waitForServer() {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     const listening = await new Promise((resolve) => {
@@ -69,6 +108,13 @@ async function waitForServer() {
 async function setTripDate(page, date) {
   await page.locator("#travelDate").fill(date);
   await page.locator("#endDate").fill(date);
+  await page.locator("#travelDate").dispatchEvent("change");
+  await page.locator("#endDate").dispatchEvent("change");
+}
+
+async function setTripRange(page, startDate, endDate) {
+  await page.locator("#travelDate").fill(startDate);
+  await page.locator("#endDate").fill(endDate);
   await page.locator("#travelDate").dispatchEvent("change");
   await page.locator("#endDate").dispatchEvent("change");
 }
@@ -135,9 +181,42 @@ test("브라우저에서 실제 날씨 흐름·실내 우선·오류 안내를 �
     const briefing = await successPage.locator("#weatherBriefing").textContent();
     assert.match(briefing, /12시.*강수확률 70%.*강수형태 비/);
     assert.match(briefing, /18시.*강수확률 80%.*강수형태 소나기/);
+    assert.equal(
+      (await successPage.locator("#weatherBriefing small").textContent()).trim(),
+      "출발지 기준 · 기상청 5km 예보 반영",
+    );
+    assert.doesNotMatch(briefing, /격자|57\/74|조회 가능한 값만 반영/);
     const itinerary = await successPage.locator("#itineraryTimeline").textContent();
     assert.match(itinerary, /비 예보·실내 우선/);
     await successPage.close();
+
+    const mixedPage = await browser.newPage();
+    await mixedPage.route("**/api/weather?**", (route) => route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(payload(weatherItems(mixedShortDate.replaceAll("-", "")))),
+    }));
+    await mockMidForecast(mixedPage);
+    await openApp(mixedPage);
+    await setTripRange(mixedPage, mixedShortDate, mixedMidDate);
+    await mixedPage.locator("#recommendButton").click();
+    await mixedPage.locator("#resultView.active").waitFor({ timeout: 10000 });
+    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /단기예보/);
+    assert.equal(
+      (await mixedPage.locator("#weatherBriefing small").textContent()).trim(),
+      "출발지 기준 · 기상청 5km 예보 반영",
+    );
+    await mixedPage.locator('#dayTabs button[data-day="1"]').click();
+    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /중기예보.*광주·전남/);
+    const mixedBriefing = await mixedPage.locator("#weatherBriefing").textContent();
+    assert.match(mixedBriefing, /오전.*오후/);
+    assert.match(mixedBriefing, /최저 23℃.*최고 31℃/);
+    assert.equal(
+      (await mixedPage.locator("#weatherBriefing small").textContent()).trim(),
+      "광주·전남 권역 기준 · 기상청 중기예보 반영",
+    );
+    assert.match(await mixedPage.locator("#itineraryTimeline").textContent(), /비 예보·실내 우선/);
+    await mixedPage.close();
 
     const rangePage = await browser.newPage();
     await rangePage.route("**/api/weather?**", (route) => route.fulfill({
@@ -145,12 +224,13 @@ test("브라우저에서 실제 날씨 흐름·실내 우선·오류 안내를 �
       contentType: "application/json",
       body: JSON.stringify(payload()),
     }));
+    await mockMidForecast(rangePage);
     await openApp(rangePage);
     await setTripDate(rangePage, outOfRangeDate);
     await rangePage.locator("#recommendButton").click();
     await rangePage.locator("#resultView.active").waitFor({ timeout: 10000 });
     assert.match(await rangePage.locator("#weatherFieldStatus").textContent(), /날씨를 제외한 조건으로 추천/);
-    assert.match(await rangePage.locator("#weatherBriefing").textContent(), /단기예보 범위 밖 날짜/);
+    assert.match(await rangePage.locator("#weatherBriefing").textContent(), /기상청 예보 범위 밖 날짜/);
     await rangePage.close();
 
     const errorPage = await browser.newPage();

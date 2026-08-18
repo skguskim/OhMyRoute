@@ -24,8 +24,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1837599,
@@ -44,7 +42,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00 ~ 18:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차시설 보유 (180대 주차가능)"
   },
   {
     "id": 2,
@@ -72,9 +82,7 @@
       0.0,
       0.0,
       0.0,
-      0.75,
-      0.75,
-      0.5
+      0.75
     ],
     "latitude": 35.144143,
     "longitude": 126.989029,
@@ -92,7 +100,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "04:00~17:00(하절기:16:00)",
+    "is24h": null,
+    "opensAt": "04:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "하절기:16:00",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "- 봄 철 : 02.15 ∼ 05.15 - 가을철 : 11.01 ∼ 12.15 - 입산통제기간은 무등산 국립공원 홈페이지 공지사항 참고",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "unparsed",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 3,
@@ -115,8 +135,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.0943489,
@@ -135,7 +153,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "09:00 ~ 18:00 ※ 종료 1시간 전 입장 마감",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": "17:00",
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "방문자센터, 전시온실에 대해서는 1월 1일, 설날, 추석 , 매주 월요일을 휴원일로 지정",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 4,
@@ -159,9 +191,7 @@
       0.0,
       0.0,
       0.25,
-      0.5,
-      0.0,
-      0.0
+      0.5
     ],
     "latitude": 35.146794,
     "longitude": 126.911871,
@@ -179,7 +209,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 5,
@@ -201,8 +243,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.142805,
@@ -221,7 +261,21 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "(매일) 10:00 ~ 18:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "매일",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "월요일 휴무",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": false,
+    "daysParseStatus": "structured",
+    "parkingInfo": null
   },
   {
     "id": 6,
@@ -244,8 +298,6 @@
       0.5,
       0.0,
       0.5,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.158572,
@@ -264,7 +316,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00~18:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 7,
@@ -276,13 +340,12 @@
     "description": "광주4·19혁명기념관은 전국에서 유일하다. 3·15부정선거 첫 규탄 이른바 곡(哭)민주주의 장송’ 봉기가 4·19혁명의 첫 횃불로 도화선을 그었던 역사적 상징성을 지니고 있다. 이 기념관은 4·19혁명 46년만에 광주광역시 제4기 박광태 시장의 용단으로 건립된 것으로 매년 1천여명의 전국방문객을 맞고 있다.",
     "hashtags": [
       "#역사",
-      "#민주인권"
+      "#민주인권",
+      "#시장"
     ],
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -304,7 +367,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 8,
@@ -327,8 +402,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1495769,
@@ -347,7 +420,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "평일 : 오전 09:00~18:00 / 토·일·공휴일 : 09:00~18:00 (17:40분 입장마감)",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": "17:40",
+    "operatingNotes": "17:40분 입장마감",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "매주 월요일, 1월 1일, 설날, 추석",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차장소가 협소하니 가급적 대중교통을 이용해주세요"
   },
   {
     "id": 9,
@@ -364,8 +451,6 @@
     "vector": [
       0.5,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -387,7 +472,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 10,
@@ -399,13 +496,12 @@
     "description": "광주는 일제강점기 시절 광주학생운동을 시작으로 다양한 독립운동이 펼쳐진 고장이다. 이러한 고장에서 3·1 만세운동이 벌어진 것은 당연한 결과이다. 이러한 광주지역의 3·1 만세운동을 기념하고 당시의 넋을 기리기 위해 만들어진 것이 “광주 3.1 만세운동 기념비”이다. 1995년 5월 10일에 건립한 이 기념비는 양림동 256번지 수피아여고 후문 안에 자리 잡고 있다. 앞면에는 \"광주 3·1 만세운동 기념\"이라고 새겨져 있고, 뒷면은 1919년 3월 10일 광주 3·1 만세운동에 앞장섰기 때문에 옥고를 치른 수피아 학생들의 이름을 새겨 길이 기념하고자 했다. * 당시의 넋을 기리는 기념비의 추모시 * 기념비에는 박순애, 이태옥, 김양순, 윤혈녀, 김덕순, 조옥희, 이금봉, 하영자, 강화선, 이라혈, 최수향, 김만순, 홍순해 등 23명의 명단이 새겨져 있으며, 옆면은 \"역사의 별이 되어\" 라는 추모시가 다음과 같이 새겨져 있다.천추에 이름 석자 누구나 남기는가, 기미년 3·1 운동 선두에 서서 구국의 일념으로 충성을 맹세하고 태극기 앞에 두고서 독립만세를 외쳤네. 일제의 총칼 앞에 나라가 침탈 당하자 자유 없는 속박에서 사느니보다 사슬을 끊기 위해 목숨 걸고 싸웠네. 모진 고문을 당하여도 이겨낸 고결한 애국 얼이 역사의 별이 되어 무궁토록 빛나네. * 규 모: 넓이 4㎡ 길이 7m * 형 상: 3·1 운동 때 여학생들이 태극기를 들고 만세를 부르고 있는 형상",
     "hashtags": [
       "#역사",
-      "#근대문화"
+      "#근대문화",
+      "#야경"
     ],
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -427,7 +523,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24시간",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "수피아여고 주차장"
   },
   {
     "id": 11,
@@ -451,8 +559,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.25,
       0.0
     ],
     "latitude": 35.142541996,
@@ -471,7 +577,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24시간",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 12,
@@ -491,8 +609,6 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.147863,
@@ -511,7 +627,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 13,
@@ -529,8 +657,6 @@
       0.0,
       0.0,
       0.75,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0
@@ -551,7 +677,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 14,
@@ -575,9 +713,7 @@
       1.0,
       0.0,
       0.5,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.1481359,
     "longitude": 126.9086454,
@@ -595,7 +731,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "평일, 주말, 공휴일: 10:00 ~ 18:00 ※ 단체관람(60명 이상)일 경우 쾌적한 관람을 위해 사전 연락하여 주시고, 전시 안내를 원하는 경우 사전 연락을 꼭 하여 주시기 바랍니다. (단체 관람 문의 010-4195-2104)",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "60명 이상 / 단체 관람 문의 010-4195-2104 / 단체관람",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "1월1일, 설(당일), 추석(당일), 매주 월요일",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 15,
@@ -613,8 +763,6 @@
       0.0,
       0.5,
       0.75,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0
@@ -635,7 +783,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 16,
@@ -652,8 +812,6 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0
@@ -674,7 +832,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 17,
@@ -691,9 +861,8 @@
       "#체험",
       "#교육",
       "#시즌한정",
-      "#실내",
-      "#비오는날",
-      "#아이동반"
+      "#아이동반",
+      "#주차가능"
     ],
     "vector": [
       0.25,
@@ -701,9 +870,7 @@
       0.75,
       0.0,
       1.0,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.1424455318,
     "longitude": 126.7951296891,
@@ -721,7 +888,22 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~18:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "토요일, 일요일, 공휴일(전화문의)",
+    "closedWeekdays": [
+      "일",
+      "토"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 18,
@@ -736,14 +918,13 @@
       "#민주인권",
       "#체험",
       "#참여형",
+      "#스포츠",
       "#공원"
     ],
     "vector": [
       0.0,
       1.0,
       0.0,
-      0.0,
-      0.75,
       0.0,
       0.75,
       0.0
@@ -764,7 +945,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00 ~ 18:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "공원 내 주차장"
   },
   {
     "id": 19,
@@ -787,9 +980,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.5,
-      0.0
+      0.75
     ],
     "latitude": 35.145622,
     "longitude": 126.873756,
@@ -807,7 +998,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "매주 월~금 10:00 / 14:00 / 16:00 (1일 3회)",
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": "1일 3회",
+    "hoursParseStatus": "unparsed",
+    "closedDaysRaw": "토, 일요일, 공휴일",
+    "closedWeekdays": [
+      "일"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 20,
@@ -833,9 +1038,7 @@
       0.75,
       0.0,
       0.75,
-      0.75,
-      0.0,
-      1.0
+      0.75
     ],
     "latitude": 35.155799,
     "longitude": 126.839756,
@@ -853,7 +1056,19 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "-쉼마루(1층) 09:00 ~ 18:30 / 수~일 -공연장(2층) 15:00 ~ 18:00 / 토~일 17시 -빛분수(음악) 16:30, 18:00, 20:30 / 빛(음악)분수 운영시간 4~9월(금요일은 운영하지 않습니다)",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:30",
+    "lastAdmissionAt": null,
+    "operatingNotes": "1층 / 2층 / 음악 / 금요일은 운영하지 않습니다",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "상무조각공원 무료주차장(상무지구 호반아파트 입구 건너편)"
   },
   {
     "id": 21,
@@ -877,9 +1092,7 @@
       0.0,
       0.0,
       0.25,
-      0.25,
-      0.75,
-      0.0
+      0.25
     ],
     "latitude": 35.1483152,
     "longitude": 126.9441243,
@@ -897,7 +1110,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24시간",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 22,
@@ -908,8 +1133,6 @@
     "category": "도보·산책",
     "description": "무돌길은 마을과 마을을 잇던 길로써 1910년대에 제작된 지도를 기본자료로 하여 발굴 복구한 길이다. '무등산자락 무돌길'이란 이름은 구전으로 알려진 무등산의 옛이름 \"무돌뫼\"와 \"무등산을 한바퀴 돌아가는 길\"이란 의미를 지닌다. 총길이 약 51.8km, 15개 구간으로 거리와 역사성을 반영하여 복구한 길이다. 자세한 정보는 www.mudeungsan.org(무등산보호단체협의회)에서 제공한다. 제1길~제4길(광주 북구) 11.50km, 3시간 10분 각화마을→신촌마을→등촌마을→배재마을→금정촌→금곡리→평촌리→동림마을 제4길~제7길(전남 담양) 6.5km, 2시간 10분 반석마을→연천리→산음→정곡리→경상리→무동리 제7길~제12길(전남 화순) 18km, 4시간 50분 송계마을→서동마을→용강마을→영평리→장복마을→안심리→수만리→만수동→중지마을 제12길~제15길(광주 동구) 15.8km, 4시간 10분 용연마을→선교마을→광주천(주남→지원동→소태동→학동)→남광주 역사→푸른길(학동→서석동→산수동→풍향동→계림동→중흥동)→광주역",
     "hashtags": [
-      "#산",
-      "#등산",
       "#무등산",
       "#역사",
       "#산책",
@@ -921,9 +1144,7 @@
       0.0,
       0.0,
       0.0,
-      0.5,
-      0.75,
-      0.0
+      0.5
     ],
     "latitude": 35.1790507,
     "longitude": 126.9405269,
@@ -941,7 +1162,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24시간",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 23,
@@ -965,9 +1198,7 @@
       0.0,
       0.0,
       0.0,
-      0.75,
-      0.75,
-      0.0
+      0.75
     ],
     "latitude": 35.14399,
     "longitude": 126.9890221,
@@ -985,7 +1216,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "입산통제 기간은 무등산국립공원 홈페이지에서 확인",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "unparsed",
+    "parkingInfo": null
   },
   {
     "id": 24,
@@ -1009,9 +1252,7 @@
       0.0,
       0.0,
       0.0,
-      0.5,
-      0.75,
-      0.75
+      0.5
     ],
     "latitude": 35.119836,
     "longitude": 126.931738,
@@ -1029,7 +1270,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 25,
@@ -1055,8 +1308,6 @@
       0.25,
       0.0,
       0.5,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1808412,
@@ -1075,7 +1326,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24시간",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "1,700 ㎡ (자가용 200대 수용), 비엔날레 주차장 (600대 수용)"
   },
   {
     "id": 26,
@@ -1103,9 +1366,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.75,
-      0.25
+      0.75
     ],
     "latitude": 35.129327,
     "longitude": 126.883812,
@@ -1123,7 +1384,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 27,
@@ -1151,8 +1424,6 @@
       0.5,
       0.0,
       0.75,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1299485,
@@ -1171,7 +1442,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 28,
@@ -1199,9 +1482,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.75,
-      0.0
+      0.75
     ],
     "latitude": 35.153607,
     "longitude": 126.841631,
@@ -1219,7 +1500,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "이용시간 및 제약사항 없음 ※ 체육시설 이용시 사전허가와 사용료 부과",
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": "사전허가",
+    "hoursParseStatus": "no_restriction",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "있음(2개소 250대)"
   },
   {
     "id": 29,
@@ -1245,9 +1538,7 @@
       0.5,
       0.0,
       0.5,
-      0.0,
-      0.75,
-      0.25
+      0.0
     ],
     "latitude": 35.147986,
     "longitude": 126.85477,
@@ -1265,7 +1556,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 30,
@@ -1292,8 +1595,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1468321,
@@ -1312,7 +1613,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 31,
@@ -1337,8 +1650,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1471654718,
@@ -1357,7 +1668,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "이용시간 및 제약사항 없음",
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "no_restriction",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 32,
@@ -1380,8 +1703,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.063062,
@@ -1400,7 +1721,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "연중무휴 24시간",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 33,
@@ -1421,9 +1754,7 @@
       0.0,
       0.0,
       0.0,
-      0.75,
-      0.0,
-      0.0
+      0.75
     ],
     "latitude": 35.1553408,
     "longitude": 126.7514993,
@@ -1441,7 +1772,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 34,
@@ -1466,9 +1809,7 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.148229,
     "longitude": 126.802774,
@@ -1486,7 +1827,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 35,
@@ -1507,8 +1860,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1216357,
@@ -1527,7 +1878,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 36,
@@ -1550,8 +1913,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.137317,
@@ -1570,7 +1931,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "06:00 ~ 22:00",
+    "is24h": null,
+    "opensAt": "06:00",
+    "closesAt": "22:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 37,
@@ -1588,8 +1961,6 @@
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -1611,7 +1982,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "06:00 ~ 22:00",
+    "is24h": null,
+    "opensAt": "06:00",
+    "closesAt": "22:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 38,
@@ -1628,8 +2011,6 @@
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -1651,7 +2032,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00 ~ 17:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 39,
@@ -1675,8 +2068,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1495927,
@@ -1695,7 +2086,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00 ~ 17:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 40,
@@ -1712,8 +2115,6 @@
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -1735,7 +2136,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 41,
@@ -1759,8 +2172,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.2113149855,
@@ -1779,7 +2190,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 42,
@@ -1807,9 +2230,7 @@
       1.0,
       0.0,
       0.5,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.1826203741,
     "longitude": 126.890259159,
@@ -1827,7 +2248,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00~18:00 (관람종료 1시간전 입장 마감)",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": "17:00",
+    "operatingNotes": "관람종료 1시간전 입장 마감",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "매주 월요일",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": false,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 43,
@@ -1855,8 +2290,6 @@
       1.0,
       0.0,
       0.5,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1808412,
@@ -1875,7 +2308,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "평일, 주말, 공휴일 : 10:00~18:00 (*단체관람 20명 이상일 경우 쾌적한 관람을 위해서 사전 연락을 하여 주시고 특히 전시안내를 원하는 경우 사전 연락을 꼭 하여 주시기 바랍니다.)",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "*단체관람 20명 이상일 경우 쾌적한 관람을 위해서 사전 연락을 하여 주시고 특히 전시안내를 원하는 경우 사전 연락을 꼭 하여 주시기 바랍니다. / 단체관람",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "매주 월요일, 1월1일, 명절당일 휴관",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "있음(장애인, 임산부 주차시설 있음)"
   },
   {
     "id": 44,
@@ -1900,8 +2347,6 @@
       0.75,
       0.0,
       0.75,
-      0.75,
-      0.0,
       0.75
     ],
     "latitude": 35.160019493,
@@ -1920,7 +2365,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 45,
@@ -1940,9 +2397,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.0,
-      0.0
+      0.75
     ],
     "latitude": 35.1366531569,
     "longitude": 126.879180734,
@@ -1960,7 +2415,21 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "월~토 05:30 ~ 20:30 일요일 및 공휴일 07:00 ~ 18:00 * 정화시간 8:00 ~ 9:00, 12:00 ~ 13:00, 16:00 ~ 17:00(여름성수기) 이용 제한",
+    "is24h": null,
+    "opensAt": "05:30",
+    "closesAt": "20:30",
+    "lastAdmissionAt": null,
+    "operatingNotes": "여름성수기 / 이용 제한",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "둘째주 일요일",
+    "closedWeekdays": [
+      "일"
+    ],
+    "closedHolidays": false,
+    "daysParseStatus": "structured",
+    "parkingInfo": "141대(일반 133, 장애인 8)"
   },
   {
     "id": 46,
@@ -1987,9 +2456,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.5,
-      0.5
+      0.75
     ],
     "latitude": 35.2235741448,
     "longitude": 126.894080016,
@@ -2007,7 +2474,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": 10000,
-    "priceMax": 12000
+    "priceMax": 12000,
+    "operatingHoursRaw": "* 성인/청소년/어린이 눈썰매장 10:00 ~ 17:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 47,
@@ -2029,8 +2508,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1425585,
@@ -2049,7 +2526,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 48,
@@ -2073,9 +2562,7 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.75,
-      0.75
+      0.0
     ],
     "latitude": 35.149153,
     "longitude": 126.9160133,
@@ -2093,7 +2580,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 49,
@@ -2116,8 +2615,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.0803774303,
@@ -2136,7 +2633,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00~24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 50,
@@ -2160,9 +2669,7 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
-      0.5
+      0.0
     ],
     "latitude": 35.141261,
     "longitude": 126.929458,
@@ -2180,7 +2687,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00 ~ 21:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "21:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "조선대학교 주차장 이용(유료)"
   },
   {
     "id": 51,
@@ -2207,8 +2726,6 @@
       0.0,
       0.0,
       0.75,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.162113,
@@ -2227,7 +2744,19 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "24 시간 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 52,
@@ -2253,9 +2782,7 @@
       0.0,
       0.0,
       0.5,
-      0.5,
-      0.75,
-      0.0
+      0.5
     ],
     "latitude": 35.156533,
     "longitude": 126.851638,
@@ -2273,7 +2800,19 @@
     "petFriendly": true,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "상시개방",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "상무주차장(유료)"
   },
   {
     "id": 53,
@@ -2296,8 +2835,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1412237,
@@ -2316,7 +2853,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 54,
@@ -2338,8 +2887,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1339,
@@ -2358,7 +2905,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 55,
@@ -2378,8 +2937,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.25,
       0.0
     ],
     "latitude": 35.2005404,
@@ -2398,7 +2955,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 56,
@@ -2420,8 +2989,6 @@
       0.0,
       0.0,
       0.25,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.10742,
@@ -2440,7 +3007,19 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "하절기 : 04:00~17:00 동절기 : 04:00~16:00",
+    "is24h": null,
+    "opensAt": "04:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "통제기간은 무등산 국립공원 홈페이지 공지사항 참고",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "unparsed",
+    "parkingInfo": null
   },
   {
     "id": 57,
@@ -2458,8 +3037,6 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.25,
       0.0,
       0.25,
       0.0
@@ -2480,7 +3057,19 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "04:00~17:00(하절기:16:00)",
+    "is24h": null,
+    "opensAt": "04:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "하절기:16:00",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "통제기간은 무등산 국립공원 홈페이지 공지사항 참고",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "unparsed",
+    "parkingInfo": null
   },
   {
     "id": 58,
@@ -2504,8 +3093,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.139066089583466,
@@ -2524,7 +3111,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 59,
@@ -2542,8 +3141,6 @@
     "vector": [
       1.0,
       0.25,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -2565,7 +3162,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "05:00 ~ 18:30",
+    "is24h": null,
+    "opensAt": "05:00",
+    "closesAt": "18:30",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차시설 보유"
   },
   {
     "id": 60,
@@ -2583,8 +3192,6 @@
     "vector": [
       0.5,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -2606,7 +3213,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 61,
@@ -2624,8 +3243,6 @@
     "vector": [
       0.0,
       1.0,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -2647,7 +3264,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "평일 00:00 ~ 24:00(062-650-8042로 사전요청시 오픈 가능)",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "062-650-8042로 사전요청시 오픈 가능 / 사전요청",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 62,
@@ -2670,8 +3299,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.148906,
@@ -2690,7 +3317,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 63,
@@ -2718,8 +3357,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1383586,
@@ -2738,7 +3375,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00 ~ 17:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 64,
@@ -2766,9 +3415,7 @@
       1.0,
       0.0,
       1.0,
-      0.0,
-      0.5,
-      0.75
+      0.0
     ],
     "latitude": 35.1335563,
     "longitude": 126.9520858,
@@ -2786,7 +3433,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "평일 상시운영",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 65,
@@ -2810,8 +3469,6 @@
       1.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.171845,
@@ -2830,7 +3487,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 66,
@@ -2852,8 +3521,6 @@
       0.25,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.170855,
@@ -2872,7 +3539,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 67,
@@ -2900,8 +3579,6 @@
       1.0,
       0.0,
       0.0,
-      0.0,
-      0.25,
       0.0
     ],
     "latitude": 35.134337,
@@ -2920,7 +3597,21 @@
     "petFriendly": false,
     "requiresReservation": null,
     "priceMin": 0,
-    "priceMax": 0
+    "priceMax": 0,
+    "operatingHoursRaw": "3월~9월 10:00~18:00 / 10월~2월 10:00~17:00 (전시입장은 관람종료 30분전까지)",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": "17:30",
+    "operatingNotes": "전시입장은 관람종료 30분전까지",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "매주 월요일, 신정, 설날·추석당일",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 68,
@@ -2941,8 +3632,6 @@
       0.25,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1798716,
@@ -2961,7 +3650,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "00:00 ~ 24:00",
+    "is24h": null,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "없음",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 69,
@@ -2989,8 +3690,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1783221177,
@@ -3009,7 +3708,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 70,
@@ -3034,9 +3745,7 @@
       0.0,
       0.0,
       0.5,
-      0.5,
-      0.0,
-      0.0
+      0.5
     ],
     "latitude": 35.1419253355,
     "longitude": 126.9118638245,
@@ -3054,7 +3763,21 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "06:00~22:00",
+    "is24h": null,
+    "opensAt": "06:00",
+    "closesAt": "22:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "매주 일요일",
+    "closedWeekdays": [
+      "일"
+    ],
+    "closedHolidays": false,
+    "daysParseStatus": "structured",
+    "parkingInfo": null
   },
   {
     "id": 71,
@@ -3082,9 +3805,7 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.75,
-      1.0
+      0.0
     ],
     "latitude": 35.1879824765,
     "longitude": 126.8202596628,
@@ -3102,7 +3823,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 72,
@@ -3128,8 +3861,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1848719954,
@@ -3148,7 +3879,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 73,
@@ -3176,8 +3919,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.1756287576,
@@ -3196,7 +3937,21 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "매주 월요일",
+    "closedWeekdays": [
+      "월"
+    ],
+    "closedHolidays": false,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 74,
@@ -3224,9 +3979,7 @@
       0.0,
       0.0,
       0.5,
-      0.5,
-      0.75,
-      0.0
+      0.5
     ],
     "latitude": 35.1840804198,
     "longitude": 127.0010882121,
@@ -3244,7 +3997,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "가능 (약 180대)"
   },
   {
     "id": 75,
@@ -3272,9 +4037,7 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.2325767086,
     "longitude": 126.9415422558,
@@ -3292,7 +4055,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~18:00 (입장 마감 17:00)",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": "17:00",
+    "operatingNotes": "입장 마감 17:00",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 76,
@@ -3318,9 +4093,7 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.0,
-      1.0
+      0.0
     ],
     "latitude": 35.1538517467,
     "longitude": 126.9106747413,
@@ -3338,7 +4111,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 77,
@@ -3365,8 +4150,6 @@
       0.5,
       0.0,
       0.75,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.2274311559,
@@ -3385,7 +4168,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00~17:00 (점심시간 12:00~13:00)",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "점심시간 12:00~13:00",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "매주 주말 / 법정 공휴일",
+    "closedWeekdays": [],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 78,
@@ -3408,9 +4203,7 @@
       0.0,
       0.0,
       0.0,
-      0.75,
-      0.75,
-      0.0
+      0.75
     ],
     "latitude": 35.1441458348,
     "longitude": 126.9890013959,
@@ -3428,7 +4221,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 79,
@@ -3451,8 +4256,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1666995405,
@@ -3471,7 +4274,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 80,
@@ -3498,8 +4313,6 @@
       0.0,
       0.25,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.1492525371,
@@ -3518,7 +4331,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "매장별 상이",
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "unparsed",
+    "closedDaysRaw": "매장별 상이",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "unparsed",
+    "parkingInfo": "매장별 상이"
   },
   {
     "id": 81,
@@ -3540,8 +4365,6 @@
       0.5,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.2437804781,
@@ -3560,7 +4383,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 82,
@@ -3587,9 +4422,7 @@
       0.0,
       0.0,
       0.75,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.1892060356,
     "longitude": 126.9076407902,
@@ -3607,7 +4440,21 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~18:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "매주 일요일 /  법정 공휴일",
+    "closedWeekdays": [
+      "일"
+    ],
+    "closedHolidays": true,
+    "daysParseStatus": "structured",
+    "parkingInfo": "가능 (5대)<br>요금 (무료)"
   },
   {
     "id": 83,
@@ -3632,8 +4479,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1202403693,
@@ -3652,7 +4497,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "- 동절기 (11월~3월) 04:00~16:00<br>\r\n- 하절기 (4월~10월) 04:00~17:00",
+    "is24h": null,
+    "opensAt": "04:00",
+    "closesAt": "16:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "11월~3월 / 4월~10월",
+    "hoursParseStatus": "multiple_ranges_took_first",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 84,
@@ -3680,9 +4537,7 @@
       0.75,
       0.0,
       1.0,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.0697294541,
     "longitude": 126.837538861,
@@ -3700,7 +4555,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 85,
@@ -3728,9 +4595,7 @@
       1.0,
       0.0,
       1.0,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.1336797291,
     "longitude": 126.9523771168,
@@ -3748,7 +4613,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 86,
@@ -3776,9 +4653,7 @@
       1.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.160019493,
     "longitude": 126.8513576102,
@@ -3796,7 +4671,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 87,
@@ -3824,9 +4711,7 @@
       1.0,
       0.0,
       1.0,
-      0.0,
-      0.0,
-      1.0
+      0.0
     ],
     "latitude": 35.1460861028,
     "longitude": 126.9192936186,
@@ -3844,7 +4729,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 88,
@@ -3872,9 +4769,7 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.1479301594,
     "longitude": 126.9086750662,
@@ -3892,7 +4787,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 89,
@@ -3920,8 +4827,6 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1368703131,
@@ -3940,7 +4845,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 90,
@@ -3968,9 +4885,7 @@
       1.0,
       0.0,
       0.75,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 35.1317742306,
     "longitude": 126.9430502112,
@@ -3988,7 +4903,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 91,
@@ -4016,8 +4943,6 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1496023298,
@@ -4036,7 +4961,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 92,
@@ -4054,8 +4991,6 @@
     ],
     "vector": [
       0.75,
-      0.0,
-      0.0,
       0.0,
       0.0,
       0.0,
@@ -4078,7 +5013,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 93,
@@ -4105,8 +5052,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 34.4354594945,
@@ -4125,7 +5070,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~18:00 (7~8월 해수욕장 개장 기간)",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "7~8월 해수욕장 개장 기간",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 94,
@@ -4152,8 +5109,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.445187367,
@@ -4172,7 +5127,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 95,
@@ -4196,8 +5163,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.399729392,
@@ -4216,7 +5181,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방 (해수욕장 09:00~18:00 물놀이 가능)",
+    "is24h": true,
+    "opensAt": "09:00",
+    "closesAt": "18:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "해수욕장 09:00~18:00 물놀이 가능",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 96,
@@ -4244,9 +5221,7 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.75,
-      0.5
+      0.0
     ],
     "latitude": 34.3698373475,
     "longitude": 126.9277952875,
@@ -4264,7 +5239,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 97,
@@ -4289,9 +5276,7 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 34.370487281,
     "longitude": 126.9281702396,
@@ -4309,7 +5294,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 98,
@@ -4333,8 +5330,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 35.2313226604,
@@ -4353,7 +5348,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 99,
@@ -4381,9 +5388,7 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.75,
-      0.75
+      0.0
     ],
     "latitude": 34.7919693222,
     "longitude": 126.6856118867,
@@ -4401,7 +5406,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "10:00~17:00",
+    "is24h": null,
+    "opensAt": "10:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 100,
@@ -4429,8 +5446,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 34.861908939,
@@ -4449,7 +5464,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 101,
@@ -4477,9 +5504,7 @@
       0.5,
       0.0,
       0.5,
-      0.0,
-      0.25,
-      0.75
+      0.0
     ],
     "latitude": 34.2998052878,
     "longitude": 126.5285847288,
@@ -4497,7 +5522,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 102,
@@ -4525,8 +5562,6 @@
       0.5,
       0.0,
       0.75,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 34.4928741381,
@@ -4545,7 +5580,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~17:00 (전화문의)",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": "전화문의",
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 103,
@@ -4569,8 +5616,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 34.7148441009,
@@ -4589,7 +5634,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 104,
@@ -4615,8 +5672,6 @@
       0.0,
       0.0,
       0.75,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 34.4536620901,
@@ -4635,7 +5690,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00 ~ 17:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "17:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": "주차 가능"
   },
   {
     "id": 105,
@@ -4663,9 +5730,7 @@
       0.75,
       0.25,
       0.5,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 34.6391324006,
     "longitude": 126.773588414,
@@ -4683,7 +5748,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "09:00~21:00",
+    "is24h": null,
+    "opensAt": "09:00",
+    "closesAt": "21:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 106,
@@ -4708,8 +5785,6 @@
       0.0,
       0.0,
       0.5,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.7409031836,
@@ -4728,7 +5803,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": "가능<br>요금 (무료)"
   },
   {
     "id": 107,
@@ -4752,8 +5839,6 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 34.595223382,
@@ -4772,7 +5857,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": "상시 개방",
+    "is24h": true,
+    "opensAt": "00:00",
+    "closesAt": "24:00",
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "structured",
+    "closedDaysRaw": "연중무휴",
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "no_closure",
+    "parkingInfo": null
   },
   {
     "id": 108,
@@ -4800,9 +5897,7 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 34.6382074538,
     "longitude": 126.7705248168,
@@ -4820,7 +5915,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 109,
@@ -4848,8 +5955,6 @@
       1.0,
       0.0,
       0.75,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.5502315216,
@@ -4868,7 +5973,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 110,
@@ -4896,8 +6013,6 @@
       1.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.6278595774,
@@ -4916,7 +6031,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 111,
@@ -4944,8 +6071,6 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.75,
       0.0
     ],
     "latitude": 35.2812191216,
@@ -4964,7 +6089,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 112,
@@ -4992,8 +6129,6 @@
       0.75,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.9758111359,
@@ -5012,7 +6147,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 113,
@@ -5040,9 +6187,7 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.0,
-      0.75
+      0.0
     ],
     "latitude": 34.975866687,
     "longitude": 127.5861308504,
@@ -5060,7 +6205,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 114,
@@ -5088,8 +6245,6 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.9682620238,
@@ -5108,7 +6263,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 115,
@@ -5135,9 +6302,7 @@
       0.75,
       0.0,
       0.5,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.2084078164,
     "longitude": 127.4627690718,
@@ -5155,7 +6320,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 116,
@@ -5183,8 +6360,6 @@
       0.75,
       0.0,
       0.5,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 34.791834429,
@@ -5203,7 +6378,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 117,
@@ -5231,8 +6418,6 @@
       1.0,
       0.0,
       0.5,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 34.6750057964,
@@ -5251,7 +6436,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 118,
@@ -5279,8 +6476,6 @@
       1.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.0
     ],
     "latitude": 35.1101984314,
@@ -5299,7 +6494,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 119,
@@ -5327,8 +6534,6 @@
       0.75,
       0.0,
       0.5,
-      0.0,
-      0.5,
       0.0
     ],
     "latitude": 34.7828349612,
@@ -5347,7 +6552,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 120,
@@ -5375,9 +6592,7 @@
       0.75,
       0.0,
       0.75,
-      0.0,
-      0.0,
-      0.5
+      0.0
     ],
     "latitude": 35.0159556319,
     "longitude": 126.711576325,
@@ -5395,7 +6610,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 121,
@@ -5423,9 +6650,7 @@
       1.0,
       0.0,
       0.75,
-      0.0,
-      0.5,
-      0.75
+      0.0
     ],
     "latitude": 34.6037034299,
     "longitude": 127.4572293239,
@@ -5443,7 +6668,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 122,
@@ -5469,9 +6706,7 @@
       0.0,
       0.0,
       0.75,
-      1.0,
-      0.75,
-      0.0
+      1.0
     ],
     "latitude": 35.263612844,
     "longitude": 127.3104671975,
@@ -5489,7 +6724,19 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   },
   {
     "id": 123,
@@ -5517,9 +6764,7 @@
       0.0,
       0.0,
       0.75,
-      0.75,
-      0.75,
-      0.0
+      0.75
     ],
     "latitude": 34.5371985513,
     "longitude": 127.7111643607,
@@ -5537,6 +6782,18 @@
     "petFriendly": null,
     "requiresReservation": null,
     "priceMin": null,
-    "priceMax": null
+    "priceMax": null,
+    "operatingHoursRaw": null,
+    "is24h": null,
+    "opensAt": null,
+    "closesAt": null,
+    "lastAdmissionAt": null,
+    "operatingNotes": null,
+    "hoursParseStatus": "empty",
+    "closedDaysRaw": null,
+    "closedWeekdays": [],
+    "closedHolidays": false,
+    "daysParseStatus": "empty",
+    "parkingInfo": null
   }
 ]

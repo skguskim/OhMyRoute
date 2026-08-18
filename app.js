@@ -15,10 +15,8 @@ const AXES = [
   { key: "food", label: "음식·로컬", emoji: "🍚" },
   { key: "activity", label: "체험·활동", emoji: "🥾" },
   { key: "sports", label: "스포츠·야구", emoji: "⚾" },
-  { key: "healing", label: "휴식·산책", emoji: "🌳" },
-  { key: "festival", label: "축제·야간", emoji: "✨" },
 ];
-const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity", "healing", "festival"];
+const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity"];
 const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
 const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
@@ -191,7 +189,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [50, 50, 50, 50, 50, 50, 50, 50],
+  preference: [50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -1147,8 +1145,6 @@ const AXIS_COLORS = {
   art: { light: "#f4f9ff", dark: "#3182f6" },
   food: { light: "#f4f9ff", dark: "#3182f6" },
   activity: { light: "#f4f9ff", dark: "#3182f6" },
-  healing: { light: "#f4f9ff", dark: "#3182f6" },
-  festival: { light: "#f4f9ff", dark: "#3182f6" }
 };
 
 function renderSliders() {
@@ -1487,11 +1483,26 @@ function routeCandidateValue(place, current) {
   return place.score + namedBonus + requiredBonus - haversineKm(current, place) * distancePenalty;
 }
 
+function hasReliableOperatingHours(place) {
+  return place.hoursParseStatus !== "empty" && place.hoursParseStatus !== "unparsed";
+}
+
+function exceedsClosingTime(place, endMinutes) {
+  if (!place.closesAt) return false;
+  // 여러 영업시간대 중 첫 구간만 저장된 값이라 마감시간 신뢰도가 낮아 검사를 생략한다.
+  if (place.hoursParseStatus === "multiple_ranges_took_first") return false;
+  return endMinutes > parseClockMinutes(place.closesAt);
+}
+
 function scheduleLeg(current, clockMinutes, place, targetMinutes = null, { snap = true } = {}) {
   const distance = haversineKm(current, place);
   const travelMinutes = estimateTravelMinutes(distance);
   const arrivalMinutes = clockMinutes + travelMinutes;
-  const waitMinutes = targetMinutes === null ? 0 : Math.max(0, targetMinutes - arrivalMinutes);
+  const opensAtMinutes = place.opensAt ? parseClockMinutes(place.opensAt) : null;
+  const effectiveTargetMinutes = opensAtMinutes === null
+    ? targetMinutes
+    : Math.max(targetMinutes ?? 0, opensAtMinutes);
+  const waitMinutes = effectiveTargetMinutes === null ? 0 : Math.max(0, effectiveTargetMinutes - arrivalMinutes);
   const rawStartMinutes = arrivalMinutes + waitMinutes;
   const rawEndMinutes = place.overrideEndMinutes != null
     ? Math.max(rawStartMinutes, place.overrideEndMinutes)
@@ -1506,9 +1517,13 @@ function returnTravelMinutes(place, destination) {
   return estimateTravelMinutes(haversineKm(place, destination));
 }
 
-function chooseBestCandidate(results, current, usedIds, predicate = () => true) {
+function chooseBestCandidate(results, current, clockMinutes, usedIds, predicate = () => true) {
   return results
-    .filter((place) => !usedIds.has(place.id) && hasUsableCoordinates(place) && predicate(place))
+    .filter((place) => {
+      if (usedIds.has(place.id) || !hasUsableCoordinates(place) || !predicate(place)) return false;
+      const leg = scheduleLeg(current, clockMinutes, place);
+      return !exceedsClosingTime(place, leg.endMinutes);
+    })
     .sort((a, b) => routeCandidateValue(b, current) - routeCandidateValue(a, current))[0] || null;
 }
 
@@ -1527,7 +1542,8 @@ function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayE
     })
     .filter(({ place, leg }) =>
       leg.startMinutes <= slot.windowEnd
-      && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes,
+      && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes
+      && !exceedsClosingTime(place, leg.endMinutes),
     )
     .sort((a, b) => b.value - a.value)[0] || null;
 }
@@ -1548,7 +1564,7 @@ function chooseFillerBeforeMeal(results, current, clockMinutes, usedIds, slot, d
       );
       return { place, leg, meal, value: routeCandidateValue(place, current) };
     })
-    .filter(({ leg, meal }) => meal && leg.endMinutes <= slot.windowEnd)
+    .filter(({ place, leg, meal }) => meal && leg.endMinutes <= slot.windowEnd && !exceedsClosingTime(place, leg.endMinutes))
     .sort((a, b) => b.value - a.value)[0] || null;
 }
 
@@ -1620,8 +1636,8 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
   }
 
   while (day.length < maxStops) {
-    let next = chooseBestCandidate(results, current, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(results, current, usedIds);
+    let next = chooseBestCandidate(results, current, clockMinutes, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(results, current, clockMinutes, usedIds);
     if (!next) break;
     const leg = scheduleLeg(current, clockMinutes, next);
     if (leg.endMinutes + returnTravelMinutes(next, returnDestination) > dayEndMinutes) break;
@@ -1671,7 +1687,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const day = state.routeDays[dayIndex];
   if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
-  const availableResults = state.results.filter((place) => placeIsOpenOnDate(place, window.date));
+  const availableResults = state.results.filter((place) => placeIsOpenOnDate(place, window.date) && hasReliableOperatingHours(place));
   const isFinalDay = dayIndex === state.routeDays.length - 1;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
@@ -1736,8 +1752,8 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const fillerCandidates = [];
   let pickCurrent = current;
   while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
-    let next = chooseBestCandidate(availableResults, pickCurrent, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(availableResults, pickCurrent, usedIds);
+    let next = chooseBestCandidate(availableResults, pickCurrent, clockMinutes, usedIds, (place) => !isMealPlace(place));
+    if (!next) next = chooseBestCandidate(availableResults, pickCurrent, clockMinutes, usedIds);
     if (!next) break;
     fillerCandidates.push(next);
     usedIds.add(next.id);
@@ -1901,7 +1917,8 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
       )
       .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
       .filter(({ place, leg }) =>
-        leg.endMinutes + returnTravelMinutes(place, CHAMPIONS_FIELD_GAME) <= pregameEndMinutes,
+        leg.endMinutes + returnTravelMinutes(place, CHAMPIONS_FIELD_GAME) <= pregameEndMinutes
+        && !exceedsClosingTime(place, leg.endMinutes),
       )
       .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0];
     if (!next) break;
@@ -1947,7 +1964,7 @@ function createRoute(results) {
   const builtDays = windows
     .map((window, dayIndex) => {
       addClosedNamedPlaceWarnings(window.date, dayIndex);
-      const availableResults = results.filter((place) => placeIsOpenOnDate(place, window.date));
+      const availableResults = results.filter((place) => placeIsOpenOnDate(place, window.date) && hasReliableOperatingHours(place));
       return {
         window,
         day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)

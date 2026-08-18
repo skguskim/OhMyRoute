@@ -3,6 +3,7 @@ import time
 import urllib.request
 import urllib.error
 import urllib.parse
+import pandas as pd
 import json
 from pathlib import Path
 
@@ -57,61 +58,6 @@ def fetch_specific_raw_place(content_id: str):
         "_type": "json",
         "contentId": content_id
     }
-
-#     list_query = urllib.parse.urlencode(common_params)
-#     list_url = f"{base_url}/areaBasedList2?{list_query}"
-
-#     list_data = fetch_json(list_url)
-
-#     items = list_data.get("response", {}).get("body", {}).get("items", {}).get("item", [])
-#     if not items:
-#         print("조회된 장소가 없습니다.")
-#         return
-
-#     item = items[0] if isinstance(items, list) else items
-#     content_id = item.get("contentid")
-#     content_type = item.get("contenttypeid")
-#     merged = dict(item)
-
-#     detail_common_params = {
-#     "serviceKey": urllib.parse.unquote(service_key),
-#     "MobileOS": "ETC",
-#     "MobileApp": "TestClient",
-#     "_type": "json",
-#     "contentId": content_id
-# }
-#     common_url = f"{base_url}/detailCommon2?{urllib.parse.urlencode(detail_common_params)}"
-#     try:
-#         c_data = fetch_json(common_url)
-#         print("공통 정보 응답 데이터:", c_data)
-#         c_items = c_data.get("response", {}).get("body", {}).get("items", {}).get("item", [])
-#         if c_items:
-#             merged.update(c_items[0] if isinstance(c_items, list) else c_items)
-#     except Exception as e:
-#         print(f"상세 공통 정보 조회 실패: {e}")
-
-#     detail_intro_params = {
-#         "serviceKey": urllib.parse.unquote(service_key),
-#         "MobileOS": "ETC",
-#         "MobileApp": "TestClient",
-#         "_type": "json",
-#         "numOfRows": 1,      # 추가
-#         "pageNo": 1,         # 추가
-#         "contentId": content_id,
-#         "contentTypeId": content_type
-#     }
-#     intro_url = f"{base_url}/detailIntro2?{urllib.parse.urlencode(detail_intro_params)}"
-#     try:
-#         i_data = fetch_json(intro_url)
-#         i_items = i_data.get("response", {}).get("body", {}).get("items", {}).get("item", [])
-#         if i_items:
-#             merged.update(i_items[0] if isinstance(i_items, list) else i_items)
-#     except Exception as e:
-#         print(f"상세 소개 정보 조회 실패: {e}")
-
-#     print(json.dumps(merged, ensure_ascii=False, indent=2))
-
-
     common_url = f"{base_url}/detailCommon2?{urllib.parse.urlencode(common_params)}"
     
     try:
@@ -157,9 +103,61 @@ def fetch_specific_raw_place(content_id: str):
     print("\n=== 최종 Raw 데이터 ===")
     print(json.dumps(merged, ensure_ascii=False, indent=2))
 
+def fetch_and_save_classification_codes():
+    load_dotenv()
+    service_key = os.environ.get("TOUR_API_SERVICE_KEY", "").strip()
+    if not service_key:
+        print("TOUR_API_SERVICE_KEY가 설정되지 않았습니다.")
+        return
+
+    base_url = "https://apis.data.go.kr/B551011/KorService2/lclsSystmCode2"
+    
+    # 명세서 REST URI 예제와 완벽하게 일치하도록 빈 파라미터까지 명시
+    params = {
+        "serviceKey": urllib.parse.unquote(service_key),
+        "MobileApp": "TestClient",
+        "MobileOS": "ETC",
+        "pageNo": 1,
+        "numOfRows": 500,
+        "lclsSystm1": "",
+        "lclsSystm2": "",
+        "lclsSystm3": "",
+        "_type": "json",
+        "lclsSystmListYn": "Y"
+    }
+
+    url = f"{base_url}?{urllib.parse.urlencode(params)}"
+    req = urllib.request.Request(url, headers={"User-Agent": "TestClient/1.0"})
+    
+    try:
+        with urllib.request.urlopen(req) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            
+        items = data.get("response", {}).get("body", {}).get("items", {}).get("item", [])
+        if not items:
+            print("조회된 분류체계 데이터가 없습니다.")
+            return
+
+        if not isinstance(items, list):
+            items = [items]
+
+        df = pd.DataFrame(items)
+        output_path = GENERATED_DIR / "tourapi_classification_codes.csv"
+        df.to_csv(output_path, index=False, encoding="utf-8-sig")
+        print(f"분류체계 데이터 저장 완료: {output_path}")
+        print(f"총 {len(df)}개 항목 저장됨.")
+
+    except Exception as e:
+        print(f"분류체계 조회 실패: {e}")
+
 if __name__ == "__main__":
+    # 분류체계 조회 및 저장
+    # fetch_and_save_classification_codes()
+
     # 확인하고자 하는 장소의 contentId(source_place_id)를 입력합니다.
-    TARGET_CONTENT_ID = "1778079" 
+    # TARGET_CONTENT_ID = "1778079" 
     fetch_specific_raw_place("1778079")
     fetch_specific_raw_place("126329")
+
+
     

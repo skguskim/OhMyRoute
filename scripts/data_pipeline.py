@@ -99,17 +99,19 @@ PROTOTYPE_SOURCE_IDS = {
     "곡성 섬진강기차마을": "gokseong_train",
 }
 
+# LABEL_RULES에서 키워드를 매칭하고 is_valid_label()에서 검증하는 방식으로 라벨링을 수행.
 LABEL_RULES = {
     "nature": {
         "#자연": ("자연", "생태", "국립공원"),
-        "#산": ("산", "등산", "봉우리"),
+        "#산": ("등산", "봉우리"),
+        "#무등산": ("무등산",),
         "#숲": ("숲", "수목", "대나무"),
         "#정원": ("정원", "꽃", "수목원"),
         "#전망": ("전망", "조망", "풍경", "일몰"),
         "#바다": ("바다", "해변", "해양", "호수", "하천"),
     },
     "culture": {
-        "#역사": ("역사", "유적", "사적", "기념관"),
+        "#역사": ("역사", "유적", "사적", "기념관", "조선"),
         "#문화유산": ("문화재", "문화유산", "세계유산"),
         "#근대문화": ("근대", "일제", "개화"),
         "#민주인권": ("5·18", "5.18", "민주", "인권"),
@@ -118,7 +120,7 @@ LABEL_RULES = {
     },
     "art": {
         "#예술": ("예술", "미술", "작가"),
-        "#전시": ("전시", "갤러리", "박물관", "미술관"),
+        "#전시": ("전시", "갤러리", "박물관", "미술관", "예술공간"),
         "#현대미술": ("현대미술", "비엔날레"),
         "#공연": ("공연", "극장", "콘서트", "음악"),
         "#미디어아트": ("미디어아트", "미디어 아트"),
@@ -215,6 +217,30 @@ def extract_url(value: Any) -> str:
     cleaned = clean_text(raw)
     match = re.search(r"https?://[^\s]+", cleaned)
     return match.group(0).rstrip(".,)") if match else ""
+
+
+def load_classification_map(csv_path: Path) -> dict[str, str]:
+    code_map = {}
+    if not csv_path.exists():
+        return code_map
+    try:
+        with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            for row in csv.DictReader(handle):
+                c1 = str(row.get("lclsSystm1Cd", "")).strip()
+                n1 = str(row.get("lclsSystm1Nm", "")).strip()
+                c2 = str(row.get("lclsSystm2Cd", "")).strip()
+                n2 = str(row.get("lclsSystm2Nm", "")).strip()
+                c3 = str(row.get("lclsSystm3Cd", "")).strip()
+                n3 = str(row.get("lclsSystm3Nm", "")).strip()
+                if c1 and n1:
+                    code_map[c1] = n1
+                if c2 and n2:
+                    code_map[c2] = n2
+                if c3 and n3:
+                    code_map[c3] = n3
+    except Exception:
+        pass
+    return code_map
 
 
 def as_items(payload: dict[str, Any]) -> tuple[list[dict[str, Any]], int]:
@@ -319,8 +345,10 @@ def parse_gwangju_detail(url: str, source_place_id: str, category: str) -> tuple
                 break
 
     region, sigungu = normalize_region(address)
-    indoor = category in {"문화·예술", "음식·로컬"}
     searchable = f"{title} {category} {description} {' '.join(table.values())}"
+    # 본문 텍스트 집합인 searchable은 먼저 계산하고 실내 확인
+    indoor_markers = ("미술관", "박물관", "전시관", "공연장", "체험관", "실내")
+    indoor = category in {"문화·예술", "음식·로컬"} and any(token in searchable for token in indoor_markers)
     parking = parse_optional_bool(table.get("주차시설", ""))
     pet = parse_optional_bool(table.get("애견동반", ""))
     wheelchair = True if any(token in searchable for token in ("휠체어", "장애인 전용", "경사로 있음", "엘리베이터 있음")) else ""
@@ -449,7 +477,7 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
         "parking", "parkingculture", "parkingfood", "parkingleports", "parkingevent",
     ))
     indoor = content_type in {"14", "38", "39"}
-    searchable = " ".join(clean_text(item.get(key)) for key in ("title", "overview", "cat1", "cat2", "cat3"))
+    searchable = " ".join(clean_text(item.get(key)) for key in ("title", "overview", "lclsSystm1", "lclsSystm2", "lclsSystm3"))
     family = any(token in searchable for token in ("어린이", "가족", "아이", "체험"))
     return {
         "source": "tourapi",
@@ -483,13 +511,43 @@ def normalize_item(item: dict[str, Any]) -> dict[str, Any]:
         "last_verified_at": "",
         "license": clean_text(item.get("cpyrhtDivCd")),
         "quality_status": "draft",
+        "lclsSystm1": clean_text(item.get("lclsSystm1")),
+        "lclsSystm2": clean_text(item.get("lclsSystm2")),
+        "lclsSystm3": clean_text(item.get("lclsSystm3")),
     }
 
 
-def score_profile(place: dict[str, Any]) -> dict[str, Any]:
+def is_valid_match(keyword: str, text: str) -> bool:
+    if keyword not in text:
+        return False
+    if keyword == "산":
+        # "산" 글자가 포함되어 있고, 동시에 "등산"이나 "봉우리"가 있는 경우에만 유효성 인정
+        return ("산" in text) and ("등산" in text or "봉우리" in text)
+    if keyword == "등산":
+        cleaned_text = re.sub(r'무등산', '', text)
+        return keyword in cleaned_text
+    if keyword == "밤":
+        cleaned_text = re.sub(r'밤나무', '', text)
+        return keyword in cleaned_text
+    if keyword == "꽃":
+        cleaned_text = re.sub(r'눈꽃|꽃게', '', text)
+        return keyword in cleaned_text
+    return True
+
+def score_profile(place: dict[str, Any], classification_map: dict[str, str] | None = None) -> dict[str, Any]:
     title_category = f"{place.get('name', '')} {place.get('category', '')}".lower()
     full_text = f"{title_category} {place.get('description', '')}".lower()
     hashtags: list[str] = []
+
+    if classification_map:
+        for code_key in ("lclsSystm1", "lclsSystm2", "lclsSystm3"):
+            code_val = str(place.get(code_key, "")).strip()
+            if code_val:
+                name_val = classification_map.get(code_val, code_val)
+                tag_name = f"#{name_val}"
+                if tag_name not in hashtags:
+                    hashtags.append(tag_name)
+
     scores: dict[str, float] = {}
     total_hits = 0
     for dimension in VECTOR_KEYS:
@@ -497,12 +555,16 @@ def score_profile(place: dict[str, Any]) -> dict[str, Any]:
         strong_hits = 0
         body_hits = 0
         for tag, keywords in LABEL_RULES[dimension].items():
-            if any(keyword.lower() in title_category for keyword in keywords):
-                strong_hits += 1
-                hit_tags.append(tag)
-            elif any(keyword.lower() in full_text for keyword in keywords):
-                body_hits += 1
-                hit_tags.append(tag)
+            for keyword in keywords:
+                kw_lower = keyword.lower()
+                if is_valid_match(kw_lower, title_category):
+                    strong_hits += 1
+                    if tag not in hit_tags:
+                        hit_tags.append(tag)
+                elif is_valid_match(kw_lower, full_text):
+                    body_hits += 1
+                    if tag not in hit_tags:
+                        hit_tags.append(tag)
         hits = strong_hits + body_hits
         total_hits += hits
         if hits == 0:
@@ -590,6 +652,10 @@ def collect_tourapi(args: argparse.Namespace) -> tuple[Path, Path]:
     if not service_key:
         raise PipelineError("TOUR_API_SERVICE_KEY가 없습니다. .env.example을 복사해 .env에 인증키를 입력하세요.")
     output_dir = Path(args.output_dir)
+    
+    class_csv_path = output_dir / "tourapi_classification_codes.csv"
+    classification_map = load_classification_map(class_csv_path)
+
     raw_items: list[dict[str, Any]] = []
 
     area_codes = args.area_codes if args.area_codes else ["5"]
@@ -632,8 +698,10 @@ def collect_tourapi(args: argparse.Namespace) -> tuple[Path, Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     raw_path = DATA_DIR / "raw" / f"tourapi_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     raw_path.write_text(json.dumps(raw_items, ensure_ascii=False, indent=2), encoding="utf-8")
+    
     places = [normalize_item(item) for item in raw_items]
-    profiles = [score_profile(place) for place in places]
+    profiles = [score_profile(place, classification_map) for place in places]
+    
     places_path = output_dir / "tourapi_places.csv"
     profiles_path = output_dir / "tourapi_place_profiles.csv"
     write_csv(places_path, PLACE_FIELDS, places)

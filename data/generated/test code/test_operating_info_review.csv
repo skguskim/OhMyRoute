@@ -1,0 +1,5 @@
+﻿source,source_place_id,name,operating_hours_raw,closed_days_raw,fees_raw,parking_raw,pet_raw,public_transport_raw,source_url
+tourapi,1778079,강진아트홀,"오전 09:00 ~ 12:00<br/>
+오후 13:00 ~ 17:00<br/>
+야간 18:00 ~ 22:00",매주 월요일,공연에 따라 다름,가능,,,
+tourapi,126329,광주호,상시 개방,연중무휴,,가능 (약 180대),,,

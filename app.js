@@ -154,7 +154,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [0, 0, 0, 0, 0, 0, 0, 0],
+  preference: [50, 50, 50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -914,14 +914,14 @@ function updateRangeVisual(input) {
 }
 
 const AXIS_COLORS = {
-  sports: { light: "#e3f2fd", dark: "#1976d2" },
-  nature: { light: "#e8f5e9", dark: "#2e7d32" },
-  culture: { light: "#f3e5f5", dark: "#7b1fa2" },
-  art: { light: "#fce4ec", dark: "#c2185b" },
-  food: { light: "#fff3e0", dark: "#f57c00" },
-  activity: { light: "#ffebee", dark: "#d32f2f" },
-  healing: { light: "#e0f2f1", dark: "#00796b" },
-  festival: { light: "#fff8e1", dark: "#fbc02d" }
+  sports: { light: "#f4f9ff", dark: "#3182f6" },
+  nature: { light: "#f4f9ff", dark: "#3182f6" },
+  culture: { light: "#f4f9ff", dark: "#3182f6" },
+  art: { light: "#f4f9ff", dark: "#3182f6" },
+  food: { light: "#f4f9ff", dark: "#3182f6" },
+  activity: { light: "#f4f9ff", dark: "#3182f6" },
+  healing: { light: "#f4f9ff", dark: "#3182f6" },
+  festival: { light: "#f4f9ff", dark: "#3182f6" }
 };
 
 function renderSliders() {

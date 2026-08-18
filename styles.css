@@ -720,7 +720,8 @@ input[type="range"] {
   appearance: none;
   background: 
     repeating-linear-gradient(to right, transparent, transparent calc(10% - 2px), #fff calc(10% - 2px), #fff 10%),
-    linear-gradient(to right, var(--slider-light, var(--green)) 0%, var(--slider-dark, var(--green)) var(--range-progress), var(--line) var(--range-progress), var(--line) 100%);
+    linear-gradient(to right, transparent 0%, transparent var(--range-progress), var(--line) var(--range-progress), var(--line) 100%),
+    linear-gradient(to right, var(--slider-light, var(--green)) 0%, var(--slider-dark, var(--green)) 100%);
   border-radius: 8px;
   outline: none;
   cursor: pointer;

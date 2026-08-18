@@ -1901,6 +1901,134 @@ input[type="range"]::-moz-range-thumb {
   color: #e6002d;
 }
 
+/* Fixed theme stamps keep every category visually consistent. */
+.stamp-seal.theme-stamp {
+  --stamp-theme-color: #43505f;
+  --stamp-theme-soft: #eef1f4;
+  padding: 4px 4px 3px;
+  gap: 1px;
+  place-content: center;
+  color: var(--stamp-theme-color);
+  background: #fff;
+  border: 2px solid color-mix(in srgb, var(--stamp-theme-color) 24%, white);
+  overflow: hidden;
+}
+
+.stamp-seal.stamp-theme-food {
+  --stamp-theme-color: #bd5229;
+  --stamp-theme-soft: #fff0e7;
+}
+
+.stamp-seal.stamp-theme-heritage {
+  --stamp-theme-color: #97443a;
+  --stamp-theme-soft: #fbeeea;
+}
+
+.stamp-seal.stamp-theme-culture {
+  --stamp-theme-color: #654da0;
+  --stamp-theme-soft: #f1edfb;
+}
+
+.stamp-seal.stamp-theme-nature {
+  --stamp-theme-color: #377452;
+  --stamp-theme-soft: #eaf5ee;
+}
+
+.stamp-seal.stamp-theme-garden {
+  --stamp-theme-color: #a1426e;
+  --stamp-theme-soft: #faedf3;
+}
+
+.stamp-seal.stamp-theme-activity {
+  --stamp-theme-color: #2863a0;
+  --stamp-theme-soft: #eaf2fb;
+}
+
+.stamp-seal.stamp-theme-walk {
+  --stamp-theme-color: #267687;
+  --stamp-theme-soft: #e8f4f5;
+}
+
+.theme-stamp-art {
+  position: relative;
+  width: 66px;
+  max-width: 100%;
+  height: 55px;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center;
+  overflow: hidden;
+  color: var(--stamp-theme-color);
+  background: var(--stamp-theme-soft);
+  border-radius: 50% 46% 52% 48%;
+  opacity: 0.58;
+  filter: grayscale(0.72) saturate(0.45);
+  transform: rotate(-1.5deg);
+  transition: opacity 180ms ease, filter 180ms ease, transform 180ms ease;
+}
+
+.theme-stamp-pattern {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  display: block !important;
+  object-fit: cover;
+  opacity: 0.12;
+  filter: grayscale(1) contrast(1.15);
+  mix-blend-mode: multiply;
+}
+
+.theme-stamp-template {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 !important;
+  display: block !important;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.stamp-seal .theme-stamp-state {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  color: #6b7280;
+  font-size: 7px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stamp-seal.theme-stamp:hover:not(:disabled),
+.stamp-seal.theme-stamp.in-range {
+  color: var(--stamp-theme-color);
+  background: var(--stamp-theme-soft);
+  border-color: var(--stamp-theme-color);
+}
+
+.stamp-seal.theme-stamp:hover .theme-stamp-art,
+.stamp-seal.theme-stamp.in-range .theme-stamp-art,
+.stamp-seal.theme-stamp.unlocked .theme-stamp-art {
+  opacity: 1;
+  filter: none;
+}
+
+.stamp-seal.theme-stamp.in-range .theme-stamp-state,
+.stamp-seal.theme-stamp.unlocked .theme-stamp-state {
+  color: var(--stamp-theme-color);
+}
+
+.stamp-seal.theme-stamp.unlocked {
+  color: var(--stamp-theme-color);
+  background: #fff;
+  border: 4px double var(--stamp-theme-color);
+  transform: rotate(-2deg);
+}
+
 .stamp-place-name {
   margin: 7px 0 0;
   overflow: hidden;
@@ -6326,201 +6454,3 @@ body:has(#formView.active) .app-main {
 #formView .form-grid .field.full {
   grid-column: 1 / -1 !important;
 }
-
-/* Local AI Hub traditional-pattern stamps. */
-.stamp-seal.traditional-pattern-stamp {
-  padding: 4px 4px 3px;
-  gap: 1px;
-  place-content: center;
-  background: #fff;
-  border-style: solid;
-  overflow: hidden;
-}
-
-.traditional-pattern-stamp-art {
-  position: relative;
-  width: 64px;
-  max-width: 100%;
-  height: 55px;
-  margin: 0 !important;
-  display: block !important;
-  overflow: hidden;
-  background: #f5f1e8;
-  border-radius: 50% 46% 52% 48%;
-}
-
-.traditional-pattern-stamp-image {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  opacity: 0.32;
-  filter: grayscale(1) contrast(0.9);
-  transition: opacity 180ms ease, filter 180ms ease;
-}
-
-.traditional-pattern-stamp-ring {
-  position: absolute;
-  inset: 2px;
-  margin: 0 !important;
-  display: block !important;
-  border: 2px double rgba(107, 114, 128, 0.66);
-  border-radius: 50% 46% 52% 48%;
-  pointer-events: none;
-}
-
-.stamp-seal .traditional-pattern-stamp-state {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  color: #6b7280;
-  font-size: 7px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.stamp-seal.traditional-pattern-stamp:hover .traditional-pattern-stamp-image,
-.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-image,
-.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-image {
-  opacity: 1;
-  filter: saturate(0.86) contrast(1.08);
-}
-
-.stamp-seal.traditional-pattern-stamp:hover .traditional-pattern-stamp-ring,
-.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-ring,
-.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-ring {
-  border-color: var(--blue);
-}
-
-.stamp-seal.traditional-pattern-stamp.in-range .traditional-pattern-stamp-state,
-.stamp-seal.traditional-pattern-stamp.unlocked .traditional-pattern-stamp-state {
-  color: var(--blue);
-}
-
-.stamp-seal.traditional-pattern-stamp.unlocked {
-  background: #fff;
-  border: 4px double var(--blue);
-}
-
-/* Restaurant stamps use a verified logo when supplied, otherwise a local name wordmark. */
-.stamp-seal.restaurant-brand-stamp {
-  padding: 4px 4px 3px;
-  gap: 1px;
-  place-content: center;
-  background: #fff;
-  border-style: solid;
-  overflow: hidden;
-}
-
-.restaurant-brand-stamp-art {
-  position: relative;
-  width: 66px;
-  max-width: 100%;
-  height: 53px;
-  margin: 0 !important;
-  display: grid !important;
-  place-items: center;
-  overflow: hidden;
-  color: hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
-  background: #fff;
-  border-radius: 50% 46% 52% 48%;
-  opacity: 0.36;
-  filter: grayscale(1);
-  transform: rotate(-1.5deg);
-  transition: opacity 180ms ease, filter 180ms ease;
-}
-
-.restaurant-brand-stamp-wordmark {
-  position: relative;
-  z-index: 1;
-  width: 56px;
-  min-height: 35px;
-  margin: 0 !important;
-  padding: 5px 3px 4px;
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: inherit;
-  border-top: 1px solid currentColor;
-  border-bottom: 1px solid currentColor;
-}
-
-.restaurant-brand-stamp-wordmark small {
-  margin: 0 0 2px;
-  color: inherit;
-  font-size: 5px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0.11em;
-}
-
-.restaurant-brand-stamp-wordmark b {
-  max-width: 52px;
-  color: inherit;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  font-size: 10px;
-  font-weight: 950;
-  line-height: 1.05;
-  text-align: center;
-  word-break: keep-all;
-  overflow-wrap: anywhere;
-}
-
-.restaurant-brand-stamp-wordmark.condensed b {
-  font-size: 8px;
-}
-
-.restaurant-brand-stamp-wordmark.extra-condensed b {
-  font-size: 7px;
-}
-
-.restaurant-brand-stamp-image {
-  position: absolute;
-  z-index: 2;
-  inset: 5px;
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  display: block;
-  object-fit: contain;
-  background: #fff;
-}
-
-.restaurant-brand-stamp-ring {
-  position: absolute;
-  z-index: 3;
-  inset: 2px;
-  margin: 0 !important;
-  display: block !important;
-  border: 2px double currentColor;
-  border-radius: 50% 46% 52% 48%;
-  pointer-events: none;
-}
-
-.stamp-seal .restaurant-brand-stamp-state {
-  position: relative;
-  z-index: 4;
-  margin: 0;
-  color: #6b7280;
-  font-size: 7px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.stamp-seal.restaurant-brand-stamp:hover .restaurant-brand-stamp-art,
-.stamp-seal.restaurant-brand-stamp.in-range .restaurant-brand-stamp-art,
-.stamp-seal.restaurant-brand-stamp.unlocked .restaurant-brand-stamp-art {
-  opacity: 1;
-  filter: none;
-}
-
-.stamp-seal.restaurant-brand-stamp.in-range .restaurant-brand-stamp-state,
-.stamp-seal.restaurant-brand-stamp.unlocked .restaurant-brand-stamp-state {
-  color: hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
-}
-
-.stamp-seal.restaurant-brand-stamp.unlocked {
-  background: #fff;
-  border: 4px double hsl(var(--restaurant-stamp-hue, 2) 68% 36%);
-}
-

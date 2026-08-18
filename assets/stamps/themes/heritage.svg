@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">역사 전통 테마 스탬프</title>
+  <g fill="none" stroke="#97443a" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="60" cy="50" rx="54" ry="44" stroke-width="3"/>
+    <ellipse cx="60" cy="50" rx="49" ry="39" stroke-width="1.5"/>
+    <g transform="translate(48 29)" stroke-width="1.8">
+      <path d="m3 9 9-5 9 5M5 10h14M7 10v8m5-8v8m5-8v8M4 19h16"/>
+    </g>
+  </g>
+  <g fill="#97443a" text-anchor="middle" font-family="Pretendard, Noto Sans KR, sans-serif">
+    <text x="60" y="22" font-size="7" font-weight="800" letter-spacing="1.4">HERITAGE</text>
+    <text x="60" y="72" font-size="14" font-weight="900">역사·전통</text>
+    <text x="60" y="85" font-size="6" font-weight="800" letter-spacing="1">GWANGJU</text>
+  </g>
+</svg>

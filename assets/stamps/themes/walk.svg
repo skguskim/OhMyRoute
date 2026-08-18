@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">도보 산책 테마 스탬프</title>
+  <g fill="none" stroke="#267687" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="60" cy="50" rx="54" ry="44" stroke-width="3"/>
+    <ellipse cx="60" cy="50" rx="49" ry="39" stroke-width="1.5"/>
+    <g transform="translate(48 28)" stroke-width="1.8">
+      <path d="M6 19c3-4 4-7 4-10m4 6c2-3 3-5 4-8"/>
+      <circle cx="10" cy="6" r="2"/>
+      <circle cx="18" cy="4" r="2"/>
+      <path d="M4 20h16"/>
+    </g>
+  </g>
+  <g fill="#267687" text-anchor="middle" font-family="Pretendard, Noto Sans KR, sans-serif">
+    <text x="60" y="22" font-size="7" font-weight="800" letter-spacing="1.4">WALK</text>
+    <text x="60" y="72" font-size="14" font-weight="900">도보·산책</text>
+    <text x="60" y="85" font-size="6" font-weight="800" letter-spacing="1">GWANGJU</text>
+  </g>
+</svg>

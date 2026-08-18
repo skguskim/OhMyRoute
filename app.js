@@ -30,6 +30,27 @@ const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
 const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
 
+const STAMP_THEMES = Object.freeze({
+  food: { label: "광주 미식", asset: "./assets/stamps/themes/food.svg" },
+  heritage: { label: "역사·전통", asset: "./assets/stamps/themes/heritage.svg" },
+  culture: { label: "문화·예술", asset: "./assets/stamps/themes/culture.svg" },
+  nature: { label: "자연·경관", asset: "./assets/stamps/themes/nature.svg" },
+  garden: { label: "공원·정원", asset: "./assets/stamps/themes/garden.svg" },
+  activity: { label: "체험·스포츠", asset: "./assets/stamps/themes/activity.svg" },
+  walk: { label: "도보·산책", asset: "./assets/stamps/themes/walk.svg" },
+  local: { label: "광주 로컬", asset: "./assets/stamps/themes/culture.svg" },
+});
+
+const STAMP_THEME_BY_CATEGORY = Object.freeze({
+  "음식·로컬": "food",
+  "역사·전통": "heritage",
+  "문화·예술": "culture",
+  "자연·경관": "nature",
+  "공원·정원": "garden",
+  "체험·스포츠": "activity",
+  "도보·산책": "walk",
+});
+
 const ORIGINS = {
   songjeong_station: {
     name: "광주송정역",
@@ -206,9 +227,7 @@ const state = {
   stampLocation: null,
   stampLocationMode: "GPS",
   stampToastTimer: null,
-  stampPatterns: new Map(),
   stampPatternCategories: new Map(),
-  restaurantStampLogos: new Map(),
   reviews: [],
   rewards: [],
   baseballAttendance: false,
@@ -2378,15 +2397,6 @@ async function copyRewardCode() {
   }
 }
 
-function stampIcon(place) {
-  const category = `${place.category} ${place.hashtags.join(" ")}`;
-  if (/음식|시장|맛집|카페|로컬/.test(category)) return "🍚";
-  if (/스포츠|체험|액티비티|야구/.test(category)) return "🏆";
-  if (/자연|경관|산|숲|공원|정원/.test(category)) return "🌿";
-  if (/전시|문화|예술|박물관/.test(category)) return "🏛";
-  return "✦";
-}
-
 function usesChampionsFieldStamp(place) {
   const searchableText = `${place.name || ""} ${(place.hashtags || []).join(" ")}`;
   return /챔피언스\s*필드/i.test(searchableText);
@@ -2410,72 +2420,49 @@ function championsFieldStampContent(isStamped, isInRange) {
   `;
 }
 
-function traditionalPatternForPlace(place) {
-  return state.stampPatterns.get(placeStampId(place))
-    || state.stampPatternCategories.get(place.category)
-    || null;
-}
-
-function usesRestaurantBrandStamp(place) {
+function usesFoodThemeStamp(place) {
   return place.databaseType === "restaurant"
     || place.databaseType === "stadium_food"
-    || Boolean(place.stadiumFood);
+    || Boolean(place.stadiumFood)
+    || place.category === "음식·로컬";
 }
 
-function restaurantStampLogoForPlace(place) {
-  return state.restaurantStampLogos.get(placeStampId(place))
-    || state.restaurantStampLogos.get(place.name)
-    || null;
+function stampThemeForPlace(place) {
+  const key = usesFoodThemeStamp(place)
+    ? "food"
+    : STAMP_THEME_BY_CATEGORY[place.category] || "local";
+  return { key, ...STAMP_THEMES[key] };
 }
 
-function restaurantStampHue(place) {
-  const palette = [2, 24, 42, 148, 188, 218, 264, 326];
-  const hash = [...String(placeStampId(place))]
-    .reduce((total, character) => ((total * 31) + character.charCodeAt(0)) >>> 0, 7);
-  return palette[hash % palette.length];
+function themePatternForPlace(place, themeKey) {
+  if (themeKey === "food") return null;
+  return state.stampPatternCategories.get(place.category) || null;
 }
 
-function restaurantBrandStampContent(place, logo, isStamped, isInRange) {
+function themeStampContent(theme, pattern, isStamped, isInRange) {
   const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
-  const brandName = place.brandName || place.name;
-  const lengthClass = brandName.length >= 14 ? "extra-condensed" : brandName.length >= 9 ? "condensed" : "";
   return `
-    <span class="restaurant-brand-stamp-art ${logo ? "has-logo" : ""}" aria-hidden="true">
-      <span class="restaurant-brand-stamp-wordmark ${lengthClass}">
-        <small>GWANGJU LOCAL</small>
-        <b>${escapeHtml(brandName)}</b>
-      </span>
-      ${logo ? `
+    <span class="theme-stamp-art" aria-hidden="true">
+      ${pattern ? `
         <img
-          class="restaurant-brand-stamp-image"
-          src="${escapeHtml(logo.asset)}"
+          class="theme-stamp-pattern"
+          src="${escapeHtml(pattern.asset)}"
           alt=""
           loading="lazy"
           decoding="async"
           draggable="false"
         >
       ` : ""}
-      <span class="restaurant-brand-stamp-ring"></span>
-    </span>
-    <span class="restaurant-brand-stamp-state">${stateLabel}</span>
-  `;
-}
-
-function traditionalPatternStampContent(pattern, isStamped, isInRange) {
-  const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
-  return `
-    <span class="traditional-pattern-stamp-art" aria-hidden="true">
       <img
-        class="traditional-pattern-stamp-image"
-        src="${escapeHtml(pattern.asset)}"
+        class="theme-stamp-template"
+        src="${escapeHtml(theme.asset)}"
         alt=""
         loading="lazy"
         decoding="async"
         draggable="false"
       >
-      <span class="traditional-pattern-stamp-ring"></span>
     </span>
-    <span class="traditional-pattern-stamp-state">${stateLabel}</span>
+    <span class="theme-stamp-state">${stateLabel}</span>
   `;
 }
 
@@ -2534,32 +2521,20 @@ function renderStamps() {
       : null;
     const isInRange = distanceMeters !== null && distanceMeters <= 100;
     const isChampionsField = usesChampionsFieldStamp(place);
-    const isRestaurant = !isChampionsField && usesRestaurantBrandStamp(place);
-    const restaurantLogo = isRestaurant ? restaurantStampLogoForPlace(place) : null;
-    const traditionalPattern = isChampionsField || isRestaurant ? null : traditionalPatternForPlace(place);
+    const theme = isChampionsField ? null : stampThemeForPlace(place);
+    const themePattern = theme ? themePatternForPlace(place, theme.key) : null;
     const sealClass = [
       isStamped ? "unlocked" : isInRange ? "in-range" : "",
       isChampionsField ? "champions-field-stamp" : "",
-      isRestaurant ? "restaurant-brand-stamp" : "",
-      traditionalPattern ? "traditional-pattern-stamp" : "",
+      theme ? `theme-stamp stamp-theme-${theme.key}` : "",
     ].filter(Boolean).join(" ");
     const sealContent = isChampionsField
       ? championsFieldStampContent(isStamped, isInRange)
-      : isRestaurant
-        ? restaurantBrandStampContent(place, restaurantLogo, isStamped, isInRange)
-      : traditionalPattern
-        ? traditionalPatternStampContent(traditionalPattern, isStamped, isInRange)
-      : isStamped
-        ? `<span>광주·전남</span><b>${escapeHtml(place.name)}</b><span>완료</span>`
-        : `<span class="stamp-icon">${stampIcon(place)}</span><span>${isInRange ? "도장 찍기" : "방문"}</span>`;
-    const patternTitle = traditionalPattern
-      ? `${traditionalPattern.patternType}${traditionalPattern.patternSymbol ? ` · ${traditionalPattern.patternSymbol}` : ""}`
+      : themeStampContent(theme, themePattern, isStamped, isInRange);
+    const patternTitle = themePattern
+      ? ` · AI Hub 전통 문양 ${themePattern.patternType || "배경"}`
       : "";
-    const stampTitle = patternTitle
-      ? `AI Hub 전통 문양 · ${patternTitle}`
-      : isRestaurant
-        ? `${restaurantLogo ? "음식점 공식 로고" : "음식점 이름 기반 스탬프"} · ${place.name}`
-        : "";
+    const stampTitle = theme ? `${theme.label} 테마 스탬프${patternTitle}` : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";
     const distanceText = isStamped ? "✓ 스탬프 획득" : formatStampDistance(distanceMeters);
     return `
@@ -2568,8 +2543,8 @@ function renderStamps() {
           type="button"
           class="stamp-seal ${sealClass}"
           data-stamp-id="${escapeHtml(id)}"
+          ${theme ? `data-stamp-theme="${escapeHtml(theme.key)}"` : ""}
           aria-label="${escapeHtml(place.name)} ${isStamped ? "스탬프 획득 완료" : "스탬프 찍기"}"
-          ${isRestaurant ? `style="--restaurant-stamp-hue: ${restaurantStampHue(place)}"` : ""}
           ${stampTitle ? `title="${escapeHtml(stampTitle)}"` : ""}
           ${isStamped ? "disabled" : ""}
         >${sealContent}</button>
@@ -3911,22 +3886,6 @@ async function loadStampPatterns() {
   }
 }
 
-async function loadRestaurantStampLogos() {
-  try {
-    const response = await fetch("./data/local-stamps/restaurant-logos.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`음식점 로고 스탬프 데이터 오류: ${response.status}`);
-    const payload = await response.json();
-    const logos = payload?.logos && typeof payload.logos === "object" ? payload.logos : {};
-    return Object.fromEntries(Object.entries(logos).flatMap(([key, value]) => {
-      const logo = typeof value === "string" ? { asset: value } : value;
-      return logo?.asset ? [[key, logo]] : [];
-    }));
-  } catch (error) {
-    console.info("공식 음식점 로고 파일이 없어 이름 기반 스탬프를 사용합니다.", error);
-    return {};
-  }
-}
-
 async function loadPlaces() {
   const stadiumFoodRequest = fetch("./data/stadium_foods.json")
     .then(async (response) => {
@@ -3946,14 +3905,13 @@ async function loadPlaces() {
       console.warn(error);
       return { rows: [], failed: true };
     });
-  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult, restaurantLogoResult] = await Promise.all([
+  const [placeResponse, restaurantResponse, stadiumFoodResult, openingHoursResult, baseballGamesResult, stampPatternResult] = await Promise.all([
     fetch("./data/places.json"),
     fetch("./data/restaurants.json"),
     stadiumFoodRequest,
     openingHoursRequest,
     loadBaseballGames(),
     loadStampPatterns(),
-    loadRestaurantStampLogos(),
   ]);
   if (!placeResponse.ok) throw new Error(`관광지 데이터 오류: ${placeResponse.status}`);
   if (!restaurantResponse.ok) throw new Error(`음식점 데이터 오류: ${restaurantResponse.status}`);
@@ -3978,9 +3936,7 @@ async function loadPlaces() {
   });
   state.baseballGamesLoadFailed = baseballGamesResult.failed;
   state.baseballGamesSource = baseballGamesResult.source;
-  state.stampPatterns = new Map(Object.entries(stampPatternResult.places));
   state.stampPatternCategories = new Map(Object.entries(stampPatternResult.categories));
-  state.restaurantStampLogos = new Map(Object.entries(restaurantLogoResult));
   renderSavedRoutes();
   updateBaseballAttendanceControl();
   const playerRestaurantCount = restaurants.filter((place) => place.playerRecommended).length;

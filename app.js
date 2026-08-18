@@ -8,7 +8,9 @@ const AXES = [
   { key: "healing", label: "휴식·산책", emoji: "🌳" },
   { key: "festival", label: "축제·야간", emoji: "✨" },
 ];
-const SPORTS_AXIS_INDEX = AXES.findIndex((axis) => axis.key === "sports");
+const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity", "healing", "festival"];
+const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
+const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
@@ -152,7 +154,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  preference: [72, 56, 66, 54, 48, 35, 76, 43],
+  preference: [0, 0, 0, 0, 0, 0, 0, 0],
   travelPrompt: "",
   promptAnalysis: {
     raw: "",
@@ -340,6 +342,10 @@ function analyzeTravelPrompt(value) {
 function currentVector() {
   const boost = state.promptAnalysis?.axisBoost || [];
   return state.preference.map((value, index) => clamp(value / 100 + (boost[index] || 0), 0, 1));
+}
+
+function hasPreferenceSignals(vector = currentVector()) {
+  return vector.some((value) => value > 0);
 }
 
 function currentConditions() {
@@ -892,8 +898,11 @@ function getPreferenceLevel(value) {
 }
 
 function topAxes(limit = 2) {
-  return currentVector()
+  const vector = currentVector();
+  if (!hasPreferenceSignals(vector)) return [];
+  return vector
     .map((value, index) => ({ value: Math.round(value * 100), ...AXES[index] }))
+    .filter((axis) => axis.value > 0)
     .sort((a, b) => b.value - a.value)
     .slice(0, limit);
 }
@@ -905,8 +914,11 @@ function updateRangeVisual(input) {
 }
 
 function renderSliders() {
-  $("#preferenceSliders").innerHTML = AXES.map(
-    (axis, index) => `
+  $("#preferenceSliders").innerHTML = DISPLAY_AXIS_KEYS.map(
+    (axisKey) => {
+      const index = AXIS_INDEX_BY_KEY[axisKey];
+      const axis = AXES[index];
+      return `
       <label class="slider-row">
         <span class="slider-meta">
           <span class="slider-name"><i>${axis.emoji}</i>${axis.label}</span>
@@ -922,7 +934,8 @@ function renderSliders() {
           aria-label="${axis.label} 선호도"
         />
       </label>
-    `,
+    `;
+    },
   ).join("");
 
   $$('#preferenceSliders input[type="range"]').forEach((input) => {
@@ -938,9 +951,10 @@ function renderSliders() {
 }
 
 function renderAxisPreview() {
-  $("#axisPreview").innerHTML = topAxes(5)
-    .map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`)
-    .join("");
+  const axes = topAxes(5);
+  $("#axisPreview").innerHTML = axes.length
+    ? axes.map((axis) => `<span>${axis.emoji} ${axis.label} ${axis.value}</span>`).join("")
+    : '<span class="axis-preview-empty">취향을 선택하면 주요 선호가 표시됩니다.</span>';
 }
 
 function promptHasSignals(analysis = state.promptAnalysis) {
@@ -1125,11 +1139,13 @@ function matchReasons(place, vector, conditions) {
       : place.recommendedPlayers || [];
     return [players.length ? `${players.join("·")} 선수 추천` : "KIA 선수 추천"];
   }
-  const preferenceReasons = place.vector
-    .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2)
-    .map((item) => item.label);
+  const preferenceReasons = hasPreferenceSignals(vector)
+    ? place.vector
+      .map((value, index) => ({ label: AXES[index].label, score: value * vector[index] }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map((item) => item.label)
+    : [];
   const contextReasons = [];
   if (conditions.weather === "rainy" && place.rainOk) contextReasons.push("비 오는 날 가능");
   if (conditions.companion === "family" && place.familyFriendly) {
@@ -1138,6 +1154,9 @@ function matchReasons(place, vector, conditions) {
   if (conditions.transport === "public" && place.publicTransportScore >= 0.75) {
     contextReasons.push("대중교통 편리");
   }
+  if (!hasPreferenceSignals(vector) && !contextReasons.length) {
+    contextReasons.push("여행 조건과 동선 적합");
+  }
   return [...promptReasonsForPlace(place, conditions), ...preferenceReasons, ...contextReasons]
     .filter((item, index, items) => items.indexOf(item) === index)
     .slice(0, 3);
@@ -1145,6 +1164,7 @@ function matchReasons(place, vector, conditions) {
 
 function rankPlacesLocal() {
   const vector = currentVector();
+  const usePreferenceScore = hasPreferenceSignals(vector);
   const conditions = currentConditions();
   let candidates = state.places.filter((place) => placePassesFilters(place, conditions));
   state.promptAnalysis.relaxed = false;
@@ -1173,8 +1193,12 @@ function rankPlacesLocal() {
       const situationalScore = contextScore(place, conditions);
       const promptScore = promptFitScore(place, conditions);
       const baseScore = usePromptScore
-        ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
-        : preferenceScore * 0.78 + situationalScore * 0.22;
+        ? usePreferenceScore
+          ? preferenceScore * 0.65 + situationalScore * 0.2 + promptScore * 0.15
+          : situationalScore * 0.45 + promptScore * 0.55
+        : usePreferenceScore
+          ? preferenceScore * 0.78 + situationalScore * 0.22
+          : situationalScore;
       const sportsPreferenceBoost = conditions.sportsBaseballHighlyPreferred && place.playerRecommended
         ? place.activePlayerRecommended ? 1.5 : 1.15
         : 0;
@@ -1203,6 +1227,7 @@ function parseVector(value) {
 async function rankPlacesSupabase() {
   const config = window.OMAEROUTE_CONFIG || {};
   const conditions = currentConditions();
+  if (!hasPreferenceSignals()) return rankPlacesLocal();
   const response = await fetch(`${config.supabaseUrl}/rest/v1/rpc/recommend_places`, {
     method: "POST",
     headers: {
@@ -2244,11 +2269,25 @@ function kakaoMapLink(place, nextPlace) {
   return `https://map.kakao.com/link/from/${placeName},${place.latitude},${place.longitude}/to/${nextName},${nextPlace.latitude},${nextPlace.longitude}`;
 }
 
+function josa(word, josaType) {
+  if (!word) return "";
+  const lastChar = word.charCodeAt(word.length - 1);
+  const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+  if (josaType === "와/과") return word + (hasJongseong ? "과" : "와");
+  if (josaType === "을/를") return word + (hasJongseong ? "을" : "를");
+  return word;
+}
+
 function dayTheme(day) {
   const axes = topAxes(2);
   if (!day.length) return "조건에 맞는 장소를 찾지 못했습니다.";
   const mealLabels = day.filter((place) => place.mealSlot).map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`);
-  return `${axes[0].label}와 ${axes[1].label} 취향을 중심으로 ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
+  const themeCopy = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${axes[1].label} 취향을 중심으로`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 중심으로`
+      : "여행 조건에 맞춰";
+  return `${themeCopy} ${day[0].region}에서 이어지는 일정${mealLabels.length ? ` · ${mealLabels.join("·")} 포함` : ""}`;
 }
 
 function renderDayTabs() {
@@ -2293,8 +2332,9 @@ function renderItinerary() {
             ${place.hashtags.slice(0, 2).map((tag) => `<span class="hashtag-chip">${escapeHtml(tag)}</span>`).join("")}
           </div>
           <h3>${escapeHtml(place.name)}</h3>
-          <p>${escapeHtml(place.description)}</p>
-          <div class="stop-details">
+          <div class="reason-callout">💡 추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")}</div>
+          <p class="expandable-desc">${escapeHtml(place.description)}</p>
+          <div class="stop-details expandable-desc">
             ${place.isBaseballGame ? `
               <div class="baseball-game-callout">⚾ ${escapeHtml(place.gameDayType)} ${formatClockMinutes(place.fixedStartMinutes)} 경기 시작 · 약 3시간~3시간 30분 관람 · ${formatClockMinutes(place.expectedEndMinutes)} 종료</div>
             ` : ""}
@@ -2304,7 +2344,7 @@ function renderItinerary() {
             ${conditions.sportsBaseballHighlyPreferred && place.activeRecommendedPlayers?.length ? `
               <div class="player-recommendation">⚾ ${escapeHtml(place.activeRecommendedPlayers.join("·"))} 선수 추천</div>
             ` : ""}
-            <div class="reason-callout">추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")} · 이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
+            <div class="reason-callout detail-reason">이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
             <div class="stop-detail-actions">
               <a class="kakao-directions-link" href="${mapLink}" target="_blank" rel="noopener noreferrer">${nextPlace ? "다음 장소 길찾기" : isFinalReturn ? "출발지 복귀 길찾기" : "카카오맵에서 보기"} ↗</a>
             </div>
@@ -2333,6 +2373,7 @@ function renderAlternatives() {
 function renderTips() {
   const conditions = currentConditions();
   const mealStops = state.route.filter((place) => place.mealSlot);
+  const preferredAxes = topAxes(2);
   const tips = [
     `${conditions.origin.name}에서 첫 장소까지 ${state.transport === "public" ? "대중교통 환승 시간을 포함해" : "실제 교통 상황을 확인하며"} 출발하세요.`,
     conditions.weather === "rainy"
@@ -2340,7 +2381,9 @@ function renderTips() {
         ? "비 대응 장소를 우선했고, 함께 요청한 조건을 만족시키기 위해 일부 후보는 유연하게 포함했습니다. 우산과 운영 여부를 확인하세요."
         : "비 오는 날 이용 가능한 장소만 포함했습니다. 실외 이동 구간에는 우산을 준비하세요."
       : "실외 장소가 포함되어 있으니 출발 전 운영시간과 기상 상황을 한 번 더 확인하세요.",
-    `추천은 ${topAxes(2).map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`,
+    preferredAxes.length
+      ? `추천은 ${preferredAxes.map((axis) => axis.label).join("·")} 선호를 가장 크게 반영했습니다. 장소 카드를 누르면 추천 근거를 볼 수 있습니다.`
+      : "취향을 따로 선택하지 않아 이동수단·날씨·동행·체류시간 등 여행 조건을 중심으로 추천했습니다.",
   ];
   if (mealStops.length) {
     tips.unshift(`${mealStops.map((place) => `${formatClockMinutes(place.mealTargetMinutes)} ${place.mealLabel}`).join(" · ")} 시간에 맞춰 음식점을 동선에 포함했습니다.`);
@@ -2415,7 +2458,11 @@ function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
   const metrics = routeMetrics();
-  const title = `${axes[0].label}와 ${axes[1].label}을 잇는 ${durationLabel()} 여행`;
+  const title = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`
+    : axes.length === 1
+      ? `${axes[0].label} 취향을 담은 ${durationLabel()} 여행`
+      : `여행 조건에 맞춘 ${durationLabel()} 여행`;
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
   $("#resultTitle").textContent = title;
   $("#resultDescription").textContent = conditions.baseballAttendance
@@ -2424,7 +2471,9 @@ function renderResult() {
       ? `${travelWindowCopy}, 슬라이더 취향과 한 줄 요청 및 출발지 복귀시간을 함께 반영한 동선입니다.`
       : conditions.sportsBaseballHighlyPreferred
         ? `${travelWindowCopy}, 스포츠·야구 취향과 KIA 선수 추천 맛집 및 복귀시간을 우선 반영한 동선입니다.`
-        : `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`;
+        : axes.length
+          ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
+          : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
   renderPromptResultSummary();
   $("#mapSummary").textContent = `${conditions.origin.name} 왕복 · ${metrics.distance.toFixed(1)}km`;
   renderMap();
@@ -2441,6 +2490,8 @@ function showView(viewName, { pushState = true } = {}) {
   const wantsResult = viewName === "result" && state.route.length > 0;
   $("#formView").classList.toggle("active", !wantsResult);
   $("#resultView").classList.toggle("active", wantsResult);
+  const docentWrapper = $("#aiDocentWrapper");
+  if (docentWrapper) docentWrapper.hidden = !wantsResult;
   $$(".mobile-nav button").forEach((button) => {
     button.classList.toggle(
       "active",
@@ -2542,6 +2593,26 @@ function routeSignature(route = state.route) {
   return `${route.map((place) => `${place.id}:${place.mealSlot || "visit"}`).join("-")}@${$("#travelDate").value}:${$("#startTime").value}-${$("#endDate").value}:${$("#endTime").value}`;
 }
 
+function preferenceByKey(preference = state.preference) {
+  return Object.fromEntries(AXES.map((axis, index) => [axis.key, Number(preference[index]) || 0]));
+}
+
+function normalizeSavedPreference(saved) {
+  if (saved?.preferenceByKey && typeof saved.preferenceByKey === "object") {
+    return AXES.map((axis) => Number(saved.preferenceByKey[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference) && Array.isArray(saved.preferenceOrder)) {
+    const keyedPreference = Object.fromEntries(
+      saved.preferenceOrder.map((axisKey, index) => [axisKey, saved.preference[index]]),
+    );
+    return AXES.map((axis) => Number(keyedPreference[axis.key]) || 0);
+  }
+  if (Array.isArray(saved?.preference)) {
+    return AXES.map((_, index) => Number(saved.preference[index]) || 0);
+  }
+  return Array(AXES.length).fill(0);
+}
+
 function saveCurrentRoute() {
   if (!state.route.length) return;
   const signature = routeSignature();
@@ -2575,6 +2646,8 @@ function saveCurrentRoute() {
       duration: state.duration,
       transport: state.transport,
       preference: [...state.preference],
+      preferenceOrder: AXES.map((axis) => axis.key),
+      preferenceByKey: preferenceByKey(),
       prompt: state.travelPrompt,
       companion: $("#companion").value,
       weather: $("#weather").value,
@@ -2647,7 +2720,7 @@ function restoreSavedRoute(id) {
   $("#endTime").value = saved.endTime || legacyEnd.endTime;
   syncTravelWindow();
   state.transport = saved.transport;
-  state.preference = [...saved.preference];
+  state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
   $("#baseballAttendance").checked = state.baseballAttendance;
   $("#travelPrompt").value = saved.prompt || "";
@@ -2897,6 +2970,152 @@ function bindEvents() {
   document.addEventListener("visibilitychange", () => {
     if (document.hidden && state.previewPlaying) stopPreview();
   });
+
+  // AI 도슨트 버튼 및 패널 로직
+  const docentBtn = $("#aiDocentButton");
+  const docentPanel = $("#aiDocentPanel");
+  const docentClose = $("#aiDocentCloseButton");
+  const docentRefresh = $("#aiDocentRefreshButton");
+  const docentChat = $("#aiDocentChat");
+  const docentInput = $("#aiDocentInput");
+  const docentSend = $("#aiDocentSendButton");
+
+  function addDocentMessage(text, isUser = false) {
+    const msg = document.createElement("div");
+    msg.className = isUser ? "ai-msg user-msg" : "ai-msg docent-msg";
+    msg.textContent = text;
+    docentChat.appendChild(msg);
+    docentChat.scrollTop = docentChat.scrollHeight;
+  }
+
+  function findNearestPlace() {
+    if (!state.route || state.route.length === 0) return null;
+    let currentLoc = state.stampLocation;
+    if (!currentLoc && state.kakaoMap) {
+      const center = state.kakaoMap.getCenter();
+      currentLoc = { latitude: center.getLat(), longitude: center.getLng() };
+    }
+    if (!currentLoc && currentConditions().origin) {
+      currentLoc = currentConditions().origin;
+    }
+
+    if (!currentLoc) return state.route[0];
+
+    let nearest = state.route[0];
+    let minDist = haversineKm(currentLoc, nearest);
+    
+    for (let i = 1; i < state.route.length; i++) {
+      const dist = haversineKm(currentLoc, state.route[i]);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = state.route[i];
+      }
+    }
+    return nearest;
+  }
+
+  if (docentBtn && docentPanel) {
+    let docentChatHistory = [];
+
+    function initDocentChat() {
+      docentChat.innerHTML = "";
+      const nearest = findNearestPlace();
+      let initialMessage = "";
+      if (nearest) {
+        initialMessage = `지금 계신 곳과 가장 가까운 여행지는 [${nearest.name}]입니다!\n\n${nearest.description}\n\n이곳에 대해 더 궁금한 점이 있으신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n현재 사용자는 ${nearest.name} 근처에 있습니다. 장소 설명: ${nearest.description}` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      } else {
+        initialMessage = `안녕하세요! 오매루트 AI 도슨트입니다. 어떤 장소가 궁금하신가요?`;
+        docentChatHistory = [
+          { role: "user", parts: [{ text: `[System: 당신은 '오매루트'의 AI 도슨트입니다. 친절하고 유익한 여행 가이드 역할을 수행하세요.]\n\n안녕하세요.` }] },
+          { role: "model", parts: [{ text: initialMessage }] }
+        ];
+      }
+      addDocentMessage(initialMessage);
+    }
+
+    docentBtn.addEventListener("click", () => {
+      docentPanel.hidden = false;
+      docentBtn.hidden = true;
+      if (docentChat.children.length === 0) {
+        initDocentChat();
+      }
+    });
+
+    if (docentRefresh) {
+      docentRefresh.addEventListener("click", () => {
+        initDocentChat();
+      });
+    }
+    docentClose.addEventListener("click", () => {
+      docentPanel.hidden = true;
+      docentBtn.hidden = false;
+    });
+    docentSend.addEventListener("click", async () => {
+      const text = docentInput.value.trim();
+      if (!text) return;
+      addDocentMessage(text, true);
+      docentInput.value = "";
+      
+      const config = window.OMAEROUTE_CONFIG || {};
+      const apiKey = config.geminiApiKey?.trim();
+      
+      if (!apiKey) {
+        addDocentMessage("Gemini API 키가 설정되지 않았습니다. config.js를 확인해주세요.");
+        return;
+      }
+
+      const typingMsg = document.createElement("div");
+      typingMsg.className = "ai-msg docent-msg typing";
+      typingMsg.textContent = "AI가 답변을 작성 중입니다...";
+      docentChat.appendChild(typingMsg);
+      docentChat.scrollTop = docentChat.scrollHeight;
+
+      docentChatHistory.push({ role: "user", parts: [{ text }] });
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: docentChatHistory
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.text();
+          console.error("Gemini API Error:", response.status, errData);
+          throw new Error(`API Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let replyText = "답변을 생성할 수 없습니다.";
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
+          replyText = data.candidates[0].content.parts[0].text;
+        }
+        
+        docentChat.removeChild(typingMsg);
+        addDocentMessage(replyText);
+        docentChatHistory.push({ role: "model", parts: [{ text: replyText }] });
+
+      } catch (error) {
+        console.error("AI Docent Error:", error);
+        if (docentChat.contains(typingMsg)) {
+          docentChat.removeChild(typingMsg);
+        }
+        addDocentMessage("오류가 발생했습니다. 잠시 후 다시 시도해주세요. (콘솔 로그를 확인해주세요)");
+        docentChatHistory.pop(); // Remove the user message to try again
+      }
+    });
+    docentInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") docentSend.click();
+    });
+  }
 }
 
 async function loadPlaces() {

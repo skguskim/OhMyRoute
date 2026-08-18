@@ -8,4 +8,6 @@ window.OMAEROUTE_CONFIG = {
   // 공공데이터포털 '기상청_단기예보 조회서비스' 일반 인증키입니다.
   // 로컬 시연용입니다. 실제 배포에서는 키가 노출되지 않도록 서버 프록시를 사용하세요.
   kmaServiceKey: "",
+  // Gemini API Key for AI Docent
+  geminiApiKey: "",
 };

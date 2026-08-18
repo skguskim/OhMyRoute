@@ -84,7 +84,40 @@ try {
   if (browserErrors.length) throw new Error(`브라우저 오류: ${browserErrors.join(" | ")}`);
 
   await page.locator("#stampGrid").screenshot({ path: "outputs/ui_theme_stamps.png" });
-  console.log(JSON.stringify({ baseUrl, before, after }, null, 2));
+
+  const fallbackPage = await browser.newPage({ viewport: { width: 1440, height: 1050 } });
+  const fallbackErrors = [];
+  fallbackPage.on("pageerror", (error) => fallbackErrors.push(error.message));
+  await fallbackPage.route("**/data/local-stamps/stamp-patterns.json", (route) =>
+    route.fulfill({ status: 404, contentType: "application/json", body: "{}" }));
+  await fallbackPage.goto(`${baseUrl}/?demo=route`, { waitUntil: "networkidle" });
+  await fallbackPage.click("#startButton");
+  await fallbackPage.waitForSelector("#resultView.active", { timeout: 20000 });
+  await fallbackPage.waitForSelector(".theme-stamp-pattern", { timeout: 10000 });
+  await fallbackPage.waitForFunction(() => [...document.querySelectorAll(".theme-stamp-pattern")]
+    .every((image) => image.complete && image.naturalWidth > 0));
+
+  const fallback = await fallbackPage.evaluate(() => {
+    const themeButtons = [...document.querySelectorAll(".stamp-seal.theme-stamp")];
+    const patterns = themeButtons.map((button) => button.querySelector(".theme-stamp-pattern"));
+    return {
+      themeCount: themeButtons.length,
+      patternCount: patterns.filter(Boolean).length,
+      patternAssets: [...new Set(patterns.map((image) => image?.getAttribute("src")))],
+      allRepositoryAssets: patterns.every((image) => image?.getAttribute("src")?.startsWith("./assets/stamps/patterns/")),
+      allLoaded: patterns.every((image) => image?.complete && image.naturalWidth > 0),
+      titlesDescribeFallback: themeButtons.every((button) => button.title.includes("AI Hub 문양 유형 기반 재제작")),
+    };
+  });
+  if (fallback.patternCount !== fallback.themeCount || !fallback.allRepositoryAssets || !fallback.allLoaded) {
+    throw new Error(`로컬 데이터 없는 환경의 배경 SVG 폴백이 잘못됐습니다: ${JSON.stringify(fallback)}`);
+  }
+  if (!fallback.titlesDescribeFallback || fallbackErrors.length) {
+    throw new Error(`폴백 출처 안내 또는 브라우저 오류가 있습니다: ${fallbackErrors.join(" | ")}`);
+  }
+  await fallbackPage.locator("#stampGrid").screenshot({ path: "outputs/ui_theme_stamps_fallback.png" });
+
+  console.log(JSON.stringify({ baseUrl, before, after, fallback }, null, 2));
 } finally {
   await browser.close();
 }

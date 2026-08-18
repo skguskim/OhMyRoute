@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">청정함과 고귀함을 재해석한 도보 산책 식물 배경</title>
+  <defs>
+    <pattern id="p" width="34" height="28" patternUnits="userSpaceOnUse">
+      <path d="M2 25C8 17 13 10 17 2c4 8 9 15 15 23" fill="none" stroke="#59616a" stroke-width="1.1" stroke-linecap="round"/>
+      <path d="M10 15c-5 0-7-3-7-7 5 0 8 2 8 6m13 1c5 0 7-3 7-7-5 0-8 2-8 6M17 12c-4-3-4-7 0-11 4 4 4 8 0 11Z" fill="none" stroke="#59616a" stroke-width="1" stroke-linejoin="round"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">연결과 조화를 재해석한 역사 전통 배경</title>
+  <defs>
+    <pattern id="p" width="32" height="24" patternUnits="userSpaceOnUse">
+      <path d="M3 5h10v6H8v8h10v-6h-5V5h10v14" fill="none" stroke="#59616a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="3" cy="5" r="1.4" fill="#59616a"/>
+      <circle cx="23" cy="19" r="1.4" fill="#59616a"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

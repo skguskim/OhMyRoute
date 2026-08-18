@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">조화와 균형을 재해석한 광주 미식 기하 배경</title>
+  <defs>
+    <pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M12 1 23 12 12 23 1 12Z" fill="none" stroke="#59616a" stroke-width="1.2"/>
+      <circle cx="12" cy="12" r="3.2" fill="none" stroke="#59616a" stroke-width="1"/>
+      <path d="M0 0 5 5M24 0l-5 5M0 24l5-5M24 24l-5-5" stroke="#59616a" stroke-width=".8"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

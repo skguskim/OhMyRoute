@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">행운과 장수를 재해석한 공원 정원 동물 배경</title>
+  <defs>
+    <pattern id="p" width="30" height="26" patternUnits="userSpaceOnUse">
+      <path d="M7 13c0-5 4-9 8-9s8 4 8 9-4 9-8 9-8-4-8-9Z" fill="none" stroke="#59616a" stroke-width="1.2"/>
+      <path d="m15 4 4 5-4 4-4-4 4-5Zm0 9 4 4-4 5-4-5 4-4ZM7 13h16" fill="none" stroke="#59616a" stroke-width=".9"/>
+      <path d="M3 13h4m16 0h4" stroke="#59616a" stroke-width="1" stroke-linecap="round"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">조화와 질서를 재해석한 문화 예술 기하 배경</title>
+  <defs>
+    <pattern id="p" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect x="4" y="4" width="20" height="20" rx="3" fill="none" stroke="#59616a" stroke-width="1"/>
+      <circle cx="14" cy="14" r="6" fill="none" stroke="#59616a" stroke-width="1.2"/>
+      <path d="M14 4v20M4 14h20" stroke="#59616a" stroke-width=".7"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

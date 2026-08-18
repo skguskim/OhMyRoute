@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">풍요와 번영을 재해석한 자연 경관 동물 배경</title>
+  <defs>
+    <pattern id="p" width="36" height="24" patternUnits="userSpaceOnUse">
+      <path d="M3 15c6-8 12-8 18 0 4-5 8-6 12-3-5 1-8 4-11 8-6-5-12-5-19-5Z" fill="none" stroke="#59616a" stroke-width="1.2" stroke-linejoin="round"/>
+      <circle cx="9" cy="13" r="1" fill="#59616a"/>
+      <path d="m25 7 3-4 2 5" fill="none" stroke="#59616a" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="100" fill="url(#p)"/>
+</svg>

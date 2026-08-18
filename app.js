@@ -31,14 +31,46 @@ const REWARD_STORAGE_KEY = "omaeroute_rewards";
 const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
 
 const STAMP_THEMES = Object.freeze({
-  food: { label: "광주 미식", asset: "./assets/stamps/themes/food.svg" },
-  heritage: { label: "역사·전통", asset: "./assets/stamps/themes/heritage.svg" },
-  culture: { label: "문화·예술", asset: "./assets/stamps/themes/culture.svg" },
-  nature: { label: "자연·경관", asset: "./assets/stamps/themes/nature.svg" },
-  garden: { label: "공원·정원", asset: "./assets/stamps/themes/garden.svg" },
-  activity: { label: "체험·스포츠", asset: "./assets/stamps/themes/activity.svg" },
-  walk: { label: "도보·산책", asset: "./assets/stamps/themes/walk.svg" },
-  local: { label: "광주 로컬", asset: "./assets/stamps/themes/culture.svg" },
+  food: {
+    label: "광주 미식",
+    asset: "./assets/stamps/themes/food.svg",
+    patternAsset: "./assets/stamps/patterns/food-pattern.svg",
+  },
+  heritage: {
+    label: "역사·전통",
+    asset: "./assets/stamps/themes/heritage.svg",
+    patternAsset: "./assets/stamps/patterns/heritage-pattern.svg",
+  },
+  culture: {
+    label: "문화·예술",
+    asset: "./assets/stamps/themes/culture.svg",
+    patternAsset: "./assets/stamps/patterns/culture-pattern.svg",
+  },
+  nature: {
+    label: "자연·경관",
+    asset: "./assets/stamps/themes/nature.svg",
+    patternAsset: "./assets/stamps/patterns/nature-pattern.svg",
+  },
+  garden: {
+    label: "공원·정원",
+    asset: "./assets/stamps/themes/garden.svg",
+    patternAsset: "./assets/stamps/patterns/garden-pattern.svg",
+  },
+  activity: {
+    label: "체험·스포츠",
+    asset: "./assets/stamps/themes/activity.svg",
+    patternAsset: "./assets/stamps/patterns/activity-pattern.svg",
+  },
+  walk: {
+    label: "도보·산책",
+    asset: "./assets/stamps/themes/walk.svg",
+    patternAsset: "./assets/stamps/patterns/walk-pattern.svg",
+  },
+  local: {
+    label: "광주 로컬",
+    asset: "./assets/stamps/themes/culture.svg",
+    patternAsset: "./assets/stamps/patterns/culture-pattern.svg",
+  },
 });
 
 const STAMP_THEME_BY_CATEGORY = Object.freeze({
@@ -2435,8 +2467,12 @@ function stampThemeForPlace(place) {
 }
 
 function themePatternForPlace(place, themeKey) {
-  if (themeKey === "food") return null;
-  return state.stampPatternCategories.get(place.category) || null;
+  const localPattern = state.stampPatternCategories.get(place.category);
+  if (localPattern?.asset) return { ...localPattern, source: "aihub-local" };
+  const patternAsset = STAMP_THEMES[themeKey]?.patternAsset;
+  return patternAsset
+    ? { asset: patternAsset, patternType: "반복형 배경", source: "repository-fallback" }
+    : null;
 }
 
 function themeStampContent(theme, pattern, isStamped, isInRange) {
@@ -2532,7 +2568,7 @@ function renderStamps() {
       ? championsFieldStampContent(isStamped, isInRange)
       : themeStampContent(theme, themePattern, isStamped, isInRange);
     const patternTitle = themePattern
-      ? ` · AI Hub 전통 문양 ${themePattern.patternType || "배경"}`
+      ? ` · ${themePattern.source === "aihub-local" ? "AI Hub 전통 문양" : "AI Hub 문양 유형 기반 재제작"} ${themePattern.patternType || "배경"}`
       : "";
     const stampTitle = theme ? `${theme.label} 테마 스탬프${patternTitle}` : "";
     const distanceClass = isInRange && !isStamped ? "ready" : "";

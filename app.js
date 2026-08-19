@@ -2321,22 +2321,40 @@ function buildRouteSchedule(day, dayIndex = 0) {
   });
 }
 
-function routeMetrics(routeDays = state.routeDays) {
-  let distance = 0;
-  let minutes = 0;
+function dayMetrics(dayIndex) {
+  const day = state.routeDays[dayIndex] || [];
   const conditions = currentConditions();
-  routeDays.forEach((day, dayIndex) => {
-    const schedule = buildRouteSchedule(day, dayIndex);
-    const startMinutes = state.dayWindows[dayIndex]?.startMinutes ?? parseClockMinutes(conditions.startTime);
-    distance += schedule.reduce((sum, stop) => sum + stop.distance, 0);
-    if (schedule.length) minutes += schedule.at(-1).endMinutes - startMinutes;
-    if (dayIndex === routeDays.length - 1 && day.length && !day.at(-1).endsTrip) {
-      const returnDistance = haversineKm(day.at(-1), conditions.origin);
-      distance += returnDistance;
-      minutes += estimateTravelMinutes(returnDistance);
-    }
-  });
+  const schedule = buildRouteSchedule(day, dayIndex);
+  let distance = schedule.reduce((sum, stop) => sum + stop.distance, 0);
+  let minutes = 0;
+  const startMinutes = state.dayWindows[dayIndex]?.startMinutes ?? parseClockMinutes(conditions.startTime);
+  if (schedule.length) minutes += schedule.at(-1).endMinutes - startMinutes;
+  const isFinalDay = dayIndex === state.routeDays.length - 1;
+  if (isFinalDay && day.length && !day.at(-1).endsTrip) {
+    const returnDistance = haversineKm(day.at(-1), conditions.origin);
+    distance += returnDistance;
+    minutes += estimateTravelMinutes(returnDistance);
+  }
   return { distance, minutes };
+}
+
+function dayRoutePoints(dayIndex) {
+  const day = state.routeDays[dayIndex] || [];
+  const conditions = currentConditions();
+  const origin = conditions.origin;
+  const isFirstDay = dayIndex === 0;
+  const isFinalDay = dayIndex === state.routeDays.length - 1;
+  const includesReturn = isFinalDay && day.length > 0 && !day.at(-1).endsTrip;
+  const points = [];
+  if (isFirstDay) points.push({ ...origin, isOrigin: true, stopNumber: null });
+  day.forEach((place, index) => points.push({ ...place, isOrigin: false, stopNumber: index + 1 }));
+  return { points, origin, includesReturn };
+}
+
+function updateMapMeta() {
+  const metrics = dayMetrics(state.selectedDay);
+  $("#mapHeading").textContent = `Day ${state.selectedDay + 1} 동선`;
+  $("#mapSummary").textContent = `이동 거리 · ${metrics.distance.toFixed(1)}km`;
 }
 
 function formatDuration(minutes) {
@@ -2981,12 +2999,12 @@ function renderMap() {
   svg.hidden = false;
   $("#mapProviderStatus").textContent = "Kakao Map 연결 중";
   $("#mapProviderStatus").classList.remove("fallback");
-  const origin = currentConditions().origin;
-  const points = [origin, ...state.route];
-  if (points.length < 2) return;
+  const { points: routePoints, origin, includesReturn } = dayRoutePoints(state.selectedDay);
+  if (routePoints.length < 2) return;
 
-  const lats = points.map((point) => point.latitude);
-  const lons = points.map((point) => point.longitude);
+  const boundsPoints = includesReturn && !routePoints[0].isOrigin ? [...routePoints, origin] : routePoints;
+  const lats = boundsPoints.map((point) => point.latitude);
+  const lons = boundsPoints.map((point) => point.longitude);
   let minLat = Math.min(...lats);
   let maxLat = Math.max(...lats);
   let minLon = Math.min(...lons);
@@ -2998,23 +3016,25 @@ function renderMap() {
     x: 90 + ((point.longitude - minLon) / (maxLon - minLon)) * 740,
     y: 56 + (1 - (point.latitude - minLat) / (maxLat - minLat)) * 250,
   });
-  const projected = points.map(project);
-  const polyline = [...projected, projected[0]].map((point) => `${point.x},${point.y}`).join(" ");
+  const projected = routePoints.map(project);
+  const linePoints = includesReturn ? [...projected, project(origin)] : projected;
+  const polyline = linePoints.map((point) => `${point.x},${point.y}`).join(" ");
   const grid = Array.from({ length: 13 }, (_, index) => {
     const x = -70 + index * 90;
     return `<path d="M${x} 0 L${x + 160} 390" stroke="#d1d6db" stroke-width="1" opacity=".6"/>`;
   }).join("");
   const markers = projected.map((point, index) => {
-    const name = index === 0 ? origin.name : state.route[index - 1].name;
+    const routePoint = routePoints[index];
+    const name = routePoint.name;
     const shortName = name.length > 12 ? `${name.slice(0, 11)}…` : name;
-    const color = index === 0 ? "#1b64da" : "#3182f6";
+    const color = routePoint.isOrigin ? "#1b64da" : "#3182f6";
     const labelX = clamp(point.x, 65, 855);
     const labelY = clamp(point.y + 24, 25, 350);
     return `
       <g>
         <circle cx="${point.x}" cy="${point.y}" r="17" fill="white" opacity=".96"/>
         <circle cx="${point.x}" cy="${point.y}" r="12" fill="${color}"/>
-        <text x="${point.x}" y="${point.y + 3.5}" text-anchor="middle" fill="white" font-size="9" font-weight="800">${index === 0 ? "S" : index}</text>
+        <text x="${point.x}" y="${point.y + 3.5}" text-anchor="middle" fill="white" font-size="9" font-weight="800">${routePoint.isOrigin ? "S" : routePoint.stopNumber}</text>
         <rect x="${labelX - 57}" y="${labelY}" width="114" height="25" rx="8" fill="white" stroke="#c9e2ff"/>
         <text x="${labelX}" y="${labelY + 16}" text-anchor="middle" fill="#191f28" font-size="8.5" font-weight="700">${escapeHtml(shortName)}</text>
       </g>
@@ -3082,11 +3102,8 @@ async function renderKakaoMap() {
     await loadKakaoMapsSdk();
     const kakao = window.kakao;
     const mapElement = $("#kakaoMap");
-    const origin = currentConditions().origin;
-    const routePoints = [
-      { ...origin, order: 0, label: "출발" },
-      ...state.route.map((place, index) => ({ ...place, order: index + 1, label: `${index + 1}` })),
-    ];
+    const { points: routePoints, origin, includesReturn } = dayRoutePoints(state.selectedDay);
+    if (!routePoints.length) return;
 
     mapElement.hidden = false;
     $("#routeMap").hidden = true;
@@ -3117,7 +3134,7 @@ async function renderKakaoMap() {
       const infoNode = document.createElement("div");
       infoNode.style.cssText = "padding:9px 11px;min-width:145px;font-size:11px;line-height:1.5;text-align:center;font-family:'Noto Sans KR',sans-serif;";
       const infoTitle = document.createElement("strong");
-      infoTitle.textContent = point.order === 0 ? `출발 · ${point.name}` : `${point.order}. ${point.name}`;
+      infoTitle.textContent = point.isOrigin ? `출발 · ${point.name}` : `${point.stopNumber}. ${point.name}`;
       infoNode.appendChild(infoTitle);
       if (point.region) {
         const infoMeta = document.createElement("div");
@@ -3129,8 +3146,8 @@ async function renderKakaoMap() {
       kakao.maps.event.addListener(marker, "click", () => infoWindow.open(map, marker));
 
       const labelNode = document.createElement("div");
-      labelNode.className = `kakao-route-label${point.order === 0 ? " start" : ""}`;
-      labelNode.textContent = point.order === 0 ? `출발 · ${point.name}` : `${point.order}. ${point.name}`;
+      labelNode.className = `kakao-route-label${point.isOrigin ? " start" : ""}`;
+      labelNode.textContent = point.isOrigin ? `출발 · ${point.name}` : `${point.stopNumber}. ${point.name}`;
       const overlay = new kakao.maps.CustomOverlay({
         map,
         position,
@@ -3141,7 +3158,11 @@ async function renderKakaoMap() {
       state.kakaoOverlays.push(overlay);
     });
 
-    linePath.push(new kakao.maps.LatLng(origin.latitude, origin.longitude));
+    if (includesReturn) {
+      const returnPosition = new kakao.maps.LatLng(origin.latitude, origin.longitude);
+      bounds.extend(returnPosition);
+      linePath.push(returnPosition);
+    }
 
     state.kakaoPolyline = new kakao.maps.Polyline({
       path: linePath,
@@ -3501,7 +3522,6 @@ function renderPromptResultSummary() {
 function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
-  const metrics = routeMetrics();
   const title = axes.length >= 2
     ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`
     : axes.length === 1
@@ -3517,7 +3537,7 @@ function renderResult() {
         ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
         : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
   renderPromptResultSummary();
-  $("#mapSummary").textContent = `${conditions.origin.name} 왕복 · ${metrics.distance.toFixed(1)}km`;
+  updateMapMeta();
   renderMap();
   renderItinerary();
   renderAlternatives();
@@ -4019,6 +4039,9 @@ function bindEvents() {
     if (!button) return;
     state.selectedDay = Number(button.dataset.day);
     renderItinerary();
+    updateMapMeta();
+    renderMap();
+    renderKakaoMap();
   });
   $("#itineraryTimeline").addEventListener("click", (event) => {
     const card = event.target.closest(".stop-card");

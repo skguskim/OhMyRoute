@@ -64,7 +64,8 @@
       "Bash(xxd \"/c/Users/gkfl8/Desktop/2026/여름방학/AI+X 해커톤/github/OhMyRoute/scripts/build_route_video.ps1\")",
       "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --remote-debugging-port=9333 --remote-allow-origins=* --no-first-run --no-default-browser-check '--user-data-dir=C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\chrome-profile-pausecheck' about:blank)",
       "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_pause_check.py\")",
-      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_check_status.py\")"
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_check_status.py\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

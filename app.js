@@ -2518,13 +2518,13 @@ async function refreshTripPreviewVideo() {
         video.load();
         state.previewVideoStatus = "ready";
         setPreviewCopy("AI가 구성한 여행 미리보기", "추천 장소를 영상으로 미리 만나보세요.");
-        video.oncanplay = () => {
+        video.addEventListener("canplay", () => {
           if (token !== state.previewVideoRequestToken) return;
           video.play().then(() => {
             state.previewPlaying = true;
             renderPreview();
           }).catch(() => {});
-        };
+        }, { once: true });
         renderPreview();
         return;
       }
@@ -3997,6 +3997,7 @@ function bindEvents() {
     if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const fraction = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    video.pause();
     video.currentTime = fraction * video.duration;
     $("#previewProgress").style.width = `${fraction * 100}%`;
   });

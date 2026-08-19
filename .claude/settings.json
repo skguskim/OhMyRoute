@@ -55,7 +55,16 @@
       "Bash(curl -s -w \"\\\\nPOST /api/gemini: %{http_code}\\\\n\" -X POST -H \"Content-Type: application/json\" -d '{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"hi\"}]}]}' http://127.0.0.1:4175/api/gemini)",
       "Bash(\"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" --headless=new --disable-gpu --remote-allow-origins=* --remote-debugging-port=9333 --user-data-dir=\"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\1836edd7-da6a-4f48-ac43-a08a9c13b0b1\\\\scratchpad\\\\edge_profile_player\")",
       "Bash(PYTHONIOENCODING=utf-8 python cdp_player_recommend_check.py)",
-      "Bash(PYTHONIOENCODING=utf-8 python cdp_player_recommend_check2.py)"
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_player_recommend_check2.py)",
+      "Bash(git merge *)",
+      "Bash(git commit -m ' *)",
+      "Bash(awk -F= '/^GEMINI_API_KEY=/ {print \"value length:\", length\\($2\\)}' .env)",
+      "Bash(powershell.exe -NoProfile -Command 'Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.LocalPort -eq 4173 } | Select-Object LocalPort,OwningProcess | Format-Table -AutoSize')",
+      "Bash(curl -s -w \"\\\\nHTTP %{http_code}\\\\n\" -X POST -H \"Content-Type: application/json\" -d '{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"안녕\"}]}]}' http://127.0.0.1:4173/api/gemini)",
+      "Bash(xxd \"/c/Users/gkfl8/Desktop/2026/여름방학/AI+X 해커톤/github/OhMyRoute/scripts/build_route_video.ps1\")",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --remote-debugging-port=9333 --remote-allow-origins=* --no-first-run --no-default-browser-check '--user-data-dir=C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\chrome-profile-pausecheck' about:blank)",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_pause_check.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_check_status.py\")"
     ]
   }
 }

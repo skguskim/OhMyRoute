@@ -26,7 +26,10 @@ $MovingClip = Join-Path $Root "data\video\character_moving_frame.mp4"
 $OpenCropFilter = "crop=1440:1080:229:0"
 $OpenDuration = 4.083333   # 8.166667 / 2 (2배속)
 $MoveDuration = 3.511111   # 5.266667 / 1.5 (1.5배속)
-$Canvas = "1440:1080"
+# 결과 프리뷰가 실제로 뜨는 카드가 작아서(~230px 높이) 1440:1080까지 필요 없다.
+# 캐릭터 크로마키/erosion은 화질 유지를 위해 계속 1440:1080 원본에서 계산하고,
+# alphamerge 이후에만 이 Canvas 크기로 축소해 배경과 합성한다.
+$Canvas = "960:720"
 
 # 그린스크린 실측 색상(두 클립 공통, RGB 23,195,31 계열) 및 크로마키/알파 정리 파라미터.
 # similarity/blend을 더 키우면 캐릭터 몸통(파란색)이나 문/벽 그림까지 같이 키가 되어 사라지므로
@@ -109,12 +112,36 @@ try {
     $filterParts.Add((Get-BackgroundChain -InputRef "2:v" -OutLabel $bgOpen))
     $k1 = Next-Label; $k2 = Next-Label; $a1 = Next-Label; $chrOpen = Next-Label; $segOpen = Next-Label
     $filterParts.Add("[0:v]$OpenCropFilter," + (Get-CleanCharacterChain -KeyedLabel1 $k1 -KeyedLabel2 $k2 -AlphaLabel $a1))
-    $filterParts.Add("[$k1][$a1]alphamerge,setpts=PTS/2,fps=30[$chrOpen];")
+    $filterParts.Add("[$k1][$a1]alphamerge,setpts=PTS/2,fps=30,scale=${Canvas}[$chrOpen];")
     $filterParts.Add("[$bgOpen][$chrOpen]overlay=0:0:shortest=1:format=auto,trim=duration=$OpenDuration,setpts=PTS-STARTPTS[$segOpen];")
     $segmentLabels.Add($segOpen)
 
     # MOVE 세그먼트 (사진 수 - 1개): 사진[i]->사진[i+1] 슬라이드 배경 + moving_frame 1.5배속
-    for ($i = 0; $i -lt $photoCount - 1; $i++) {
+    #
+    # moving_frame.mp4에 대한 크로마키/erosion/alphamerge 결과는 모든 move 세그먼트에서
+    # 완전히 동일하다(배경 사진만 다를 뿐 캐릭터 클립·속도는 항상 같음). 예전에는 이 무거운
+    # 체인을 세그먼트마다(사진 수-1번) 처음부터 다시 계산해서 사진이 많을수록 렌더링 시간이
+    # 거의 선형으로 늘어났다. 이제는 딱 한 번만 계산한 뒤 split으로 복사해서 재사용한다.
+    $moveCount = $photoCount - 1
+    $moveCharLabels = New-Object System.Collections.Generic.List[string]
+    if ($moveCount -gt 0) {
+        $k3 = Next-Label; $k4 = Next-Label; $a2 = Next-Label; $chrMoveMerged = Next-Label
+        $filterParts.Add("[1:v]" + (Get-CleanCharacterChain -KeyedLabel1 $k3 -KeyedLabel2 $k4 -AlphaLabel $a2))
+        $filterParts.Add("[$k3][$a2]alphamerge,setpts=PTS/1.5,fps=30,scale=${Canvas}[$chrMoveMerged];")
+
+        if ($moveCount -eq 1) {
+            $moveCharLabels.Add($chrMoveMerged)
+        }
+        else {
+            for ($j = 0; $j -lt $moveCount; $j++) {
+                $moveCharLabels.Add((Next-Label))
+            }
+            $splitOut = ($moveCharLabels | ForEach-Object { "[$_]" }) -join ""
+            $filterParts.Add("[$chrMoveMerged]split=$moveCount$splitOut;")
+        }
+    }
+
+    for ($i = 0; $i -lt $moveCount; $i++) {
         $srcA = 2 + $i
         $srcB = 3 + $i
         $bgA = Next-Label; $bgB = Next-Label; $bgMove = Next-Label
@@ -122,10 +149,8 @@ try {
         $filterParts.Add("[${srcB}:v]scale=${Canvas}:force_original_aspect_ratio=increase,crop=${Canvas},setsar=1,fps=30,trim=duration=$MoveDuration,setpts=PTS-STARTPTS[$bgB];")
         $filterParts.Add("[$bgA][$bgB]xfade=transition=slideleft:duration=${MoveDuration}:offset=0[$bgMove];")
 
-        $k3 = Next-Label; $k4 = Next-Label; $a2 = Next-Label; $chrMove = Next-Label; $segMove = Next-Label
-        $filterParts.Add("[1:v]" + (Get-CleanCharacterChain -KeyedLabel1 $k3 -KeyedLabel2 $k4 -AlphaLabel $a2))
-        $filterParts.Add("[$k3][$a2]alphamerge,setpts=PTS/1.5,fps=30[$chrMove];")
-        $filterParts.Add("[$bgMove][$chrMove]overlay=0:0:shortest=1:format=auto[$segMove];")
+        $segMove = Next-Label
+        $filterParts.Add("[$bgMove][$($moveCharLabels[$i])]overlay=0:0:shortest=1:format=auto[$segMove];")
         $segmentLabels.Add($segMove)
     }
 
@@ -135,7 +160,7 @@ try {
     $filterParts.Add((Get-BackgroundChain -InputRef "${lastSrc}:v" -OutLabel $bgClose))
     $k5 = Next-Label; $k6 = Next-Label; $a3 = Next-Label; $chrClose = Next-Label; $segClose = Next-Label
     $filterParts.Add("[0:v]$OpenCropFilter," + (Get-CleanCharacterChain -KeyedLabel1 $k5 -KeyedLabel2 $k6 -AlphaLabel $a3))
-    $filterParts.Add("[$k5][$a3]alphamerge,reverse,setpts=PTS/2,fps=30[$chrClose];")
+    $filterParts.Add("[$k5][$a3]alphamerge,reverse,setpts=PTS/2,fps=30,scale=${Canvas}[$chrClose];")
     $filterParts.Add("[$bgClose][$chrClose]overlay=0:0:shortest=1:format=auto,trim=duration=$OpenDuration,setpts=PTS-STARTPTS[$segClose];")
     $segmentLabels.Add($segClose)
 

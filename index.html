@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="오매루트 AI 맞춤 여행 코스 프로토타입" />
     <title>오매루트 | AI 맞춤 여행 코스</title>
+    <script>
+      (function () {
+        var height = Math.round(window.innerHeight * 0.6);
+        var widthFromHeight = Math.round(height * (600 / 950));
+        var widthFromWindow = Math.round(window.innerWidth * 0.6);
+        var width = Math.min(widthFromHeight, widthFromWindow);
+        var root = document.documentElement;
+        root.style.setProperty("--app-width", width + "px");
+        root.style.setProperty("--app-height", height + "px");
+      })();
+    </script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"

@@ -1,4 +1,6 @@
 :root {
+  --app-width: 600px;
+  --app-height: 300px;
   --ink: #1b1c19;
   --muted: #737972;
   --paper: #fbf9f4;
@@ -24,12 +26,15 @@
 
 html {
   scroll-behavior: smooth;
+  zoom: 1.5;
 }
 
 body {
+  width: var(--app-width);
+  height: var(--app-height);
   min-width: 320px;
-  margin: 0;
-  overflow-x: hidden;
+  margin: 0 auto;
+  overflow: hidden;
   color: var(--ink);
   background: var(--paper);
   font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
@@ -179,7 +184,7 @@ button {
 }
 
 .app-main {
-  min-height: calc(100vh - 72px);
+  min-height: calc(var(--app-height) - 72px);
 }
 
 .view {
@@ -2392,7 +2397,7 @@ input[type="range"]::-moz-range-thumb {
   top: 0;
   bottom: 0;
   left: 0;
-  width: min(350px, 88vw);
+  width: min(350px, calc(var(--app-width) * 0.88));
   padding: 27px;
   background: var(--paper);
   border-right: 1px solid var(--line);
@@ -2436,7 +2441,7 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: 0.12em;
 }
 
-@media (max-width: 1040px) {
+@media (min-width: 0px) {
   .content-layout {
     grid-template-columns: minmax(0, 720px);
   }
@@ -2446,7 +2451,7 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-@media (max-width: 760px) {
+@media (min-width: 0px) {
   body {
     padding-bottom: 72px;
   }
@@ -2588,7 +2593,7 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .app-header {
     height: 64px;
   }
@@ -2707,7 +2712,7 @@ input[type="range"]::-moz-range-thumb {
 
 /* 2026-08-06 reference-video form layout. */
 body:has(#formView.active) {
-  min-height: 100vh;
+  min-height: var(--app-height);
   overflow: hidden;
   background: #f9fafb;
 }
@@ -2718,11 +2723,11 @@ body:has(#formView.active) .page-pattern {
 }
 
 body:has(#formView.active) .app-main {
-  min-height: 100vh;
+  min-height: var(--app-height);
 }
 
 #formView.active {
-  height: 100vh;
+  height: var(--app-height);
   overflow: hidden;
 }
 
@@ -3062,14 +3067,14 @@ body:has(#formView.active) .app-main {
   display: none !important;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   body:has(#formView.active) {
     overflow: auto;
   }
 
   #formView.active {
     height: auto;
-    min-height: 100vh;
+    min-height: var(--app-height);
     overflow: visible;
   }
 
@@ -3128,13 +3133,13 @@ body:has(#formView.active) .app-main {
   grid-row: 3;
 }
 
-@media (max-width: 1100px) and (min-width: 901px) {
+@media (min-width: 99999px) {
   #resultView .result-sidebar {
     grid-template-columns: 420px minmax(0, 1fr);
   }
 }
 
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   #resultView .result-shell {
     display: block;
   }
@@ -3166,7 +3171,7 @@ body:has(#formView.active) .app-main {
   }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   #formView .content-layout {
     width: calc(100% - 24px);
     padding-top: 28px;
@@ -3439,14 +3444,14 @@ body:has(#formView.active) .app-main {
   border: 1px solid #c9e2ff;
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .baseball-attendance-panel {
     align-items: flex-start;
   }
 }
 
 /* Narrow result order: AI completion summary → preview/map → itinerary. */
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   .result-shell {
     display: flex;
     flex-direction: column;
@@ -4063,13 +4068,13 @@ body {
   background: var(--acid);
 }
 
-@media (max-width: 1040px) {
+@media (min-width: 0px) {
   .content-layout {
     grid-template-columns: minmax(0, 760px);
   }
 }
 
-@media (max-width: 760px) {
+@media (min-width: 0px) {
   .content-layout {
     padding-top: 44px;
   }
@@ -4094,7 +4099,7 @@ body {
   }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .app-header {
     height: 66px;
   }
@@ -4299,7 +4304,7 @@ body {
   font-weight: 900;
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .weather-slot-list { display: grid; grid-template-columns: 1fr; }
   .weather-slot { border-radius: 10px; }
 }
@@ -4413,7 +4418,7 @@ code {
 }
 
 .app-main {
-  min-height: calc(100vh - 68px);
+  min-height: calc(var(--app-height) - 68px);
 }
 
 .content-layout {
@@ -4849,7 +4854,7 @@ body:has(#resultView.active) .app-footer {
 }
 
 #resultView.active {
-  height: 100vh;
+  height: var(--app-height);
   overflow: hidden;
   animation: result-view-in 320ms ease both;
 }
@@ -4861,7 +4866,7 @@ body:has(#resultView.active) .app-footer {
 
 .result-shell {
   width: 100%;
-  height: 100vh;
+  height: var(--app-height);
   margin: 0;
   padding: 0;
   display: grid;
@@ -4873,7 +4878,7 @@ body:has(#resultView.active) .app-footer {
   position: relative;
   z-index: 10;
   min-width: 0;
-  height: 100vh;
+  height: var(--app-height);
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -5220,7 +5225,7 @@ body:has(#resultView.active) .app-footer {
 .result-map-pane {
   position: relative;
   min-width: 0;
-  height: 100vh;
+  height: var(--app-height);
   overflow: hidden;
   background: #eef1f4;
 }
@@ -5392,7 +5397,7 @@ body:has(#resultView.active) .app-footer {
   display: none;
 }
 
-@media (max-width: 1100px) {
+@media (min-width: 0px) {
   .content-layout {
     width: min(900px, calc(100% - 40px));
   }
@@ -5410,7 +5415,7 @@ body:has(#resultView.active) .app-footer {
   }
 }
 
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   body:has(#resultView.active) {
     overflow: auto;
   }
@@ -5472,7 +5477,7 @@ body:has(#resultView.active) .app-footer {
   }
 }
 
-@media (max-width: 760px) {
+@media (min-width: 0px) {
   body {
     padding-bottom: 68px;
   }
@@ -5599,7 +5604,7 @@ body:has(#resultView.active) .app-footer {
   }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .app-header {
     height: 64px;
   }
@@ -5670,7 +5675,7 @@ body.splash-open {
   position: fixed;
   z-index: 1000;
   inset: 0;
-  min-height: 100vh;
+  min-height: var(--app-height);
   display: grid;
   place-items: center;
   color: #191f28;
@@ -5783,7 +5788,7 @@ body.splash-open {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   .splash-logo {
     width: 72px;
     height: 72px;
@@ -6066,7 +6071,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (min-width: 0px) {
   .desktop-saved-trigger {
     display: none;
   }
@@ -6084,7 +6089,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
   }
 
   .drawer-panel {
-    width: min(390px, calc(100vw - 26px));
+    width: min(390px, calc(var(--app-width) - 26px));
     padding: 22px 18px 20px;
   }
 }
@@ -6136,7 +6141,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
 
 /* Focus-spot preview and route map are independent cards, never layered. */
 #resultView .result-map-pane {
-  height: 100vh;
+  height: var(--app-height);
   padding: 20px;
   display: grid;
   grid-template-rows: minmax(190px, 30%) minmax(0, 1fr);
@@ -6213,7 +6218,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
   border-radius: 17px;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   #resultView .result-map-pane {
     height: auto;
     min-height: 0;
@@ -6244,7 +6249,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
   }
 }
 
-@media (max-width: 520px) {
+@media (min-width: 99999px) {
   #resultView .result-map-pane {
     padding: 14px;
     gap: 14px;
@@ -6286,22 +6291,22 @@ body:has(#resultView.active) .app-header {
 }
 
 body:has(#formView.active) .app-main {
-  min-height: calc(100vh - 68px);
+  min-height: calc(var(--app-height) - 68px);
 }
 
-@media (min-width: 901px) {
+@media (min-width: 99999px) {
   #formView.active,
   #resultView.active,
   #resultView .result-shell,
   #resultView .result-sidebar,
   #resultView .result-map-pane {
-    height: calc(100vh - 68px);
+    height: calc(var(--app-height) - 68px);
   }
 }
 
-@media (max-width: 900px) {
+@media (min-width: 0px) {
   #formView.active {
-    min-height: calc(100vh - 68px);
+    min-height: calc(var(--app-height) - 68px);
   }
 }
 
@@ -6443,7 +6448,7 @@ body:has(#formView.active) .app-main {
 }
 
 
-@media (max-width: 1040px) {
+@media (min-width: 0px) {
   .ai-docent-wrapper {
     bottom: 96px;
   }

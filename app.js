@@ -1349,6 +1349,16 @@ function updateRangeVisual(input) {
     getPreferenceLevel(Number(input.value));
 }
 
+function sliderValueFromPointer(input, clientX) {
+  const rect = input.getBoundingClientRect();
+  const min = Number(input.min) || 0;
+  const max = Number(input.max) || 100;
+  const step = Number(input.step) || 1;
+  const ratio = rect.width > 0 ? clamp((clientX - rect.left) / rect.width, 0, 1) : 0;
+  const raw = min + ratio * (max - min);
+  return clamp(min + Math.ceil((raw - min) / step) * step, min, max);
+}
+
 const AXIS_COLORS = {
   sports: { light: "#f4f9ff", dark: "#3182f6" },
   nature: { light: "#f4f9ff", dark: "#3182f6" },
@@ -1386,12 +1396,46 @@ function renderSliders() {
 
   $$('#preferenceSliders input[type="range"]').forEach((input) => {
     updateRangeVisual(input);
-    input.addEventListener("input", () => {
+
+    const commit = () => {
       state.preference[Number(input.dataset.index)] = Number(input.value);
       updateRangeVisual(input);
       renderAxisPreview();
       updateBaseballAttendanceControl();
+    };
+
+    const snapToPointer = (clientX) => {
+      const value = sliderValueFromPointer(input, clientX);
+      if (Number(input.value) !== value) {
+        input.value = String(value);
+        commit();
+      }
+    };
+
+    let dragging = false;
+
+    input.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      input.focus();
+      dragging = true;
+      input.setPointerCapture(event.pointerId);
+      snapToPointer(event.clientX);
     });
+
+    input.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      snapToPointer(event.clientX);
+    });
+
+    const stopDragging = (event) => {
+      if (!dragging) return;
+      dragging = false;
+      if (input.hasPointerCapture(event.pointerId)) input.releasePointerCapture(event.pointerId);
+    };
+    input.addEventListener("pointerup", stopDragging);
+    input.addEventListener("pointercancel", stopDragging);
+
+    input.addEventListener("input", commit);
   });
   updateBaseballAttendanceControl();
 }

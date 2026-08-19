@@ -2,7 +2,8 @@
     [int]$Port = 4173,
     [switch]$NoBrowser,
     [string]$RootPath = $PSScriptRoot,
-    [string]$EnvFile = ""
+    [string]$EnvFile = "",
+    [switch]$Lan
 )
 
 $ErrorActionPreference = "Stop"
@@ -131,13 +132,23 @@ $RouteVideoOutputDir = Join-Path $Root "outputs\route-video"
 $RouteVideoScript = Join-Path $Root "scripts\build_route_video.ps1"
 $RouteVideoMaxPhotos = 8
 
-$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
+$bindAddress = if ($Lan) { [System.Net.IPAddress]::Any } else { [System.Net.IPAddress]::Loopback }
+$listener = [System.Net.Sockets.TcpListener]::new($bindAddress, $Port)
 
 try {
     $listener.Start()
     Write-Host ""
     Write-Host "Omaeroute server is running."
     Write-Host "Open: http://localhost:$Port/"
+    if ($Lan) {
+        $lanIps = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
+            Where-Object { $_.IPAddress -ne "127.0.0.1" -and $_.PrefixOrigin -ne "WellKnown" } |
+            Select-Object -ExpandProperty IPAddress -Unique
+        foreach ($ip in $lanIps) {
+            Write-Host "Open (LAN): http://$ip`:$Port/"
+        }
+        Write-Host "다른 기기에서 접속하려면 Windows 방화벽에서 접근을 허용해야 할 수 있습니다."
+    }
     Write-Host $(if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) { "KMA weather proxy: key not configured" } else { "KMA weather proxy: ready" })
     Write-Host $(if ([string]::IsNullOrWhiteSpace($GeminiApiKey)) { "Gemini proxy (tips/docent): key not configured" } else { "Gemini proxy (tips/docent): ready" })
     Write-Host "Keep this window open. Press Ctrl+C to stop."

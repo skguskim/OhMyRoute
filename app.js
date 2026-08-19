@@ -1658,14 +1658,16 @@ function returnTravelMinutes(place, destination) {
   return estimateTravelMinutes(haversineKm(place, destination));
 }
 
-function chooseBestCandidate(results, current, clockMinutes, usedIds, predicate = () => true) {
+// 시간 예산까지 확인하여 후보를 선택한다. predicate는 추가 필터링 조건을 제공한다.
+function chooseBestCandidate(results, current, clockMinutes, usedIds, dayEndMinutes, returnDestination = null, predicate = () => true) {
   return results
-    .filter((place) => {
-      if (usedIds.has(place.id) || !hasUsableCoordinates(place) || !predicate(place)) return false;
-      const leg = scheduleLeg(current, clockMinutes, place);
-      return !exceedsClosingTime(place, leg.endMinutes);
-    })
-    .sort((a, b) => routeCandidateValue(b, current) - routeCandidateValue(a, current))[0] || null;
+    .filter((place) => !usedIds.has(place.id) && hasUsableCoordinates(place) && predicate(place))
+    .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
+    .filter(({ place, leg }) =>
+      !exceedsClosingTime(place, leg.endMinutes)
+      && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes,
+    )
+    .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0] || null;
 }
 
 function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination = null) {
@@ -1776,17 +1778,16 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
     clockMinutes = meal.leg.endMinutes;
   }
 
+  // 시간계산 이동됨.
   while (day.length < maxStops) {
-    let next = chooseBestCandidate(results, current, clockMinutes, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(results, current, clockMinutes, usedIds);
-    if (!next) break;
-    const leg = scheduleLeg(current, clockMinutes, next);
-    if (leg.endMinutes + returnTravelMinutes(next, returnDestination) > dayEndMinutes) break;
+    const picked = chooseBestCandidate(results, current, clockMinutes, usedIds, dayEndMinutes, returnDestination, (place) => !isMealPlace(place));
+    if (!picked) break;
+    const { place: next, leg } = picked;
     day.push(next);
     usedIds.add(next.id);
     current = next;
     clockMinutes = leg.endMinutes;
-  }
+}
   return day;
 }
 
@@ -1829,8 +1830,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
   const dayConditions = conditionsForRouteDate(currentConditions(), window.date);
-  const availableResults = rankPlacesLocal(dayConditions)
-    .filter((place) => placeIsOpenOnDate(place, window.date) && hasReliableOperatingHours(place));
+  const availableResults = rankPlacesLocal(dayConditions).filter((place) => placeIsOpenOnDate(place, window.date));
   const isFinalDay = dayIndex === state.routeDays.length - 1;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
@@ -1895,13 +1895,12 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   const fillerCandidates = [];
   let pickCurrent = current;
   while (keptStops.length + rebuilt.length + fillerCandidates.length < maxStops) {
-    let next = chooseBestCandidate(availableResults, pickCurrent, clockMinutes, usedIds, (place) => !isMealPlace(place));
-    if (!next) next = chooseBestCandidate(availableResults, pickCurrent, clockMinutes, usedIds);
-    if (!next) break;
-    fillerCandidates.push(next);
-    usedIds.add(next.id);
-    pickCurrent = next;
-  }
+    const picked = chooseBestCandidate(availableResults, pickCurrent, clockMinutes, usedIds, dayEndMinutes, returnDestination, (place) => !isMealPlace(place));
+    if (!picked) break;
+    fillerCandidates.push(picked.place);
+    usedIds.add(picked.place.id);
+    pickCurrent = picked.place;
+}
 
   // 후보 풀(최대 몇 개뿐)의 모든 부분집합 × 방문 순서를 전수 계산해서,
   // "포함된 곳 전부가 원래 duration의 절반 이상을 확보"하는 조합 중 선호도 점수 합이 가장 높은 조합을 찾는다.
@@ -2110,7 +2109,7 @@ function createRoute(results) {
       const rankedResults = conditions.weatherMode === "auto"
         ? rankPlacesLocal(dayConditions)
         : results;
-      const availableResults = rankedResults.filter((place) => placeIsOpenOnDate(place, window.date) && hasReliableOperatingHours(place));
+      const availableResults = rankedResults.filter((place) => placeIsOpenOnDate(place, window.date));
       return {
         window,
         day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)

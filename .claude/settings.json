@@ -39,7 +39,23 @@
       "Bash(python cdp_car_meal_parking_check.py)",
       "Bash(PYTHONIOENCODING=utf-8 python cdp_car_meal_parking_check.py)",
       "PowerShell(node --check .\\\\app.js)",
-      "PowerShell(node --check .\\\\config.js)"
+      "PowerShell(node --check .\\\\config.js)",
+      "Bash(powershell.exe -NoProfile -Command \"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \\\\\"C:\\\\Users\\\\gkfl8\\\\Desktop\\\\2026\\\\여름방학\\\\AI+X 해커톤\\\\github\\\\OhMyRoute\\\\start_server.ps1\\\\\" -Port 4174 -NoBrowser' -WindowStyle Hidden\")",
+      "Bash(curl -s -o /dev/null -w \"index.html: %{http_code}\\\\n\" http://127.0.0.1:4174/)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/route-video?id=deadbeefdeadbeefdeadbeefdeadbeef: %{http_code}\\\\n\" \"http://127.0.0.1:4174/api/route-video?id=00000000000000000000000000000000\")",
+      "Bash(curl -s -w \"\\\\nPOST /api/gemini \\(no key expected -> 503\\): %{http_code}\\\\n\" -X POST -H \"Content-Type: application/json\" -d '{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"hi\"}]}]}' http://127.0.0.1:4174/api/gemini)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/gemini \\(wrong method\\) -> %{http_code}\\\\n\" http://127.0.0.1:4174/api/gemini)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/weather \\(should be 405\\) -> %{http_code}\\\\n\" -X POST http://127.0.0.1:4174/api/weather)",
+      "Bash(curl -s -o /dev/null -w \"POST /api/route-video no body \\(should be 400\\) -> %{http_code}\\\\n\" -X POST -H \"Content-Type: application/json\" -d '{}' http://127.0.0.1:4174/api/route-video)",
+      "Bash(powershell.exe -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''powershell.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*start_server.ps1*4174*'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
+      "Bash(git check-ignore *)",
+      "Bash(powershell.exe -NoProfile -Command \"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File .\\\\\\\\start_server.ps1 -Port 4175 -NoBrowser' -WorkingDirectory 'C:\\\\Users\\\\gkfl8\\\\Desktop\\\\2026\\\\여름방학\\\\AI+X 해커톤\\\\github\\\\OhMyRoute' -WindowStyle Hidden\")",
+      "Bash(curl -s -o /dev/null -w \"index.html: %{http_code}\\\\n\" http://127.0.0.1:4175/)",
+      "Bash(curl -s -o /dev/null -w \"GET /api/route-video?id=... : %{http_code}\\\\n\" \"http://127.0.0.1:4175/api/route-video?id=00000000000000000000000000000000\")",
+      "Bash(curl -s -w \"\\\\nPOST /api/gemini: %{http_code}\\\\n\" -X POST -H \"Content-Type: application/json\" -d '{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"hi\"}]}]}' http://127.0.0.1:4175/api/gemini)",
+      "Bash(\"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" --headless=new --disable-gpu --remote-allow-origins=* --remote-debugging-port=9333 --user-data-dir=\"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\1836edd7-da6a-4f48-ac43-a08a9c13b0b1\\\\scratchpad\\\\edge_profile_player\")",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_player_recommend_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_player_recommend_check2.py)"
     ]
   }
 }

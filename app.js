@@ -1563,7 +1563,7 @@ function promptReasonsForPlace(place, conditions) {
 }
 
 function matchReasons(place, vector, conditions) {
-  if (conditions.sportsBaseballHighlyPreferred && place.playerRecommended) {
+  if (conditions.baseballAttendance && place.playerRecommended) {
     const players = place.activeRecommendedPlayers?.length
       ? place.activeRecommendedPlayers
       : place.recommendedPlayers || [];
@@ -1631,7 +1631,7 @@ function rankPlacesLocal(conditionsOverride = null) {
         : usePreferenceScore
           ? preferenceScore * 0.78 + situationalScore * 0.22
           : situationalScore;
-      const sportsPreferenceBoost = conditions.sportsBaseballHighlyPreferred && place.playerRecommended
+      const sportsPreferenceBoost = conditions.baseballAttendance && place.playerRecommended
         ? place.activePlayerRecommended ? 1.5 : 1.15
         : 0;
       const rainIndoorBoost = conditions.weather === "rainy" && place.indoor ? 0.14 : 0;
@@ -3306,7 +3306,7 @@ function renderItinerary() {
             ${place.stadiumFood ? `
               <div class="stadium-food-callout">🍚 저녁 구매 · ${escapeHtml(place.branchName || "매장 위치 현장 확인")}${stadiumMenu ? ` · ${escapeHtml(stadiumMenu.name)} ${escapeHtml(stadiumMenuPrice)}` : ""} · 경기 시작 전에 사서 관람석에서 직관하며 식사</div>
             ` : ""}
-            ${conditions.sportsBaseballHighlyPreferred && place.activeRecommendedPlayers?.length ? `
+            ${conditions.baseballAttendance && place.activeRecommendedPlayers?.length ? `
               <div class="player-recommendation">⚾ ${escapeHtml(place.activeRecommendedPlayers.join("·"))} 선수 추천</div>
             ` : ""}
             <div class="reason-callout detail-reason">이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
@@ -3437,12 +3437,10 @@ function buildStaticTips(conditions) {
     if (stadiumFoods.length) {
       tips.unshift(`직관일마다 경기 전에 구장 먹거리를 구매해 관람석에서 먹도록 구성했습니다. 경기 당일 영업·재고·가격을 다시 확인하세요.`);
     }
-  }
-  if (conditions.sportsBaseballHighlyPreferred) {
     const playerRestaurants = mealStops.filter((place) => place.playerRecommended);
     tips.unshift(playerRestaurants.length
-      ? `스포츠·야구 매우 선호를 반영해 ${playerRestaurants.map((place) => place.name).join(" · ")}의 추천 우선순위를 크게 높였습니다.`
-      : "스포츠·야구를 매우 선호하지만 현재 시간·동선 안에 배치 가능한 선수 추천 맛집을 찾지 못했습니다.");
+      ? `야구 직관을 반영해 ${playerRestaurants.map((place) => place.name).join(" · ")}의 추천 우선순위를 크게 높였습니다.`
+      : "야구 직관을 선택했지만 현재 시간·동선 안에 배치 가능한 선수 추천 맛집을 찾지 못했습니다.");
   }
   if (state.mealWarnings.length) {
     tips.push(`${state.mealWarnings.join(" ")} 현재 필터에서 이용 가능한 음식점 데이터가 더 필요합니다.`);
@@ -3515,11 +3513,9 @@ function renderResult() {
     ? `${travelWindowCopy}.`
     : state.travelPrompt
       ? `${travelWindowCopy}, 슬라이더 취향과 한 줄 요청 및 출발지 복귀시간을 함께 반영한 동선입니다.`
-      : conditions.sportsBaseballHighlyPreferred
-        ? `${travelWindowCopy}, 스포츠·야구 취향과 KIA 선수 추천 맛집 및 복귀시간을 우선 반영한 동선입니다.`
-        : axes.length
-          ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
-          : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
+      : axes.length
+        ? `${travelWindowCopy}, 취향과 출발지 복귀시간을 반영한 동선입니다.`
+        : `${travelWindowCopy}, 이동수단·날씨·동행과 출발지 복귀시간을 반영한 동선입니다.`;
   renderPromptResultSummary();
   $("#mapSummary").textContent = `${conditions.origin.name} 왕복 · ${metrics.distance.toFixed(1)}km`;
   renderMap();

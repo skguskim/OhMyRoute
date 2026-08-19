@@ -2889,11 +2889,11 @@ function themeStampContent(theme, pattern, isStamped, isInRange) {
   `;
 }
 
-function formatStampDistance(distanceMeters) {
+function formatStampDistance(distanceMeters, suffix = "남음") {
   if (distanceMeters === null) return "위치 확인 전";
   if (distanceMeters <= 100) return "100m 이내 · 도장 찍기 가능";
-  if (distanceMeters >= 1000) return `${(distanceMeters / 1000).toFixed(1)}km 남음`;
-  return `${Math.round(distanceMeters)}m 남음`;
+  if (distanceMeters >= 1000) return `${(distanceMeters / 1000).toFixed(1)}km ${suffix}`;
+  return `${Math.round(distanceMeters)}m ${suffix}`;
 }
 
 function showStampToast(message, type = "info") {
@@ -3037,7 +3037,7 @@ function collectStamp(id) {
   }
   const distanceMeters = Math.round(haversineKm(state.stampLocation, place) * 1000);
   if (distanceMeters > 100) {
-    showStampToast(`${place.name}까지 ${formatStampDistance(distanceMeters)}입니다. 100m 안에서 다시 시도해주세요.`, "warning");
+    showStampToast(`${place.name}까지 ${formatStampDistance(distanceMeters, "남았습니다")}. 100m 안에서 다시 시도해주세요.`, "warning");
     return;
   }
   state.stampedIds.push(id);
@@ -3582,13 +3582,15 @@ function renderPromptResultSummary() {
 function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
-  const title = axes.length >= 2
-    ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는 ${durationLabel()} 여행`
+  const titleLead = axes.length >= 2
+    ? `${josa(axes[0].label, "와/과")} ${josa(axes[1].label, "을/를")} 잇는`
     : axes.length === 1
-      ? `${axes[0].label} 취향을 담은 ${durationLabel()} 여행`
-      : `여행 조건에 맞춘 ${durationLabel()} 여행`;
+      ? `${axes[0].label} 취향을 담은`
+      : `여행 조건에 맞춘`;
+  const titleTail = `${durationLabel()} 여행`;
+  state.resultTitleText = `${titleLead} ${titleTail}`;
   const travelWindowCopy = `${conditions.origin.name} · 출발일 ${conditions.travelDate} ${conditions.startTime} → 귀가일 ${conditions.endDate} ${conditions.endTime}`;
-  $("#resultTitle").textContent = title;
+  $("#resultTitle").innerHTML = `${escapeHtml(titleLead)}<br>${escapeHtml(titleTail)}`;
   $("#resultDescription").textContent = conditions.baseballAttendance
     ? `${travelWindowCopy}.`
     : state.travelPrompt
@@ -3742,7 +3744,7 @@ function saveCurrentRoute() {
     state.savedRoutes.unshift({
       id: Date.now(),
       signature,
-      title: $("#resultTitle").textContent,
+      title: state.resultTitleText || $("#resultTitle").textContent,
       routeIds: state.route.map((place) => place.id),
       routeDays: state.routeDays.map((day) => day.map((place) => ({
         id: place.id,

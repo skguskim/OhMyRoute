@@ -113,6 +113,13 @@ function Test-WeatherQuery([System.Collections.Specialized.NameValueCollection]$
     return $true
 }
 
+function Test-MidWeatherQuery([System.Collections.Specialized.NameValueCollection]$Query) {
+    if ($Query["tm_fc"] -notmatch '^\d{12}$') { return $false }
+    $hour = $Query["tm_fc"].Substring(8, 2)
+    if ($hour -ne "06" -and $hour -ne "18") { return $false }
+    return $true
+}
+
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
 
 try {
@@ -202,6 +209,45 @@ try {
                 }
                 catch {
                     Send-JsonError $stream 502 "Bad Gateway" "KMA_UPSTREAM_FAILED" "기상청 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
+                continue
+            }
+
+            if ($requestUri.AbsolutePath -eq "/api/weather/mid-land" -or
+                $requestUri.AbsolutePath -eq "/api/weather/mid-temperature") {
+                if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "KMA_KEY_MISSING" ".env에 KMA_API_SERVICE_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                if (-not (Test-MidWeatherQuery $query)) {
+                    Send-JsonError $stream 400 "Bad Request" "KMA_INVALID_MID_QUERY" "tm_fc 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $encodedKey = [System.Uri]::EscapeDataString($KmaServiceKey)
+                $isLandForecast = $requestUri.AbsolutePath -eq "/api/weather/mid-land"
+                $endpoint = if ($isLandForecast) { "getMidLandFcst" } else { "getMidTa" }
+                $regionId = if ($isLandForecast) { "11F20000" } else { "11F20501" }
+                $upstreamUrl = "https://apis.data.go.kr/1360000/MidFcstInfoService/$endpoint" +
+                               "?serviceKey=$encodedKey&pageNo=1&numOfRows=10&dataType=JSON" +
+                               "&regId=$regionId&tmFc=$($query['tm_fc'])"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(12)
+                try {
+                    $upstream = $httpClient.GetAsync($upstreamUrl).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    $contentType = if ($null -ne $upstream.Content.Headers.ContentType) {
+                        $upstream.Content.Headers.ContentType.ToString()
+                    } else {
+                        "application/json; charset=utf-8"
+                    }
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase $contentType $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "KMA_MID_UPSTREAM_FAILED" "기상청 중기예보 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
                 }
                 finally {
                     $httpClient.Dispose()

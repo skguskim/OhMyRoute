@@ -52,7 +52,7 @@ async function openBaseballForm(page, startDate, endDate) {
   await page.locator('label[for="baseballAttendance"]').click();
 }
 
-test("실제 KIA 광주 홈경기만 선택하고 취소·경기 없음·폭염 변경 시간을 표시한다", async () => {
+test("실제 KIA 광주 홈경기만 선택하고 정상 선택 안내는 숨기며 예외 경고는 표시한다", async () => {
   const server = spawn("powershell", [
     "-NoProfile",
     "-ExecutionPolicy", "Bypass",
@@ -77,10 +77,11 @@ test("실제 KIA 광주 홈경기만 선택하고 취소·경기 없음·폭염 
       await homeGameInputs.nth(index).check({ force: true });
     }
     assert.equal(await homeSeriesPage.locator("#baseballDayOptions input:checked").count(), 3);
-    const homeStatus = await homeSeriesPage.locator("#baseballScheduleStatus").textContent();
-    assert.match(homeStatus, /8월 14일.*두산 vs KIA.*19:00 경기/);
-    assert.match(homeStatus, /8월 16일.*폭염 대응 시간 변경 반영/);
+    const homeStatus = homeSeriesPage.locator("#baseballScheduleStatus");
+    assert.equal(await homeStatus.textContent(), "");
+    assert.equal(await homeStatus.isHidden(), true);
     assert.equal(await homeSeriesPage.locator("#endTime").inputValue(), "22:30");
+    assert.equal(await homeSeriesPage.locator("#scheduleFieldStatus").textContent(), "2박 3일");
     await homeSeriesPage.close();
 
     const awaySeriesPage = await browser.newPage();

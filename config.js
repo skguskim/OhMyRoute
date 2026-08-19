@@ -7,6 +7,6 @@ window.OMAEROUTE_CONFIG = {
   routeVideoProxyUrl: "/api/route-video",
   // 정적 호스팅에서만 쓰는 레거시 직접 호출 옵션입니다. 키 노출 위험 때문에 비워두세요.
   kmaServiceKey: "",
-  // Gemini API Key for AI Docent
-  geminiApiKey: "",
+  // AI 컨시어지 팁·AI 도슨트 채팅(Gemini)을 중계하는 로컬 서버 엔드포인트입니다. 인증키는 브라우저가 아닌 .env에 보관합니다.
+  geminiProxyUrl: "/api/gemini",
 };

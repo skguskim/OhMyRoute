@@ -31,7 +31,15 @@
       "PowerShell(Get-NetTCPConnection -LocalPort 4173 -ErrorAction SilentlyContinue | Select-Object -Expand OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Get-Process msedge -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; \"cleanup done\")",
       "Bash(PYTHONIOENCODING=utf-8 python cdp_walk_range_check.py)",
       "Bash(python3 -)",
-      "Bash(python -)"
+      "Bash(python -)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File start_server.ps1)",
+      "Bash(curl -s http://localhost:4173/app.js -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:4173/app.js\" -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:4173/app.js\")",
+      "Bash(python cdp_car_meal_parking_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_car_meal_parking_check.py)",
+      "PowerShell(node --check .\\\\app.js)",
+      "PowerShell(node --check .\\\\config.js)"
     ]
   }
 }

@@ -1121,6 +1121,13 @@ input[type="range"]::-moz-range-thumb {
 
 .preview-scene.is-playing .play-button {
   padding-left: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preview-scene.is-playing:hover .play-button {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .preview-badge {
@@ -5185,6 +5192,21 @@ body:has(#resultView.active) .app-footer {
 .tips-card li::before {
   left: 12px;
   color: var(--blue);
+}
+
+.tips-card li.photo-spot-tip {
+  background: var(--red-soft);
+  color: var(--red);
+  border-color: var(--red-soft);
+}
+
+.tips-card li.photo-spot-tip::before {
+  color: var(--red);
+  content: "★";
+}
+
+.tips-card li.photo-spot-tip strong {
+  color: var(--red);
 }
 
 .bottom-back-button {

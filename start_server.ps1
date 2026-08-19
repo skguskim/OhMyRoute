@@ -44,6 +44,7 @@ if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
 if (-not [string]::IsNullOrWhiteSpace($KmaServiceKey) -and $KmaServiceKey.Contains("%")) {
     try { $KmaServiceKey = [System.Uri]::UnescapeDataString($KmaServiceKey) } catch { }
 }
+$GeminiApiKey = [Environment]::GetEnvironmentVariable("GEMINI_API_KEY", "Process")
 
 function Get-ContentType([string]$Path) {
     switch ([System.IO.Path]::GetExtension($Path).ToLowerInvariant()) {
@@ -132,6 +133,7 @@ try {
     Write-Host "Omaeroute server is running."
     Write-Host "Open: http://localhost:$Port/"
     Write-Host $(if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) { "KMA weather proxy: key not configured" } else { "KMA weather proxy: ready" })
+    Write-Host $(if ([string]::IsNullOrWhiteSpace($GeminiApiKey)) { "Gemini proxy (tips/docent): key not configured" } else { "Gemini proxy (tips/docent): ready" })
     Write-Host "Keep this window open. Press Ctrl+C to stop."
     Write-Host ""
 
@@ -183,8 +185,9 @@ try {
             $headOnly = $method -eq "HEAD"
             $requestUri = [System.Uri]::new("http://localhost$($parts[1])")
             $isRouteVideoSubmit = $method -eq "POST" -and $requestUri.AbsolutePath -eq "/api/route-video"
+            $isGeminiSubmit = $method -eq "POST" -and $requestUri.AbsolutePath -eq "/api/gemini"
 
-            if ($method -ne "GET" -and -not $headOnly -and -not $isRouteVideoSubmit) {
+            if ($method -ne "GET" -and -not $headOnly -and -not $isRouteVideoSubmit -and -not $isGeminiSubmit) {
                 $body = $Utf8.GetBytes("405 Method Not Allowed")
                 Send-Response $stream 405 "Method Not Allowed" "text/plain; charset=utf-8" $body $false
                 continue
@@ -323,6 +326,41 @@ try {
                 }
                 catch {
                     Send-JsonError $stream 502 "Bad Gateway" "KMA_MID_UPSTREAM_FAILED" "기상청 중기예보 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
+                continue
+            }
+
+            if ($isGeminiSubmit) {
+                if ([string]::IsNullOrWhiteSpace($GeminiApiKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "GEMINI_KEY_MISSING" ".env에 GEMINI_API_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $requestBody = ""
+                if ($contentLength -gt 0) {
+                    $buffer = New-Object char[] $contentLength
+                    $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
+                    $requestBody = -join $buffer[0..($readCount - 1)]
+                }
+                if ([string]::IsNullOrWhiteSpace($requestBody)) {
+                    Send-JsonError $stream 400 "Bad Request" "GEMINI_NO_BODY" "요청 본문(contents)이 비어 있습니다." $headOnly
+                    continue
+                }
+                # 클라이언트가 보낸 Gemini 요청 본문(contents 등)을 그대로 전달하고, 인증키만 서버에서 붙인다.
+                $encodedKey = [System.Uri]::EscapeDataString($GeminiApiKey)
+                $upstreamUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=$encodedKey"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(15)
+                try {
+                    $requestContent = [System.Net.Http.StringContent]::new($requestBody, [System.Text.Encoding]::UTF8, "application/json")
+                    $upstream = $httpClient.PostAsync($upstreamUrl, $requestContent).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase "application/json; charset=utf-8" $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "GEMINI_UPSTREAM_FAILED" "Gemini API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
                 }
                 finally {
                     $httpClient.Dispose()

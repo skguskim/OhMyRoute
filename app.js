@@ -28,6 +28,7 @@ const WALK_TIME_LIMIT_MIN = 40;
 const WALK_TIME_LIMIT_MAX = 90;
 const WALK_TIME_LIMIT_STEP = 10;
 const WALK_TIME_LIMIT_DEFAULT = 60;
+const MEAL_PARKING_DETOUR_LIMIT_MINUTES = 60;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
 const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
@@ -1734,14 +1735,9 @@ function chooseBestCandidate(results, current, clockMinutes, usedIds, dayEndMinu
     .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0] || null;
 }
 
-function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination = null) {
-  return results
-    .filter((place) =>
-      !usedIds.has(place.id)
-      && hasUsableCoordinates(place)
-      && isMealPlace(place)
-      && !place.stadiumFood,
-    )
+// 후보 풀에서 식사 시간대에 맞는 최적 식당 하나를 고른다. 공통 채점/필터 로직이라 주차 우회 대체 탐색에서도 재사용한다.
+function buildMealCandidate(pool, current, clockMinutes, slot, dayEndMinutes, returnDestination) {
+  return pool
     .map((place) => {
       const leg = scheduleLeg(current, clockMinutes, place, slot.targetMinutes);
       const timingPenalty = Math.abs(leg.startMinutes - slot.targetMinutes) / 180;
@@ -1754,6 +1750,59 @@ function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayE
       && !exceedsWalkTimeLimit(leg.travelMinutes),
     )
     .sort((a, b) => b.value - a.value)[0] || null;
+}
+
+function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination = null) {
+  const isCar = state.transport === "car";
+  // 자동차 모드에서는 주차 불가로 확인된 식당은 애초에 후보에서 제외한다.
+  const basePool = results.filter((place) =>
+    !usedIds.has(place.id)
+    && hasUsableCoordinates(place)
+    && isMealPlace(place)
+    && !place.stadiumFood
+    && (!isCar || place.parkingAvailable !== false),
+  );
+  if (isCar) {
+    // 주차 가능 식당을 우선 시도한다. 우회 거리가 과도하면 resolveMealParkingDetour가 나중에 대체한다.
+    const parkingFirst = buildMealCandidate(
+      basePool.filter((place) => place.parkingAvailable === true),
+      current,
+      clockMinutes,
+      slot,
+      dayEndMinutes,
+      returnDestination,
+    );
+    if (parkingFirst) return parkingFirst;
+  }
+  return buildMealCandidate(basePool, current, clockMinutes, slot, dayEndMinutes, returnDestination);
+}
+
+// 주차 가능 식당이 실제로는 앞뒤 관광지에서 크게 벗어난 곳일 경우, 주차 여부 미지수인 식당으로 대체한다.
+function resolveMealParkingDetour(mealPlace, prevPlace, next, prevClockMinutes, results, usedIds, dayEndMinutes, returnDestination) {
+  if (state.transport !== "car" || mealPlace.parkingAvailable !== true || !prevPlace || !next) return mealPlace;
+  const detourMinutes = estimateTravelMinutes(haversineKm(prevPlace, mealPlace))
+    + estimateTravelMinutes(haversineKm(mealPlace, next));
+  if (detourMinutes < MEAL_PARKING_DETOUR_LIMIT_MINUTES) return mealPlace;
+
+  const slot = MEAL_SLOTS.find((candidate) => candidate.key === mealPlace.mealSlot);
+  if (!slot) return mealPlace;
+
+  const fallbackUsedIds = new Set(usedIds);
+  fallbackUsedIds.delete(mealPlace.id);
+  const fallbackPool = results.filter((place) =>
+    !fallbackUsedIds.has(place.id)
+    && hasUsableCoordinates(place)
+    && isMealPlace(place)
+    && !place.stadiumFood
+    && place.parkingAvailable !== true
+    && place.parkingAvailable !== false,
+  );
+  const replacement = buildMealCandidate(fallbackPool, prevPlace, prevClockMinutes, slot, dayEndMinutes, returnDestination);
+  if (!replacement) return mealPlace;
+
+  usedIds.delete(mealPlace.id);
+  usedIds.add(replacement.place.id);
+  return annotateMealPlace(replacement.place, slot);
 }
 
 function chooseFillerBeforeMeal(results, current, clockMinutes, usedIds, slot, dayEndMinutes, returnDestination = null) {
@@ -1806,6 +1855,7 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
   const returnDestination = isFinalDay ? conditions.origin : null;
   let current = conditions.origin;
   let clockMinutes = startMinutes;
+  const mealParkingChecks = [];
 
   for (let slotIndex = 0; slotIndex < mealSlots.length; slotIndex += 1) {
     const slot = mealSlots[slotIndex];
@@ -1842,6 +1892,7 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
       continue;
     }
     const mealPlace = annotateMealPlace(meal.place, slot);
+    mealParkingChecks.push({ ref: mealPlace, prevPlace: current, prevClockMinutes: clockMinutes });
     day.push(mealPlace);
     usedIds.add(meal.place.id);
     current = mealPlace;
@@ -1858,6 +1909,23 @@ function buildRouteDay(results, conditions, usedIds, dayIndex, window, isFinalDa
     current = next;
     clockMinutes = leg.endMinutes;
 }
+
+  mealParkingChecks.forEach((check) => {
+    const index = day.indexOf(check.ref);
+    if (index === -1) return;
+    const next = day[index + 1] || null;
+    const resolved = resolveMealParkingDetour(
+      check.ref,
+      check.prevPlace,
+      next,
+      check.prevClockMinutes,
+      results,
+      usedIds,
+      dayEndMinutes,
+      returnDestination,
+    );
+    if (resolved !== check.ref) day[index] = resolved;
+  });
   return day;
 }
 
@@ -1927,6 +1995,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   let current = keptStops[keptStops.length - 1];
   let clockMinutes = newDepartureMinutes;
   const rebuilt = [];
+  const mealParkingChecks = [];
 
   for (let slotIndex = 0; slotIndex < pendingMealSlots.length; slotIndex += 1) {
     const slot = pendingMealSlots[slotIndex];
@@ -1955,6 +2024,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
       continue;
     }
     const mealPlace = annotateMealPlace(meal.place, slot);
+    mealParkingChecks.push({ ref: mealPlace, prevPlace: current, prevClockMinutes: clockMinutes });
     rebuilt.push(mealPlace);
     usedIds.add(meal.place.id);
     current = mealPlace;
@@ -2012,6 +2082,23 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
     rebuilt.push(compressedPlace);
     current = compressedPlace;
     clockMinutes = leg.endMinutes;
+  });
+
+  mealParkingChecks.forEach((check) => {
+    const index = rebuilt.indexOf(check.ref);
+    if (index === -1) return;
+    const next = rebuilt[index + 1] || fixedRemainder[0] || null;
+    const resolved = resolveMealParkingDetour(
+      check.ref,
+      check.prevPlace,
+      next,
+      check.prevClockMinutes,
+      availableResults,
+      usedIds,
+      dayEndMinutes,
+      returnDestination,
+    );
+    if (resolved !== check.ref) rebuilt[index] = resolved;
   });
 
   state.routeDays[dayIndex] = [...keptStops, ...rebuilt, ...fixedRemainder];
@@ -2074,6 +2161,7 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
   const day = [];
   let current = conditions.origin;
   let clockMinutes = window.startMinutes;
+  const mealParkingChecks = [];
   const stadiumFood = selectStadiumFood(results, schedule, usedIds);
   const pregameEndMinutes = schedule.stadiumFoodStartMinutes;
   const lunchSlot = MEAL_SLOTS.find((slot) =>
@@ -2110,6 +2198,7 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
     );
     if (meal) {
       const mealPlace = annotateMealPlace(meal.place, lunchSlot);
+      mealParkingChecks.push({ ref: mealPlace, prevPlace: current, prevClockMinutes: clockMinutes });
       day.push(mealPlace);
       usedIds.add(meal.place.id);
       current = mealPlace;
@@ -2140,6 +2229,23 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
     current = next.place;
     clockMinutes = next.leg.endMinutes;
   }
+
+  mealParkingChecks.forEach((check) => {
+    const index = day.indexOf(check.ref);
+    if (index === -1) return;
+    const next = day[index + 1] || null;
+    const resolved = resolveMealParkingDetour(
+      check.ref,
+      check.prevPlace,
+      next,
+      check.prevClockMinutes,
+      results,
+      usedIds,
+      pregameEndMinutes,
+      CHAMPIONS_FIELD_GAME,
+    );
+    if (resolved !== check.ref) day[index] = resolved;
+  });
 
   if (stadiumFood) {
     day.push(stadiumFood);
@@ -3121,7 +3227,9 @@ function renderItinerary() {
   if (schedule.length) {
     const lastIndex = schedule.length - 1;
     $("#replanStopSelect").value = String(lastIndex);
-    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(schedule[lastIndex].endMinutes));
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(currentMinutes));
   }
   $("#replanStatus").hidden = true;
   const originStartCard = state.selectedDay === 0 ? `
@@ -3227,8 +3335,81 @@ function renderAlternatives() {
     : '<p class="empty-copy">추가 추천 후보가 없습니다.</p>';
 }
 
-function renderTips() {
+function geminiProxyUrl() {
+  const config = window.OMAEROUTE_CONFIG || {};
+  if (config.geminiProxyUrl === false) return "";
+  return String(config.geminiProxyUrl || "/api/gemini").trim();
+}
+
+async function requestGemini(contents, { timeoutMs = 12000, generationConfig = null } = {}) {
+  const proxyUrl = geminiProxyUrl();
+  if (!proxyUrl) return null;
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const url = new URL(proxyUrl, window.location.href).toString();
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(generationConfig ? { contents, generationConfig } : { contents }),
+      signal: controller.signal,
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || null;
+  } catch {
+    return null;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+async function requestAiTips(prompt) {
+  const rawText = await requestGemini(
+    [{ role: "user", parts: [{ text: prompt }] }],
+    { generationConfig: { temperature: 0.7, maxOutputTokens: 500 } },
+  );
+  if (!rawText) return null;
+  try {
+    const parsed = JSON.parse(rawText.replace(/```json|```/g, "").trim());
+    if (!Array.isArray(parsed?.tips)) return null;
+    return parsed.tips
+      .filter((tip) => tip && typeof tip.text === "string" && tip.text.trim())
+      .slice(0, 4)
+      .map((tip) => ({ text: tip.text.trim(), photoSpot: Boolean(tip.photoSpot) }));
+  } catch {
+    return null;
+  }
+}
+
+async function renderTips() {
+  const tipsContainer = $("#routeTips");
   const conditions = currentConditions();
+  const proxyUrl = geminiProxyUrl();
+  if (proxyUrl && state.route.length) {
+    tipsContainer.innerHTML = "<li>AI 컨시어지가 팁을 작성 중입니다...</li>";
+    const routeNames = state.route.map((place) => place.name).join(", ");
+    const transportLabel = state.transport === "public" ? "대중교통" : state.transport === "walk" ? "도보" : "자동차";
+    const prompt = `다음은 사용자의 광주/전남 여행 코스입니다: ${routeNames}.
+이 코스를 더 잘 즐길 수 있는 팁을 3~4가지 작성해주세요.
+그중 하나는 이 코스에서 사진이 가장 잘 나올 만한 장소와 구도를 추천하는 "포토 스팟" 팁으로 만들고 photoSpot을 true로 표시하세요.
+여행 조건: 출발지 ${conditions.origin.name}, 교통수단: ${transportLabel}.
+다른 설명 없이 아래 JSON 형식으로만 답하세요: {"tips":[{"text":"...","photoSpot":false}]}`;
+    const aiTips = await requestAiTips(prompt);
+    if (aiTips?.length) {
+      tipsContainer.innerHTML = aiTips
+        .map((tip) => `<li${tip.photoSpot ? ' class="photo-spot-tip"' : ""}>${
+          tip.photoSpot ? "<strong>📸 추천 포토 스팟:</strong> " : ""
+        }${escapeHtml(tip.text)}</li>`)
+        .join("");
+      return;
+    }
+  }
+  const tips = buildStaticTips(conditions);
+  tipsContainer.innerHTML = tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("");
+}
+
+function buildStaticTips(conditions) {
   const mealStops = state.route.filter((place) => place.mealSlot);
   const preferredAxes = topAxes(2);
   const tips = [
@@ -3292,7 +3473,7 @@ function renderTips() {
   if (state.promptAnalysis.relaxed) {
     tips.push("서로 충돌하거나 후보가 적은 요청은 가능한 장소를 확보하기 위해 일부를 우선 조건으로 유연하게 적용했습니다.");
   }
-  $("#routeTips").innerHTML = tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("");
+  return tips;
 }
 
 function renderPromptResultSummary() {
@@ -4012,11 +4193,8 @@ function bindEvents() {
       addDocentMessage(text, true);
       docentInput.value = "";
 
-      const config = window.OMAEROUTE_CONFIG || {};
-      const apiKey = config.geminiApiKey?.trim();
-      
-      if (!apiKey) {
-        addDocentMessage("Gemini API 키가 설정되지 않았습니다. config.js를 확인해주세요.");
+      if (!geminiProxyUrl()) {
+        addDocentMessage("AI 도슨트가 설정되지 않았습니다. 서버의 GEMINI_API_KEY를 확인해주세요.");
         return;
       }
 
@@ -4029,28 +4207,9 @@ function bindEvents() {
       docentChatHistory.push({ role: "user", parts: [{ text }] });
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            contents: docentChatHistory
-          })
-        });
+        const replyText = await requestGemini(docentChatHistory, { timeoutMs: 20000 })
+          || "답변을 생성할 수 없습니다.";
 
-        if (!response.ok) {
-          const errData = await response.text();
-          console.error("Gemini API Error:", response.status, errData);
-          throw new Error(`API Request failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        let replyText = "답변을 생성할 수 없습니다.";
-        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
-          replyText = data.candidates[0].content.parts[0].text;
-        }
-        
         docentChat.removeChild(typingMsg);
         addDocentMessage(replyText);
         docentChatHistory.push({ role: "model", parts: [{ text: replyText }] });

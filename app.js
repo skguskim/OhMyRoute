@@ -2884,7 +2884,9 @@ function renderItinerary() {
   if (schedule.length) {
     const lastIndex = schedule.length - 1;
     $("#replanStopSelect").value = String(lastIndex);
-    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(schedule[lastIndex].endMinutes));
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    setTimeFieldValue($("#replanTimeInput"), formatClockMinutes(currentMinutes));
   }
   $("#replanStatus").hidden = true;
   const originStartCard = state.selectedDay === 0 ? `
@@ -2990,8 +2992,45 @@ function renderAlternatives() {
     : '<p class="empty-copy">추가 추천 후보가 없습니다.</p>';
 }
 
-function renderTips() {
+async function renderTips() {
+  const tipsContainer = $("#routeTips");
+  tipsContainer.innerHTML = '<li>AI 컨시어지가 팁을 작성 중입니다...</li>';
+  
+  const apiKey = window.OMAEROUTE_CONFIG?.geminiApiKey?.trim() || "";
   const conditions = currentConditions();
+  
+  if (apiKey) {
+    try {
+      const routeNames = state.route.map((p) => p.name).join(", ");
+      const prompt = `다음은 사용자의 광주/전남 여행 코스입니다: ${routeNames}. 
+이 코스를 더 잘 즐길 수 있는 팁을 3~4가지 정도 작성해주시고, 
+가장 첫 번째 팁으로는 이 코스 중에서 가장 사진이 잘 나올 만한 특정 장소와 구도를 추천하는 '포토 스팟' 팁을 꼭 포함해 주세요.
+여행 조건: 출발지 ${conditions.origin.name}, 교통수단: ${state.transport === 'public' ? '대중교통' : state.transport === 'walk' ? '도보' : '자동차'}.
+출력 형식:
+- 모든 팁은 <li> 태그로 묶어서 HTML 형식으로만 출력하고 <ul> 태그는 쓰지 마세요.
+- 일반 팁은 <li>내용</li> 형식으로 작성하세요.
+- 포토 스팟 팁은 반드시 <li class="photo-spot-tip"><strong>📸 추천 포토 스팟:</strong> 내용</li> 형식으로 작성하세요.`;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 500 }
+        })
+      });
+      const data = await response.json();
+      const htmlTips = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (htmlTips) {
+        tipsContainer.innerHTML = htmlTips.replace(/```html|```/g, "").trim();
+        return;
+      }
+    } catch (e) {
+      console.error("Gemini API error:", e);
+    }
+  }
+
+  // Fallback if no API key or API call failed
   const mealStops = state.route.filter((place) => place.mealSlot);
   const preferredAxes = topAxes(2);
   const tips = [
@@ -3054,7 +3093,7 @@ function renderTips() {
   if (state.promptAnalysis.relaxed) {
     tips.push("서로 충돌하거나 후보가 적은 요청은 가능한 장소를 확보하기 위해 일부를 우선 조건으로 유연하게 적용했습니다.");
   }
-  $("#routeTips").innerHTML = tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("");
+  tipsContainer.innerHTML = tips.map((tip) => `<li>${escapeHtml(tip)}</li>`).join("");
 }
 
 function renderPromptResultSummary() {

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [int]$Port = 4173,
     [switch]$NoBrowser,
     [string]$RootPath = $PSScriptRoot,
@@ -120,6 +120,10 @@ function Test-MidWeatherQuery([System.Collections.Specialized.NameValueCollectio
     return $true
 }
 
+$RouteVideoOutputDir = Join-Path $Root "outputs\route-video"
+$RouteVideoScript = Join-Path $Root "scripts\build_route_video.ps1"
+$RouteVideoMaxPhotos = 8
+
 $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
 
 try {
@@ -160,8 +164,12 @@ try {
                 continue
             }
 
+            $contentLength = 0
             do {
                 $line = $reader.ReadLine()
+                if ($null -ne $line -and $line -match '^Content-Length:\s*(\d+)$') {
+                    $contentLength = [int]$Matches[1]
+                }
             } while ($null -ne $line -and $line.Length -gt 0)
 
             $parts = $requestLine.Split(" ")
@@ -173,13 +181,77 @@ try {
 
             $method = $parts[0].ToUpperInvariant()
             $headOnly = $method -eq "HEAD"
-            if ($method -ne "GET" -and -not $headOnly) {
+            $requestUri = [System.Uri]::new("http://localhost$($parts[1])")
+            $isRouteVideoSubmit = $method -eq "POST" -and $requestUri.AbsolutePath -eq "/api/route-video"
+
+            if ($method -ne "GET" -and -not $headOnly -and -not $isRouteVideoSubmit) {
                 $body = $Utf8.GetBytes("405 Method Not Allowed")
                 Send-Response $stream 405 "Method Not Allowed" "text/plain; charset=utf-8" $body $false
                 continue
             }
 
-            $requestUri = [System.Uri]::new("http://localhost$($parts[1])")
+            if ($isRouteVideoSubmit) {
+                $requestBody = ""
+                if ($contentLength -gt 0) {
+                    $buffer = New-Object char[] $contentLength
+                    $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
+                    $requestBody = -join $buffer[0..($readCount - 1)]
+                }
+
+                $payload = $null
+                try { $payload = $requestBody | ConvertFrom-Json } catch { }
+                $imageUrls = @()
+                if ($null -ne $payload -and $null -ne $payload.imageUrls) {
+                    $imageUrls = @($payload.imageUrls | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -First $RouteVideoMaxPhotos)
+                }
+
+                if ($imageUrls.Count -eq 0) {
+                    Send-JsonError $stream 400 "Bad Request" "ROUTE_VIDEO_NO_PHOTOS" "imageUrls 배열이 비어 있습니다." $headOnly
+                    continue
+                }
+
+                New-Item -ItemType Directory -Force -Path $RouteVideoOutputDir | Out-Null
+                $jobId = [Guid]::NewGuid().ToString("N")
+                $outputPath = Join-Path $RouteVideoOutputDir "$jobId.mp4"
+
+                $argList = New-Object System.Collections.Generic.List[string]
+                $argList.Add("-NoProfile"); $argList.Add("-ExecutionPolicy"); $argList.Add("Bypass")
+                $argList.Add("-File"); $argList.Add($RouteVideoScript)
+                $argList.Add("-ImageUrls")
+                foreach ($url in $imageUrls) { $argList.Add($url) }
+                $argList.Add("-OutputPath"); $argList.Add($outputPath)
+
+                Start-Process -FilePath "powershell.exe" -ArgumentList $argList.ToArray() -WindowStyle Hidden | Out-Null
+
+                $json = @{ jobId = $jobId } | ConvertTo-Json -Compress
+                Send-Response $stream 202 "Accepted" "application/json; charset=utf-8" $Utf8.GetBytes($json) $headOnly
+                continue
+            }
+
+            if ($requestUri.AbsolutePath -eq "/api/route-video") {
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                $jobId = $query["id"]
+                if ([string]::IsNullOrWhiteSpace($jobId) -or $jobId -notmatch '^[0-9a-f]{32}$') {
+                    Send-JsonError $stream 400 "Bad Request" "ROUTE_VIDEO_INVALID_ID" "id 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $videoPath = Join-Path $RouteVideoOutputDir "$jobId.mp4"
+                $errorPath = Join-Path $RouteVideoOutputDir "$jobId.error.json"
+                if ([System.IO.File]::Exists($videoPath)) {
+                    $videoBody = [System.IO.File]::ReadAllBytes($videoPath)
+                    Send-Response $stream 200 "OK" "video/mp4" $videoBody $headOnly
+                }
+                elseif ([System.IO.File]::Exists($errorPath)) {
+                    $errorJson = [System.IO.File]::ReadAllText($errorPath, $Utf8)
+                    Send-Response $stream 502 "Bad Gateway" "application/json; charset=utf-8" $Utf8.GetBytes($errorJson) $headOnly
+                }
+                else {
+                    $json = @{ status = "pending" } | ConvertTo-Json -Compress
+                    Send-Response $stream 202 "Accepted" "application/json; charset=utf-8" $Utf8.GetBytes($json) $headOnly
+                }
+                continue
+            }
+
             if ($requestUri.AbsolutePath -eq "/api/weather") {
                 if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
                     Send-JsonError $stream 503 "Service Unavailable" "KMA_KEY_MISSING" ".env에 KMA_API_SERVICE_KEY를 설정해주세요." $headOnly

@@ -2897,6 +2897,27 @@ body:has(#formView.active) .app-main {
   opacity: 0.6;
 }
 
+.walk-time-limit-field {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #4e5968;
+}
+
+.walk-time-limit-field[hidden] {
+  display: none;
+}
+
+.walk-time-wrap {
+  justify-content: flex-start;
+  gap: 2px;
+  padding: 4px 10px;
+  background: rgba(47, 148, 97, 0.08);
+  border-radius: 999px;
+}
+
 #formView .schedule-field-status {
   margin: -2px 0 0;
   padding: 9px 12px;

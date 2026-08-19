@@ -24,6 +24,10 @@ const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activi
 const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
 const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
 const VERY_PREFERRED_THRESHOLD = 75;
+const WALK_TIME_LIMIT_MIN = 40;
+const WALK_TIME_LIMIT_MAX = 90;
+const WALK_TIME_LIMIT_STEP = 10;
+const WALK_TIME_LIMIT_DEFAULT = 60;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
 const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
@@ -195,6 +199,7 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
+  walkTimeLimitMinutes: 60,
   preference: [50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
@@ -500,6 +505,56 @@ function bindTimeSegments(hiddenInput, minuteStep = 1) {
         adjustSegment(input, -step, max);
       }
     });
+  });
+}
+
+function setWalkTimeLimitFieldValue(minutes) {
+  const hiddenInput = $("#walkTimeLimit");
+  const segmentInput = $('#walkTimeLimitField [data-role="walkLimit"]');
+  const clamped = clamp(Number(minutes) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
+  if (hiddenInput) hiddenInput.value = String(clamped);
+  if (segmentInput) segmentInput.value = String(clamped).padStart(2, "0");
+}
+
+function bindWalkTimeLimitStepper() {
+  const hiddenInput = $("#walkTimeLimit");
+  const segmentInput = $('#walkTimeLimitField [data-role="walkLimit"]');
+  if (!hiddenInput || !segmentInput) return;
+
+  const commit = () => {
+    const clamped = clamp(Number(segmentInput.value) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
+    segmentInput.value = String(clamped).padStart(2, "0");
+    if (Number(hiddenInput.value) !== clamped) {
+      hiddenInput.value = String(clamped);
+      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  };
+
+  const adjust = (delta) => {
+    const current = Number(segmentInput.value) || WALK_TIME_LIMIT_DEFAULT;
+    segmentInput.value = String(clamp(current + delta, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX));
+    commit();
+  };
+
+  segmentInput.addEventListener("input", () => {
+    segmentInput.value = segmentInput.value.replace(/\D/g, "").slice(0, 2);
+  });
+  segmentInput.addEventListener("blur", commit);
+  segmentInput.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    adjust(event.deltaY < 0 ? WALK_TIME_LIMIT_STEP : -WALK_TIME_LIMIT_STEP);
+  }, { passive: false });
+  segmentInput.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      adjust(WALK_TIME_LIMIT_STEP);
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      adjust(-WALK_TIME_LIMIT_STEP);
+    }
+  });
+  hiddenInput.addEventListener("change", () => {
+    state.walkTimeLimitMinutes = clamp(Number(hiddenInput.value) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
   });
 }
 
@@ -1633,6 +1688,16 @@ function exceedsClosingTime(place, endMinutes) {
   return endMinutes > parseClockMinutes(place.closesAt);
 }
 
+function hasRequiredParking(place) {
+  if (state.transport !== "car") return true;
+  if (isMealPlace(place) || place.stadiumFood) return true;
+  return place.parkingAvailable === true;
+}
+
+function exceedsWalkTimeLimit(travelMinutes) {
+  return state.transport === "walk" && travelMinutes > state.walkTimeLimitMinutes;
+}
+
 function scheduleLeg(current, clockMinutes, place, targetMinutes = null, { snap = true } = {}) {
   const distance = haversineKm(current, place);
   const travelMinutes = estimateTravelMinutes(distance);
@@ -1663,6 +1728,7 @@ function chooseBestCandidate(results, current, clockMinutes, usedIds, dayEndMinu
     .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
     .filter(({ place, leg }) =>
       !exceedsClosingTime(place, leg.endMinutes)
+      && !exceedsWalkTimeLimit(leg.travelMinutes)
       && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes,
     )
     .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0] || null;
@@ -1684,7 +1750,8 @@ function chooseMealCandidate(results, current, clockMinutes, usedIds, slot, dayE
     .filter(({ place, leg }) =>
       leg.startMinutes <= slot.windowEnd
       && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes
-      && !exceedsClosingTime(place, leg.endMinutes),
+      && !exceedsClosingTime(place, leg.endMinutes)
+      && !exceedsWalkTimeLimit(leg.travelMinutes),
     )
     .sort((a, b) => b.value - a.value)[0] || null;
 }
@@ -1705,7 +1772,12 @@ function chooseFillerBeforeMeal(results, current, clockMinutes, usedIds, slot, d
       );
       return { place, leg, meal, value: routeCandidateValue(place, current) };
     })
-    .filter(({ place, leg, meal }) => meal && leg.endMinutes <= slot.windowEnd && !exceedsClosingTime(place, leg.endMinutes))
+    .filter(({ place, leg, meal }) =>
+      meal
+      && leg.endMinutes <= slot.windowEnd
+      && !exceedsClosingTime(place, leg.endMinutes)
+      && !exceedsWalkTimeLimit(leg.travelMinutes),
+    )
     .sort((a, b) => b.value - a.value)[0] || null;
 }
 
@@ -1828,7 +1900,7 @@ function replanDayFromStop(dayIndex, stopIndex, newDepartureMinutes) {
   if (!day || !day[stopIndex]) return { ok: false, message: "선택한 장소를 찾지 못했습니다." };
   const window = state.dayWindows[dayIndex];
   const dayConditions = conditionsForRouteDate(currentConditions(), window.date);
-  const availableResults = rankPlacesLocal(dayConditions).filter((place) => placeIsOpenOnDate(place, window.date));
+  const availableResults = rankPlacesLocal(dayConditions).filter((place) => placeIsOpenOnDate(place, window.date) && hasRequiredParking(place));
   const isFinalDay = dayIndex === state.routeDays.length - 1;
   const anchorPlace = { ...day[stopIndex], overrideEndMinutes: newDepartureMinutes };
   const keptStops = [...day.slice(0, stopIndex), anchorPlace];
@@ -2058,7 +2130,8 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
       .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
       .filter(({ place, leg }) =>
         leg.endMinutes + returnTravelMinutes(place, CHAMPIONS_FIELD_GAME) <= pregameEndMinutes
-        && !exceedsClosingTime(place, leg.endMinutes),
+        && !exceedsClosingTime(place, leg.endMinutes)
+        && !exceedsWalkTimeLimit(leg.travelMinutes),
       )
       .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0];
     if (!next) break;
@@ -2107,7 +2180,7 @@ function createRoute(results) {
       const rankedResults = conditions.weatherMode === "auto"
         ? rankPlacesLocal(dayConditions)
         : results;
-      const availableResults = rankedResults.filter((place) => placeIsOpenOnDate(place, window.date));
+      const availableResults = rankedResults.filter((place) => placeIsOpenOnDate(place, window.date) && hasRequiredParking(place));
       return {
         window,
         day: conditions.baseballAttendance && conditions.baseballDayIndexes.includes(dayIndex)
@@ -3438,6 +3511,7 @@ function saveCurrentRoute() {
       endTime: $("#endTime").value,
       duration: state.duration,
       transport: state.transport,
+      walkTimeLimitMinutes: state.walkTimeLimitMinutes,
       preference: [...state.preference],
       preferenceOrder: AXES.map((axis) => axis.key),
       preferenceByKey: preferenceByKey(),
@@ -3515,6 +3589,8 @@ function restoreSavedRoute(id) {
   setTimeFieldValue($("#endTime"), saved.endTime || legacyEnd.endTime);
   syncTravelWindow();
   state.transport = saved.transport;
+  state.walkTimeLimitMinutes = clamp(Number(saved.walkTimeLimitMinutes) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
+  setWalkTimeLimitFieldValue(state.walkTimeLimitMinutes);
   state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
   const savedBaseballDayIndexes = Array.isArray(saved.baseballDayIndexes)
@@ -3542,6 +3618,7 @@ function restoreSavedRoute(id) {
   $$('.choice-group[data-group="transport"] button').forEach((button) => {
     button.classList.toggle("active", button.dataset.value === state.transport);
   });
+  $("#walkTimeLimitField").hidden = state.transport !== "walk";
   $$('.choice-group[data-group="companion"] button').forEach((button) => {
     button.classList.toggle("active", button.dataset.value === $("#companion").value);
   });
@@ -3651,7 +3728,10 @@ function bindEvents() {
       if (!button) return;
       $$("button", group).forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
-      if (group.dataset.group === "transport") state.transport = button.dataset.value;
+      if (group.dataset.group === "transport") {
+        state.transport = button.dataset.value;
+        $("#walkTimeLimitField").hidden = state.transport !== "walk";
+      }
       if (group.dataset.group === "companion") $("#companion").value = button.dataset.value;
     });
   });
@@ -3660,6 +3740,7 @@ function bindEvents() {
   bindTimeSegments($("#startTime"), 1);
   bindTimeSegments($("#endTime"), 1);
   bindTimeSegments($("#replanTimeInput"), 1);
+  bindWalkTimeLimitStepper();
   [$("#travelDate"), $("#startTime"), $("#endDate"), $("#endTime")].forEach((input) => {
     input.addEventListener("change", () => {
       if (input === $("#travelDate") && (!$("#endDate").value || $("#endDate").value < input.value)) {

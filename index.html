@@ -145,6 +145,14 @@
                         <span>자동차</span>
                       </button>
                     </div>
+                    <div id="walkTimeLimitField" class="walk-time-limit-field" hidden>
+                      <span>최대 도보 이동 시간</span>
+                      <div class="time-field-wrap walk-time-wrap">
+                        <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="60" data-role="walkLimit" aria-label="최대 도보 이동 시간(분)" />
+                        <span class="time-sep">분</span>
+                      </div>
+                      <input id="walkTimeLimit" type="hidden" value="60" />
+                    </div>
                   </fieldset>
 
                   <fieldset class="field full companion-field">

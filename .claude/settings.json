@@ -11,7 +11,27 @@
       "Bash(taskkill //F //FI \"WINDOWTITLE eq chrome*\")",
       "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''chrome.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*9333*'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
       "Bash(node --test ./tests/weather.test.mjs)",
-      "PowerShell(node --test .\\\\tests\\\\weather.test.mjs 2>&1)"
+      "PowerShell(node --test .\\\\tests\\\\weather.test.mjs 2>&1)",
+      "Bash(powershell -NoProfile -Command ' *)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\time_render.ps1\" -N 2)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\time_render.ps1\" -N 4)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\time_render.ps1\" -N 1)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\time_render.ps1\" -N 6)",
+      "Bash(python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(Out-File -Encoding utf8 \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\1836edd7-da6a-4f48-ac43-a08a9c13b0b1\\\\scratchpad\\\\pool_sled_check.txt\")",
+      "Bash(grep -n \"^\\\\.field \\\\|^\\\\.field{\\\\|^\\\\.field,\\\\|^\\\\.field\\\\.full\\\\|^\\\\.time-field-wrap\\\\|^\\\\.time-seg\\\\|^\\\\.time-sep\" styles.css)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_car_walk_check.py)",
+      "Bash(curl -s http://localhost:4173/)",
+      "Bash(curl -s http://localhost:4173/app.js)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 4173 -ErrorAction SilentlyContinue | Select-Object -Expand OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Start-Sleep -Milliseconds 500; \"killed\")",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_car_parking_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_walk_limit_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_walk_limit_check2.py)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 4173 -ErrorAction SilentlyContinue | Select-Object -Expand OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Get-Process msedge -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; \"cleanup done\")",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_walk_range_check.py)",
+      "Bash(python3 -)",
+      "Bash(python -)"
     ]
   }
 }

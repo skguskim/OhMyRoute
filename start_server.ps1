@@ -214,14 +214,17 @@ try {
                 $jobId = [Guid]::NewGuid().ToString("N")
                 $outputPath = Join-Path $RouteVideoOutputDir "$jobId.mp4"
 
-                $argList = New-Object System.Collections.Generic.List[string]
-                $argList.Add("-NoProfile"); $argList.Add("-ExecutionPolicy"); $argList.Add("Bypass")
-                $argList.Add("-File"); $argList.Add($RouteVideoScript)
-                $argList.Add("-ImageUrls")
-                foreach ($url in $imageUrls) { $argList.Add($url) }
-                $argList.Add("-OutputPath"); $argList.Add($outputPath)
+                $argParts = New-Object System.Collections.Generic.List[string]
+                $argParts.Add("-NoProfile"); $argParts.Add("-ExecutionPolicy"); $argParts.Add("Bypass")
+                $argParts.Add("-File"); $argParts.Add($RouteVideoScript)
+                $argParts.Add("-ImageUrls"); $argParts.Add(($imageUrls -join "|"))
+                $argParts.Add("-OutputPath"); $argParts.Add($outputPath)
 
-                Start-Process -FilePath "powershell.exe" -ArgumentList $argList.ToArray() -WindowStyle Hidden | Out-Null
+                # Start-Process -ArgumentList <string[]> does not reliably quote elements that
+                # contain spaces (repo path has Korean/space segments) — build one pre-quoted
+                # command-line string instead. None of these values can contain a literal `"`.
+                $argString = ($argParts | ForEach-Object { '"' + $_ + '"' }) -join ' '
+                Start-Process -FilePath "powershell.exe" -ArgumentList $argString -WindowStyle Hidden | Out-Null
 
                 $json = @{ jobId = $jobId } | ConvertTo-Json -Compress
                 Send-Response $stream 202 "Accepted" "application/json; charset=utf-8" $Utf8.GetBytes($json) $headOnly

@@ -142,7 +142,7 @@ export function precipitationTypeLabel(value) {
 export function forecastCondition(values) {
   const precipitationType = Number(values.PTY || 0);
   const precipitationProbability = Number(values.POP || 0);
-  if (precipitationType > 0 || precipitationProbability >= 60) return "rainy";
+  if (precipitationType > 0 || precipitationProbability >= 30) return "rainy";
   if ([3, 4].includes(Number(values.SKY))) return "cloudy";
   return "sunny";
 }
@@ -189,7 +189,7 @@ function dateDistance(fromDate, toDate) {
 
 function midCondition(weatherText, precipitationProbability) {
   const text = String(weatherText || "");
-  if (/비|눈|소나기/.test(text) || Number(precipitationProbability || 0) >= 60) return "rainy";
+  if (/비|눈|소나기/.test(text) || Number(precipitationProbability || 0) >= 30) return "rainy";
   if (/흐림|구름/.test(text)) return "cloudy";
   return "sunny";
 }

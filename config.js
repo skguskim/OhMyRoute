@@ -3,6 +3,8 @@ window.OMAEROUTE_CONFIG = {
   kakaoJavaScriptKey: "",
   // 로컬 서버의 기상청 프록시입니다. 인증키는 브라우저가 아닌 .env에 보관합니다.
   kmaWeatherProxyUrl: "/api/weather",
+  // 여행 미리보기 영상을 생성/조회하는 로컬 서버 엔드포인트입니다.
+  routeVideoProxyUrl: "/api/route-video",
   // 정적 호스팅에서만 쓰는 레거시 직접 호출 옵션입니다. 키 노출 위험 때문에 비워두세요.
   kmaServiceKey: "",
   // Gemini API Key for AI Docent

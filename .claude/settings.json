@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"server:%{http_code}\\\\n\" http://localhost:4173/ --max-time 3)",
+      "Bash(curl -s -o /dev/null -w \"cdp:%{http_code}\\\\n\" http://localhost:9333/json/version --max-time 3)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --remote-debugging-port=9333 --remote-allow-origins=* --no-first-run --no-default-browser-check '--user-data-dir=C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\chrome-profile-timeline' about:blank)",
+      "Bash(disown)",
+      "Bash(curl -s -o /dev/null -w \"cdp:%{http_code}\\\\n\" http://localhost:9333/json/version --max-time 5)",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_chapter_check.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_chapter_screenshot2.py\")",
+      "Bash(taskkill //F //FI \"WINDOWTITLE eq chrome*\")",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process -Filter \"Name='\\\\''chrome.exe'\\\\''\" | Where-Object { $_.CommandLine -like '\\\\''*9333*'\\\\'' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }')",
+      "Bash(node --test ./tests/weather.test.mjs)",
+      "PowerShell(node --test .\\\\tests\\\\weather.test.mjs 2>&1)"
+    ]
+  }
+}

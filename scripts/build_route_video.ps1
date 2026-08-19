@@ -1,7 +1,10 @@
 ﻿[CmdletBinding()]
 param(
+    # 파이프(|)로 구분된 사진 URL 목록. -File로 자식 프로세스를 띄울 때 PowerShell의
+    # CLI 매개변수 바인더가 여러 값을 [string[]]로 안정적으로 묶어주지 않아서
+    # (뒤 값이 다음 매개변수로 잘못 바인딩됨) 문자열 하나로 받아 직접 분리한다.
     [Parameter(Mandatory = $true)]
-    [string[]]$ImageUrls,
+    [string]$ImageUrls,
 
     [Parameter(Mandatory = $true)]
     [string]$OutputPath,
@@ -10,6 +13,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$ImageUrlList = @($ImageUrls -split '\|' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
 
 $Root = Split-Path -Parent $PSScriptRoot
 $OpenClip = Join-Path $Root "data\video\character_open_frame.mp4"
@@ -55,7 +59,7 @@ try {
         throw "ffmpeg 실행 파일을 찾을 수 없습니다(PATH 확인 필요)."
     }
 
-    $urls = @($ImageUrls | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -First $MaxPhotos)
+    $urls = @($ImageUrlList | Select-Object -First $MaxPhotos)
     if (-not $urls -or $urls.Count -eq 0) {
         throw "사용 가능한 사진 URL이 없습니다."
     }

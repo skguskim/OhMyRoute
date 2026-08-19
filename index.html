@@ -439,19 +439,19 @@
 
           <section class="result-map-pane">
             <div id="previewScene" class="preview-scene" aria-label="추천 코스 영상형 프리뷰">
-              <div class="door-stage">
-                <div id="previewPhotoBg" class="door-photo-bg"></div>
-                <img id="previewCharFrame" class="door-char-frame" src="video/frame_0001.webp" alt="" aria-hidden="true">
-              </div>
+              <video id="tripPreviewVideo" class="door-stage" muted playsinline preload="none"></video>
               <div class="preview-shade"></div>
-              <span class="preview-badge">⌖ 현재 포커스 스팟</span>
+              <span class="preview-badge">⌖ AI 여행 미리보기</span>
               <button id="previewPlayButton" type="button" class="play-button" aria-label="프리뷰 재생">▶</button>
               <div class="preview-copy" aria-live="polite">
-                <strong id="previewTitle">AI가 구성한 오늘의 여행 프리뷰</strong>
-                <span id="previewDescription">추천 장소를 영상처럼 미리 만나보세요.</span>
+                <strong id="previewTitle">AI가 구성한 여행 미리보기</strong>
+                <span id="previewDescription">추천 장소를 영상으로 미리 만나보세요.</span>
               </div>
-              <div id="previewDots" class="preview-dots" aria-hidden="true"></div>
-              <div class="preview-progress-track"><i id="previewProgress"></i></div>
+              <div id="previewProgressTrack" class="preview-progress-track">
+                <i id="previewProgress"></i>
+                <div id="previewChapterMarks" class="preview-chapter-marks" aria-hidden="true"></div>
+                <div id="previewChapterTooltip" class="preview-chapter-tooltip" hidden></div>
+              </div>
             </div>
 
             <section class="result-card map-card">

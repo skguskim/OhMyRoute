@@ -218,12 +218,10 @@ const state = {
   kakaoMarkers: [],
   kakaoOverlays: [],
   mapResizeBound: false,
-  previewIndex: 0,
   previewPlaying: false,
-  previewFrameIndex: 1,
-  previewPhase: "opening",
-  previewFrameTimer: null,
-  previewHoldTimer: null,
+  previewVideoStatus: "idle",
+  previewVideoRequestToken: 0,
+  previewVideoPollTimer: null,
   stampedIds: [],
   stampLocation: null,
   stampLocationMode: "GPS",
@@ -2176,173 +2174,195 @@ function durationLabel() {
   return "반나절";
 }
 
-const PREVIEW_TOTAL_FRAMES = 245;
-const PREVIEW_FRAME_MS = Math.round(1000 / 30);
-const PREVIEW_HOLD_MS = 1400;
-const PREVIEW_CYCLE_MS = (PREVIEW_TOTAL_FRAMES - 1) * 2 * PREVIEW_FRAME_MS + PREVIEW_HOLD_MS;
-const PREVIEW_PLACEHOLDER_IMAGE = "assets/ohmyroute-logo.png";
+const MAX_PREVIEW_PHOTOS = 8;
+const PREVIEW_POLL_INTERVAL_MS = 1500;
+const PREVIEW_POLL_TIMEOUT_MS = 60000;
+// scripts/build_route_video.ps1 의 $OpenDuration / $MoveDuration 과 반드시 동일해야 챕터 구간이 맞는다.
+const PREVIEW_OPEN_DURATION = 4.083333;
+const PREVIEW_MOVE_DURATION = 3.511111;
 
-function previewSlides() {
-  return state.route.map((place) => ({
-    title: place.name,
-    description: place.description,
-    imageUrl: place.imageUrl || "",
-  }));
+function previewSlidePlaces() {
+  return state.route
+    .filter((place) => Boolean(place.imageUrl))
+    .slice(0, MAX_PREVIEW_PHOTOS);
 }
 
-function previewFramePath(frame) {
-  return `video/frame_${String(frame).padStart(4, "0")}.webp`;
-}
-
-let previewFramesReadyPromise = null;
-function preloadPreviewFrames() {
-  if (previewFramesReadyPromise) return previewFramesReadyPromise;
-  const loaded = [];
-  for (let frame = 1; frame <= PREVIEW_TOTAL_FRAMES; frame++) {
-    const img = new Image();
-    loaded.push(new Promise((resolve) => {
-      img.onload = resolve;
-      img.onerror = resolve;
-    }));
-    img.src = previewFramePath(frame);
+function computePreviewChapterBounds(count) {
+  if (count <= 1) return [{ start: 0, end: 1 }];
+  const total = 2 * PREVIEW_OPEN_DURATION + (count - 1) * PREVIEW_MOVE_DURATION;
+  const bounds = [];
+  let prevBoundary = 0;
+  for (let i = 0; i < count - 1; i++) {
+    const mid = PREVIEW_OPEN_DURATION + i * PREVIEW_MOVE_DURATION + PREVIEW_MOVE_DURATION / 2;
+    bounds.push({ start: prevBoundary / total, end: mid / total });
+    prevBoundary = mid;
   }
-  previewFramesReadyPromise = Promise.all(loaded);
-  return previewFramesReadyPromise;
+  bounds.push({ start: prevBoundary / total, end: 1 });
+  return bounds;
 }
 
-function setPreviewCharFrame(frame) {
-  state.previewFrameIndex = frame;
-  $("#previewCharFrame").src = previewFramePath(frame);
+function renderPreviewChapters(places) {
+  const marks = $("#previewChapterMarks");
+  const tooltip = $("#previewChapterTooltip");
+  marks.innerHTML = "";
+  tooltip.hidden = true;
+  tooltip.classList.remove("is-visible");
+  if (places.length <= 1) return;
+
+  computePreviewChapterBounds(places.length).forEach((bound, index) => {
+    if (index > 0) {
+      const divider = document.createElement("i");
+      divider.className = "preview-chapter-divider";
+      divider.style.left = `${bound.start * 100}%`;
+      marks.appendChild(divider);
+    }
+    const hit = document.createElement("span");
+    hit.className = "preview-chapter-hit";
+    hit.style.left = `${bound.start * 100}%`;
+    hit.style.width = `${(bound.end - bound.start) * 100}%`;
+    const placeName = places[index].name || `장소 ${index + 1}`;
+    hit.addEventListener("mouseenter", () => {
+      tooltip.textContent = placeName;
+      tooltip.style.left = `${(bound.start + bound.end) * 50}%`;
+      tooltip.hidden = false;
+      tooltip.classList.add("is-visible");
+    });
+    hit.addEventListener("mouseleave", () => {
+      tooltip.classList.remove("is-visible");
+      tooltip.hidden = true;
+    });
+    marks.appendChild(hit);
+  });
 }
 
-function setPreviewPhoto(imageUrl) {
-  const scene = $("#previewScene");
-  const bg = $("#previewPhotoBg");
-  if (!imageUrl) {
-    scene.classList.add("image-missing");
-    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
-    return;
-  }
-  const probe = new Image();
-  probe.referrerPolicy = "no-referrer";
-  probe.onload = () => {
-    scene.classList.remove("image-missing");
-    bg.style.backgroundImage = `url("${imageUrl}")`;
-  };
-  probe.onerror = () => {
-    scene.classList.add("image-missing");
-    bg.style.backgroundImage = `url("${PREVIEW_PLACEHOLDER_IMAGE}")`;
-  };
-  probe.src = imageUrl;
+function routeVideoProxyUrl() {
+  const config = window.OMAEROUTE_CONFIG || {};
+  if (config.routeVideoProxyUrl === false) return "";
+  return String(config.routeVideoProxyUrl || "/api/route-video").trim();
+}
+
+function setPreviewCopy(title, description) {
+  $("#previewTitle").textContent = title;
+  $("#previewDescription").textContent = description;
 }
 
 function renderPreview() {
-  const slides = previewSlides();
-  if (!slides.length) return;
-  state.previewIndex %= slides.length;
-  const slide = slides[state.previewIndex];
   const scene = $("#previewScene");
   const button = $("#previewPlayButton");
-  const progress = $("#previewProgress");
-
   scene.classList.toggle("is-playing", state.previewPlaying);
-  setPreviewPhoto(slide.imageUrl);
-  setPreviewCharFrame(state.previewFrameIndex);
-  $("#previewTitle").textContent = slide.title;
-  $("#previewDescription").textContent = slide.description;
+  button.hidden = state.previewVideoStatus !== "ready";
   button.textContent = state.previewPlaying ? "Ⅱ" : "▶";
   button.setAttribute("aria-label", state.previewPlaying ? "프리뷰 일시정지" : "프리뷰 재생");
-  $("#previewDots").innerHTML = slides
-    .map((_, index) => `<i class="${index === state.previewIndex ? "active" : ""}"></i>`)
-    .join("");
-
-  progress.classList.remove("running");
-  void progress.offsetWidth;
-  if (state.previewPlaying) {
-    progress.style.animationDuration = `${PREVIEW_CYCLE_MS}ms`;
-    progress.classList.add("running");
-  }
 }
 
-function clearPreviewTimers() {
-  if (state.previewFrameTimer) {
-    window.clearInterval(state.previewFrameTimer);
-    state.previewFrameTimer = null;
-  }
-  if (state.previewHoldTimer) {
-    window.clearTimeout(state.previewHoldTimer);
-    state.previewHoldTimer = null;
-  }
-}
-
-function beginPreviewHold() {
-  state.previewPhase = "holding";
-  state.previewHoldTimer = window.setTimeout(() => {
-    state.previewHoldTimer = null;
-    state.previewPhase = "closing";
-    runPreviewFrameTimer();
-  }, PREVIEW_HOLD_MS);
-}
-
-function advancePreviewFrame() {
-  if (state.previewPhase === "opening") {
-    if (state.previewFrameIndex >= PREVIEW_TOTAL_FRAMES) {
-      window.clearInterval(state.previewFrameTimer);
-      state.previewFrameTimer = null;
-      beginPreviewHold();
-      return;
-    }
-    setPreviewCharFrame(state.previewFrameIndex + 1);
-    return;
-  }
-  if (state.previewPhase === "closing") {
-    if (state.previewFrameIndex <= 1) {
-      window.clearInterval(state.previewFrameTimer);
-      state.previewFrameTimer = null;
-      const slides = previewSlides();
-      state.previewIndex = (state.previewIndex + 1) % slides.length;
-      state.previewFrameIndex = 1;
-      state.previewPhase = "opening";
-      renderPreview();
-      if (state.previewPlaying) runPreviewFrameTimer();
-      return;
-    }
-    setPreviewCharFrame(state.previewFrameIndex - 1);
-  }
-}
-
-function runPreviewFrameTimer() {
-  if (state.previewFrameTimer) window.clearInterval(state.previewFrameTimer);
-  state.previewFrameTimer = window.setInterval(advancePreviewFrame, PREVIEW_FRAME_MS);
-}
-
-function stopPreview({ reset = false } = {}) {
-  clearPreviewTimers();
+function stopPreview() {
+  const video = $("#tripPreviewVideo");
+  if (video) video.pause();
   state.previewPlaying = false;
-  if (reset) {
-    state.previewIndex = 0;
-    state.previewFrameIndex = 1;
-    state.previewPhase = "opening";
-  }
-  if (state.route.length) renderPreview();
+  renderPreview();
 }
 
 function startPreview() {
-  const slides = previewSlides();
-  if (!slides.length) return;
-  clearPreviewTimers();
-  state.previewPlaying = true;
-  renderPreview();
-  if (state.previewPhase === "holding") {
-    beginPreviewHold();
-  } else {
-    runPreviewFrameTimer();
-  }
+  const video = $("#tripPreviewVideo");
+  if (!video || state.previewVideoStatus !== "ready") return;
+  video.play().then(() => {
+    state.previewPlaying = true;
+    renderPreview();
+  }).catch(() => {});
 }
 
 function togglePreview() {
   if (state.previewPlaying) stopPreview();
   else startPreview();
+}
+
+async function refreshTripPreviewVideo() {
+  const token = ++state.previewVideoRequestToken;
+  if (state.previewVideoPollTimer) {
+    window.clearTimeout(state.previewVideoPollTimer);
+    state.previewVideoPollTimer = null;
+  }
+
+  const scene = $("#previewScene");
+  const video = $("#tripPreviewVideo");
+  const previousUrl = video.currentSrc || video.src;
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+  if (previousUrl && previousUrl.startsWith("blob:")) {
+    URL.revokeObjectURL(previousUrl);
+  }
+  state.previewPlaying = false;
+  $("#previewProgress").style.width = "0%";
+
+  const places = previewSlidePlaces();
+  const imageUrls = places.map((place) => place.imageUrl);
+  renderPreviewChapters(places);
+  const proxyUrl = routeVideoProxyUrl();
+  if (!imageUrls.length || !proxyUrl) {
+    state.previewVideoStatus = "idle";
+    scene.hidden = true;
+    return;
+  }
+
+  scene.hidden = false;
+  state.previewVideoStatus = "loading";
+  setPreviewCopy("여행 미리보기 영상 준비 중", "잠시만 기다려주세요...");
+  renderPreview();
+
+  try {
+    const postUrl = new URL(proxyUrl, window.location.href).toString();
+    const submitResponse = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageUrls }),
+    });
+    if (submitResponse.status !== 202) {
+      throw new Error(`영상 생성 요청 실패 (HTTP ${submitResponse.status})`);
+    }
+    const { jobId } = await submitResponse.json();
+    if (!jobId) throw new Error("작업 ID를 받지 못했습니다.");
+    if (token !== state.previewVideoRequestToken) return;
+
+    const pollUrl = new URL(proxyUrl, window.location.href);
+    pollUrl.searchParams.set("id", jobId);
+    const deadline = Date.now() + PREVIEW_POLL_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+      if (token !== state.previewVideoRequestToken) return;
+      const pollResponse = await fetch(pollUrl.toString());
+      if (pollResponse.status === 200) {
+        const blob = await pollResponse.blob();
+        if (token !== state.previewVideoRequestToken) return;
+        video.loop = true;
+        video.src = URL.createObjectURL(blob);
+        video.load();
+        state.previewVideoStatus = "ready";
+        setPreviewCopy("AI가 구성한 여행 미리보기", "추천 장소를 영상으로 미리 만나보세요.");
+        video.oncanplay = () => {
+          if (token !== state.previewVideoRequestToken) return;
+          video.play().then(() => {
+            state.previewPlaying = true;
+            renderPreview();
+          }).catch(() => {});
+        };
+        renderPreview();
+        return;
+      }
+      if (pollResponse.status !== 202) {
+        throw new Error(`영상 생성 실패 (HTTP ${pollResponse.status})`);
+      }
+      await new Promise((resolve) => {
+        state.previewVideoPollTimer = window.setTimeout(resolve, PREVIEW_POLL_INTERVAL_MS);
+      });
+    }
+    throw new Error("영상 생성이 시간 내에 끝나지 않았습니다.");
+  } catch (error) {
+    if (token !== state.previewVideoRequestToken) return;
+    state.previewVideoStatus = "error";
+    setPreviewCopy("여행 미리보기 영상을 만들지 못했습니다", "잠시 후 다시 시도해주세요.");
+    renderPreview();
+  }
 }
 
 function placeStampId(place) {
@@ -3252,11 +3272,7 @@ function renderResult() {
   renderItinerary();
   renderAlternatives();
   renderTips();
-  stopPreview({ reset: true });
-  const routeAtPreloadTime = state.route;
-  preloadPreviewFrames().then(() => {
-    if (state.route === routeAtPreloadTime) startPreview();
-  });
+  refreshTripPreviewVideo();
   renderStamps();
   renderReviewReward();
   updateSaveButton();
@@ -3705,6 +3721,27 @@ function bindEvents() {
   $("#saveButton").addEventListener("click", saveCurrentRoute);
   $("#printButton").addEventListener("click", () => window.print());
   $("#previewPlayButton").addEventListener("click", togglePreview);
+  $("#tripPreviewVideo").addEventListener("timeupdate", (event) => {
+    const video = event.target;
+    if (!video.duration) return;
+    $("#previewProgress").style.width = `${Math.min(100, (video.currentTime / video.duration) * 100)}%`;
+  });
+  $("#tripPreviewVideo").addEventListener("pause", () => {
+    state.previewPlaying = false;
+    renderPreview();
+  });
+  $("#tripPreviewVideo").addEventListener("play", () => {
+    state.previewPlaying = true;
+    renderPreview();
+  });
+  $("#previewProgressTrack").addEventListener("click", (event) => {
+    const video = $("#tripPreviewVideo");
+    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const fraction = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    video.currentTime = fraction * video.duration;
+    $("#previewProgress").style.width = `${fraction * 100}%`;
+  });
   $("#stampLocationSelect").addEventListener("change", (event) => {
     selectStampLocation(event.target.value);
   });
@@ -4051,7 +4088,6 @@ async function init() {
   loadStampIds();
   loadReviewRewards();
   bindEvents();
-  preloadPreviewFrames();
   renderWeatherFieldStatus();
   try {
     await loadPlaces();

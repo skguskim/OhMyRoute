@@ -66,7 +66,17 @@
       "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_pause_check.py\")",
       "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_check_status.py\")",
       "Bash(node -e ' *)",
-      "Bash(awk -F= '/^GEMINI_API_KEY=/ {print \"GEMINI_API_KEY length:\", length\\($2\\)}' .env)"
+      "Bash(awk -F= '/^GEMINI_API_KEY=/ {print \"GEMINI_API_KEY length:\", length\\($2\\)}' .env)",
+      "Bash(\"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" --headless=new --disable-gpu --remote-allow-origins=* --remote-debugging-port=9333 --user-data-dir=\"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\1836edd7-da6a-4f48-ac43-a08a9c13b0b1\\\\scratchpad\\\\edge_profile_season\")",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_check2.py)",
+      "PowerShell($null = [System.Management.Automation.Language.Parser]::ParseFile\\(\"start_server.ps1\", [ref]$null, [ref]$errors\\); if \\($errors\\) { $errors | ForEach-Object { $_.ToString\\(\\) } } else { \"No syntax errors\" })",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_named_check.py)",
+      "PowerShell($errors = $null; $tokens = $null; $ast = [System.Management.Automation.Language.Parser]::ParseFile\\(\"start_server.ps1\", [ref]$tokens, [ref]$errors\\); if \\($errors -and $errors.Count -gt 0\\) { $errors | ForEach-Object { $_.ToString\\(\\) } } else { \"No syntax errors\" })",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_named_check2.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_isolated.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_isolated2.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_season_isolated3.py)"
     ]
   }
 }

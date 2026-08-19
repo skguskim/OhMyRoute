@@ -653,7 +653,22 @@ function openingHoursForDate(place, dateValue) {
     .sort((a, b) => String(b.valid_from || "").localeCompare(String(a.valid_from || "")))[0] || null;
 }
 
+// 수영장·눈썰매장처럼 계절 한정으로 운영하는 장소를 시즌 밖 날짜에서 제외한다. 계절 필드가 없는 장소는 항상 통과한다.
+function placeIsOpenInSeason(place, dateValue) {
+  if (!place.seasonStartMonthDay || !place.seasonEndMonthDay) return true;
+  const [, month, day] = String(dateValue).split("-").map(Number);
+  if (!Number.isFinite(month) || !Number.isFinite(day)) return true;
+  const [startMonth, startDay] = place.seasonStartMonthDay.split("-").map(Number);
+  const [endMonth, endDay] = place.seasonEndMonthDay.split("-").map(Number);
+  const monthDay = month * 100 + day;
+  const start = startMonth * 100 + startDay;
+  const end = endMonth * 100 + endDay;
+  // 연말~연초처럼 시즌이 연도 경계를 넘는 경우(예: 12-20 ~ 02-22)를 함께 처리한다.
+  return start <= end ? monthDay >= start && monthDay <= end : monthDay >= start || monthDay <= end;
+}
+
 function placeIsOpenOnDate(place, dateValue) {
+  if (!placeIsOpenInSeason(place, dateValue)) return false;
   const hours = openingHoursForDate(place, dateValue);
   return !hours || hours.is_closed !== true;
 }
@@ -671,8 +686,9 @@ function addClosedNamedPlaceWarnings(dateValue, dayIndex) {
   state.promptAnalysis.namedPlaceIds.forEach((placeId) => {
     const place = state.places.find((candidate) => String(candidate.id) === String(placeId));
     if (!place || placeIsOpenOnDate(place, dateValue)) return;
-    const hours = openingHoursForDate(place, dateValue);
-    const reason = hours?.notes || "휴무일";
+    const reason = !placeIsOpenInSeason(place, dateValue)
+      ? "운영 기간이 아님"
+      : openingHoursForDate(place, dateValue)?.notes || "휴무일";
     const warning = `Day ${dayIndex + 1} · ${formatTripDate(dateValue)} ${place.name}은 ${reason}라 일정에서 제외했습니다.`;
     if (!state.scheduleWarnings.includes(warning)) state.scheduleWarnings.push(warning);
   });

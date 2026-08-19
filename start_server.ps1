@@ -46,6 +46,12 @@ if (-not [string]::IsNullOrWhiteSpace($KmaServiceKey) -and $KmaServiceKey.Contai
 }
 $GeminiApiKey = [Environment]::GetEnvironmentVariable("GEMINI_API_KEY", "Process")
 
+function ConvertFrom-RawRequestBody([string]$Latin1Text) {
+    if ([string]::IsNullOrEmpty($Latin1Text)) { return $Latin1Text }
+    $rawBytes = [System.Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Latin1Text)
+    return [System.Text.Encoding]::UTF8.GetString($rawBytes)
+}
+
 function Get-ContentType([string]$Path) {
     switch ([System.IO.Path]::GetExtension($Path).ToLowerInvariant()) {
         ".html" { return "text/html; charset=utf-8" }
@@ -153,9 +159,14 @@ try {
             $stream = $client.GetStream()
             $stream.ReadTimeout = 5000
             $stream.WriteTimeout = 5000
+            # ISO-8859-1(Latin1)은 바이트 하나를 문자 하나로 1:1 보존하는 인코딩이라
+            # 요청 헤더(ASCII 범위) 파싱은 그대로 동작하면서도, 본문에 담긴 UTF-8 바이트를
+            # 손실 없이 그대로 옮겨올 수 있다. (ASCII로 읽으면 0x80 이상 바이트가 '?'로 치환되어
+            # 한글 등 비ASCII 본문이 깨진다.) 본문을 실제 UTF-8 문자열로 복원하려면
+            # ConvertFrom-RawRequestBody를 거쳐야 한다.
             $reader = New-Object System.IO.StreamReader(
                 $stream,
-                [System.Text.Encoding]::ASCII,
+                [System.Text.Encoding]::GetEncoding("ISO-8859-1"),
                 $false,
                 1024,
                 $true
@@ -198,7 +209,7 @@ try {
                 if ($contentLength -gt 0) {
                     $buffer = New-Object char[] $contentLength
                     $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
-                    $requestBody = -join $buffer[0..($readCount - 1)]
+                    $requestBody = ConvertFrom-RawRequestBody (-join $buffer[0..($readCount - 1)])
                 }
 
                 $payload = $null
@@ -342,7 +353,7 @@ try {
                 if ($contentLength -gt 0) {
                     $buffer = New-Object char[] $contentLength
                     $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
-                    $requestBody = -join $buffer[0..($readCount - 1)]
+                    $requestBody = ConvertFrom-RawRequestBody (-join $buffer[0..($readCount - 1)])
                 }
                 if ([string]::IsNullOrWhiteSpace($requestBody)) {
                     Send-JsonError $stream 400 "Bad Request" "GEMINI_NO_BODY" "요청 본문(contents)이 비어 있습니다." $headOnly

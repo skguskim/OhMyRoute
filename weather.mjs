@@ -141,8 +141,7 @@ export function precipitationTypeLabel(value) {
 
 export function forecastCondition(values) {
   const precipitationType = Number(values.PTY || 0);
-  const precipitationProbability = Number(values.POP || 0);
-  if (precipitationType > 0 || precipitationProbability >= 30) return "rainy";
+  if (precipitationType > 0) return "rainy";
   if ([3, 4].includes(Number(values.SKY))) return "cloudy";
   return "sunny";
 }
@@ -187,9 +186,9 @@ function dateDistance(fromDate, toDate) {
   return Math.round((toUtc(toDate) - toUtc(fromDate)) / (24 * 60 * 60 * 1000));
 }
 
-function midCondition(weatherText, precipitationProbability) {
+function midCondition(weatherText) {
   const text = String(weatherText || "");
-  if (/비|눈|소나기/.test(text) || Number(precipitationProbability || 0) >= 30) return "rainy";
+  if (/비|눈|소나기/.test(text)) return "rainy";
   if (/흐림|구름/.test(text)) return "cloudy";
   return "sunny";
 }
@@ -212,7 +211,7 @@ function midSlot(item, dayOffset, period, label) {
     source: "mid",
     label,
     period: period.toLowerCase() || "day",
-    condition: midCondition(weatherText, precipitationProbability),
+    condition: midCondition(weatherText),
     weatherText: String(weatherText || "날씨 정보 없음"),
     precipitationTypeLabel: midPrecipitationLabel(weatherText),
     precipitationProbability: Number.isFinite(precipitationProbability) ? precipitationProbability : 0,

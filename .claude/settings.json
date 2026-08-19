@@ -65,7 +65,8 @@
       "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --remote-debugging-port=9333 --remote-allow-origins=* --no-first-run --no-default-browser-check '--user-data-dir=C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\chrome-profile-pausecheck' about:blank)",
       "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_pause_check.py\")",
       "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_check_status.py\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(awk -F= '/^GEMINI_API_KEY=/ {print \"GEMINI_API_KEY length:\", length\\($2\\)}' .env)"
     ]
   }
 }

@@ -54,8 +54,9 @@ test("12시 슬롯의 기온·강수확률·강수형태를 정확히 파싱한�
   assert.equal(slot.condition, "rainy");
 });
 
-test("강수형태가 없어도 강수확률 60% 이상이면 비 예보로 처리한다", () => {
-  assert.equal(forecastCondition({ PTY: 0, POP: 60, SKY: 3 }), "rainy");
+test("강수확률이 높아도 강수형태가 없으면 비 예보로 처리하지 않는다", () => {
+  assert.equal(forecastCondition({ PTY: 0, POP: 90, SKY: 3 }), "cloudy");
+  assert.equal(forecastCondition({ PTY: 1, POP: 0, SKY: 1 }), "rainy");
   assert.equal(precipitationTypeLabel(2), "비/눈");
 });
 
@@ -125,6 +126,21 @@ test("중기육상·기온 예보를 오전·오후 날짜 데이터로 변환�
   assert.equal(forecast.days[0].slots[1].precipitationProbability, 70);
   assert.equal(forecast.days[0].minTemperature, 23);
   assert.equal(forecast.days[0].maxTemperature, 31);
+});
+
+test("중기예보에서 강수확률이 높아도 날씨 문구에 비/눈/소나기가 없으면 비로 처리하지 않는다", () => {
+  const forecast = buildMidWeatherForecast([{
+    wf6Am: "구름많음",
+    wf6Pm: "흐림",
+    rnSt6Am: 80,
+    rnSt6Pm: 90,
+  }], [{ taMin6: 23, taMax6: 31 }], {
+    dates: ["2026-08-24"],
+    originKey: "songjeong_station",
+    originName: "광주송정역",
+    base: { tmFc: "202608180600" },
+  });
+  assert.equal(forecast.days[0].condition, "cloudy");
 });
 
 test("단기예보에 없는 날짜를 중기예보로 병합한다", () => {

@@ -1474,7 +1474,7 @@ function placePassesFilters(place, conditions, { relaxPrompt = false } = {}) {
     conditions.selectedWeather === "rainy" || (conditions.promptRainy && !relaxPrompt);
   const requiresFamily =
     conditions.selectedCompanion === "family" || (conditions.promptFamily && !relaxPrompt);
-  if (requiresRain && !place.rainOk) return false;
+  if (requiresRain && !place.indoor) return false;
   if (requiresFamily && !place.familyFriendly) return false;
   if (state.promptAnalysis.indoorOnly && !relaxPrompt && !place.indoor) return false;
   if (placeMatchesExcludedPrompt(place)) return false;
@@ -1577,8 +1577,8 @@ function matchReasons(place, vector, conditions) {
       .map((item) => item.label)
     : [];
   const contextReasons = [];
-  if (conditions.weather === "rainy" && place.rainOk) {
-    contextReasons.push(place.indoor ? "비 예보·실내 우선" : "비 오는 날 이용 가능");
+  if (conditions.weather === "rainy" && place.indoor) {
+    contextReasons.push("비 예보·실내 우선");
   }
   if (conditions.companion === "family" && place.familyFriendly) {
     contextReasons.push("가족 동행 적합");

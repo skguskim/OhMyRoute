@@ -1072,33 +1072,19 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 18px 45px rgba(16, 29, 20, 0.2);
 }
 
-.preview-scene::after {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  content: "";
-  background: linear-gradient(transparent 45%, rgba(19, 36, 25, 0.53));
-}
-
-.door-stage,
-.preview-shade {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
 .door-stage {
+  position: absolute;
   z-index: 1;
+  /* object-fit:cover의 커버 비율 계산이 컨테이너 폭/높이를 반올림하면서 한쪽 가장자리에
+     1px 안팎의 틈이 생기고, 그 틈으로 .preview-scene의 어두운 배경(#0c1210)이 얇은 검은
+     줄처럼 비치는 경우가 있다. 사방으로 살짝 더 크게 그려서(overscan) 그 틈을 없앤다 —
+     .preview-scene에 overflow:hidden이 걸려 있어 밖으로 튀어나오는 부분은 잘려서 안전하다. */
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
   overflow: hidden;
   background: #05070a;
   object-fit: cover;
-}
-
-.preview-shade {
-  z-index: 2;
-  background: linear-gradient(180deg, rgba(14, 24, 17, 0.35), transparent 42%, rgba(11, 22, 14, 0.88));
-  pointer-events: none;
 }
 
 .play-button {
@@ -1618,11 +1604,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .stamp-toast {
-  position: absolute;
-  z-index: 8;
-  top: 18px;
+  position: fixed;
+  z-index: 50;
+  top: 14px;
   right: 18px;
   left: 18px;
+  max-width: calc(var(--app-width) - 36px);
+  margin: 0 auto;
   padding: 10px 13px;
   color: white;
   background: var(--green);
@@ -2547,6 +2535,8 @@ input[type="range"]::-moz-range-thumb {
     right: 0;
     bottom: 0;
     left: 0;
+    max-width: var(--app-width);
+    margin: 0 auto;
     height: 68px;
     padding: 7px 18px;
     display: flex;
@@ -2854,7 +2844,7 @@ body:has(#formView.active) .app-main {
 }
 
 #formView .form-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 20px 16px;
 }
 
@@ -2878,6 +2868,11 @@ body:has(#formView.active) .app-main {
   border-radius: 13px;
   font-size: 14px;
   font-weight: 600;
+}
+
+#formView .field input[type="date"] {
+  padding: 0 10px;
+  font-size: 11px;
 }
 
 .time-field-wrap {
@@ -2910,27 +2905,6 @@ body:has(#formView.active) .app-main {
   opacity: 0.6;
 }
 
-.walk-time-limit-field {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #4e5968;
-}
-
-.walk-time-limit-field[hidden] {
-  display: none;
-}
-
-.walk-time-wrap {
-  justify-content: flex-start;
-  gap: 2px;
-  padding: 4px 10px;
-  background: rgba(47, 148, 97, 0.08);
-  border-radius: 999px;
-}
-
 #formView .schedule-field-status {
   margin: -2px 0 0;
   padding: 9px 12px;
@@ -2947,6 +2921,10 @@ body:has(#formView.active) .app-main {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   background: transparent;
+}
+
+#formView .companion-field .choice-group {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 #formView .choice-group button {
@@ -4398,6 +4376,17 @@ code {
   transform: none;
 }
 
+.brand-emblem-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brand-emblem.kia-active {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 20, .1), 0 8px 20px rgba(15, 23, 20, .14);
+}
+
 .brand-text strong {
   color: var(--ink);
   font-family: inherit;
@@ -4896,12 +4885,13 @@ body:has(#resultView.active) .app-footer {
 
 .pill-button {
   min-height: 34px;
-  padding: 0 11px;
+  padding: 0 9px;
   color: #4e5968;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 8px;
+  white-space: nowrap;
 }
 
 .pill-button:hover,
@@ -4933,10 +4923,11 @@ body:has(#resultView.active) .app-footer {
   margin: 7px 0 10px;
   color: var(--ink);
   font-family: inherit;
-  font-size: 25px;
+  font-size: 21px;
   font-weight: 800;
   line-height: 1.3;
   letter-spacing: -.045em;
+  word-break: keep-all;
 }
 
 .result-hero-copy > p:not(.eyebrow) {
@@ -5310,11 +5301,6 @@ body:has(#resultView.active) .app-footer {
   border: 1px solid rgba(255, 255, 255, .18);
   border-radius: 26px;
   box-shadow: 0 18px 45px rgba(25, 31, 40, .2);
-}
-
-.preview-shade,
-.preview-scene::after {
-  background: linear-gradient(90deg, rgba(25, 31, 40, .94), rgba(25, 31, 40, .62) 48%, rgba(25, 31, 40, .14));
 }
 
 .preview-badge {

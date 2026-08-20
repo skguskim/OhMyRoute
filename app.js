@@ -22,12 +22,6 @@ const AXES = [
 ];
 const DISPLAY_AXIS_KEYS = ["sports", "nature", "culture", "art", "food", "activity"];
 const AXIS_INDEX_BY_KEY = Object.fromEntries(AXES.map((axis, index) => [axis.key, index]));
-const SPORTS_AXIS_INDEX = AXIS_INDEX_BY_KEY.sports;
-const VERY_PREFERRED_THRESHOLD = 75;
-const WALK_TIME_LIMIT_MIN = 40;
-const WALK_TIME_LIMIT_MAX = 90;
-const WALK_TIME_LIMIT_STEP = 10;
-const WALK_TIME_LIMIT_DEFAULT = 60;
 const MEAL_PARKING_DETOUR_LIMIT_MINUTES = 60;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
@@ -111,7 +105,7 @@ const CHAMPIONS_FIELD_GAME = {
   requiresReservation: true,
   score: 2,
   displayScore: 1,
-  reasons: ["스포츠·야구 매우 선호", "야구 직관 선택", "선택한 직관일 마지막 일정"],
+  reasons: ["야구 직관 선택", "선택한 직관일 마지막 일정"],
   recommendedPlayers: [],
   activeRecommendedPlayers: [],
   isBaseballGame: true,
@@ -200,7 +194,6 @@ const state = {
   selectedDay: 0,
   duration: 240,
   transport: "public",
-  walkTimeLimitMinutes: 60,
   preference: [50, 50, 50, 50, 50, 50],
   travelPrompt: "",
   promptAnalysis: {
@@ -228,6 +221,7 @@ const state = {
   previewVideoStatus: "idle",
   previewVideoRequestToken: 0,
   previewVideoPollTimer: null,
+  previewVideoImageUrlsKey: null,
   stampedIds: [],
   stampLocation: null,
   stampLocationMode: "GPS",
@@ -408,7 +402,6 @@ function currentConditions() {
     ? state.weatherForecast.condition
     : "sunny";
   const selectedWeather = weatherMode === "auto" ? automaticWeather : weatherMode;
-  const sportsBaseballHighlyPreferred = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
   const baseballDayIndexes = selectedBaseballDayIndexes();
   return {
     originKey: $("#origin").value,
@@ -424,8 +417,7 @@ function currentConditions() {
     weather: state.promptAnalysis.rainy ? "rainy" : selectedWeather,
     promptRainy: state.promptAnalysis.rainy,
     promptFamily: state.promptAnalysis.family,
-    sportsBaseballHighlyPreferred,
-    baseballAttendance: sportsBaseballHighlyPreferred && state.baseballAttendance && baseballDayIndexes.length > 0,
+    baseballAttendance: state.baseballAttendance && baseballDayIndexes.length > 0,
     baseballDayIndexes,
     transport: state.transport,
     duration: state.duration,
@@ -506,56 +498,6 @@ function bindTimeSegments(hiddenInput, minuteStep = 1) {
         adjustSegment(input, -step, max);
       }
     });
-  });
-}
-
-function setWalkTimeLimitFieldValue(minutes) {
-  const hiddenInput = $("#walkTimeLimit");
-  const segmentInput = $('#walkTimeLimitField [data-role="walkLimit"]');
-  const clamped = clamp(Number(minutes) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
-  if (hiddenInput) hiddenInput.value = String(clamped);
-  if (segmentInput) segmentInput.value = String(clamped).padStart(2, "0");
-}
-
-function bindWalkTimeLimitStepper() {
-  const hiddenInput = $("#walkTimeLimit");
-  const segmentInput = $('#walkTimeLimitField [data-role="walkLimit"]');
-  if (!hiddenInput || !segmentInput) return;
-
-  const commit = () => {
-    const clamped = clamp(Number(segmentInput.value) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
-    segmentInput.value = String(clamped).padStart(2, "0");
-    if (Number(hiddenInput.value) !== clamped) {
-      hiddenInput.value = String(clamped);
-      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  };
-
-  const adjust = (delta) => {
-    const current = Number(segmentInput.value) || WALK_TIME_LIMIT_DEFAULT;
-    segmentInput.value = String(clamp(current + delta, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX));
-    commit();
-  };
-
-  segmentInput.addEventListener("input", () => {
-    segmentInput.value = segmentInput.value.replace(/\D/g, "").slice(0, 2);
-  });
-  segmentInput.addEventListener("blur", commit);
-  segmentInput.addEventListener("wheel", (event) => {
-    event.preventDefault();
-    adjust(event.deltaY < 0 ? WALK_TIME_LIMIT_STEP : -WALK_TIME_LIMIT_STEP);
-  }, { passive: false });
-  segmentInput.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowUp") {
-      event.preventDefault();
-      adjust(WALK_TIME_LIMIT_STEP);
-    } else if (event.key === "ArrowDown") {
-      event.preventDefault();
-      adjust(-WALK_TIME_LIMIT_STEP);
-    }
-  });
-  hiddenInput.addEventListener("change", () => {
-    state.walkTimeLimitMinutes = clamp(Number(hiddenInput.value) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
   });
 }
 
@@ -787,27 +729,22 @@ function restoreBaseballTravelEnd() {
   state.baseballAdjustedFinalEnd = false;
 }
 
+function updateBrandEmblem() {
+  const emblem = $("#brandEmblem");
+  const text = $("#brandEmblemText");
+  const icon = $("#brandEmblemIcon");
+  if (!emblem || !text || !icon) return;
+  const isKiaMode = state.baseballAttendance && state.baseballDayIndexes.length > 0;
+  emblem.classList.toggle("kia-active", isKiaMode);
+  text.hidden = isKiaMode;
+  icon.hidden = !isKiaMode;
+}
+
 function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
-  const panel = $("#baseballAttendancePanel");
   const checkbox = $("#baseballAttendance");
   const status = $("#baseballScheduleStatus");
   const dayField = $("#baseballDayField");
-  if (!panel || !checkbox || !status) return;
-
-  const eligible = state.preference[SPORTS_AXIS_INDEX] > VERY_PREFERRED_THRESHOLD;
-  panel.hidden = !eligible;
-  if (!eligible) {
-    if (state.baseballAttendance && state.baseballPreviousEnd) {
-      restoreBaseballTravelEnd();
-    }
-    checkbox.checked = false;
-    state.baseballAttendance = false;
-    clearBaseballDaySelection();
-    state.baseballPreviousEnd = null;
-    state.baseballAdjustedFinalEnd = false;
-    syncTravelWindow();
-    return;
-  }
+  if (!checkbox || !status) return;
 
   if (!checkbox.checked) {
     state.baseballAttendance = false;
@@ -816,6 +753,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     status.hidden = false;
     status.classList.remove("warning");
     status.textContent = "직관 포함을 켜면 여행 기간에서 경기 날짜를 여러 개 고를 수 있습니다.";
+    updateBrandEmblem();
     return;
   }
 
@@ -846,6 +784,7 @@ function updateBaseballAttendanceControl({ adjustTravelWindow = false } = {}) {
     status.textContent = "";
     status.hidden = true;
   }
+  updateBrandEmblem();
 }
 
 function setBaseballAttendance(active) {
@@ -1041,7 +980,7 @@ async function requestKmaForecast(source, grid, base, signal) {
     requestUrl = `${KMA_FORECAST_URL}?${params}`;
   }
   const response = await fetch(requestUrl, { signal });
-  return parseKmaResponse(response, "기상청 단기예보 데이터가 없습니다.");
+  return parseKmaResponse(response, "기상청 예보 데이터가 없습니다.");
 }
 
 async function requestKmaMidEndpoint(source, { proxyUrl, directUrl, regionId, base, signal }) {
@@ -1063,7 +1002,7 @@ async function requestKmaMidEndpoint(source, { proxyUrl, directUrl, regionId, ba
     requestUrl = `${directUrl}?${params}`;
   }
   const response = await fetch(requestUrl, { signal });
-  return parseKmaResponse(response, "기상청 중기예보 데이터가 없습니다.");
+  return parseKmaResponse(response, "기상청 예보 데이터가 없습니다.");
 }
 
 async function requestKmaMidForecast(source, base, signal) {
@@ -1168,7 +1107,7 @@ function renderWeatherBriefing() {
     const day = forecast.days.find((item) => item.date === selectedDate);
     const slots = day?.slots || [];
     if (!day || !slots.length) {
-      element.innerHTML = `<strong>선택한 날짜의 기상청 예보 없음</strong><small>현재 제공되는 단기·중기예보 범위를 벗어나 날씨는 일정 추천에서 제외했습니다.</small>`;
+      element.innerHTML = `<strong>선택한 날짜의 기상청 예보 없음</strong><small>현재 제공되는 예보 범위를 벗어나 날씨는 일정 추천에서 제외했습니다.</small>`;
       return;
     }
     const isMidForecast = day.source === "mid";
@@ -1178,12 +1117,12 @@ function renderWeatherBriefing() {
       ? `<span class="weather-slot">최저 ${Math.round(day.minTemperature)}℃ · 최고 ${Math.round(day.maxTemperature)}℃</span>`
       : "";
     element.innerHTML = `
-      <strong>${isMidForecast ? "기상청 중기예보 · 광주·전남 권역" : `기상청 단기예보 · ${escapeHtml(forecast.originName)} 출발 기준`}</strong>
+      <strong>${isMidForecast ? "기상청 날씨예보 · 광주·전남 권역" : `기상청 날씨예보 · ${escapeHtml(forecast.originName)} 출발 기준`}</strong>
       <div class="weather-slot-list">
         ${slots.map((slot) => `<span class="weather-slot">${escapeHtml(weatherSlotSummary(slot))}</span>`).join("")}
         ${temperatureRange}
       </div>
-      <small>${isMidForecast ? "광주·전남 권역 기준 · 기상청 중기예보 반영" : "출발지 기준 · 기상청 5km 예보 반영"}</small>
+      <small>${isMidForecast ? "광주·전남 권역 기준 · 기상청 예보 반영" : "출발지 기준 · 기상청 5km 예보 반영"}</small>
     `;
     return;
   }
@@ -1755,10 +1694,6 @@ function hasRequiredParking(place) {
   return place.parkingAvailable === true;
 }
 
-function exceedsWalkTimeLimit(travelMinutes) {
-  return state.transport === "walk" && travelMinutes > state.walkTimeLimitMinutes;
-}
-
 function scheduleLeg(current, clockMinutes, place, targetMinutes = null, { snap = true } = {}) {
   const distance = haversineKm(current, place);
   const travelMinutes = estimateTravelMinutes(distance);
@@ -1789,7 +1724,6 @@ function chooseBestCandidate(results, current, clockMinutes, usedIds, dayEndMinu
     .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
     .filter(({ place, leg }) =>
       !exceedsClosingTime(place, leg.endMinutes)
-      && !exceedsWalkTimeLimit(leg.travelMinutes)
       && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes,
     )
     .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0] || null;
@@ -1806,8 +1740,7 @@ function buildMealCandidate(pool, current, clockMinutes, slot, dayEndMinutes, re
     .filter(({ place, leg }) =>
       leg.startMinutes <= slot.windowEnd
       && leg.endMinutes + returnTravelMinutes(place, returnDestination) <= dayEndMinutes
-      && !exceedsClosingTime(place, leg.endMinutes)
-      && !exceedsWalkTimeLimit(leg.travelMinutes),
+      && !exceedsClosingTime(place, leg.endMinutes),
     )
     .sort((a, b) => b.value - a.value)[0] || null;
 }
@@ -1884,8 +1817,7 @@ function chooseFillerBeforeMeal(results, current, clockMinutes, usedIds, slot, d
     .filter(({ place, leg, meal }) =>
       meal
       && leg.endMinutes <= slot.windowEnd
-      && !exceedsClosingTime(place, leg.endMinutes)
-      && !exceedsWalkTimeLimit(leg.travelMinutes),
+      && !exceedsClosingTime(place, leg.endMinutes),
     )
     .sort((a, b) => b.value - a.value)[0] || null;
 }
@@ -2279,8 +2211,7 @@ function buildBaseballRouteDay(results, conditions, usedIds, dayIndex, window, i
       .map((place) => ({ place, leg: scheduleLeg(current, clockMinutes, place) }))
       .filter(({ place, leg }) =>
         leg.endMinutes + returnTravelMinutes(place, CHAMPIONS_FIELD_GAME) <= pregameEndMinutes
-        && !exceedsClosingTime(place, leg.endMinutes)
-        && !exceedsWalkTimeLimit(leg.travelMinutes),
+        && !exceedsClosingTime(place, leg.endMinutes),
       )
       .sort((a, b) => routeCandidateValue(b.place, current) - routeCandidateValue(a.place, current))[0];
     if (!next) break;
@@ -2510,6 +2441,9 @@ function renderPreview() {
   button.hidden = state.previewVideoStatus !== "ready";
   button.textContent = state.previewPlaying ? "Ⅱ" : "▶";
   button.setAttribute("aria-label", state.previewPlaying ? "프리뷰 일시정지" : "프리뷰 재생");
+  // 로딩 중/실패 시에는 안내 문구를 보여주고, 영상을 볼 수 있는 상태(ready)에서는
+  // 문구가 화면을 가리지 않도록 숨긴다.
+  $("#previewCopy").hidden = state.previewVideoStatus === "ready";
 }
 
 function stopPreview() {
@@ -2534,6 +2468,21 @@ function togglePreview() {
 }
 
 async function refreshTripPreviewVideo() {
+  const video = $("#tripPreviewVideo");
+  const places = previewSlidePlaces();
+  const imageUrls = places.map((place) => place.imageUrl);
+  const imageUrlsKey = JSON.stringify(imageUrls);
+
+  // 일정 재계산 등으로 state.route가 새 배열/객체로 바뀌어도 실제 사진 구성(URL·순서)이
+  // 이미 완성된 영상과 같다면 재요청하지 않고 그대로 재사용한다.
+  if (
+    state.previewVideoStatus === "ready" &&
+    state.previewVideoImageUrlsKey === imageUrlsKey &&
+    (video.currentSrc || video.src)
+  ) {
+    return;
+  }
+
   const token = ++state.previewVideoRequestToken;
   if (state.previewVideoPollTimer) {
     window.clearTimeout(state.previewVideoPollTimer);
@@ -2541,7 +2490,6 @@ async function refreshTripPreviewVideo() {
   }
 
   const scene = $("#previewScene");
-  const video = $("#tripPreviewVideo");
   const previousUrl = video.currentSrc || video.src;
   video.pause();
   video.removeAttribute("src");
@@ -2552,12 +2500,11 @@ async function refreshTripPreviewVideo() {
   state.previewPlaying = false;
   $("#previewProgress").style.width = "0%";
 
-  const places = previewSlidePlaces();
-  const imageUrls = places.map((place) => place.imageUrl);
   renderPreviewChapters(places);
   const proxyUrl = routeVideoProxyUrl();
   if (!imageUrls.length || !proxyUrl) {
     state.previewVideoStatus = "idle";
+    state.previewVideoImageUrlsKey = null;
     scene.hidden = true;
     return;
   }
@@ -2591,18 +2538,11 @@ async function refreshTripPreviewVideo() {
       if (pollResponse.status === 200) {
         const blob = await pollResponse.blob();
         if (token !== state.previewVideoRequestToken) return;
-        video.loop = true;
+        video.loop = false;
         video.src = URL.createObjectURL(blob);
         video.load();
         state.previewVideoStatus = "ready";
-        setPreviewCopy("AI가 구성한 여행 미리보기", "추천 장소를 영상으로 미리 만나보세요.");
-        video.addEventListener("canplay", () => {
-          if (token !== state.previewVideoRequestToken) return;
-          video.play().then(() => {
-            state.previewPlaying = true;
-            renderPreview();
-          }).catch(() => {});
-        }, { once: true });
+        state.previewVideoImageUrlsKey = imageUrlsKey;
         renderPreview();
         return;
       }
@@ -2617,6 +2557,7 @@ async function refreshTripPreviewVideo() {
   } catch (error) {
     if (token !== state.previewVideoRequestToken) return;
     state.previewVideoStatus = "error";
+    state.previewVideoImageUrlsKey = null;
     setPreviewCopy("여행 미리보기 영상을 만들지 못했습니다", "잠시 후 다시 시도해주세요.");
     renderPreview();
   }
@@ -3299,7 +3240,6 @@ function renderItinerary() {
   const day = state.routeDays[state.selectedDay] || [];
   const schedule = buildRouteSchedule(day, state.selectedDay);
   const isFinalDay = state.selectedDay === state.routeDays.length - 1;
-  const replanAnchorIndex = state.replannedDays.get(state.selectedDay);
   renderDayTabs();
   $("#dayTheme").textContent = dayTheme(day);
   $("#replanStopSelect").innerHTML = schedule
@@ -3370,8 +3310,7 @@ function renderItinerary() {
         <i class="timeline-node"></i>
         <div class="stop-card" tabindex="0">
           <div class="stop-meta">
-            <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)}</span>
-            ${replanAnchorIndex != null && index >= replanAnchorIndex ? `<span class="stop-time departure-time">→ 출발 약 ${formatClockMinutes(endMinutes)}</span>` : ""}
+            <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)} <span class="departure-time">- ${formatClockMinutes(endMinutes)}</span></span>
             ${place.isBaseballGame ? '<span class="meal-time-chip">⚾ 야구 직관</span>' : ""}
             ${place.mealSlot ? `<span class="meal-time-chip">🍚 ${escapeHtml(place.mealLabel)} 추천</span>` : ""}
             <span class="type-chip">${escapeHtml(place.category)}</span>
@@ -3604,7 +3543,6 @@ function renderResult() {
   renderItinerary();
   renderAlternatives();
   renderTips();
-  refreshTripPreviewVideo();
   renderStamps();
   renderReviewReward();
   updateSaveButton();
@@ -3672,6 +3610,9 @@ async function generateRoute() {
     state.results = rankPlacesLocal();
     createRoute(state.results);
     renderResult();
+    // 미리보기 영상은 사용자가 취향을 선택해 처음 경로를 만들 때만 생성한다 — 이후 일정 재계산이나
+    // 저장된 루트 불러오기로 renderResult()가 다시 호출돼도 영상 생성에는 영향을 주지 않는다.
+    refreshTripPreviewVideo();
     await wait(Math.max(1050 - (performance.now() - startedAt), 250));
     showView("result");
   } finally {
@@ -3770,7 +3711,6 @@ function saveCurrentRoute() {
       endTime: $("#endTime").value,
       duration: state.duration,
       transport: state.transport,
-      walkTimeLimitMinutes: state.walkTimeLimitMinutes,
       preference: [...state.preference],
       preferenceOrder: AXES.map((axis) => axis.key),
       preferenceByKey: preferenceByKey(),
@@ -3848,8 +3788,6 @@ function restoreSavedRoute(id) {
   setTimeFieldValue($("#endTime"), saved.endTime || legacyEnd.endTime);
   syncTravelWindow();
   state.transport = saved.transport;
-  state.walkTimeLimitMinutes = clamp(Number(saved.walkTimeLimitMinutes) || WALK_TIME_LIMIT_DEFAULT, WALK_TIME_LIMIT_MIN, WALK_TIME_LIMIT_MAX);
-  setWalkTimeLimitFieldValue(state.walkTimeLimitMinutes);
   state.preference = normalizeSavedPreference(saved);
   state.baseballAttendance = Boolean(saved.baseballAttendance);
   const savedBaseballDayIndexes = Array.isArray(saved.baseballDayIndexes)
@@ -3877,7 +3815,6 @@ function restoreSavedRoute(id) {
   $$('.choice-group[data-group="transport"] button').forEach((button) => {
     button.classList.toggle("active", button.dataset.value === state.transport);
   });
-  $("#walkTimeLimitField").hidden = state.transport !== "walk";
   $$('.choice-group[data-group="companion"] button').forEach((button) => {
     button.classList.toggle("active", button.dataset.value === $("#companion").value);
   });
@@ -3987,10 +3924,7 @@ function bindEvents() {
       if (!button) return;
       $$("button", group).forEach((item) => item.classList.remove("active"));
       button.classList.add("active");
-      if (group.dataset.group === "transport") {
-        state.transport = button.dataset.value;
-        $("#walkTimeLimitField").hidden = state.transport !== "walk";
-      }
+      if (group.dataset.group === "transport") state.transport = button.dataset.value;
       if (group.dataset.group === "companion") $("#companion").value = button.dataset.value;
     });
   });
@@ -3999,7 +3933,6 @@ function bindEvents() {
   bindTimeSegments($("#startTime"), 1);
   bindTimeSegments($("#endTime"), 1);
   bindTimeSegments($("#replanTimeInput"), 1);
-  bindWalkTimeLimitStepper();
   [$("#travelDate"), $("#startTime"), $("#endDate"), $("#endTime")].forEach((input) => {
     input.addEventListener("change", () => {
       if (input === $("#travelDate") && (!$("#endDate").value || $("#endDate").value < input.value)) {

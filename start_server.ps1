@@ -162,14 +162,17 @@ try {
         $client = $listener.AcceptTcpClient()
         $client.NoDelay = $true
         $client.ReceiveTimeout = 5000
-        $client.SendTimeout = 5000
+        # 응답 쓰기(SendTimeout)는 요청 읽기보다 훨씬 여유를 둔다. 완성된 영상(mp4, 최대 수십MB)을
+        # 그대로 한 번에 Write하는데, loopback(127.0.0.1)에서는 사실상 즉시 끝나 5초로도 충분하지만
+        # -Lan으로 실제 Wi-Fi를 통해 다른 기기에 내려줄 때는 5초 안에 못 끝내고 타임아웃 나기 쉽다.
+        $client.SendTimeout = 120000
         $stream = $null
         $reader = $null
 
         try {
             $stream = $client.GetStream()
             $stream.ReadTimeout = 5000
-            $stream.WriteTimeout = 5000
+            $stream.WriteTimeout = 120000
             # ISO-8859-1(Latin1)은 바이트 하나를 문자 하나로 1:1 보존하는 인코딩이라
             # 요청 헤더(ASCII 범위) 파싱은 그대로 동작하면서도, 본문에 담긴 UTF-8 바이트를
             # 손실 없이 그대로 옮겨올 수 있다. (ASCII로 읽으면 0x80 이상 바이트가 '?'로 치환되어
@@ -347,7 +350,7 @@ try {
                     Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase $contentType $responseBody $headOnly
                 }
                 catch {
-                    Send-JsonError $stream 502 "Bad Gateway" "KMA_MID_UPSTREAM_FAILED" "기상청 중기예보 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                    Send-JsonError $stream 502 "Bad Gateway" "KMA_MID_UPSTREAM_FAILED" "기상청 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
                 }
                 finally {
                     $httpClient.Dispose()

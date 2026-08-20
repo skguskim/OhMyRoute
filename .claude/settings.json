@@ -91,7 +91,31 @@
       "PowerShell($errors = $null; [System.Management.Automation.Language.Parser]::ParseFile\\('start_server.ps1', [ref]$null, [ref]$errors\\) | Out-Null; if \\($errors.Count -eq 0\\) { \"OK: no syntax errors\" } else { $errors })",
       "Bash(node -e \"console.log\\(require.resolve\\('playwright'\\)\\)\")",
       "PowerShell(node -v)",
-      "PowerShell(node -e \"console.log\\(require.resolve\\('playwright'\\)\\)\")"
+      "PowerShell(node -e \"console.log\\(require.resolve\\('playwright'\\)\\)\")",
+      "Bash(xxd \"/c/Users/gkfl8/Desktop/2026/여름방학/AI+X 해커톤/github/OhMyRoute/start_server.ps1\")",
+      "Bash(node -e \"new Function\\(require\\('fs'\\).readFileSync\\('app.js','utf8'\\)\\)\")",
+      "PowerShell(Get-Command node -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Command node.exe -ErrorAction SilentlyContinue)",
+      "Bash(command -v chromium-cli)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name = 'powershell.exe'\" | Where-Object { $_.CommandLine -match 'start_server\\\\.ps1' } | Select-Object ProcessId, CommandLine)",
+      "Bash(mkdir -p \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/4f5139d6-075f-47fa-ab4c-7e3a4c79d312/scratchpad/verify\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --no-sandbox --virtual-time-budget=4000 --dump-dom \"http://localhost:4173/\")",
+      "Bash(echo \"exit: $?\")",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\4f5139d6-075f-47fa-ab4c-7e3a4c79d312\\\\scratchpad\\\\verify\\\\cdp_check.ps1\" 2>&1)",
+      "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --remote-debugging-port=9333 --remote-allow-origins=* --no-first-run --no-default-browser-check '--user-data-dir=C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\7f2b2385-4d3c-4f67-908e-8b9d34504ae2\\\\scratchpad\\\\chrome-profile-blackbar' about:blank)",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_blackbar_check.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_cache_check.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_replan_cache_check.py\")",
+      "Bash(grep -o 'departure-time\">- \\\\${formatClockMinutes\\(endMinutes\\)}')",
+      "Bash(\"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" --headless=new --disable-gpu --remote-allow-origins=* --remote-debugging-port=9333 --user-data-dir=\"C:\\\\Users\\\\gkfl8\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute\\\\1836edd7-da6a-4f48-ac43-a08a9c13b0b1\\\\scratchpad\\\\edge_profile_timerange\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_replan_cache_check2.py\")",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_time_range_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_replan_time_range_check.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python cdp_baseball_time_range_check.py)",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_replan_cache_check3.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_restore_cache_check.py\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/check_balance.py\" \"/c/Users/gkfl8/Desktop/2026/여름방학/AI+X 해커톤/github/OhMyRoute/index.html\")",
+      "Bash(python \"/c/Users/gkfl8/AppData/Local/Temp/claude/c--Users-gkfl8-Desktop-2026------AI-X-----github-OhMyRoute/7f2b2385-4d3c-4f67-908e-8b9d34504ae2/scratchpad/cdp_replan_gate_check.py\")"
     ]
   }
 }

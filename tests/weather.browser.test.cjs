@@ -201,19 +201,19 @@ test("브라우저에서 실제 날씨 흐름·실내 우선·오류 안내를 �
     await setTripRange(mixedPage, mixedShortDate, mixedMidDate);
     await mixedPage.locator("#recommendButton").click();
     await mixedPage.locator("#resultView.active").waitFor({ timeout: 10000 });
-    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /단기예보/);
+    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /날씨예보/);
     assert.equal(
       (await mixedPage.locator("#weatherBriefing small").textContent()).trim(),
       "출발지 기준 · 기상청 5km 예보 반영",
     );
     await mixedPage.locator('#dayTabs button[data-day="1"]').click();
-    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /중기예보.*광주·전남/);
+    assert.match(await mixedPage.locator("#weatherBriefing strong").textContent(), /날씨예보.*광주·전남/);
     const mixedBriefing = await mixedPage.locator("#weatherBriefing").textContent();
     assert.match(mixedBriefing, /오전.*오후/);
     assert.match(mixedBriefing, /최저 23℃.*최고 31℃/);
     assert.equal(
       (await mixedPage.locator("#weatherBriefing small").textContent()).trim(),
-      "광주·전남 권역 기준 · 기상청 중기예보 반영",
+      "광주·전남 권역 기준 · 기상청 예보 반영",
     );
     assert.match(await mixedPage.locator("#itineraryTimeline").textContent(), /비 예보·실내 우선/);
     await mixedPage.close();

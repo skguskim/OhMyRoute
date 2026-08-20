@@ -31,7 +31,7 @@ try {
   });
   await page.click("#recommendButton");
   await page.waitForSelector("#resultView.active", { timeout: 40000 });
-  await page.waitForFunction(() => document.querySelector("#weatherBriefing strong")?.textContent.includes("중기예보"), null, {
+  await page.waitForFunction(() => document.querySelector("#weatherBriefing strong")?.textContent.includes("날씨예보"), null, {
     timeout: 30000,
   });
 
@@ -41,15 +41,15 @@ try {
     source: document.querySelector("#weatherBriefing small")?.textContent.trim() || "",
     routeReasons: [...document.querySelectorAll(".reason-chip")].map((item) => item.textContent.trim()),
   }));
-  if (!result.title.includes("기상청 중기예보")) throw new Error(`중기예보 제목이 없습니다: ${result.title}`);
+  if (!result.title.includes("기상청 날씨예보")) throw new Error(`날씨예보 제목이 없습니다: ${result.title}`);
   if (!result.summary.includes("오전") || !result.summary.includes("오후")) {
     throw new Error(`중기예보 오전·오후 데이터가 없습니다: ${result.summary}`);
   }
   if (!result.summary.includes("최저") || !result.summary.includes("최고")) {
     throw new Error(`중기기온 데이터가 없습니다: ${result.summary}`);
   }
-  if (result.source !== "광주·전남 권역 기준 · 기상청 중기예보 반영") {
-    throw new Error(`중기예보 출처 문구가 다릅니다: ${result.source}`);
+  if (result.source !== "광주·전남 권역 기준 · 기상청 예보 반영") {
+    throw new Error(`날씨예보 출처 문구가 다릅니다: ${result.source}`);
   }
   if (browserErrors.length) throw new Error(`브라우저 오류: ${browserErrors.join(" | ")}`);
 

@@ -6,25 +6,68 @@
     "sourcePlaceId": "champions-field-gwangju-one-shot",
     "name": "원샷치킨",
     "brandName": "원샷치킨",
-    "aliases": ["광주원샷"],
+    "aliases": [
+      "광주원샷"
+    ],
     "branchName": "1루·3루 클럽라운지 / 3층 3루",
     "region": "광주광역시 북구",
     "category": "음식·로컬",
     "databaseType": "stadium_food",
     "foodType": "치킨",
     "description": "치킨과 음료를 한 손에 들고 관람하기 좋은 형태로 판매하는 챔피언스필드 내부 먹거리 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#치킨", "#한손메뉴", "#KIA", "#직관"],
-    "vector": [0, 0, 0, 1, 0.15, 1, 0.1, 0.55],
+    "hashtags": [
+      "#야구장먹거리",
+      "#치킨",
+      "#한손메뉴",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      1,
+      0.15,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["1루 클럽라운지", "3루 클럽라운지", "3층 3루"],
+    "stallLocations": [
+      "1루 클럽라운지",
+      "3루 클럽라운지",
+      "3층 3루"
+    ],
     "menuItems": [
-      { "name": "커리치킨 원샷", "category": "치킨", "price": 12500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "어니언탱지", "category": "치킨", "price": 13500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "핫로제눈꽃", "category": "치킨", "price": 13500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" }
+      {
+        "name": "커리치킨 원샷",
+        "category": "치킨",
+        "price": 12500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "어니언탱지",
+        "category": "치킨",
+        "price": 13500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "핫로제눈꽃",
+        "category": "치킨",
+        "price": 13500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      }
     ],
     "menuSourceUrl": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-%EA%B4%91%EC%A3%BC%EC%9B%90%EC%83%B7/",
     "menuObservedAt": "2026-05-06",
@@ -40,7 +83,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -63,24 +108,56 @@
     "sourcePlaceId": "champions-field-xoxo-hotdog",
     "name": "XOXO핫도그",
     "brandName": "XOXO핫도그",
-    "aliases": ["XOXO 핫도그앤커피"],
+    "aliases": [
+      "XOXO 핫도그앤커피"
+    ],
     "branchName": "1루 클럽라운지 / 3층 1루",
     "region": "광주광역시 북구",
     "category": "음식·로컬",
     "databaseType": "stadium_food",
     "foodType": "핫도그·커피",
     "description": "이동 중 간편하게 먹기 좋은 핫도그와 음료를 판매하는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#핫도그", "#커피", "#간편식", "#직관"],
-    "vector": [0, 0, 0, 0.95, 0.2, 1, 0.05, 0.55],
+    "hashtags": [
+      "#야구장먹거리",
+      "#핫도그",
+      "#커피",
+      "#간편식",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      0.95,
+      0.2,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["1루 클럽라운지", "3층 1루"],
+    "stallLocations": [
+      "1루 클럽라운지",
+      "3층 1루"
+    ],
     "menuItems": [
-      { "name": "핫도그", "category": "핫도그", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null },
-      { "name": "커피·음료", "category": "음료", "price": null, "signature": false, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "핫도그",
+        "category": "핫도그",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      },
+      {
+        "name": "커피·음료",
+        "category": "음료",
+        "price": null,
+        "signature": false,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -93,7 +170,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -122,19 +201,68 @@
     "databaseType": "stadium_food",
     "foodType": "분식",
     "description": "떡볶이와 어묵 등 따뜻한 분식을 빠르게 포장해 관람석으로 가져가기 좋은 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#떡볶이", "#어묵", "#분식", "#직관"],
-    "vector": [0, 0, 0, 1, 0.1, 1, 0.15, 0.55],
+    "hashtags": [
+      "#야구장먹거리",
+      "#떡볶이",
+      "#어묵",
+      "#분식",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      1,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 1루", "3층 3루", "5층 3루"],
+    "stallLocations": [
+      "3층 1루",
+      "3층 3루",
+      "5층 3루"
+    ],
     "menuItems": [
-      { "name": "떡볶이", "category": "분식", "price": 6500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "찰순대", "category": "분식", "price": 6500, "currency": "KRW", "signature": false, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "닭강정", "category": "분식", "price": 9000, "currency": "KRW", "signature": false, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "부산어묵 2개", "category": "분식", "price": 4000, "currency": "KRW", "signature": false, "availabilityStatus": "1_to_4_innings_only_observed_2026_05_06", "priceVerifiedAt": "2026-05-06" }
+      {
+        "name": "떡볶이",
+        "category": "분식",
+        "price": 6500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "찰순대",
+        "category": "분식",
+        "price": 6500,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "닭강정",
+        "category": "분식",
+        "price": 9000,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "부산어묵 2개",
+        "category": "분식",
+        "price": 4000,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "1_to_4_innings_only_observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      }
     ],
     "menuSourceUrl": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-%EA%B0%90%ED%83%84%EB%96%A1%EB%B3%B6%EC%9D%B4/",
     "menuObservedAt": "2026-05-06",
@@ -150,7 +278,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -179,16 +309,39 @@
     "databaseType": "stadium_food",
     "foodType": "한식",
     "description": "한식류를 든든하게 먹고 경기를 관람하려는 이용자에게 맞는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#한식", "#든든한식사", "#KIA", "#직관"],
-    "vector": [0, 0.05, 0, 1, 0.05, 1, 0.15, 0.45],
+    "hashtags": [
+      "#야구장먹거리",
+      "#한식",
+      "#든든한식사",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0.05,
+      0,
+      1,
+      0.05,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["1루 클럽라운지", "3루 클럽라운지"],
+    "stallLocations": [
+      "1루 클럽라운지",
+      "3루 클럽라운지"
+    ],
     "menuItems": [
-      { "name": "한식 메뉴", "category": "한식", "price": null, "signature": false, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "한식 메뉴",
+        "category": "한식",
+        "price": null,
+        "signature": false,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -201,7 +354,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -230,16 +385,39 @@
     "databaseType": "stadium_food",
     "foodType": "버거",
     "description": "경기 전후 간편하게 식사할 수 있는 버거류를 판매하는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#버거", "#간편식", "#KIA", "#직관"],
-    "vector": [0, 0, 0, 0.95, 0.15, 1, 0.05, 0.5],
+    "hashtags": [
+      "#야구장먹거리",
+      "#버거",
+      "#간편식",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      0.95,
+      0.15,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3루 클럽라운지", "3층 1루"],
+    "stallLocations": [
+      "3루 클럽라운지",
+      "3층 1루"
+    ],
     "menuItems": [
-      { "name": "버거", "category": "버거", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "버거",
+        "category": "버거",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -252,7 +430,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -281,16 +461,39 @@
     "databaseType": "stadium_food",
     "foodType": "타코",
     "description": "손에 들고 먹기 쉬운 타코류를 판매하는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#타코", "#간편식", "#KIA", "#직관"],
-    "vector": [0, 0, 0.05, 0.95, 0.2, 1, 0.05, 0.55],
+    "hashtags": [
+      "#야구장먹거리",
+      "#타코",
+      "#간편식",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0.05,
+      0.95,
+      0.2,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["1루 클럽라운지", "3층 3루"],
+    "stallLocations": [
+      "1루 클럽라운지",
+      "3층 3루"
+    ],
     "menuItems": [
-      { "name": "타코", "category": "타코", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "타코",
+        "category": "타코",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -303,7 +506,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -332,18 +537,58 @@
     "databaseType": "stadium_food",
     "foodType": "만두·분식",
     "description": "만두 중심의 분식류를 즐길 수 있는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#만두", "#분식", "#KIA", "#직관"],
-    "vector": [0, 0.05, 0, 1, 0.1, 1, 0.1, 0.5],
+    "hashtags": [
+      "#야구장먹거리",
+      "#만두",
+      "#분식",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0.05,
+      0,
+      1,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3루 클럽라운지", "3층 3루"],
+    "stallLocations": [
+      "3루 클럽라운지",
+      "3층 3루"
+    ],
     "menuItems": [
-      { "name": "군만두", "category": "만두", "price": 8500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "쫄면", "category": "분식", "price": 8500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "A세트", "category": "세트", "price": 25500, "currency": "KRW", "signature": false, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" }
+      {
+        "name": "군만두",
+        "category": "만두",
+        "price": 8500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "쫄면",
+        "category": "분식",
+        "price": 8500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "A세트",
+        "category": "세트",
+        "price": 25500,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      }
     ],
     "menuSourceUrl": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-%EB%B3%B4%EC%98%81%EB%A7%8C%EB%91%90/",
     "menuObservedAt": "2026-05-06",
@@ -359,7 +604,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -388,17 +635,46 @@
     "databaseType": "stadium_food",
     "foodType": "새우요리",
     "description": "크림새우와 칠리새우로 소개된 챔피언스필드 내부 먹거리 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#크림새우", "#칠리새우", "#KIA", "#직관"],
-    "vector": [0, 0, 0.1, 1, 0.15, 1, 0.05, 0.6],
+    "hashtags": [
+      "#야구장먹거리",
+      "#크림새우",
+      "#칠리새우",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0.1,
+      1,
+      0.15,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 1루"],
+    "stallLocations": [
+      "3층 1루"
+    ],
     "menuItems": [
-      { "name": "크림새우", "category": "새우요리", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null },
-      { "name": "칠리새우", "category": "새우요리", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "크림새우",
+        "category": "새우요리",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      },
+      {
+        "name": "칠리새우",
+        "category": "새우요리",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -411,7 +687,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -440,16 +718,39 @@
     "databaseType": "stadium_food",
     "foodType": "디저트",
     "description": "경기 중 간식으로 먹기 좋은 츄러스를 판매하는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#츄러스", "#디저트", "#간식", "#직관"],
-    "vector": [0, 0, 0.1, 0.9, 0.1, 1, 0.1, 0.65],
+    "hashtags": [
+      "#야구장먹거리",
+      "#츄러스",
+      "#디저트",
+      "#간식",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0.1,
+      0.9,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 1루", "3층 3루"],
+    "stallLocations": [
+      "3층 1루",
+      "3층 3루"
+    ],
     "menuItems": [
-      { "name": "츄러스", "category": "디저트", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "츄러스",
+        "category": "디저트",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -462,7 +763,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -491,18 +794,57 @@
     "databaseType": "stadium_food",
     "foodType": "요거트 아이스크림",
     "description": "요거트 아이스크림과 토핑 디저트를 즐길 수 있는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#요거트아이스크림", "#디저트", "#간식", "#직관"],
-    "vector": [0, 0, 0.1, 0.95, 0.1, 1, 0.15, 0.65],
+    "hashtags": [
+      "#야구장먹거리",
+      "#요거트아이스크림",
+      "#디저트",
+      "#간식",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0.1,
+      0.95,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 3루"],
+    "stallLocations": [
+      "3층 3루"
+    ],
     "menuItems": [
-      { "name": "샤인 캐치업 정석", "category": "요거트 아이스크림", "price": 17500, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "홈런의 정석", "category": "요거트 아이스크림", "price": 18000, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "찰떡 더블플레이", "category": "요거트 아이스크림", "price": 19000, "currency": "KRW", "signature": false, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" }
+      {
+        "name": "샤인 캐치업 정석",
+        "category": "요거트 아이스크림",
+        "price": 17500,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "홈런의 정석",
+        "category": "요거트 아이스크림",
+        "price": 18000,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "찰떡 더블플레이",
+        "category": "요거트 아이스크림",
+        "price": 19000,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      }
     ],
     "menuSourceUrl": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-%EC%9A%94%EC%95%84%EC%A0%95/",
     "menuObservedAt": "2026-05-06",
@@ -518,7 +860,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -541,23 +885,48 @@
     "sourcePlaceId": "champions-field-papa-johns",
     "name": "파파존스피자",
     "brandName": "파파존스피자",
-    "aliases": ["파파존스"],
+    "aliases": [
+      "파파존스"
+    ],
     "branchName": "3층 1루 / 5층 3루",
     "region": "광주광역시 북구",
     "category": "음식·로컬",
     "databaseType": "stadium_food",
     "foodType": "피자",
     "description": "여럿이 나눠 먹기 좋은 피자류를 판매하는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#피자", "#여럿이", "#KIA", "#직관"],
-    "vector": [0, 0, 0, 1, 0.1, 1, 0.05, 0.55],
+    "hashtags": [
+      "#야구장먹거리",
+      "#피자",
+      "#여럿이",
+      "#KIA",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      1,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 1루", "5층 3루"],
+    "stallLocations": [
+      "3층 1루",
+      "5층 3루"
+    ],
     "menuItems": [
-      { "name": "피자", "category": "피자", "price": null, "signature": true, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "피자",
+        "category": "피자",
+        "price": null,
+        "signature": true,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 30,
     "indoor": true,
@@ -570,7 +939,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -599,18 +970,59 @@
     "databaseType": "stadium_food",
     "foodType": "치킨",
     "description": "야구 관람 대표 메뉴인 치킨을 구매할 수 있는 챔피언스필드 내부 매장 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#치킨", "#KIA", "#응원", "#직관"],
-    "vector": [0, 0, 0, 1, 0.15, 1, 0.05, 0.6],
+    "hashtags": [
+      "#야구장먹거리",
+      "#치킨",
+      "#KIA",
+      "#응원",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      1,
+      0.15,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["3층 1루", "3층 3루", "5층 1루"],
+    "stallLocations": [
+      "3층 1루",
+      "3층 3루",
+      "5층 1루"
+    ],
     "menuItems": [
-      { "name": "순살바스클", "category": "치킨", "price": 24000, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "순살뿌링클", "category": "치킨", "price": 25000, "currency": "KRW", "signature": true, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" },
-      { "name": "미니콜팝", "category": "간식", "price": 5500, "currency": "KRW", "signature": false, "availabilityStatus": "observed_2026_05_06", "priceVerifiedAt": "2026-05-06" }
+      {
+        "name": "순살바스클",
+        "category": "치킨",
+        "price": 24000,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "순살뿌링클",
+        "category": "치킨",
+        "price": 25000,
+        "currency": "KRW",
+        "signature": true,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      },
+      {
+        "name": "미니콜팝",
+        "category": "간식",
+        "price": 5500,
+        "currency": "KRW",
+        "signature": false,
+        "availabilityStatus": "observed_2026_05_06",
+        "priceVerifiedAt": "2026-05-06"
+      }
     ],
     "menuSourceUrl": "https://myseatcheck.com/%EA%B4%91%EC%A3%BC-%EC%B1%94%ED%94%BC%EC%96%B8%EC%8A%A4%ED%95%84%EB%93%9C-%EB%A8%B9%EA%B1%B0%EB%A6%AC-3%EB%A3%A8-3%EC%B8%B5-bhc%EC%B9%98%ED%82%A8/",
     "menuObservedAt": "2026-05-06",
@@ -626,7 +1038,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 주문"],
+    "orderMethods": [
+      "현장 주문"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,
@@ -655,16 +1069,41 @@
     "databaseType": "stadium_food",
     "foodType": "편의점·음료",
     "description": "음료와 간편식, 응원 중 필요한 물품을 빠르게 구매할 수 있는 챔피언스필드 내부 편의점 후보입니다.",
-    "hashtags": ["#야구장먹거리", "#편의점", "#음료", "#간편식", "#직관"],
-    "vector": [0, 0, 0, 0.8, 0.1, 1, 0.1, 0.45],
+    "hashtags": [
+      "#야구장먹거리",
+      "#편의점",
+      "#음료",
+      "#간편식",
+      "#직관"
+    ],
+    "vector": [
+      0,
+      0,
+      0,
+      0.8,
+      0.1,
+      1
+    ],
     "latitude": 35.1682,
     "longitude": 126.8891,
     "coordinatePrecision": "venue_centroid",
     "roadAddress": "광주광역시 북구 서림로 10 광주-기아 챔피언스필드 내부",
     "locationScope": "inside_concourse",
-    "stallLocations": ["외야·8출입구 옆", "3층 1루", "3층 3루", "5층 3루"],
+    "stallLocations": [
+      "외야·8출입구 옆",
+      "3층 1루",
+      "3층 3루",
+      "5층 3루"
+    ],
     "menuItems": [
-      { "name": "음료·간편식", "category": "편의점", "price": null, "signature": false, "availabilityStatus": "game_day_check_required", "priceVerifiedAt": null }
+      {
+        "name": "음료·간편식",
+        "category": "편의점",
+        "price": null,
+        "signature": false,
+        "availabilityStatus": "game_day_check_required",
+        "priceVerifiedAt": null
+      }
     ],
     "durationMinutes": 20,
     "indoor": true,
@@ -677,7 +1116,9 @@
     "requiresReservation": false,
     "requiresTicket": true,
     "gameDayOnly": true,
-    "orderMethods": ["현장 구매"],
+    "orderMethods": [
+      "현장 구매"
+    ],
     "availabilityStatus": "unknown",
     "businessStatus": "경기일 운영 여부 확인 필요",
     "routeEligible": true,

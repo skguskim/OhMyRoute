@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" role="img" aria-labelledby="title">
+  <title id="title">문화 예술 테마 스탬프</title>
+  <g fill="none" stroke="#654da0" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="60" cy="50" rx="54" ry="44" stroke-width="3"/>
+    <ellipse cx="60" cy="50" rx="49" ry="39" stroke-width="1.5"/>
+    <g transform="translate(48 28)" stroke-width="1.8">
+      <path d="M7 17 17 7m-8-2 2 2m4 4 2 2M6 18l-1 3 3-1L19 9l-4-4Z"/>
+      <path d="m15 3 1-2m3 5 2-1"/>
+    </g>
+  </g>
+  <g fill="#654da0" text-anchor="middle" font-family="Pretendard, Noto Sans KR, sans-serif">
+    <text x="60" y="22" font-size="7" font-weight="800" letter-spacing="1.4">CULTURE</text>
+    <text x="60" y="72" font-size="14" font-weight="900">문화·예술</text>
+    <text x="60" y="85" font-size="6" font-weight="800" letter-spacing="1">GWANGJU</text>
+  </g>
+</svg>

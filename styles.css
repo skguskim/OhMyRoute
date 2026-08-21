@@ -1,23 +1,27 @@
+/* 단일 색상 소스: UI 색을 바꾸려면 이 블록만 수정하면 전체에 반영됩니다. */
 :root {
   --app-width: 600px;
   --app-height: 300px;
-  --ink: #1b1c19;
-  --muted: #737972;
-  --paper: #fbf9f4;
-  --paper-deep: #f1eee7;
+  --ink: #191f28;
+  --muted: #8b95a1;
+  --paper: #f9fafb;
+  --paper-deep: #f2f4f6;
   --white: #ffffff;
-  --line: #e3e0d9;
-  --green: #4a654e;
-  --green-dark: #354b3a;
-  --green-soft: #e5ece3;
-  --sage: #8ba88e;
-  --red: #9b433c;
-  --red-soft: #fbe3e0;
-  --gold: #c69a4b;
-  --shadow: 0 18px 55px rgba(62, 70, 62, 0.1);
-  --radius-xl: 28px;
+  --line: #e5e8eb;
+  --green: #3182f6;
+  --green-dark: #1b64da;
+  --green-soft: #e8f3ff;
+  --sage: #90c2ff;
+  --red: #f04452;
+  --red-soft: #fff0f1;
+  --gold: #f59f00;
+  --blue: #3182f6;
+  --acid: #e8f3ff;
+  --shadow: 0 18px 50px rgba(25, 31, 40, 0.08);
+  --shadow-tight: 0 12px 30px rgba(25, 57, 45, 0.09);
+  --radius-xl: 24px;
   --radius-lg: 22px;
-  --radius-md: 15px;
+  --radius-md: 14px;
 }
 
 * {
@@ -1497,6 +1501,51 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: -0.035em;
 }
 
+.stop-title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+}
+
+.stop-title-row h3 {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.player-face-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+
+.player-face-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 34px;
+}
+
+.player-face-photo {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(181, 32, 40, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.player-face-name {
+  margin-top: 3px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #9d2029;
+  white-space: nowrap;
+}
+
 .stop-card > p {
   margin: 0;
   color: var(--muted);
@@ -1527,18 +1576,6 @@ input[type="range"]::-moz-range-thumb {
   font-size: 9px;
   font-weight: 700;
   line-height: 1.55;
-}
-
-.player-recommendation {
-  margin-bottom: 10px;
-  padding: 10px 12px;
-  border: 1px solid rgba(181, 32, 40, 0.24);
-  border-radius: 10px;
-  background: rgba(181, 32, 40, 0.08);
-  color: #9d2029;
-  font-size: 0.86rem;
-  font-weight: 800;
-  line-height: 1.45;
 }
 
 .stop-detail-actions {
@@ -2547,6 +2584,62 @@ input[type="range"]::-moz-range-thumb {
     backdrop-filter: blur(10px);
   }
 
+  .team-news-tab {
+    position: fixed;
+    z-index: 44;
+    right: 0;
+    bottom: 68px;
+    left: 0;
+    max-width: var(--app-width);
+    margin: 0 auto;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 16px rgba(48, 57, 50, 0.06);
+    backdrop-filter: blur(10px);
+  }
+
+  .team-news-tab[hidden] {
+    display: none;
+  }
+
+  .team-news-track {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
+  }
+
+  .team-news-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .team-news-item {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .team-news-item b {
+    padding: 2px 7px;
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  body.has-team-news .result-sidebar-scroll {
+    padding-bottom: 40px;
+  }
+
   .mobile-nav button {
     min-width: 65px;
     padding: 0;
@@ -2832,7 +2925,7 @@ body:has(#formView.active) .app-main {
 #formView .heading-icon {
   width: 24px;
   height: 24px;
-  color: #3182f6;
+  color: var(--green);
   background: transparent;
   border-radius: 0;
   font-size: 22px;
@@ -2875,6 +2968,125 @@ body:has(#formView.active) .app-main {
   font-size: 11px;
 }
 
+.region-preview-badge {
+  margin-left: 6px;
+  padding: 3px 8px;
+  color: var(--green);
+  background: #e8f3ff;
+  border-radius: 999px;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+
+.region-preview-group {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.region-preview-option {
+  min-height: 44px;
+  padding: 0 6px;
+  color: #4e5968;
+  background: #f2f4f6;
+  border: 1px solid #d1d6db;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.region-preview-option:hover {
+  border-color: #90c2ff;
+}
+
+.region-preview-option.active {
+  color: #fff;
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.region-preview-option[data-team] {
+  color: var(--team-color, #4e5968);
+  border-color: var(--team-color, #d1d6db);
+}
+
+.region-preview-option[data-team]:hover {
+  border-color: var(--team-color, #90c2ff);
+}
+
+.region-preview-option[data-team].active {
+  color: #fff;
+  background: var(--team-color, var(--green));
+  border-color: var(--team-color, var(--green));
+}
+
+.region-preview-option[data-team="kia"] { --team-color: #ea0029; }
+.region-preview-option[data-team="samsung"] { --team-color: #074ca1; }
+.region-preview-option[data-team="lg"] { --team-color: #c30452; }
+.region-preview-option[data-team="doosan"] { --team-color: #131230; }
+.region-preview-option[data-team="kt"] { --team-color: #000000; }
+.region-preview-option[data-team="ssg"] { --team-color: #ce0e2d; }
+.region-preview-option[data-team="lotte"] { --team-color: #041e42; }
+.region-preview-option[data-team="hanwha"] { --team-color: #ff6600; }
+.region-preview-option[data-team="nc"] { --team-color: #315288; }
+.region-preview-option[data-team="kiwoom"] { --team-color: #570514; }
+
+.baseball-team-preview {
+  margin-top: 10px;
+}
+
+.baseball-team-preview > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #194aa6;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.option-picker {
+  width: 100%;
+}
+
+.option-picker:not(.open) .option-picker-item:not(.active) {
+  display: none;
+}
+
+.option-picker-item.active {
+  width: 100%;
+}
+
+.option-picker.open {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-picker-grid.open {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: 8px;
+  height: 176px;
+  padding: 8px 8px 8px 0;
+  border: 1px solid #e5e8eb;
+  border-radius: 12px;
+  background: #fafafa;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+}
+
+.option-picker-hint {
+  margin: 6px 0 0;
+  color: #8b95a1;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+}
+
 .time-field-wrap {
   display: flex;
   align-items: center;
@@ -2908,7 +3120,7 @@ body:has(#formView.active) .app-main {
 #formView .schedule-field-status {
   margin: -2px 0 0;
   padding: 9px 12px;
-  color: #1b64da;
+  color: var(--green-dark);
   background: #e8f3ff;
   border: 0;
   border-radius: 9px;
@@ -2952,8 +3164,8 @@ body:has(#formView.active) .app-main {
 
 #formView .choice-group button.active {
   color: #fff;
-  background: #3182f6;
-  border-color: #3182f6;
+  background: var(--green);
+  border-color: var(--green);
   box-shadow: none;
 }
 
@@ -3009,7 +3221,7 @@ body:has(#formView.active) .app-main {
 
 #formView .slider-level {
   padding: 4px 8px;
-  color: var(--slider-dark, #3182f6);
+  color: var(--slider-dark, var(--green));
   background: var(--slider-light, #e8f3ff);
   border-radius: 8px;
   font-size: 10px;
@@ -3024,7 +3236,7 @@ body:has(#formView.active) .app-main {
   min-height: 68px;
   padding: 0 24px;
   color: #fff;
-  background: #3182f6;
+  background: var(--green);
   border-radius: 24px;
   box-shadow: 0 10px 25px rgba(49, 130, 246, .18);
   font-size: 17px;
@@ -3331,8 +3543,8 @@ body:has(#formView.active) .app-main {
 
 .baseball-day-option input:checked + span {
   color: #fff;
-  background: #3182f6;
-  border-color: #3182f6;
+  background: var(--green);
+  border-color: var(--green);
   box-shadow: 0 3px 9px rgba(49, 130, 246, .22);
 }
 
@@ -3379,7 +3591,7 @@ body:has(#formView.active) .app-main {
 }
 
 .baseball-attendance-toggle input:checked + .toggle-track {
-  background: #3182f6;
+  background: var(--green);
 }
 
 .baseball-attendance-toggle input:checked + .toggle-track i {
@@ -3398,7 +3610,7 @@ body:has(#formView.active) .app-main {
 }
 
 .baseball-attendance-toggle input:checked ~ b {
-  color: #1b64da;
+  color: var(--green-dark);
 }
 
 .baseball-game-callout,
@@ -3418,7 +3630,7 @@ body:has(#formView.active) .app-main {
 }
 
 .stadium-food-callout {
-  color: #1b64da;
+  color: var(--green-dark);
   background: #e8f3ff;
   border: 1px solid #c9e2ff;
 }
@@ -3457,30 +3669,6 @@ body:has(#formView.active) .app-main {
     width: 100%;
     background: #fff;
   }
-}
-
-/* 2026 visual direction: vivid neo-local color, layered depth, useful motion */
-:root {
-  --ink: #13261f;
-  --muted: #68736e;
-  --paper: #f4f5ed;
-  --paper-deep: #e9ecdf;
-  --white: #ffffff;
-  --line: rgba(19, 38, 31, 0.12);
-  --green: #194f3b;
-  --green-dark: #0c3326;
-  --green-soft: #dff2db;
-  --sage: #a8d49e;
-  --red: #ff5b45;
-  --red-soft: #ffe1d8;
-  --gold: #d7ff64;
-  --acid: #d7ff64;
-  --blue: #6c7cff;
-  --shadow: 0 24px 70px rgba(25, 57, 45, 0.11);
-  --shadow-tight: 0 12px 30px rgba(25, 57, 45, 0.09);
-  --radius-xl: 34px;
-  --radius-lg: 26px;
-  --radius-md: 17px;
 }
 
 body {
@@ -4288,29 +4476,6 @@ body {
   .weather-slot { border-radius: 10px; }
 }
 
-/* 2026-08-06 attached UI refresh — preserve existing feature hooks and state. */
-:root {
-  --ink: #191f28;
-  --muted: #8b95a1;
-  --paper: #f9fafb;
-  --paper-deep: #f2f4f6;
-  --white: #ffffff;
-  --line: #e5e8eb;
-  --green: #3182f6;
-  --green-dark: #1b64da;
-  --green-soft: #e8f3ff;
-  --sage: #90c2ff;
-  --red: #f04452;
-  --red-soft: #fff0f1;
-  --gold: #f59f00;
-  --blue: #3182f6;
-  --acid: #e8f3ff;
-  --shadow: 0 18px 50px rgba(25, 31, 40, 0.08);
-  --radius-xl: 24px;
-  --radius-lg: 22px;
-  --radius-md: 14px;
-}
-
 html,
 body {
   color: var(--ink);
@@ -5114,11 +5279,6 @@ body:has(#resultView.active) .app-footer {
   background: var(--green-soft);
 }
 
-.player-recommendation {
-  color: #c23542;
-  background: var(--red-soft);
-}
-
 .alternative-list {
   grid-template-columns: 1fr;
 }
@@ -5169,7 +5329,7 @@ body:has(#resultView.active) .app-footer {
 }
 
 .reward-card {
-  background: linear-gradient(135deg, #3182f6, #1b64da);
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
   border-color: rgba(255, 255, 255, .26);
   box-shadow: 0 12px 28px rgba(49, 130, 246, .2);
 }
@@ -5699,7 +5859,7 @@ body.splash-open {
   margin-bottom: 25px;
   display: grid;
   place-items: center;
-  color: #3182f6;
+  color: var(--green);
   background: #e8f3ff;
   border-radius: 24px;
   box-shadow: 0 4px 14px rgba(49, 130, 246, .06);
@@ -5732,6 +5892,74 @@ body.splash-open {
   line-height: 1.65;
 }
 
+.splash-language {
+  width: 100%;
+  margin: -18px 0 10px;
+}
+
+.splash-content .splash-language-label {
+  margin: 0 0 8px;
+  color: #191f28;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.splash-content .option-picker-hint {
+  margin: 4px 0 0;
+  color: #8b95a1;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.splash-language-option {
+  width: 100%;
+  height: 56px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #191f28;
+  background: #fff;
+  border: 1px solid #e5e8eb;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.splash-language-option:hover {
+  border-color: #90c2ff;
+}
+
+.splash-language-option.active {
+  border-color: var(--green);
+  background: #f4f9ff;
+}
+
+.splash-language-badge {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #8b95a1;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+  transition: background 160ms ease;
+}
+
+.splash-language-option.active .splash-language-badge {
+  background: var(--green);
+}
+
+.splash-team {
+  width: 100%;
+  margin: 0 0 28px;
+}
+
 #startButton {
   min-width: 232px;
   height: 64px;
@@ -5741,7 +5969,7 @@ body.splash-open {
   justify-content: center;
   gap: 12px;
   color: #fff;
-  background: #3182f6;
+  background: var(--green);
   border: 0;
   border-radius: 999px;
   box-shadow: 0 15px 32px rgba(49, 130, 246, .24);
@@ -6089,7 +6317,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
 }
 
 .baseball-attendance-copy > span {
-  color: #1b64da;
+  color: var(--green-dark);
 }
 
 .baseball-attendance-copy strong {
@@ -6105,7 +6333,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
 }
 
 .baseball-attendance-toggle input:checked + .toggle-track {
-  background: #3182f6;
+  background: var(--green);
 }
 
 .baseball-attendance-toggle input:focus-visible + .toggle-track {
@@ -6113,7 +6341,7 @@ body:has(#resultView.active) .desktop-saved-trigger {
 }
 
 .baseball-attendance-toggle b {
-  color: #1b64da;
+  color: var(--green-dark);
 }
 
 .baseball-attendance-toggle input:checked ~ b {
@@ -6316,6 +6544,122 @@ body:has(#formView.active) .app-main {
   display: block;
 }
 
+.stop-card.baseball-stop,
+.stop-card.baseball-stop:hover,
+.stop-card.baseball-stop.expanded {
+  border-width: 2px;
+  border-color: #9d2029;
+}
+
+.stop-card.baseball-stop {
+  background: linear-gradient(180deg, #fff6f6 0%, #ffffff 90px);
+  overflow: hidden;
+}
+
+.baseball-matchup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -18px -18px 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #b5202c 0%, #7a1620 55%, #2b0a0e 100%);
+  border-radius: 14px 14px 0 0;
+}
+
+.baseball-matchup-gap {
+  position: relative;
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 24px;
+}
+
+.baseball-matchup-logo {
+  position: absolute;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.baseball-matchup-gap.home-gap .baseball-matchup-logo {
+  left: 33.333%;
+  transform: translate(-50%, -50%);
+}
+
+.baseball-matchup-gap.away-gap .baseball-matchup-logo {
+  left: 66.667%;
+  transform: translate(-50%, -50%);
+}
+
+.baseball-matchup-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.baseball-matchup-team strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.baseball-matchup-team small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.baseball-matchup-vs {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.baseball-matchup-vs i {
+  font-size: 15px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.baseball-ticket-divider {
+  position: relative;
+  height: 0;
+  margin: 4px 0 14px;
+  border-top: 2px dashed rgba(157, 32, 41, 0.28);
+}
+
+.baseball-ticket-divider i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9d2029;
+  background: #fff;
+  border: 2px solid rgba(157, 32, 41, 0.28);
+  border-radius: 50%;
+  font-size: 11px;
+  font-style: normal;
+  transform: translate(-50%, -50%);
+}
+
 /* AI Docent UI */
 .ai-docent-wrapper {
   position: fixed;
@@ -6324,7 +6668,7 @@ body:has(#formView.active) .app-main {
   z-index: 1000;
 }
 .ai-docent-button {
-  background: #3182f6;
+  background: var(--green);
   color: white;
   border: none;
   width: 56px;
@@ -6352,7 +6696,7 @@ body:has(#formView.active) .app-main {
   overflow: hidden;
 }
 .ai-docent-header {
-  background: #3182f6;
+  background: var(--green);
   color: white;
   padding: 12px 16px;
   display: flex;
@@ -6396,7 +6740,7 @@ body:has(#formView.active) .app-main {
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .user-msg {
-  background: #3182f6;
+  background: var(--green);
   color: white;
   align-self: flex-end;
   border-bottom-right-radius: 4px;
@@ -6416,10 +6760,10 @@ body:has(#formView.active) .app-main {
   outline: none;
 }
 .ai-docent-input input:focus {
-  border-color: #3182f6;
+  border-color: var(--green);
 }
 .ai-docent-input button {
-  background: #3182f6;
+  background: var(--green);
   color: white;
   border: none;
   width: 32px;

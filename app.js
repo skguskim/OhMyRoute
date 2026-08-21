@@ -26,6 +26,59 @@ const MEAL_PARKING_DETOUR_LIMIT_MINUTES = 60;
 const REVIEW_STORAGE_KEY = "omaeroute_reviews";
 const REWARD_STORAGE_KEY = "omaeroute_rewards";
 const CHAMPIONS_FIELD_STAMP_ASSET = "./assets/champions-field-line-v2.png";
+const BASEBALL_TEAM_LOGOS = Object.freeze({
+  kia: "./data/picture/baseball_logo/kia.png",
+  samsung: "./data/picture/baseball_logo/samsung.png",
+  lg: "./data/picture/baseball_logo/lg.png",
+  doosan: "./data/picture/baseball_logo/doosan.png",
+  kt: "./data/picture/baseball_logo/kt.png",
+  ssg: "./data/picture/baseball_logo/ssg.png",
+  lotte: "./data/picture/baseball_logo/lotte.png",
+  hanwha: "./data/picture/baseball_logo/hanwha.png",
+  nc: "./data/picture/baseball_logo/nc.png",
+  kiwoom: "./data/picture/baseball_logo/kiwoom.png",
+});
+const PLAYER_FACE_IMAGES = Object.freeze({
+  "김호령": "./data/picture/player_face/KIA/Kimhoryung.jpg",
+  "황동하": "./data/picture/player_face/KIA/hwangdongha.jpg",
+});
+const BASEBALL_TEAM_LOGOS_BY_NAME = Object.freeze({
+  "KIA": "./data/picture/baseball_logo/kia.png",
+  "삼성": "./data/picture/baseball_logo/samsung.png",
+  "LG": "./data/picture/baseball_logo/lg.png",
+  "두산": "./data/picture/baseball_logo/doosan.png",
+  "KT": "./data/picture/baseball_logo/kt.png",
+  "SSG": "./data/picture/baseball_logo/ssg.png",
+  "롯데": "./data/picture/baseball_logo/lotte.png",
+  "한화": "./data/picture/baseball_logo/hanwha.png",
+  "NC": "./data/picture/baseball_logo/nc.png",
+  "키움": "./data/picture/baseball_logo/kiwoom.png",
+});
+
+function renderBaseballMatchupGap(team, side) {
+  const logo = BASEBALL_TEAM_LOGOS_BY_NAME[team];
+  if (!logo) return `<div class="baseball-matchup-gap ${side}-gap"></div>`;
+  return `
+    <div class="baseball-matchup-gap ${side}-gap">
+      <img class="baseball-matchup-logo" src="${logo}" alt="${escapeHtml(team)} 로고" loading="lazy">
+    </div>
+  `;
+}
+
+function renderPlayerFaceBadges(players) {
+  const withPhotos = (players || []).filter((player) => PLAYER_FACE_IMAGES[player]);
+  if (!withPhotos.length) return "";
+  return `
+    <div class="player-face-badges">
+      ${withPhotos.map((player) => `
+        <div class="player-face-badge">
+          <img class="player-face-photo" src="${PLAYER_FACE_IMAGES[player]}" alt="${escapeHtml(player)} 선수" loading="lazy">
+          <span class="player-face-name">${escapeHtml(player)}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
 
 const STAMP_THEMES = Object.freeze({
   food: { label: "광주 미식", asset: "./assets/stamps/themes/food.svg" },
@@ -501,6 +554,25 @@ function bindTimeSegments(hiddenInput, minuteStep = 1) {
   });
 }
 
+function initOptionPicker(picker) {
+  picker.addEventListener("click", (event) => {
+    const button = event.target.closest(".option-picker-item");
+    if (!button) return;
+    if (!picker.classList.contains("open")) {
+      picker.classList.add("open");
+      return;
+    }
+    $$(".option-picker-item", picker).forEach((option) => {
+      option.classList.remove("active");
+      option.setAttribute("aria-selected", "false");
+    });
+    button.classList.add("active");
+    button.setAttribute("aria-selected", "true");
+    picker.classList.remove("open");
+    if (button.dataset.team) applyTeamTheme(button.dataset.team);
+  });
+}
+
 function dateOrdinal(value) {
   const [year, month, day] = String(value || "").split("-").map(Number);
   if (![year, month, day].every(Number.isFinite)) return Number.NaN;
@@ -578,6 +650,19 @@ function baseballGameOptionStatus(dateValue) {
   const completed = games.find((game) => game.status === "completed");
   if (completed) return { selectable: false, game: completed, label: `${completed.away_team_name}전 종료` };
   return { selectable: false, game: null, label: "광주 홈경기 없음" };
+}
+
+// 스플래시 화면 "응원 구단" 선택지에서 고른 팀. initOptionPicker가 관리하는 .active를
+// 그대로 읽는다 — Day를 옮기거나 리플랜해도, 그날의 실제 KIA 상대팀(away_team_name)과는
+// 무관하게 이 값 그대로 유지된다.
+function selectedFavoriteTeam() {
+  const active = $("#splashView .splash-team .option-picker-item.active");
+  return active?.textContent.trim() || null;
+}
+
+function selectedFavoriteTeamSlug() {
+  const active = $("#splashView .splash-team .option-picker-item.active");
+  return active?.dataset.team || "kia";
 }
 
 function openingHoursForPlace(place) {
@@ -1298,13 +1383,56 @@ function sliderValueFromPointer(input, clientX) {
   return clamp(min + Math.ceil((raw - min) / step) * step, min, max);
 }
 
+const TEAM_COLORS = {
+  kia: "#ea0029",
+  samsung: "#074ca1",
+  lg: "#c30452",
+  doosan: "#131230",
+  kt: "#000000",
+  ssg: "#ce0e2d",
+  lotte: "#041e42",
+  hanwha: "#ff6600",
+  nc: "#315288",
+  kiwoom: "#570514",
+};
+
+function hexToRgb(hex) {
+  const normalized = hex.replace("#", "");
+  const value = normalized.length === 3
+    ? normalized.split("").map((ch) => ch + ch).join("")
+    : normalized;
+  const num = parseInt(value, 16);
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+
+function rgbToHex(r, g, b) {
+  return `#${[r, g, b].map((n) => clamp(Math.round(n), 0, 255).toString(16).padStart(2, "0")).join("")}`;
+}
+
+// 팀 색상 1개를 기준으로 흰색/검정과 섞어 연한색·진한색을 자동으로 만든다.
+function mixHex(hex, targetHex, ratio) {
+  const [r, g, b] = hexToRgb(hex);
+  const [tr, tg, tb] = hexToRgb(targetHex);
+  return rgbToHex(r + (tr - r) * ratio, g + (tg - g) * ratio, b + (tb - b) * ratio);
+}
+
+function applyTeamTheme(teamKey) {
+  const base = TEAM_COLORS[teamKey];
+  if (!base) return;
+  const root = document.documentElement;
+  root.style.setProperty("--green", base);
+  root.style.setProperty("--blue", base);
+  root.style.setProperty("--green-dark", mixHex(base, "#000000", 0.25));
+  root.style.setProperty("--green-soft", mixHex(base, "#ffffff", 0.88));
+}
+
 const AXIS_COLORS = {
-  sports: { light: "#f4f9ff", dark: "#3182f6" },
-  nature: { light: "#f4f9ff", dark: "#3182f6" },
-  culture: { light: "#f4f9ff", dark: "#3182f6" },
-  art: { light: "#f4f9ff", dark: "#3182f6" },
-  food: { light: "#f4f9ff", dark: "#3182f6" },
-  activity: { light: "#f4f9ff", dark: "#3182f6" },
+  sports: { light: "var(--green-soft)", dark: "var(--green)" },
+  nature: { light: "var(--green-soft)", dark: "var(--green)" },
+  culture: { light: "var(--green-soft)", dark: "var(--green)" },
+  art: { light: "var(--green-soft)", dark: "var(--green)" },
+  food: { light: "var(--green-soft)", dark: "var(--green)" },
+  activity: { light: "var(--green-soft)", dark: "var(--green)" },
 };
 
 function renderSliders() {
@@ -1312,7 +1440,7 @@ function renderSliders() {
     (axisKey) => {
       const index = AXIS_INDEX_BY_KEY[axisKey];
       const axis = AXES[index];
-      const colors = AXIS_COLORS[axisKey] || { light: "#e8f5e9", dark: "#2e7d32" };
+      const colors = AXIS_COLORS[axisKey] || { light: "var(--green-soft)", dark: "var(--green)" };
       return `
       <label class="slider-row" style="--slider-light: ${colors.light}; --slider-dark: ${colors.dark};">
         <span class="slider-meta">
@@ -2768,12 +2896,13 @@ function usesChampionsFieldStamp(place) {
 
 function championsFieldStampContent(isStamped, isInRange) {
   const stateLabel = isStamped ? "스탬프 획득" : isInRange ? "도장 찍기" : "방문";
+  const stampAsset = BASEBALL_TEAM_LOGOS[selectedFavoriteTeamSlug()] || CHAMPIONS_FIELD_STAMP_ASSET;
   return `
     <span class="champions-field-stamp-art" aria-hidden="true">
       <span class="champions-field-stamp-fallback"><b>⚾</b><small>GWANGJU</small></span>
       <img
         class="champions-field-stamp-image"
-        src="${CHAMPIONS_FIELD_STAMP_ASSET}"
+        src="${stampAsset}"
         alt=""
         loading="lazy"
         decoding="async"
@@ -3028,7 +3157,7 @@ function renderMap() {
     const routePoint = routePoints[index];
     const name = routePoint.name;
     const shortName = name.length > 12 ? `${name.slice(0, 11)}…` : name;
-    const color = routePoint.isOrigin ? "#1b64da" : "#3182f6";
+    const color = routePoint.isOrigin ? "var(--green-dark)" : "var(--green)";
     const labelX = clamp(point.x, 65, 855);
     const labelY = clamp(point.y + 24, 25, 350);
     return `
@@ -3047,7 +3176,7 @@ function renderMap() {
     ${grid}
     <path d="M0 285 C165 235 260 324 430 260 S670 176 920 228" fill="none" stroke="#dcecff" stroke-width="44" opacity=".82"/>
     <path d="M30 98 C230 50 350 128 520 82 S765 28 920 80" fill="none" stroke="#e5e8eb" stroke-width="22" opacity=".82"/>
-    <polyline points="${polyline}" fill="none" stroke="#3182f6" stroke-width="4" stroke-dasharray="8 7" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="${polyline}" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="8 7" stroke-linecap="round" stroke-linejoin="round"/>
     ${markers}
   `;
 }
@@ -3308,15 +3437,27 @@ function renderItinerary() {
     return `
       <article class="itinerary-stop">
         <i class="timeline-node"></i>
-        <div class="stop-card" tabindex="0">
+        <div class="stop-card${place.isBaseballGame ? " baseball-stop" : ""}" tabindex="0">
+          ${place.isBaseballGame ? `
+            <div class="baseball-matchup">
+              <div class="baseball-matchup-team home"><strong>KIA</strong><small>HOME</small></div>
+              ${renderBaseballMatchupGap("KIA", "home")}
+              <div class="baseball-matchup-vs"><i aria-hidden="true">⚾</i>VS</div>
+              ${renderBaseballMatchupGap(place.opponent || "", "away")}
+              <div class="baseball-matchup-team away"><strong>${escapeHtml(place.opponent || "상대")}</strong><small>AWAY</small></div>
+            </div>
+          ` : ""}
           <div class="stop-meta">
             <span class="stop-time">◷ 약 ${formatClockMinutes(startMinutes)} <span class="departure-time">- ${formatClockMinutes(endMinutes)}</span></span>
-            ${place.isBaseballGame ? '<span class="meal-time-chip">⚾ 야구 직관</span>' : ""}
             ${place.mealSlot ? `<span class="meal-time-chip">🍚 ${escapeHtml(place.mealLabel)} 추천</span>` : ""}
             <span class="type-chip">${escapeHtml(place.category)}</span>
             ${place.hashtags.slice(0, 2).map((tag) => `<span class="hashtag-chip">${escapeHtml(tag)}</span>`).join("")}
           </div>
-          <h3>${escapeHtml(place.name)}</h3>
+          <div class="stop-title-row">
+            <h3>${escapeHtml(place.name)}</h3>
+            ${conditions.baseballAttendance ? renderPlayerFaceBadges(place.activeRecommendedPlayers) : ""}
+          </div>
+          ${place.isBaseballGame ? '<div class="baseball-ticket-divider" aria-hidden="true"><i>⚾</i></div>' : ""}
           <div class="reason-callout">💡 추천 이유 · ${place.reasons.map(escapeHtml).join(" · ")}</div>
           <p class="expandable-desc">${escapeHtml(place.description)}</p>
           <div class="stop-details expandable-desc">
@@ -3325,9 +3466,6 @@ function renderItinerary() {
             ` : ""}
             ${place.stadiumFood ? `
               <div class="stadium-food-callout">🍚 저녁 구매 · ${escapeHtml(place.branchName || "매장 위치 현장 확인")}${stadiumMenu ? ` · ${escapeHtml(stadiumMenu.name)} ${escapeHtml(stadiumMenuPrice)}` : ""} · 경기 시작 전에 사서 관람석에서 직관하며 식사</div>
-            ` : ""}
-            ${conditions.baseballAttendance && place.activeRecommendedPlayers?.length ? `
-              <div class="player-recommendation">⚾ ${escapeHtml(place.activeRecommendedPlayers.join("·"))} 선수 추천</div>
             ` : ""}
             <div class="reason-callout detail-reason">이전 지점에서 약 ${travelMinutes}분${waitMinutes ? ` · ${place.isBaseballGame ? "경기 시작" : "식사시간"}까지 여유 ${waitMinutes}분` : ""}${isFinalReturn ? ` · ${escapeHtml(conditions.origin.name)} 복귀 약 ${originReturnMinutes}분 · ${escapeHtml(conditions.endTime)} 여행 종료 전 복귀` : ""}</div>
             <div class="stop-detail-actions">
@@ -3518,6 +3656,28 @@ function renderPromptResultSummary() {
   summary.hidden = false;
 }
 
+// TODO: 목업 텍스트. 실제 구단 이슈/뉴스 데이터 연동으로 교체 예정.
+const TEAM_NEWS_TEMPLATES = [
+  (team) => `${team} 이번 시즌 최근 경기 흐름 브리핑`,
+  (team) => `${team}전 원정 응원단·매진 현황 안내`,
+  (team) => `${team} 주요 선수 컨디션 업데이트`,
+];
+
+function teamNewsMockItems(team) {
+  return TEAM_NEWS_TEMPLATES.map((build) => build(team));
+}
+
+function renderTeamNewsTab() {
+  const track = $("#teamNewsTab .team-news-track");
+  if (!track) return;
+  const team = selectedFavoriteTeam();
+  track.innerHTML = !team ? "" : teamNewsMockItems(team)
+    .map((text) => `
+      <span class="team-news-item"><b>${escapeHtml(team)}</b>${escapeHtml(text)}</span>
+    `)
+    .join("");
+}
+
 function renderResult() {
   const axes = topAxes(2);
   const conditions = currentConditions();
@@ -3545,6 +3705,7 @@ function renderResult() {
   renderTips();
   renderStamps();
   renderReviewReward();
+  renderTeamNewsTab();
   updateSaveButton();
 }
 
@@ -3560,6 +3721,12 @@ function showView(viewName, { pushState = true } = {}) {
       button.dataset.nav === (wantsResult ? "result" : "form"),
     );
   });
+  const newsTab = $("#teamNewsTab");
+  if (newsTab) {
+    const showNews = wantsResult && Boolean(selectedFavoriteTeam());
+    newsTab.hidden = !showNews;
+    document.body.classList.toggle("has-team-news", showNews);
+  }
   if (pushState) {
     history.pushState({ view: wantsResult ? "result" : "form" }, "", wantsResult ? "#route" : "#plan");
   }
@@ -3910,6 +4077,26 @@ function closeDrawer() {
 }
 
 function bindEvents() {
+  $$(".region-preview-group").forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest(".region-preview-option");
+      if (!button) return;
+      $$(".region-preview-option", group).forEach((option) => option.classList.remove("active"));
+      button.classList.add("active");
+    });
+  });
+
+  $$(".option-picker").forEach(initOptionPicker);
+  document.addEventListener("click", (event) => {
+    $$(".option-picker.open").forEach((picker) => {
+      if (!picker.contains(event.target)) picker.classList.remove("open");
+    });
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    $$(".option-picker.open").forEach((picker) => picker.classList.remove("open"));
+  });
+
   $("#startButton").addEventListener("click", () => {
     const splashView = $("#splashView");
     splashView.classList.add("dismissed");
@@ -4330,6 +4517,8 @@ async function loadPlaces() {
 }
 
 async function init() {
+  const defaultTeam = $(".splash-team .option-picker-item.active")?.dataset.team;
+  if (defaultTeam) applyTeamTheme(defaultTeam);
   const resultSidebar = $("#resultView .result-sidebar");
   const resultMapPane = $("#resultView .result-map-pane");
   const resultSidebarScroll = $("#resultView .result-sidebar-scroll");

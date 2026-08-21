@@ -20,19 +20,49 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260819-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260821-3" />
   </head>
   <body class="splash-open">
     <section id="splashView" class="splash-view" aria-labelledby="splashTitle" aria-hidden="false">
       <div class="splash-content">
         <div class="splash-logo" aria-hidden="true">
           <svg viewBox="0 0 48 48">
-            <path d="m6 10 11-5 14 5 11-5v31l-11 5-14-5-11 5V10Z"></path>
-            <path d="M17 5v31M31 10v31"></path>
+            <circle cx="24" cy="24" r="18"></circle>
+            <path d="M15 8c4 5 4 27 0 32M33 8c-4 5-4 27 0 32"></path>
           </svg>
         </div>
         <h1 id="splashTitle">오매루트</h1>
-        <p>AI가 당신의 취향을 읽고,<br />완벽한 여행 동선을 설계합니다.</p>
+        <p>응원하는 팀의 테마를 선택하세요.</p>
+        <div class="splash-language">
+          <p class="splash-language-label">어떤 언어를 사용할까요?</p>
+          <div class="option-picker" role="listbox" aria-label="언어 선택">
+            <button type="button" class="option-picker-item splash-language-option active" data-lang="ko" role="option" aria-selected="true">
+              <span class="splash-language-badge">한</span>
+              <span>한국어</span>
+            </button>
+            <button type="button" class="option-picker-item splash-language-option" data-lang="en" role="option" aria-selected="false">
+              <span class="splash-language-badge">A</span>
+              <span>ENGLISH</span>
+            </button>
+          </div>
+          <p class="option-picker-hint" aria-hidden="true">눌러서 다른 선택지 보기</p>
+        </div>
+        <div class="splash-team">
+          <p class="splash-language-label">어떤 팀을 응원할까요?</p>
+          <div class="option-picker option-picker-grid" role="listbox" aria-label="응원 구단 선택">
+            <button type="button" class="option-picker-item region-preview-option active" data-team="kia" role="option" aria-selected="true">KIA</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="samsung" role="option" aria-selected="false">삼성</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="lg" role="option" aria-selected="false">LG</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="doosan" role="option" aria-selected="false">두산</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="kt" role="option" aria-selected="false">KT</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="ssg" role="option" aria-selected="false">SSG</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="lotte" role="option" aria-selected="false">롯데</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="hanwha" role="option" aria-selected="false">한화</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="nc" role="option" aria-selected="false">NC</button>
+            <button type="button" class="option-picker-item region-preview-option" data-team="kiwoom" role="option" aria-selected="false">키움</button>
+          </div>
+          <p class="option-picker-hint" aria-hidden="true">눌러서 다른 선택지 보기</p>
+        </div>
         <button id="startButton" type="button">
           <span>시작하기</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
@@ -97,6 +127,20 @@
                 </div>
 
                 <div class="form-grid">
+                  <div class="field full region-preview-field">
+                    <span>출발 지역 <i class="region-preview-badge">기차·버스표 연동 예정</i></span>
+                    <div class="region-preview-group" role="group" aria-label="출발 지역 선택 (준비 중인 기능 미리보기)">
+                      <button type="button" class="region-preview-option" data-region="seoul">서울</button>
+                      <button type="button" class="region-preview-option" data-region="incheon_gyeonggi">인천·경기</button>
+                      <button type="button" class="region-preview-option" data-region="gangwon">강원</button>
+                      <button type="button" class="region-preview-option" data-region="daejeon_chungcheong">대전·충청</button>
+                      <button type="button" class="region-preview-option active" data-region="gwangju_jeolla">광주·전라</button>
+                      <button type="button" class="region-preview-option" data-region="daegu_gyeongbuk">대구·경북</button>
+                      <button type="button" class="region-preview-option" data-region="busan_ulsan_gyeongnam">부산·울산·경남</button>
+                      <button type="button" class="region-preview-option" data-region="jeju">제주</button>
+                    </div>
+                  </div>
+
                   <label class="field full">
                     <span>출발 장소 <b>*</b></span>
                     <select id="origin" required>
@@ -486,6 +530,10 @@
 
     <div id="stampToast" class="stamp-toast" role="status" aria-live="polite" hidden></div>
 
+    <div id="teamNewsTab" class="team-news-tab" role="status" aria-label="관심 구단 이슈" hidden>
+      <div class="team-news-track"></div>
+    </div>
+
     <nav class="mobile-nav" aria-label="주요 메뉴">
       <button type="button" data-nav="form" class="active" aria-label="탐색">
         <span aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"></path></svg></span>탐색
@@ -559,6 +607,6 @@
     </div>
 
     <script src="./config.js?v=20260819-1"></script>
-    <script type="module" src="./app.js?v=20260819-1"></script>
+    <script type="module" src="./app.js?v=20260821-1"></script>
   </body>
 </html>

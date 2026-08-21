@@ -1,18 +1,64 @@
-param(
+﻿param(
     [int]$Port = 4173,
     [switch]$NoBrowser,
-    [string]$RootPath = $PSScriptRoot
+    [string]$RootPath = $PSScriptRoot,
+    [string]$EnvFile = "",
+    [switch]$Lan
 )
 
 $ErrorActionPreference = "Stop"
 $Root = [System.IO.Path]::GetFullPath($RootPath)
 $Utf8 = New-Object System.Text.UTF8Encoding($false)
 
+Add-Type -AssemblyName System.Net.Http
+Add-Type -AssemblyName System.Web
+
+function Import-DotEnv([string]$Path) {
+    if (-not [System.IO.File]::Exists($Path)) { return }
+    foreach ($rawLine in [System.IO.File]::ReadAllLines($Path, $Utf8)) {
+        $line = $rawLine.Trim()
+        if (-not $line -or $line.StartsWith("#")) { continue }
+        $separator = $line.IndexOf("=")
+        if ($separator -le 0) { continue }
+        $name = $line.Substring(0, $separator).Trim()
+        $value = $line.Substring($separator + 1).Trim()
+        if ($value.Length -ge 2) {
+            $quoted = ($value.StartsWith('"') -and $value.EndsWith('"')) -or
+                      ($value.StartsWith("'") -and $value.EndsWith("'"))
+            if ($quoted) { $value = $value.Substring(1, $value.Length - 2) }
+        }
+        if ($name -match '^[A-Za-z_][A-Za-z0-9_]*$' -and
+            [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name, "Process"))) {
+            [Environment]::SetEnvironmentVariable($name, $value, "Process")
+        }
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($EnvFile)) {
+    $EnvFile = Join-Path $Root ".env"
+}
+Import-DotEnv ([System.IO.Path]::GetFullPath($EnvFile))
+$KmaServiceKey = [Environment]::GetEnvironmentVariable("KMA_API_SERVICE_KEY", "Process")
+if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+    $KmaServiceKey = [Environment]::GetEnvironmentVariable("KMA_SERVICE_KEY", "Process")
+}
+if (-not [string]::IsNullOrWhiteSpace($KmaServiceKey) -and $KmaServiceKey.Contains("%")) {
+    try { $KmaServiceKey = [System.Uri]::UnescapeDataString($KmaServiceKey) } catch { }
+}
+$GeminiApiKey = [Environment]::GetEnvironmentVariable("GEMINI_API_KEY", "Process")
+
+function ConvertFrom-RawRequestBody([string]$Latin1Text) {
+    if ([string]::IsNullOrEmpty($Latin1Text)) { return $Latin1Text }
+    $rawBytes = [System.Text.Encoding]::GetEncoding("ISO-8859-1").GetBytes($Latin1Text)
+    return [System.Text.Encoding]::UTF8.GetString($rawBytes)
+}
+
 function Get-ContentType([string]$Path) {
     switch ([System.IO.Path]::GetExtension($Path).ToLowerInvariant()) {
         ".html" { return "text/html; charset=utf-8" }
         ".htm"  { return "text/html; charset=utf-8" }
         ".js"   { return "text/javascript; charset=utf-8" }
+        ".mjs"  { return "text/javascript; charset=utf-8" }
         ".css"  { return "text/css; charset=utf-8" }
         ".json" { return "application/json; charset=utf-8" }
         ".csv"  { return "text/csv; charset=utf-8" }
@@ -55,13 +101,56 @@ function Send-Response(
     $Stream.Flush()
 }
 
-$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
+function Send-JsonError(
+    [System.IO.Stream]$Stream,
+    [int]$StatusCode,
+    [string]$StatusText,
+    [string]$Code,
+    [string]$Message,
+    [bool]$HeadOnly
+) {
+    $json = @{ error = @{ code = $Code; message = $Message } } | ConvertTo-Json -Compress
+    Send-Response $Stream $StatusCode $StatusText "application/json; charset=utf-8" $Utf8.GetBytes($json) $HeadOnly
+}
+
+function Test-WeatherQuery([System.Collections.Specialized.NameValueCollection]$Query) {
+    if ($Query["base_date"] -notmatch '^\d{8}$') { return $false }
+    if ($Query["base_time"] -notmatch '^\d{4}$') { return $false }
+    if ($Query["nx"] -notmatch '^\d{1,3}$' -or [int]$Query["nx"] -lt 1 -or [int]$Query["nx"] -gt 200) { return $false }
+    if ($Query["ny"] -notmatch '^\d{1,3}$' -or [int]$Query["ny"] -lt 1 -or [int]$Query["ny"] -gt 200) { return $false }
+    return $true
+}
+
+function Test-MidWeatherQuery([System.Collections.Specialized.NameValueCollection]$Query) {
+    if ($Query["tm_fc"] -notmatch '^\d{12}$') { return $false }
+    $hour = $Query["tm_fc"].Substring(8, 2)
+    if ($hour -ne "06" -and $hour -ne "18") { return $false }
+    return $true
+}
+
+$RouteVideoOutputDir = Join-Path $Root "outputs\route-video"
+$RouteVideoScript = Join-Path $Root "scripts\build_route_video.ps1"
+$RouteVideoMaxPhotos = 8
+
+$bindAddress = if ($Lan) { [System.Net.IPAddress]::Any } else { [System.Net.IPAddress]::Loopback }
+$listener = [System.Net.Sockets.TcpListener]::new($bindAddress, $Port)
 
 try {
     $listener.Start()
     Write-Host ""
     Write-Host "Omaeroute server is running."
     Write-Host "Open: http://localhost:$Port/"
+    if ($Lan) {
+        $lanIps = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
+            Where-Object { $_.IPAddress -ne "127.0.0.1" -and $_.PrefixOrigin -ne "WellKnown" } |
+            Select-Object -ExpandProperty IPAddress -Unique
+        foreach ($ip in $lanIps) {
+            Write-Host "Open (LAN): http://$ip`:$Port/"
+        }
+        Write-Host "다른 기기에서 접속하려면 Windows 방화벽에서 접근을 허용해야 할 수 있습니다."
+    }
+    Write-Host $(if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) { "KMA weather proxy: key not configured" } else { "KMA weather proxy: ready" })
+    Write-Host $(if ([string]::IsNullOrWhiteSpace($GeminiApiKey)) { "Gemini proxy (tips/docent): key not configured" } else { "Gemini proxy (tips/docent): ready" })
     Write-Host "Keep this window open. Press Ctrl+C to stop."
     Write-Host ""
 
@@ -71,14 +160,27 @@ try {
 
     while ($true) {
         $client = $listener.AcceptTcpClient()
+        $client.NoDelay = $true
+        $client.ReceiveTimeout = 5000
+        # 응답 쓰기(SendTimeout)는 요청 읽기보다 훨씬 여유를 둔다. 완성된 영상(mp4, 최대 수십MB)을
+        # 그대로 한 번에 Write하는데, loopback(127.0.0.1)에서는 사실상 즉시 끝나 5초로도 충분하지만
+        # -Lan으로 실제 Wi-Fi를 통해 다른 기기에 내려줄 때는 5초 안에 못 끝내고 타임아웃 나기 쉽다.
+        $client.SendTimeout = 120000
         $stream = $null
         $reader = $null
 
         try {
             $stream = $client.GetStream()
+            $stream.ReadTimeout = 5000
+            $stream.WriteTimeout = 120000
+            # ISO-8859-1(Latin1)은 바이트 하나를 문자 하나로 1:1 보존하는 인코딩이라
+            # 요청 헤더(ASCII 범위) 파싱은 그대로 동작하면서도, 본문에 담긴 UTF-8 바이트를
+            # 손실 없이 그대로 옮겨올 수 있다. (ASCII로 읽으면 0x80 이상 바이트가 '?'로 치환되어
+            # 한글 등 비ASCII 본문이 깨진다.) 본문을 실제 UTF-8 문자열로 복원하려면
+            # ConvertFrom-RawRequestBody를 거쳐야 한다.
             $reader = New-Object System.IO.StreamReader(
                 $stream,
-                [System.Text.Encoding]::ASCII,
+                [System.Text.Encoding]::GetEncoding("ISO-8859-1"),
                 $false,
                 1024,
                 $true
@@ -89,8 +191,12 @@ try {
                 continue
             }
 
+            $contentLength = 0
             do {
                 $line = $reader.ReadLine()
+                if ($null -ne $line -and $line -match '^Content-Length:\s*(\d+)$') {
+                    $contentLength = [int]$Matches[1]
+                }
             } while ($null -ne $line -and $line.Length -gt 0)
 
             $parts = $requestLine.Split(" ")
@@ -102,9 +208,188 @@ try {
 
             $method = $parts[0].ToUpperInvariant()
             $headOnly = $method -eq "HEAD"
-            if ($method -ne "GET" -and -not $headOnly) {
+            $requestUri = [System.Uri]::new("http://localhost$($parts[1])")
+            $isRouteVideoSubmit = $method -eq "POST" -and $requestUri.AbsolutePath -eq "/api/route-video"
+            $isGeminiSubmit = $method -eq "POST" -and $requestUri.AbsolutePath -eq "/api/gemini"
+
+            if ($method -ne "GET" -and -not $headOnly -and -not $isRouteVideoSubmit -and -not $isGeminiSubmit) {
                 $body = $Utf8.GetBytes("405 Method Not Allowed")
                 Send-Response $stream 405 "Method Not Allowed" "text/plain; charset=utf-8" $body $false
+                continue
+            }
+
+            if ($isRouteVideoSubmit) {
+                $requestBody = ""
+                if ($contentLength -gt 0) {
+                    $buffer = New-Object char[] $contentLength
+                    $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
+                    $requestBody = ConvertFrom-RawRequestBody (-join $buffer[0..($readCount - 1)])
+                }
+
+                $payload = $null
+                try { $payload = $requestBody | ConvertFrom-Json } catch { }
+                $imageUrls = @()
+                if ($null -ne $payload -and $null -ne $payload.imageUrls) {
+                    $imageUrls = @($payload.imageUrls | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -First $RouteVideoMaxPhotos)
+                }
+
+                if ($imageUrls.Count -eq 0) {
+                    Send-JsonError $stream 400 "Bad Request" "ROUTE_VIDEO_NO_PHOTOS" "imageUrls 배열이 비어 있습니다." $headOnly
+                    continue
+                }
+
+                New-Item -ItemType Directory -Force -Path $RouteVideoOutputDir | Out-Null
+                $jobId = [Guid]::NewGuid().ToString("N")
+                $outputPath = Join-Path $RouteVideoOutputDir "$jobId.mp4"
+
+                $argParts = New-Object System.Collections.Generic.List[string]
+                $argParts.Add("-NoProfile"); $argParts.Add("-ExecutionPolicy"); $argParts.Add("Bypass")
+                $argParts.Add("-File"); $argParts.Add($RouteVideoScript)
+                $argParts.Add("-ImageUrls"); $argParts.Add(($imageUrls -join "|"))
+                $argParts.Add("-OutputPath"); $argParts.Add($outputPath)
+
+                # Start-Process -ArgumentList <string[]> does not reliably quote elements that
+                # contain spaces (repo path has Korean/space segments) — build one pre-quoted
+                # command-line string instead. None of these values can contain a literal `"`.
+                $argString = ($argParts | ForEach-Object { '"' + $_ + '"' }) -join ' '
+                Start-Process -FilePath "powershell.exe" -ArgumentList $argString -WindowStyle Hidden | Out-Null
+
+                $json = @{ jobId = $jobId } | ConvertTo-Json -Compress
+                Send-Response $stream 202 "Accepted" "application/json; charset=utf-8" $Utf8.GetBytes($json) $headOnly
+                continue
+            }
+
+            if ($requestUri.AbsolutePath -eq "/api/route-video") {
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                $jobId = $query["id"]
+                if ([string]::IsNullOrWhiteSpace($jobId) -or $jobId -notmatch '^[0-9a-f]{32}$') {
+                    Send-JsonError $stream 400 "Bad Request" "ROUTE_VIDEO_INVALID_ID" "id 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $videoPath = Join-Path $RouteVideoOutputDir "$jobId.mp4"
+                $errorPath = Join-Path $RouteVideoOutputDir "$jobId.error.json"
+                if ([System.IO.File]::Exists($videoPath)) {
+                    $videoBody = [System.IO.File]::ReadAllBytes($videoPath)
+                    Send-Response $stream 200 "OK" "video/mp4" $videoBody $headOnly
+                }
+                elseif ([System.IO.File]::Exists($errorPath)) {
+                    $errorJson = [System.IO.File]::ReadAllText($errorPath, $Utf8)
+                    Send-Response $stream 502 "Bad Gateway" "application/json; charset=utf-8" $Utf8.GetBytes($errorJson) $headOnly
+                }
+                else {
+                    $json = @{ status = "pending" } | ConvertTo-Json -Compress
+                    Send-Response $stream 202 "Accepted" "application/json; charset=utf-8" $Utf8.GetBytes($json) $headOnly
+                }
+                continue
+            }
+
+            if ($requestUri.AbsolutePath -eq "/api/weather") {
+                if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "KMA_KEY_MISSING" ".env에 KMA_API_SERVICE_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                if (-not (Test-WeatherQuery $query)) {
+                    Send-JsonError $stream 400 "Bad Request" "KMA_INVALID_QUERY" "base_date, base_time, nx, ny 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $encodedKey = [System.Uri]::EscapeDataString($KmaServiceKey)
+                $upstreamUrl = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst" +
+                               "?serviceKey=$encodedKey&pageNo=1&numOfRows=2000&dataType=JSON" +
+                               "&base_date=$($query['base_date'])&base_time=$($query['base_time'])" +
+                               "&nx=$($query['nx'])&ny=$($query['ny'])"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(12)
+                try {
+                    $upstream = $httpClient.GetAsync($upstreamUrl).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    $contentType = if ($null -ne $upstream.Content.Headers.ContentType) {
+                        $upstream.Content.Headers.ContentType.ToString()
+                    } else {
+                        "application/json; charset=utf-8"
+                    }
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase $contentType $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "KMA_UPSTREAM_FAILED" "기상청 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
+                continue
+            }
+
+            if ($requestUri.AbsolutePath -eq "/api/weather/mid-land" -or
+                $requestUri.AbsolutePath -eq "/api/weather/mid-temperature") {
+                if ([string]::IsNullOrWhiteSpace($KmaServiceKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "KMA_KEY_MISSING" ".env에 KMA_API_SERVICE_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $query = [System.Web.HttpUtility]::ParseQueryString($requestUri.Query)
+                if (-not (Test-MidWeatherQuery $query)) {
+                    Send-JsonError $stream 400 "Bad Request" "KMA_INVALID_MID_QUERY" "tm_fc 값을 확인해주세요." $headOnly
+                    continue
+                }
+                $encodedKey = [System.Uri]::EscapeDataString($KmaServiceKey)
+                $isLandForecast = $requestUri.AbsolutePath -eq "/api/weather/mid-land"
+                $endpoint = if ($isLandForecast) { "getMidLandFcst" } else { "getMidTa" }
+                $regionId = if ($isLandForecast) { "11F20000" } else { "11F20501" }
+                $upstreamUrl = "https://apis.data.go.kr/1360000/MidFcstInfoService/$endpoint" +
+                               "?serviceKey=$encodedKey&pageNo=1&numOfRows=10&dataType=JSON" +
+                               "&regId=$regionId&tmFc=$($query['tm_fc'])"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(12)
+                try {
+                    $upstream = $httpClient.GetAsync($upstreamUrl).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    $contentType = if ($null -ne $upstream.Content.Headers.ContentType) {
+                        $upstream.Content.Headers.ContentType.ToString()
+                    } else {
+                        "application/json; charset=utf-8"
+                    }
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase $contentType $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "KMA_MID_UPSTREAM_FAILED" "기상청 API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
+                continue
+            }
+
+            if ($isGeminiSubmit) {
+                if ([string]::IsNullOrWhiteSpace($GeminiApiKey)) {
+                    Send-JsonError $stream 503 "Service Unavailable" "GEMINI_KEY_MISSING" ".env에 GEMINI_API_KEY를 설정해주세요." $headOnly
+                    continue
+                }
+                $requestBody = ""
+                if ($contentLength -gt 0) {
+                    $buffer = New-Object char[] $contentLength
+                    $readCount = $reader.ReadBlock($buffer, 0, $contentLength)
+                    $requestBody = ConvertFrom-RawRequestBody (-join $buffer[0..($readCount - 1)])
+                }
+                if ([string]::IsNullOrWhiteSpace($requestBody)) {
+                    Send-JsonError $stream 400 "Bad Request" "GEMINI_NO_BODY" "요청 본문(contents)이 비어 있습니다." $headOnly
+                    continue
+                }
+                # 클라이언트가 보낸 Gemini 요청 본문(contents 등)을 그대로 전달하고, 인증키만 서버에서 붙인다.
+                $encodedKey = [System.Uri]::EscapeDataString($GeminiApiKey)
+                $upstreamUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=$encodedKey"
+                $httpClient = [System.Net.Http.HttpClient]::new()
+                $httpClient.Timeout = [TimeSpan]::FromSeconds(15)
+                try {
+                    $requestContent = [System.Net.Http.StringContent]::new($requestBody, [System.Text.Encoding]::UTF8, "application/json")
+                    $upstream = $httpClient.PostAsync($upstreamUrl, $requestContent).GetAwaiter().GetResult()
+                    $responseBody = $upstream.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                    Send-Response $stream ([int]$upstream.StatusCode) $upstream.ReasonPhrase "application/json; charset=utf-8" $responseBody $headOnly
+                }
+                catch {
+                    Send-JsonError $stream 502 "Bad Gateway" "GEMINI_UPSTREAM_FAILED" "Gemini API 연결에 실패했습니다. 잠시 후 다시 시도해주세요." $headOnly
+                }
+                finally {
+                    $httpClient.Dispose()
+                }
                 continue
             }
 

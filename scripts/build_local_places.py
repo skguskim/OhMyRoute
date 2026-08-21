@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PLACES = ROOT / "data" / "generated" / "gwangju_official_places.csv"
-DEFAULT_PROFILES = ROOT / "data" / "generated" / "gwangju_official_place_profiles_validated.csv"
+DEFAULT_PROFILES = ROOT / "data" / "generated" / "gwangju_official_place_profiles.csv"
 DEFAULT_OUTPUT = ROOT / "data" / "places.json"
 VECTOR_FIELDS = ("nature", "culture", "art", "food", "activity", "sports", "healing", "festival")
 
@@ -53,7 +53,7 @@ def build_local_places(places_path: Path, profiles_path: Path) -> list[dict[str,
 
     output: list[dict[str, object]] = []
     place_keys: set[tuple[str, str]] = set()
-    for index, place in enumerate(places, start=1):
+    for place in places:
         key = (place["source"].strip(), place["source_place_id"].strip())
         if key in place_keys:
             raise ValueError(f"장소 중복 키: {key}")
@@ -69,7 +69,7 @@ def build_local_places(places_path: Path, profiles_path: Path) -> list[dict[str,
 
         output.append(
             {
-                "id": index,
+                "id": f"{key[0]}:{key[1]}",
                 "source": key[0],
                 "sourcePlaceId": key[1],
                 "name": place["name"].strip(),

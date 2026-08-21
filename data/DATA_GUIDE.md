@@ -94,6 +94,7 @@
 - `templates/places.csv`: 장소 기본정보와 방문 조건
 - `templates/place_profiles.csv`: 해시태그와 8축 점수
 - `templates/place_opening_hours.csv`: 요일별 운영시간
+- `place_opening_hours.json`: 로컬 추천에서 사용하는 검수 완료 요일별 운영시간·휴무 정보 (`0=일요일`, `6=토요일`)
 - `templates/route_edges.csv`: 장소 간 이동시간 캐시
 - `tag_taxonomy.json`: 해시태그와 점수 축의 통제 사전
 - `restaurants.json`: 일반 음식점과 KIA 선수 추천 음식점을 합친 단일 운영 DB
@@ -119,7 +120,7 @@ CSV 파일은 UTF-8로 저장합니다. 불명확한 값을 `0`이나 빈 문자
 2. 주소와 좌표를 카카오맵으로 교차검증
 3. 운영시간과 방문 조건을 운영기관 사이트에서 확인
 4. 8축 점수와 해시태그를 두 명이 검수
-5. Supabase에 적재하고 추천 결과 20건을 수동 평가
+5. 로컬 JSON에 반영하고 추천 결과 20건을 수동 평가
 6. 문제가 없으면 광주 100개, 인접 전남 50개로 확대
 7. 실제 사용자 행동이 쌓이면 선호 벡터 업데이트에 반영
 
@@ -137,12 +138,40 @@ TourAPI 인증키를 `.env`에 설정한 후 광주 데이터를 수집하려면
 
 ```powershell
 .\scripts\run_data_pipeline.cmd collect --limit 100
+혹은
+.\scripts\run_data_pipeline.cmd collect --limit 20 --area-codes 5 38 --content-types 12 14 15 28
+로 분야, 지역 설정
 ```
 
 TourAPI 인증키가 아직 없으면 광주관광 공식 페이지에서 공개된 초안을 먼저 수집할 수 있습니다.
 
 ```powershell
-.\scripts\run_data_pipeline.cmd collect-gwangju --limit 42
+.\scripts\run_data_pipeline.cmd collect-gwangju --limit 100
 ```
 
 자동 생성되는 해시태그와 점수는 키워드 규칙 기반 초안입니다. `labeling_method=import`, `quality_status=draft`로 기록되며, 두 사람의 검수를 통과한 데이터만 `reviewed` 또는 `verified`로 변경합니다.
+
+
+## 9. 데이터 베이스 구축 순서
+
+자동 수집으로 받아온 후
+
+1. csv_refine.py로 중복 제거
+2. intact csv files 내의 벡터값 수정 후 csv(utf-8)로 저장
+3. qoute_change.py로 따옴표 처리
+4. 아래에 따라 json, sql 파일 재생성
+
+sql, json 파일 후처리 후에 생성 시
+```powershell
+python scripts\data_pipeline.py validate --places data\generated\tourapi_places.csv --profiles data\generated\tourapi_place_profiles.csv --report data\generated\tourapi_quality_report.json
+
+python scripts\data_pipeline.py build-sql --places data\generated\tourapi_places.csv --profiles data\generated\tourapi_place_profiles.csv --output data\generated\tourapi_seed.sql
+
+python scripts\data_pipeline.py validate --places data\generated\gwangju_official_places.csv --profiles data\generated\gwangju_official_place_profiles.csv --report data\generated\gwangju_official_quality_report.json
+
+python scripts\data_pipeline.py build-sql --places data\generated\gwangju_official_places.csv --profiles data\generated\gwangju_official_place_profiles.csv --output data\generated\gwangju_official_seed.sql
+```
+각각의 명령어를 터미널에 입력하면 됨.
+
+5. merge_gwangju_tourapi.py로 병합된 csv 파일들 생성
+6. csv_to_places_json.py로 병합된 장소들 json 파일 생성

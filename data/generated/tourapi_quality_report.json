@@ -1,0 +1,135 @@
+{
+  "generated_at": "2026-08-17T17:44:24.764108+00:00",
+  "places_file": "data\\generated\\tourapi_places.csv",
+  "profiles_file": "data\\generated\\tourapi_place_profiles.csv",
+  "place_rows": 59,
+  "profile_rows": 59,
+  "category_counts": {
+    "관광지": 33,
+    "문화·예술": 24,
+    "체험·스포츠": 2
+  },
+  "region_counts": {
+    "광주": 27,
+    "전남": 32
+  },
+  "completeness": {
+    "name": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "region": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "category": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "description": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "road_address": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "latitude": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "longitude": {
+      "filled": 59,
+      "rate": 1.0
+    },
+    "phone": {
+      "filled": 33,
+      "rate": 0.5593
+    },
+    "website_url": {
+      "filled": 49,
+      "rate": 0.8305
+    },
+    "image_url": {
+      "filled": 54,
+      "rate": 0.9153
+    },
+    "parking_available": {
+      "filled": 45,
+      "rate": 0.7627
+    },
+    "wheelchair_accessible": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "pet_friendly": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "price_min": {
+      "filled": 0,
+      "rate": 0.0
+    },
+    "source_url": {
+      "filled": 49,
+      "rate": 0.8305
+    },
+    "last_verified_at": {
+      "filled": 0,
+      "rate": 0.0
+    }
+  },
+  "vector_profile": {
+    "nature": {
+      "mean": 0.5042,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 20
+    },
+    "culture": {
+      "mean": 0.3644,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 25
+    },
+    "art": {
+      "mean": 0.4195,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 28
+    },
+    "food": {
+      "mean": 0.0085,
+      "min": 0.0,
+      "max": 0.25,
+      "zero_count": 57
+    },
+    "activity": {
+      "mean": 0.3559,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 27
+    },
+    "sports": {
+      "mean": 0.0593,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 54
+    },
+    "healing": {
+      "mean": 0.2881,
+      "min": 0.0,
+      "max": 0.75,
+      "zero_count": 32
+    },
+    "festival": {
+      "mean": 0.2712,
+      "min": 0.0,
+      "max": 1.0,
+      "zero_count": 36
+    }
+  },
+  "severity_counts": {},
+  "passed": true,
+  "issues": []
+}

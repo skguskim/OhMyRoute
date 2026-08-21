@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="오매루트 AI 맞춤 여행 코스 프로토타입" />
     <title>오매루트 | AI 맞춤 여행 코스</title>
+    <script>
+      (function () {
+        var height = Math.round(window.innerHeight * 0.6);
+        var widthFromHeight = Math.round(height * (600 / 950));
+        var widthFromWindow = Math.round(window.innerWidth * 0.6);
+        var width = Math.min(widthFromHeight, widthFromWindow);
+        var root = document.documentElement;
+        root.style.setProperty("--app-width", width + "px");
+        root.style.setProperty("--app-height", height + "px");
+      })();
+    </script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
-    <link rel="stylesheet" href="./styles.css?v=20260806-9" />
+    <link rel="stylesheet" href="./styles.css?v=20260819-1" />
   </head>
   <body class="splash-open">
     <section id="splashView" class="splash-view" aria-labelledby="splashTitle" aria-hidden="false">
@@ -37,13 +48,15 @@
           <span></span><span></span><span></span>
         </button>
         <button id="brandButton" class="brand" type="button" aria-label="입력 화면으로 이동">
-          <span class="brand-emblem">오매</span>
+          <span id="brandEmblem" class="brand-emblem">
+            <span id="brandEmblemText" class="brand-emblem-text">오매</span>
+            <img id="brandEmblemIcon" class="brand-emblem-icon" src="./data/video/icon/kia_icon.png" alt="KIA 타이거즈" hidden />
+          </span>
           <span class="brand-text">
             <strong>오매루트</strong>
             <small>AI LOCAL TRAVEL</small>
           </span>
         </button>
-        <span class="header-live-pill"><i></i> 42곳 실시간 분석</span>
         <button id="profileButton" class="profile-button" type="button" aria-label="내 정보와 저장된 루트 보기">
           <span>MY</span>
         </button>
@@ -60,9 +73,7 @@
                   <span>GWANGJU · JEONNAM</span>
                 </div>
                 <h1 id="formTitle">어떤 여행을 원하시나요?</h1>
-                <p>
-                  여행 일정과 선호하는 스타일을 세밀하게 알려주세요.
-                </p>
+
               <div class="hero-flow" aria-label="여행 루트 생성 과정">
                 <span class="active"><b>01</b> 조건</span>
                 <i></i>
@@ -89,10 +100,10 @@
                   <label class="field full">
                     <span>출발 장소 <b>*</b></span>
                     <select id="origin" required>
-                      <option value="gwangju_station">광주역</option>
-                      <option value="bus_terminal">광주종합버스터미널</option>
-                      <option value="champions_field">광주-기아 챔피언스필드</option>
                       <option value="songjeong_station">광주송정역</option>
+                      <option value="bus_terminal">광주종합버스터미널(유스퀘어)</option>
+                      <option value="champions_field">광주-기아 챔피언스필드</option>
+                      <option value="gwangju_station">광주역</option>
                     </select>
                   </label>
 
@@ -103,7 +114,12 @@
 
                   <label class="field">
                     <span>여행 시작 시각 <b>*</b></span>
-                    <input id="startTime" type="time" value="10:00" step="1800" required />
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="10" data-role="hour" aria-label="여행 시작 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="여행 시작 분" />
+                      <input id="startTime" type="hidden" value="10:00" />
+                    </div>
                   </label>
 
                   <label class="field">
@@ -113,11 +129,16 @@
 
                   <label class="field">
                     <span>여행 종료 시각 <b>*</b></span>
-                    <input id="endTime" type="time" value="18:00" step="1800" required />
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="18" data-role="hour" aria-label="여행 종료 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="여행 종료 분" />
+                      <input id="endTime" type="hidden" value="18:00" />
+                    </div>
                   </label>
 
                   <p id="scheduleFieldStatus" class="schedule-field-status field full" aria-live="polite">
-                    출발일의 여행 시작 시각부터 귀가일의 여행 종료 시각까지 입력하세요.
+                    출발부터 도착까지의 일정을 입력해 주세요.
                   </p>
 
                   <fieldset class="field full">
@@ -145,19 +166,14 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3"></circle><path d="M6 21v-2a6 6 0 0 1 12 0v2"></path></svg>
                         <span>혼자</span>
                       </button>
-                      <button type="button" data-value="couple">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path></svg>
-                        <span>연인</span>
-                      </button>
                       <button type="button" data-value="family">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21v-2a6 6 0 0 1 12 0v2M14 15.5a5 5 0 0 1 7 4.5v1"></path></svg>
-                        <span>가족/친구</span>
+                        <span>여러명이서</span>
                       </button>
                     </div>
                     <select id="companion" class="source-control" tabindex="-1" aria-hidden="true">
                       <option value="solo">혼자</option>
                       <option value="friend">친구</option>
-                      <option value="couple">연인</option>
                       <option value="family">아이와 가족</option>
                     </select>
                   </fieldset>
@@ -170,7 +186,7 @@
                       <option value="cloudy">흐림</option>
                       <option value="rainy">비</option>
                     </select>
-                    <small id="weatherFieldStatus" class="field-hint" aria-live="polite">루트 생성 시 12시·18시 예보를 조회합니다.</small>
+                    <small id="weatherFieldStatus" class="field-hint" aria-live="polite">예보 기반으로 추천합니다.</small>
                   </label>
                 </div>
               </section>
@@ -180,7 +196,7 @@
                   <span class="prompt-ai-mark">AI</span>
                   <div class="prompt-intro-copy">
                     <h2>어떤 여행을 만들까요?</h2>
-                    <p>원하는 분위기와 꼭 넣고 싶은 장소를 말하듯 적어보세요.</p>
+                    <p>원하는 분위기를 자유롭게 적어보세요.</p>
                   </div>
                 </div>
                 <div class="prompt-composer">
@@ -225,12 +241,16 @@
                     <h2>여행 취향 설정</h2>
                   </div>
                 </div>
-                <p class="card-helper">마음이 가는 항목일수록 오른쪽으로 움직여 보세요. 정밀한 취향을 바탕으로 맞춤 동선을 구성합니다.</p>
-                <section id="baseballAttendancePanel" class="baseball-attendance-panel" hidden>
+                <p class="card-helper">여행 취향을 알려주세요.</p>
+                <section id="baseballAttendancePanel" class="baseball-attendance-panel">
                   <div class="baseball-attendance-copy">
                     <span>⚾ BASEBALL DAY</span>
                     <strong>야구 직관을 일정에 포함할까요?</strong>
                     <p id="baseballScheduleStatus">경기 시작 시간과 챔피언스필드 먹거리를 일정에 고정합니다.</p>
+                    <fieldset id="baseballDayField" class="baseball-day-field" hidden>
+                      <legend>직관 날짜 <span>복수 선택 가능</span></legend>
+                      <div id="baseballDayOptions" class="baseball-day-options" aria-label="야구 직관 날짜 선택"></div>
+                    </fieldset>
                   </div>
                   <label class="baseball-attendance-toggle" for="baseballAttendance">
                     <input id="baseballAttendance" type="checkbox" />
@@ -255,9 +275,9 @@
               <div class="side-status"><i></i><span id="dataStatus">장소 데이터 연결 중</span></div>
               <h2>어떻게 추천하나요?</h2>
               <ol class="engine-steps">
-                <li><b>01</b><span>조건에 맞지 않는 장소 제외</span></li>
-                <li><b>02</b><span>8차원 선호 벡터 유사도 계산</span></li>
-                <li><b>03</b><span>출발지 기준 이동 순서 구성</span></li>
+                <li><b>01</b><span>조건 필터링</span></li>
+                <li><b>02</b><span>취향 유사도 계산</span></li>
+                <li><b>03</b><span>최적 동선 구성</span></li>
               </ol>
               <div class="axis-preview" id="axisPreview"></div>
             </section>
@@ -313,6 +333,23 @@
                   <div id="dayTabs" class="day-tabs"><button class="active">Day 1</button></div>
                 </div>
                 <div id="dayTheme" class="day-theme"></div>
+                <div class="stamp-location-panel itinerary-replan-panel">
+                  <div class="stamp-location-heading">
+                    <strong>⏱ 일정이 지연됐나요?</strong>
+                    <span>장소와 새 출발 시각을 선택하면 남은 일정을 다시 계산합니다.</span>
+                  </div>
+                  <div class="stamp-location-actions">
+                    <select id="replanStopSelect" aria-label="지연이 발생한 장소 선택"></select>
+                    <div class="time-field-wrap">
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="hour" aria-label="새 출발 시" />
+                      <span class="time-sep">:</span>
+                      <input class="time-seg" type="text" inputmode="numeric" maxlength="2" value="00" data-role="minute" aria-label="새 출발 분" />
+                      <input id="replanTimeInput" type="hidden" value="">
+                    </div>
+                    <button id="replanButton" type="button">일정 다시 짜기</button>
+                  </div>
+                  <p id="replanStatus" class="itinerary-replan-status" hidden></p>
+                </div>
                 <div id="itineraryTimeline" class="itinerary-timeline"></div>
               </section>
 
@@ -328,7 +365,6 @@
 
               <section class="bottom-grid">
                 <div class="result-card stamp-card" id="stampSection">
-                  <div id="stampToast" class="stamp-toast" role="status" aria-live="polite" hidden></div>
                   <div class="result-card-heading">
                     <div>
                       <span>TRAVEL STAMPS</span>
@@ -336,7 +372,7 @@
                     </div>
                     <span id="stampProgressBadge" class="soft-badge">0 / 0</span>
                   </div>
-                  <p class="stamp-intro">관광지 100m 안에서 GPS 위치를 확인하면 디지털 도장을 받을 수 있습니다.</p>
+                  <p class="stamp-intro">관광지 100m 이내에서 GPS로 스탬프를 받으세요.</p>
                   <div class="stamp-location-panel">
                     <div class="stamp-location-heading">
                       <strong>⌖ 현재 위치 GPS &amp; 테스트</strong>
@@ -365,7 +401,7 @@
                       </div>
                       <span id="reviewStatusBadge" class="soft-badge">작성 전</span>
                     </div>
-                    <p class="review-reward-intro">이번 코스의 경험을 남기면 시연용 지역 식당 10% 할인 쿠폰을 발급합니다.</p>
+                    <p class="review-reward-intro">리뷰를 남기고 식당 10% 쿠폰을 받으세요.</p>
                     <label class="review-field" for="reviewText">
                       <span>여행 리뷰</span>
                       <textarea id="reviewText" rows="4" maxlength="500" placeholder="좋았던 장소와 아쉬웠던 점을 자유롭게 적어주세요."></textarea>
@@ -408,28 +444,26 @@
           </aside>
 
           <section class="result-map-pane">
-            <div id="previewScene" class="preview-scene" aria-label="추천 코스 영상형 프리뷰">
-              <div class="sun"></div>
-              <div class="mountain mountain-one"></div>
-              <div class="mountain mountain-two"></div>
-              <div class="preview-route-line"></div>
-              <img id="previewImage" class="preview-image" alt="" referrerpolicy="no-referrer">
-              <div class="preview-shade"></div>
-              <span class="preview-badge">⌖ 현재 포커스 스팟</span>
+            <div id="previewScene" class="preview-scene" aria-label="추천 코스 영상형 프리뷰" hidden>
+              <video id="tripPreviewVideo" class="door-stage" muted playsinline preload="none"></video>
+              <span class="preview-badge">⌖ AI 여행 미리보기</span>
               <button id="previewPlayButton" type="button" class="play-button" aria-label="프리뷰 재생">▶</button>
-              <div class="preview-copy" aria-live="polite">
-                <strong id="previewTitle">AI가 구성한 오늘의 여행 프리뷰</strong>
-                <span id="previewDescription">추천 장소를 영상처럼 미리 만나보세요.</span>
+              <div id="previewCopy" class="preview-copy" aria-live="polite">
+                <strong id="previewTitle"></strong>
+                <span id="previewDescription"></span>
               </div>
-              <div id="previewDots" class="preview-dots" aria-hidden="true"></div>
-              <div class="preview-progress-track"><i id="previewProgress"></i></div>
+              <div id="previewProgressTrack" class="preview-progress-track">
+                <i id="previewProgress"></i>
+                <div id="previewChapterMarks" class="preview-chapter-marks" aria-hidden="true"></div>
+                <div id="previewChapterTooltip" class="preview-chapter-tooltip" hidden></div>
+              </div>
             </div>
 
             <section class="result-card map-card">
               <div class="result-card-heading">
                 <div>
                   <span>ROUTE MAP</span>
-                  <h2>출발지에서 이어지는 동선</h2>
+                  <h2 id="mapHeading">출발지에서 이어지는 동선</h2>
                 </div>
                 <div class="map-badges">
                   <span id="mapProviderStatus" class="soft-badge provider">Kakao Map 준비</span>
@@ -449,6 +483,8 @@
         </div>
       </section>
     </main>
+
+    <div id="stampToast" class="stamp-toast" role="status" aria-live="polite" hidden></div>
 
     <nav class="mobile-nav" aria-label="주요 메뉴">
       <button type="button" data-nav="form" class="active" aria-label="탐색">
@@ -501,7 +537,28 @@
       <span>Prototype · Gwangju & Jeonnam</span>
     </footer>
 
-    <script src="./config.js?v=20260806-1"></script>
-    <script type="module" src="./app.js?v=20260806-6"></script>
+    <div id="aiDocentWrapper" class="ai-docent-wrapper" hidden>
+      <button id="aiDocentButton" class="ai-docent-button" aria-label="AI 도슨트 열기">
+        💬
+      </button>
+      <div id="aiDocentPanel" class="ai-docent-panel" hidden>
+        <div class="ai-docent-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3>AI 도슨트</h3>
+            <button id="aiDocentRefreshButton" aria-label="새로고침" style="font-size: 14px;" title="대화 및 위치 초기화">🔄</button>
+          </div>
+          <button id="aiDocentCloseButton" aria-label="닫기">×</button>
+        </div>
+        <div id="aiDocentChat" class="ai-docent-chat">
+        </div>
+        <div class="ai-docent-input">
+          <input type="text" id="aiDocentInput" placeholder="질문을 입력하세요..." />
+          <button id="aiDocentSendButton" aria-label="전송">↑</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./config.js?v=20260819-1"></script>
+    <script type="module" src="./app.js?v=20260819-1"></script>
   </body>
 </html>
